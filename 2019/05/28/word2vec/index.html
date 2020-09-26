@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="word2vector是将词转换为词向量的方法，能够把自然语言转换为向量 使用数学方法进行描述   理论常用的词向量表示方法有  one-hot representation distributed representation  前者是用一个很长的向量表示一个词，一个向量只有一个维度为1 每个词语的维数就是语料库字典的长度 后者的基本思想是：相同语境下出现的词语义也应该是相近的 使用一个固定长度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="word2vec">
+<meta property="og:url" content="https://river-li.xyz/2019/05/28/word2vec/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="word2vector是将词转换为词向量的方法，能够把自然语言转换为向量 使用数学方法进行描述   理论常用的词向量表示方法有  one-hot representation distributed representation  前者是用一个很长的向量表示一个词，一个向量只有一个维度为1 每个词语的维数就是语料库字典的长度 后者的基本思想是：相同语境下出现的词语义也应该是相近的 使用一个固定长度">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-28T07:29:29.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.701Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2019/05/28/word2vec/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>word2vec | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/28/word2vec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          word2vec
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-28 15:29:29" itemprop="dateCreated datePublished" datetime="2019-05-28T15:29:29+08:00">2019-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>word2vector是将词转换为词向量的方法，能够把自然语言转换为向量</p>
+<p>使用数学方法进行描述</p>
+<!--more--->
+
+<h2 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h2><p>常用的词向量表示方法有</p>
+<ul>
+<li>one-hot representation</li>
+<li>distributed representation</li>
+</ul>
+<p>前者是用一个很长的向量表示一个词，一个向量只有一个维度为1</p>
+<p>每个词语的维数就是语料库字典的长度</p>
+<p>后者的基本思想是：相同语境下出现的词语义也应该是相近的</p>
+<p>使用一个固定长度的稠密词向量标识</p>
+<p>word2vector是通过神经网络机器学习的算法来训练N-gram语言模型，并在训练过程中求出对应的词向量的方法</p>
+<h2 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h2><p>word2vector可以在tensorflow中调用</p>
+<p>也可以用gensim中的包</p>
+<p>这里用gensim</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> word2vec</span><br><span class="line">sentences = word2vec.Text8Corpus(<span class="string">&#x27;1.txt&#x27;</span>)</span><br><span class="line">model = word2vec.Word2Vec(sentences,size=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+
+<p>可以使用<code>model.similarity(&#39;word1&#39;,&#39;word2&#39;)</code></p>
+<p>得到两个词的相关度值</p>
+<p><code>model.most_similarity(&#39;word1&#39;,topn=20)</code></p>
+<p>可以得到与word1相关度最高的20个词</p>
+<p><code>model.doesnt_match(list)</code></p>
+<p>这个方法会返回出list中最不合群的词</p>
+<p><code>model.save(filename)</code></p>
+<p><code>word2vec.Word2Vec.load(filename)</code></p>
+<p>以上两个方法可以将训练的模型保存为文件，或是直接从文件读取模型</p>
+<h3 id="实际例子"><a href="#实际例子" class="headerlink" title="实际例子"></a>实际例子</h3><p>首先需要在网上获取到中文语料库，数据来源是搜狐的新闻</p>
+
+
+<p>这里一共有1990个文件，编号从10到1999，每个文件中为一段新闻</p>
+<p>例如10.txt：</p>
+
+
+<p>对于获取到的语料库首先应该用jieba进行分词，将每个词用空格隔开</p>
+<p>关于<a target="_blank" rel="noopener" href="http://river-li.me/">jieba</a>分词的用法和分词的理论模型可以点击链接查看；</p>
+<p>整个脚本如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line">prefix = <span class="string">&#x27;./data/word/&#x27;</span></span><br><span class="line">affix=<span class="string">&#x27;.txt&#x27;</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&#x27;result_dict.txt&#x27;</span>,<span class="string">&#x27;a&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>,<span class="number">2000</span>):</span><br><span class="line">        s=<span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">with</span> open(prefix+str(i)+affix,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;gb18030&#x27;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">            l=fp.readlines()</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> l:</span><br><span class="line">                s=s+j.replace(<span class="string">&#x27;\u3000&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">            result=jieba.lcut(s)</span><br><span class="line">            <span class="keyword">for</span> r <span class="keyword">in</span> result:</span><br><span class="line">                f.write(r)</span><br><span class="line">                f.write(<span class="string">&#x27; &#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这里将所有的文本文件进行分词后写入到<code>result_dict.txt</code>文件中，并且要在每个词后面写入一个空格</p>
+<p>运行完毕后效果如图</p>
+
+
+<p>之后使用gensim库中的word2vec来训练生成词向量</p>
+<p>为了了解生成词向量时的进度，导入logging这个库进行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> word2vec</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line">logging.basicConfig(format=<span class="string">&#x27;%(asctime)s:%(levelname)s:%(message)s&#x27;</span>,level=logging.INFO)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sentences = word2vec.Text8Corpus(<span class="string">&#x27;./result_dict,txt&#x27;</span>)</span><br><span class="line">model = word2vec.Word2Vec(sentences,size=<span class="number">200</span>)</span><br><span class="line"><span class="comment">#size是神经网络中隐藏层中神经元的个数</span></span><br><span class="line"><span class="comment">#model.save(&#x27;word.model&#x27;)</span></span><br></pre></td></tr></table></figure>
+
+<p>训练的过程如下</p>
+
+
+<p>完成</p>
+<p>整个训练过程可以看作是一个三层的神经网络的训练过程，有一个隐藏层，其神经元个数就是生成Word2Vec对象时的参数size大小</p>
+<p>下面测试几个自带的方法；</p>
+<p>查看与”北京”这个词意思最接近的词：</p>
+
+
+<p>可以发现有的是地名有的是职位；</p>
+<p>这是由于这个模型的基本思想就是，意思相近的词出现在相似语境下的概率更大；</p>
+<p>因此与北京出现的位置相近，或经常与它同时出现的词就被认为是他的同义词了。</p>
+<p>比较两个词的词向量距离：</p>
+
+
+<p>可以看到本报和记者的距离比本报和警察的距离近很多</p>
+<p>这是由于前者经常同时出现，被判定为含义接近的缘故</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/28/jieba/" rel="prev" title="jieba">
+      <i class="fa fa-chevron-left"></i> jieba
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/06/03/windows%E4%B8%8B%E6%8C%89%E9%94%AE%E6%98%A0%E5%B0%84/" rel="next" title="windows下按键映射">
+      windows下按键映射 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90"><span class="nav-number">2.1.</span> <span class="nav-text">实际例子</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

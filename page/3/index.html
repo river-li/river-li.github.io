@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="WHU 网络空间安全在读">
+<meta property="og:type" content="website">
+<meta property="og:title" content="River&#39;s blog">
+<meta property="og:url" content="https://river-li.xyz/page/3/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="WHU 网络空间安全在读">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="River Li">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/page/3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/09/CrackMe-Day12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/09/CrackMe-Day12/" class="post-title-link" itemprop="url">CrackMe-Day12</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-09 23:42:27" itemprop="dateCreated datePublished" datetime="2020-03-09T23:42:27+08:00">2020-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
+<p>作者attackiko</p>
+<p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
+
+
+<p>输入错误后获得一个弹窗</p>
+
+
+
+
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
+
+
+<p>用Exeinfo看了一下</p>
+
+
+<p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
+
+
+<p>得，居然是DOS的程序</p>
+<p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
+<p>具体动态分析时网上建议的环境是<code>win95+TRW2000</code></p>
+<p>这还要专门装虚拟机就有点麻烦了，毕竟16位的程序一般也很少见了，这年头32位的程序都要逐渐被淘汰了，不过如果不能动态跑起来，至少看一下别人的WP达到能看懂的程度吧。</p>
+<h2 id="WP学习"><a href="#WP学习" class="headerlink" title="WP学习"></a>WP学习</h2><p>首先还是根据错误字符串定位程序的关键代码入口</p>
+<p>逆向的代码里看到有很多浮点运算相关的汇编指令，平常用的不是很多</p>
+<p>大致流程看别人的write up梳理的很清楚</p>
+<ol>
+<li>获取所有字符求和记为<code>ldsum</code>，长度记为<code>len</code></li>
+<li>计算<code>cos(ldsum(sqrt(ldsum*d1)+ln(ldsum/2))+sin(len)*cos(len*ldsum))</code></li>
+<li>将结果作为科学计数法保存为字符串，记录E前面的17位为一个长度17的字符串记为S17</li>
+<li>通过17位中的8位进行一个简单的加减法，得到一个新的9位记为S9</li>
+<li>上面9位的结果S9所有字符ASC求和+len和<code>9*S17[4]+4*S17[5]+20</code>比较是否相等</li>
+</ol>
+<p>看到的一个教程贴，这里先mark一下吧，这道题看上去挺复杂的，之后进一步学习可以再对着学一下<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-906688-1-1.html">https://www.52pojie.cn/thread-906688-1-1.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/08/CrackMe-Day11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/08/CrackMe-Day11/" class="post-title-link" itemprop="url">CrackMe-Day11</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-08 23:53:11" itemprop="dateCreated datePublished" datetime="2020-03-08T23:53:11+08:00">2020-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
+<p>作者Andrenalin</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
+
+
+<p>虽然能输入，但是没有找到有回车之类的按键</p>
+<p>推测是不是实时检测的，如果对了就自动成功</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
+
+<p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
+<p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
+
+
+<p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
+<p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
+
+
+<p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
+<p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
+<p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
+
+
+
+
+<p>下面还是进一步分析程序</p>
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>我们仔细看一下这个前面的判断比较的内容</p>
+<p><code>dword ptr ss:[ebp-0x34]</code></p>
+<p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
+<p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
+
+
+
+
+<p>看一下循环中调用了哪些API</p>
+
+
+<p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
+<p>获得str、之后转换为ASCII码</p>
+<p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
+<p>准备反编译看一下，找来了VB Decompiler</p>
+
+
+<p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
+<p>还有4个时间器的函数</p>
+<p>其中有一个click的函数和其他的不太一样</p>
+
+
+<p>对比一下</p>
+
+
+<p>发现多了长度减一，这个应该是退格键</p>
+<p>检查一下时间器的代码，发现四个时间器代码都差不多</p>
+<p>核心的部分都是那一段</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> loc_00406ED6: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br><span class="line"> loc_00406EDC: </span><br><span class="line">loc_00406EDE: <span class="keyword">If</span> var_24 = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_0040700D</span><br><span class="line"> loc_00406F79: var_7C = (Asc(<span class="keyword">Mid</span>$(<span class="built_in">CStr</span>(var_44), <span class="built_in">CLng</span>(var_24), <span class="number">1</span>)) + Val(<span class="built_in">CStr</span>(Left(var_44, <span class="number">2</span>))))</span><br><span class="line"> loc_00406F8C: var_8C = Hex$(var_7C)</span><br><span class="line"> loc_00406FB9: var_34 = <span class="number">0</span> &amp; Hex$(var_7C)</span><br><span class="line"> loc_00407002: <span class="keyword">Next</span> var_24</span><br><span class="line"> loc_00407008: <span class="keyword">GoTo</span> loc_00406EDC</span><br><span class="line"> loc_0040700D: <span class="comment">&#x27;Referenced from: 00406EDE</span></span><br><span class="line"> loc_00407035: <span class="keyword">If</span> (var_34 = <span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C&quot;</span>) = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_00407083</span><br><span class="line"> loc_0040705C: Label3.Caption = <span class="string">&quot;REGISTRIERT&quot;</span></span><br><span class="line"> loc_00407083: <span class="comment">&#x27;Referenced from: 00407035</span></span><br><span class="line"> loc_004070F3: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><code>var_24</code>为0时直接跳转到下面的判断</p>
+<p>而对正常的每个字符，执行的操作是：</p>
+<ol>
+<li><code>var_7C = (Asc(Mid$(CStr(var_44), CLng(var_24), 1)) + Val(CStr(Left(var_44, 2))))</code><ol>
+<li><code>CLng</code>将<code>var_24</code>转换成长整形</li>
+<li><code>CStr</code>将<code>var_44</code>转换成字符串</li>
+<li><code>Left</code>函数返回<code>var_44</code>左数两个字符</li>
+<li><code>Val</code>函数将字符串转换为数值，这个函数会在不能识别</li>
+<li><code>Mid</code>函数将<code>var_44</code>左起第<code>var_24</code>位，长度1提取出来</li>
+<li><code>ASC</code>函数返回字符串中第一个字符的ASCII码</li>
+</ol>
+</li>
+<li><code>var_8C = Hex$(var_7c)</code> 将其转换为Hex的值</li>
+<li><code>var_34 = 0 &amp; Hex$(var_7C)</code> 结果和0相与</li>
+<li>最终结果要等于<code>0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C</code></li>
+</ol>
+<p>最后的程序直接参照了网上的注册机</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">string</span> kb=<span class="string">&quot;0123456789*#&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> kb_dec[]=&#123;<span class="number">48</span>,<span class="number">49</span>,<span class="number">50</span>,<span class="number">51</span>,<span class="number">52</span>,<span class="number">53</span>,<span class="number">54</span>,<span class="number">55</span>,<span class="number">56</span>,<span class="number">57</span>,<span class="number">42</span>,<span class="number">35</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> kb_hex[]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>,<span class="number">15</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> hexlist=<span class="string">&quot;0123456789ABCDEF&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> key_num=<span class="number">2</span>;</span><br><span class="line"><span class="built_in">string</span> key=<span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7B7C7D826D817E7B7C&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hexstr_to_dec</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> s)</span> <span class="comment">//转16进制两位字符到十进制数</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        a=hexlist.find(s[<span class="number">0</span>]);</span><br><span class="line">        b=hexlist.find(s[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> a*<span class="number">16</span>+b;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span>   </span></span><br><span class="line"><span class="function">        </span>&#123; </span><br><span class="line">        <span class="keyword">int</span> key_value;</span><br><span class="line">        <span class="keyword">int</span> base_value;</span><br><span class="line">        <span class="built_in">string</span> psword;</span><br><span class="line">        <span class="keyword">char</span> p;</span><br><span class="line">        <span class="built_in">string</span> key_str=key.substr(<span class="number">1</span>,<span class="number">2</span>);  <span class="comment">//取Key的二、三位</span></span><br><span class="line">        key_value=hexstr_to_dec(key_str);</span><br><span class="line">         </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;=<span class="number">9</span>;x++)                <span class="comment">//确定公共值base_value                 </span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;y&lt;=<span class="number">9</span>;y++)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">if</span> (y+x*<span class="number">10</span>+kb_dec[x]==key_value)</span><br><span class="line">                        &#123;</span><br><span class="line">                        base_value=x*<span class="number">10</span>+y;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;公共值:&quot;</span>&lt;&lt;base_value&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;key.length();x+=<span class="number">2</span>)          <span class="comment">/*计算 注册码 部分*/</span></span><br><span class="line">                &#123;</span><br><span class="line">                key_str=key.substr(x,<span class="number">2</span>);</span><br><span class="line">                key_value=hexstr_to_dec(key_str);</span><br><span class="line">                p=(<span class="keyword">char</span>)(key_value-base_value);</span><br><span class="line">                psword=psword+p;</span><br><span class="line">                &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;password:&quot;</span>&lt;&lt;psword&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        system(<span class="string">&quot;pause&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/07/CrackMe-Day10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/07/CrackMe-Day10/" class="post-title-link" itemprop="url">CrackMe-Day10</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-07 19:39:46" itemprop="dateCreated datePublished" datetime="2020-03-07T19:39:46+08:00">2020-03-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe10"><a href="#CrackMe10" class="headerlink" title="CrackMe10"></a>CrackMe10</h1><p>第十道CrackMe</p>
+<p>作者Andrenalin</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>运行，窗口和第八题长得一样，只有一个序列号，但是难度是difficult</p>
+
+
+<p>略慌，输入之后弹窗也和之前一样</p>
+
+
+
+
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查找字符串</p>
+
+
+<p>在Right上方找到关键跳转</p>
+
+
+<p>修改为jne试试看</p>
+
+
+<p>直接爆破成功了。。</p>
+<p>不过看题目描述难度比较高，还是进一步看一下吧</p>
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>在搜索字符串的时候应该就注意到了，有一个奇怪的字符串</p>
+
+
+<p>这个字符串是最后关键跳转上面的一个call，再观察发现这上面不远有一个向上的jump</p>
+<p>并且这个jump跳转之前还有一个<code>__vbaVarForNext</code>，虽然没写过VBA的程序，但是根据调用的API名字我们可以推测这是个循环</p>
+<p>对输入的字符串进行处理，每一个字符进行一定转换之后要求得到这个奇怪的东西，最后不同就跳转</p>
+<p>那么下面就是需要看一下都做了啥</p>
+
+
+<p>首先这里这个<code>__vbaLenVar</code>对字符串的长度进行获取，结果保存在了ecx中</p>
+
+
+<p>这里得到具体的字符，之后调用<code>rtcAnsiValueBstr</code>这个函数，将字符转化为了ASCII吗</p>
+<p>紧跟着下面是一个<code>add ax,0xA</code> 对得到的结果加了10;</p>
+<p>下面这个<code>jo</code>之前还真没见过，是如果溢出就跳转</p>
+
+
+<p>之后再调用了这个函数，将ASCII转换回字符</p>
+<p>那么就可以编写一个简单的程序了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">&#123;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">string</span> target = <span class="string">&quot;kXy^rO|*yXo*m\\kMuOn*+&quot;</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> length = target.size( %&#125;;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;length;i++ %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#123;</span></span></span><br><span class="line"><span class="function"><span class="params">    target[i]=target[i]<span class="number">-0xA</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">cout</span>&lt;&lt;target&lt;&lt;<span class="built_in">endl</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">&#125;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>得到这个字符串，输入试一下</p>
+
+
+<p>成功</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/06/CrackMe-Day9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/06/CrackMe-Day9/" class="post-title-link" itemprop="url">CrackMe-Day9</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-06 15:19:58" itemprop="dateCreated datePublished" datetime="2020-03-06T15:19:58+08:00">2020-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe9"><a href="#CrackMe9" class="headerlink" title="CrackMe9"></a>CrackMe9</h1><p>第九道CrackMe</p>
+<p>作者Andrenalin</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>和上一道似乎比较类似，也是那种很基础的题目</p>
+
+
+<p>只是多了个name</p>
+<p>而且这个OK键和之前那个比较难的不一样，是只要name和key有东西就可以点击的</p>
+<p>输入错误后提示如下</p>
+
+
+
+
+<p>根据前面那个题目来看，这个难度应该也不大，直接分析</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>搜索字符串</p>
+
+
+<p>跟过去道right那里</p>
+
+
+<p>上面不远有一个je</p>
+<p>在这里下断点，尝试改成jne</p>
+
+
+<p>好吧，破解完成</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/05/CrackMe-Day8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/05/CrackMe-Day8/" class="post-title-link" itemprop="url">CrackMe-Day8</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-05 16:09:49" itemprop="dateCreated datePublished" datetime="2020-03-05T16:09:49+08:00">2020-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe8"><a href="#CrackMe8" class="headerlink" title="CrackMe8"></a>CrackMe8</h1><p>第八道CrackMe</p>
+<p>作者Andrnalin</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+
+<p>窗口这次直接是一个key的输入，和一个ok键</p>
+<p>随便输入东西，之后弹了这么个框</p>
+
+
+<p>由于之前遇到过这样的问题，可能是类型错误之类的</p>
+<p>输入一次纯数字看看</p>
+<p>弹窗一样</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>由于这次只有一个key，首先想着会不会用grep就能找到flag，试一试</p>
+
+
+<p>都是一堆奇奇怪怪得内容，唯一有点像的也不对</p>
+<p>那么我们开始逆向</p>
+<p>搜索字符串找到这么些内容</p>
+
+
+<p>发现最后一个是错误的提示，跟进去</p>
+
+
+<p>这个往上看可以找到类似成功后的提示字符串</p>
+<p>在这上面不远有一个疑似关键跳转</p>
+
+
+<p>直接改成jnz</p>
+
+
+<p>emmmm，难度突然变低，这就成功了</p>
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>由于这次太水了，准备破天荒的写个注册机看看</p>
+<p>那么首先还是向上看，看到有一处调用strcmp</p>
+
+
+<p>这时的堆栈有点迷，直接就把字符串写出来了</p>
+
+
+<p>行吧，合着连注册机都不用写了</p>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/04/CrackMe-Day7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/04/CrackMe-Day7/" class="post-title-link" itemprop="url">CrackMe-Day7</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-04 22:26:36" itemprop="dateCreated datePublished" datetime="2020-03-04T22:26:36+08:00">2020-03-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe7"><a href="#CrackMe7" class="headerlink" title="CrackMe7"></a>CrackMe7</h1><p>第七道CrackMe</p>
+<p>作者aLoNg3x</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+
+<p>和上一次的长得有点像，点击About说目的类似，是要隐藏那个Register键</p>
+
+
+<p>这一次直接就可以点，也没有什么其他特别的地方了</p>
+<p>有一点比较在意，他说<code>CANNOT patch the .exe</code></p>
+<p>这一句不知道什么意思</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是搜索字符串</p>
+
+
+<p>这次找到这样的内容</p>
+<p>定位过去之后Great附近倒是一下子没看出什么</p>
+<p>拖到<code>DeDeDark</code>看了一下控件和事件</p>
+
+
+<p>发现这一次几个事件都是Click相关的，但是一共3个按键怎么4个事件呢</p>
+<p>另外还有一个比较奇怪的事情，上面找到的那个Great居然是在CancellaClick中</p>
+
+
+<p>控件这边也能看到这个Again</p>
+<p>于是去看一下具体的窗口信息</p>
+<p>果然，找到了这么一个隐藏的窗体</p>
+
+
+<p>但是它是不可见的</p>
+<p>那么这次有可能就是这样的流程：</p>
+<p>输入用户名、注册码-&gt;Register-&gt;显示Again-&gt;Again-&gt;按键全部消失</p>
+<p>或许这里面还需要点击Cancel那个按键</p>
+<p>那么我们分析一下Register的事件函数</p>
+<h3 id="RegisterzClick"><a href="#RegisterzClick" class="headerlink" title="RegisterzClick"></a>RegisterzClick</h3><p>首先运行，找到第一个跳转，这个跳转判断的是输入的code长度方面的内容</p>
+
+
+<p>这个跳转不用改，下面这个jle是判断Code是否为负数的</p>
+
+
+<p>也不用修改</p>
+
+
+<p>那么就只剩下中间这个je了，修改为jne</p>
+<p>之后运行发现按键变了</p>
+
+
+<p>Register消失，出现了again</p>
+<h2 id="AgainClick"><a href="#AgainClick" class="headerlink" title="AgainClick"></a>AgainClick</h2><p>最初一个条件跳转，和上面一样，是判断长度是否有效的</p>
+
+
+<p>中间一个jle，也是直接正常执行</p>
+
+
+<p>下面那个je改掉，改成jne</p>
+<p>继续执行</p>
+
+
+<p>按钮消失了</p>
+<p>感觉目前已经有些直觉一样的哪个跳转要过去，哪个跳转需要修改了；</p>
+<p>实际上具体仔细看的话可以看到je后面紧接着<code>xor edx,edx</code></p>
+<p>这个根据之前的经验是可以将按键变成不可视的</p>
+<p>所以就是改这个喽</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/03/CrackMe-Day6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/03/CrackMe-Day6/" class="post-title-link" itemprop="url">CrackMe-Day6</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-03 14:52:05" itemprop="dateCreated datePublished" datetime="2020-03-03T14:52:05+08:00">2020-03-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe6"><a href="#CrackMe6" class="headerlink" title="CrackMe6"></a>CrackMe6</h1><p> 第六道CrackMe</p>
+<p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
+<p>作者aLoNg3x</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先窗口一共有两个输入，三个按钮</p>
+
+
+<p>初始状态下OK是点不了的，点击help会陆续弹框以下内容：</p>
+<ol>
+<li></li>
+<li>
+
+</li>
+</ol>
+<p>3和4内容不重要，意思就是如果你需要帮助可以给我发邮件，并留下了邮箱</p>
+<p>提示也给了，我们首先要做的应该就是想办法让程序的逻辑正常，让OK键能够正常按下</p>
+<p>下面开始逆向</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查看字符串</p>
+<p>可以看到Delphi这样的字眼，另外看程序入口点的特征也和前面的程序比较相似</p>
+
+
+
+
+<p>那么我们还是用上次用过的那个<code>DeDeDark</code>来看一下程序各个控件和事件函数</p>
+
+
+<p>看到控件和我们看到的也差不太多，就这么几个，除了一个Pannello，不过应该是存放图片的一个Panel吧</p>
+
+
+<p>事件栏里面可以看到这些事件，三个按钮点击的事件，以及两个输入变化的事件</p>
+<p>另外下面还有五个不知道是啥玩意的事件</p>
+<p>在窗体这里还可以看到每个组件的属性</p>
+
+
+<p>看到这里OK这个Button的有一个<code>Enabled</code>属性设置为了<code>False</code></p>
+<p>上面说到程序的最终效果是点击确定后隐藏了这两个button</p>
+<p>那么大概的正常流程可能是：修改name、code使得符合要求-&gt;OK键可用-&gt;点击OK-&gt;两个按键隐藏</p>
+<p>那么首先去看一下<code>NomeChange</code>和<code>CodiceChange</code>这两个函数</p>
+<h3 id="NomeChange"><a href="#NomeChange" class="headerlink" title="NomeChange"></a>NomeChange</h3><p>这个函数每次在更改了用户名这个字段时都会触发</p>
+<p>里面有两个跳转比较可疑</p>
+<p>一是函数开始一小段后的这个</p>
+
+
+<p>这里看到一个cmp紧跟着一个jnz</p>
+<p>下面jnz没有触发的话就将dl置为1，很像是enable</p>
+<p>另一处是下面临近函数结束的一个判断</p>
+
+
+<p>这个je，也是下面将dl置为了1</p>
+<p>分别修改一下测试</p>
+<p>发现两个jmp都有效果，但是实际上有效果的是<code>mov dl,0x1</code>下面紧跟着的那个call</p>
+<p>那个call对窗口状态进行了刷新的操作，但是这里如果将上面的jnz修改为了jz</p>
+<p>那么下面这个jmp还是会正常下来，触发<code>xor edx,edx</code>以及下面的那个<code>call</code></p>
+<p>这样ok键就又不能用了</p>
+<p>所以我们选择将下面的je修改为jne</p>
+
+
+<h3 id="CodiceChange"><a href="#CodiceChange" class="headerlink" title="CodiceChange"></a>CodiceChange</h3><p>上面我们修改name字段使得ok键可以点击了</p>
+<p>但是在修改Codice字段时可能又触发了状态的刷新，导致又无法点击了</p>
+<p>进来后发现代码类似呀，也是有两个关键跳转</p>
+<p>我们还是修改下面的那个</p>
+
+
+<p>之后再怎么修改name和code都可以保持ok键常亮了</p>
+<p>但是这时点击OK还没有预想中的效果，现在就需要具体看一下OK键触发的函数了</p>
+<h3 id="OkClick"><a href="#OkClick" class="headerlink" title="OkClick"></a>OkClick</h3><p>这段代码不是很长，同样也是可以看到两个条件转移</p>
+
+
+<p>下面的那个je，和之前的类似，如果没有跳转的话会刷新ok键的状态，我们还是先修改了它</p>
+<p>至于上面那个jnz的跳转，发现和前面两个函数的jnz功能不同，调用了另外的函数，将它修改为jz</p>
+<p>运行发现OK键消失了</p>
+
+
+<p>但是这个Cancella还没去掉呀，咋回事</p>
+<p>那看来有可能在点击Canella这个事件中</p>
+<h3 id="CancellaClick"><a href="#CancellaClick" class="headerlink" title="CancellaClick"></a>CancellaClick</h3><p>整个函数只有一个关键跳转</p>
+
+
+<p>直接改成jne，搞定</p>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/28/CrackMe-Day4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/28/CrackMe-Day4/" class="post-title-link" itemprop="url">CrackMe-Day4</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-28 21:30:05" itemprop="dateCreated datePublished" datetime="2020-02-28T21:30:05+08:00">2020-02-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe4"><a href="#CrackMe4" class="headerlink" title="CrackMe4"></a>CrackMe4</h1><p>第四道CrackMe</p>
+<p>作者ajj</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战</p>
+<p>这个CrackMe 没有确定键</p>
+
+
+<p>使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call</p>
+
+
+<p>跟进去看一看</p>
+<p>单步运行到图中这个位置之后就是一个死循环</p>
+
+
+<p>在这个je这里不停的循环，这时候程序的窗口已经出现了，在不停通过<code>call CKme.00440D38</code>这个指令循环刷新窗口的状态</p>
+<p>跑起来，输入内容之后再暂停，发现暂停在了库中，查看这时的堆栈</p>
+
+
+<p>是调用了<code>WaitMessage</code>之后在等待，我们转到图中的那个地址<code>0xc</code></p>
+
+
+<p>这里下个断点吧，再运行一下，结果又跑回上面那个循环了</p>
+<p>直接硬看没看出什么头绪，还是看一下字符串，能不能找到注册成功的字符串</p>
+
+
+<p>看到这么一条</p>
+<p>跟随过去，向上查看找到了一个疑似关键跳转</p>
+
+
+<p><code>nop</code>这个<code>jnz</code></p>
+<p>继续运行，成功了</p>
+
+
+<p>什么用户名都没输入就ok了</p>
+<p>说实话对这个程序前面的逻辑还是不太清楚</p>
+<p>重新看一下代码</p>
+
+
+<p>在上面那个关键跳转的上面一段，这块的汇编代码看起来很像是一个函数调用前期的处理</p>
+<p>这实际上是点击了那个panel之后跳转到的代码，也就是说这个程序看上去没有一个确定键，实际上确定键就是那个放图片的panel</p>
+
+
+<p>实际上似乎是判断字符长度之类的，总共循环了13次的一个循环，最后一个判断</p>
+
+
+<p>  具体要分析算法就需要接着看那个循环里call的几个函数的具体内容了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/28/CrackMe-Day3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/28/CrackMe-Day3/" class="post-title-link" itemprop="url">CrackMe-Day3</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-28 00:19:01" itemprop="dateCreated datePublished" datetime="2020-02-28T00:19:01+08:00">2020-02-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe3"><a href="#CrackMe3" class="headerlink" title="CrackMe3"></a>CrackMe3</h1><p>第三道CrackMe</p>
+<p>作者AfkayAs</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>启动之后首先有一个动画一样的弹窗</p>
+
+
+<p>之后进入这个界面</p>
+
+
+<p>输入一些字符后点击ok</p>
+
+
+<p>这个弹窗点击确定之后整个程序就会退出</p>
+<p>好像是类型不对导致的，输入序列号全都是数字，正常弹窗</p>
+
+
+
+
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>拖到OD发现提示代码被压缩</p>
+
+
+<p>也就是说程序可能是带壳的</p>
+<p>于是用Exeinfo打开</p>
+
+
+<p>提示说没有加壳，那好吧，应该是只有压缩，就直接开干</p>
+<p>我先是一步一步执行看了看，但是没看出啥东西，所以决定还是看看运行错误的堆栈调用</p>
+<p>随便输入序列码，弹窗后在OD暂停程序，菜单栏那里的K查看堆栈的调用</p>
+
+
+<p>看到最下面那个调用是源程序调的，在上面右键，显示调用</p>
+
+
+<p>看到这部分的代码就比较正常，向上看一下有可能存在关键跳转的地方</p>
+
+
+<p>这边有一个je，修改为jne试试看</p>
+
+
+<p>这部分是成功了</p>
+<p>但是题目其实还有一部分要求，就是<code>Kill The Nag</code></p>
+<p>Nag窗口是软件未注册时会弹出要求注册等窗口，这道题里应该就是最前面那个了</p>
+
+
+<p>这个要咋去掉我还真不太了解，我的想法是它出现的时候那部分代码直接去掉，改跳后面的代码</p>
+<p>但是找了半天也没找到，还是参考了一下别人的帖子</p>
+<p>程序执行开始时，先<code>push</code>了一个值，之后<code>call</code>主函数</p>
+<p>由于没有见过VB的程序，我也专门去看了看《使用OllyDbg从零开始Cracking》中的相应章节，里面讲到了一个4C法</p>
+<p>VB的程序都是以push、call开始的</p>
+
+
+<p>首先在数据窗口跟随第一条指令压栈的值，这个地方就是VB程序的头部</p>
+
+
+<p>这个头部起始位置加上4C，0x406820</p>
+
+
+<p>这个位置指向一个区域，跟随过去</p>
+
+
+<p>这边的代码以50h为单位有两块</p>
+<p>每一块的第24h位置是一个标志位，其中为0的表示这段会被首先执行，之后才是1标志的这段</p>
+<p>这个表示的是程序执行的顺序</p>
+<p>我们将这两个标志位颠倒一下，这样程序启动的主窗口就会先出来了</p>
+<p>重新启动，nga窗口已经消失了</p>
+
+
+
+
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><p>这次这个分析的是VB的程序，还是有一些不太熟悉的地方，另外也有一些新学的东西，专门记一下</p>
+<p>前面分析中用到的加4C，得到的那个值是指向VB窗体结构的地址</p>
+<p>之后的窗体结构每50H为一个窗体</p>
+<p>里面的一些数据都是对应窗体的一些参数</p>
+<p>正如上面用到的那样，第24H指定的是启动的顺序</p>
+<p>另外学到的一个地方, 在OD下面的command窗口中可以直接下API断点，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bp rtcMsgBox</span><br></pre></td></tr></table></figure>
+
+<p>就可以对所有的<code>rtcMsgBox</code>下断点了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/26/CrackMe-Day2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/26/CrackMe-Day2/" class="post-title-link" itemprop="url">CrackMe-Day2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-26 19:18:44" itemprop="dateCreated datePublished" datetime="2020-02-26T19:18:44+08:00">2020-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe2"><a href="#CrackMe2" class="headerlink" title="CrackMe2"></a>CrackMe2</h1><p>第二道CrackMe</p>
+<p>作者Afkayas</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先在xp下正常运行一下看看</p>
+
+
+<p>是一个非常标准的输入名称和序列号的这样一个窗口</p>
+<p>随便输入一些之后点击ok</p>
+
+
+<p>得到了这样一个弹窗</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是用OD打开，对MessageBox下API断点</p>
+
+
+<p>运行，结果居然没断下来</p>
+<p>那看来这个弹窗就不是单纯的直接用MessageBox实现的了</p>
+<p>干脆直接勾选其他所有的弹窗API，重新运行</p>
+
+
+<p>首先是直接在这里断住，但是这时需要填序列号的那个弹窗都还没出现，放过</p>
+
+
+<p>之后出现序列号窗口，修改一下里面的字符串之后，运行</p>
+<p>断在了这里的GetWindowTextA，但是发现这里是一个库里，并不是原本的程序内存</p>
+<p>这里往下一直单步步过，直到离开这个库</p>
+
+
+<p>走到图中位置可以看到栈中存在我们输入的序列号</p>
+<p>这个call下方可以看到一个<code>vbaStrCmp</code></p>
+<p>那这不就好说了，运行到这一步时看到堆栈的两个参数</p>
+
+
+<p>因此那个字符串应该就是序列号了吧</p>
+<p>重新运行一遍</p>
+
+
+<p>哎，难度略低呀，破解成功</p>
+<p>但是这实际上只得到一对序列号，序列号是根据Name来生成的</p>
+<p>所以再进一步看一下</p>
+<p>在上面那个<code>StrCmp</code>执行完之后，再单步运行一段时间可以看到这样的一个jmp</p>
+
+
+<p>把je修改成jne</p>
+<p>这样就得到了一个随意输入都能成功的程序了</p>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="WHU 网络空间安全在读">
+<meta property="og:type" content="website">
+<meta property="og:title" content="River&#39;s blog">
+<meta property="og:url" content="https://river-li.xyz/page/6/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="WHU 网络空间安全在读">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="River Li">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/page/6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/07/Linux%E4%B8%8BSogou%E6%8B%BC%E9%9F%B3%E6%89%93%E4%B8%8D%E5%87%BA%E4%B8%AD%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/07/Linux%E4%B8%8BSogou%E6%8B%BC%E9%9F%B3%E6%89%93%E4%B8%8D%E5%87%BA%E4%B8%AD%E6%96%87/" class="post-title-link" itemprop="url">Linux下Sogou拼音打不出中文</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-07 19:00:13" itemprop="dateCreated datePublished" datetime="2019-07-07T19:00:13+08:00">2019-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在Manjaro Linux下面装上SogouPinyin之后就发现能调出来界面</p>
+<p>但是打不出来中文</p>
+<p>如果切换到谷歌的拼音输入法就可以用</p>
+<p>前一段时间一直都在凑合用，但是在需要输入很多文本的时候</p>
+<p>没有词库实在还是不方便</p>
+<p>今天就搞了一下</p>
+<p>这个比较简单，就不隐藏起来了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sogou-qimpanel</span><br></pre></td></tr></table></figure>
+<p>在终端里面输这个会展示信息</p>
+<p>发现出现的内容提示缺少一个和qt相关的库</p>
+<p>安装<code>fcitx-qt4</code>即可解决</p>
+<p>所以说可以发现是搜狗在linux的输入法比较老，用QT4的环境下没问题</p>
+<p>但是最近fcitx都已经升级到QT5了，所以就凉了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/" class="post-title-link" itemprop="url">配置一个Mac一样的触摸板</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-06 18:55:23" itemprop="dateCreated datePublished" datetime="2019-07-06T18:55:23+08:00">2019-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对于学计算机的人来说,Macbook最大的吸引力主要有两点</p>
+<ul>
+<li>好用的触摸板手势</li>
+<li>正统Unix</li>
+</ul>
+<p>Unix就不说了,用起来肯定是比Windows舒服的</p>
+<p>触摸板手势这一点主要倒是能够在Coding的时候不用频繁离开键盘去拿鼠标</p>
+<p>类似的道理ThinkPad的小红点也有不少人喜欢</p>
+<p>不过显然还是干不过MacBook的手势,毕竟确实很方便</p>
+<p>考研复习中又想摸鱼了,就把Linux的触摸板搞了一下</p>
+<p>今天就要在Linux上配置一个比Mac还要好用的触摸板</p>
+<!--more--->
+
+<h2 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h2><p>首先要解决触摸板驱动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S libinput xdotool xinput xf86-input-libinput libinput-gestures</span><br></pre></td></tr></table></figure>
+
+<p>上面的指令一连串的把配置触摸板的包也装了</p>
+<p>主要就是<code>xdotool</code>和<code>libinput-gestures</code></p>
+<hr>
+<p>之后用<code>xinput</code>来看一下能不能找到触摸板</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xinput list</span><br></pre></td></tr></table></figure>
+
+
+<p>在这个图里还显示了键盘的设备,还有连的一个微软的无线鼠标</p>
+<p>从上往下第二个就是触摸板</p>
+<p>找到触摸板的话就说明可以用了</p>
+<p>之后来看一下参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xinput list-props <span class="string">&quot;ELAN1010:00 04F3:3012 Touchpad&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>这里面就是触摸板的参数了</p>
+<p>主要就是需要关注一下下面的<code>Device Node</code></p>
+<p>这个的值是设备在<code>/dev/</code>目录下的编号,调试的时候要用</p>
+<p>众所周知,<code>Linux</code>下万物皆文件</p>
+<h2 id="配置手势"><a href="#配置手势" class="headerlink" title="配置手势"></a>配置手势</h2><p>配置手势主要原理是相应的触摸板动作映射成为键盘上的键</p>
+<p>这里用的是<code>xdotool</code></p>
+<p>在<code>libinput-gestures</code>装完后会多出来一个文件<code>/etc/lib-input-gestures.conf</code></p>
+<p>当然,这个是系统的配置</p>
+<p>如果要对用户个人进行配置,可以在<code>~/.config/</code>下面也创建一个这个文件</p>
+<p>下面是我的配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">gesture swipe up 3  xdotool key ctrl+F9</span><br><span class="line">gesture swipe down 3  xdotool key super+d</span><br><span class="line"></span><br><span class="line">gesture swipe up 4  xdotool key ctrl+F10</span><br><span class="line">gesture swipe down 4  xdotool key super+d</span><br><span class="line"></span><br><span class="line">gesture swipe left	3   xdotool key super+Right</span><br><span class="line">gesture swipe right	3   xdotool key super+Left</span><br><span class="line">gesture swipe left	4   xdotool key super+Right</span><br><span class="line">gesture swipe right	4   xdotool key super+Left</span><br><span class="line"></span><br><span class="line">gesture pinch in	xdotool key ctrl+minus</span><br><span class="line">gesture pinch out	xdotool key ctrl+plus</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里呢,<code>swipe</code>是轻扫,<code>pinch</code>是捏和</p>
+<p>我主要做了这么几件事情:</p>
+<ul>
+<li>设置四指和三指左右扫切换桌面</li>
+<li>设置二指捏和进行缩放</li>
+<li>四指向上显示所有桌面的窗口</li>
+<li>三指向上显示当前桌面的窗口</li>
+<li>三指和四指向下显示桌面</li>
+</ul>
+<p>本来是三指四指设置了一些不同的功能,但是不知道为什么,识别率有一点低</p>
+<p>可能是触摸板本身的问题,因此就直接全部映射成相同的功能了</p>
+<p>至于后面的键位,每个桌面环境可能不一样</p>
+<p>本身我用的是KDE,不过对这些键又重新设置过</p>
+<p>如果你也是用的KDE,可以在Settings里面看一下Shortcut</p>
+<p>下面设置自启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libinput-gestures autostart</span><br></pre></td></tr></table></figure>
+<p>之后登出重新进入桌面即可</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/" class="post-title-link" itemprop="url">我终于在Linux玩上了Overwatch</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-01 23:59:43" itemprop="dateCreated datePublished" datetime="2019-07-01T23:59:43+08:00">2019-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>linux什么都比windows好，除了游戏少这一点</p>
+<p>不过其实一般玩的游戏也就那么几个，能支持了就满足了</p>
+<p>从16年起就一直在玩守望先锋，中间有几次都想着在Linux上装一下，结果没搞成</p>
+<p>一是由于当时用linux用的还比较少，很多地方都不太会配置</p>
+<p>二来也是因为当时水平比较菜，各种官方文档看起来都费劲</p>
+<p>现在好歹也是个3年的Linux User了，于是又想起来想着搞一搞，还真就让我给装成了。</p>
+<!--more--->
+
+<h2 id="显卡驱动"><a href="#显卡驱动" class="headerlink" title="显卡驱动"></a>显卡驱动</h2><p>首先，想打游戏肯定离不开显卡驱动</p>
+<p>(然而Nvidia的显卡驱动在Linux下面就是个天坑)</p>
+<p>之前无数次翻车都是在显卡驱动上</p>
+<p>而且之前每一次出问题，由于不会修又只能重装系统</p>
+<p>直到后来从头撸了一遍Arch WIki，对linux安装的过程也有了点了解</p>
+<p>其实和写代码一样的，哪怕图形界面崩了拿个U盘看着log就能debug</p>
+<p>慢慢修总能修好的，不至于每次都重装</p>
+<p>废话不多说了，具体安装驱动的方法可以回顾<a target="_blank" rel="noopener" href="http://river-li.me/2018/12/07/nvidia/">这篇博客</a></p>
+<p>记得一定要看到最后，因为有一个包需要删掉(bbswitch)</p>
+<h2 id="相关软件包"><a href="#相关软件包" class="headerlink" title="相关软件包"></a>相关软件包</h2><p>首先，想在linux上玩游戏，有一款软件是一定不能错过的，那就是<strong>Lutris</strong></p>
+<p>Lutris可以管理linux下面各种平台的游戏，都可以在这里面运行</p>
+<p>安装起来也是十分的方便;</p>
+<p>安装好lutris之后直接在官网搜索想玩的游戏点install就可以了</p>
+<p>有一个需要注意的点，如果使用了向我之前那样安装驱动的方法,那么在需要显卡运行程序时必须要有primusrun启动的</p>
+<p>在安装好守望先锋这样的游戏之后需要在System Options里设置</p>
+
+
+<p>同时，要发挥出显卡的性能，还需要安装DXVK</p>
+<p>但是DXVK支持的GPU一般都有一点久，最新的nvidia GPU有可能不支持，可以在lutris的github里的wiki看一看自己的GPU是否支持</p>
+<p>安装DXVK时可以使用pacman</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S dxvk-bin</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后需要运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setup-dxvk</span><br></pre></td></tr></table></figure>
+
+<p>来安装，之后在lutris里对游戏设置相应的dxvk版本即可</p>
+
+
+<p>注意在安装时选择的winee的版本，最好按照官方的推荐，不然大概率运行不了</p>
+<p>utris_20190702005257.pngwine的版本管理也可以直接在lutris中完成</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>这些都设置完成之后就可以启动一下看一看能不能运行</p>
+<p>同时也可以开一个终端运行指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+
+<p>来查看GPU的状态，如果成功在显卡跑起来会有相应的进程的</p>
+
+
+<p>最后放一张运行lutris里库的游戏图</p>
+
+
+<p>没错，我又开始下载APEX来玩了</p>
+<p>这么多游戏可以玩，还要windows有啥用</p>
+<p>嘻嘻</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/01/KVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/01/KVM/" class="post-title-link" itemprop="url">KVM</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-01 22:02:09" itemprop="dateCreated datePublished" datetime="2019-07-01T22:02:09+08:00">2019-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这次准备在Linux上面装虚拟机，虽然有现成的软件比如Virtualbox和VMWare</p>
+<p>但是在i3的环境下运行的不太好</p>
+<p>这次主要是想用KVM和Qemu，这两个的性能还好一些</p>
+<p>（最主要的愿望当然还是打游戏）</p>
+<!--more--->
+
+<h2 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h2><p>这次由于机缘巧合，电脑上的发行版从Arch转到了Manjaro</p>
+<p>虽然整体上差别不大，在安装KVM时需要安装这些包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S libvirt</span><br><span class="line">sudo pacman -S qemu</span><br><span class="line">sudo pacman -S ovmf</span><br><span class="line">sudo pacman -S virt-manager</span><br></pre></td></tr></table></figure>
+
+<p>安装完成这些包就需要装具体的虚拟机了</p>
+<p>首先来装个MacOS吧</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/foxlet/macOS-Simple-KVM.git</span><br></pre></td></tr></table></figure>
+<p>下载下这个repo</p>
+<p>之后需要运行这个repo里的脚本来获取MacOS镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./jumpstart.sh --[high-sierra|mojave|catalina]</span><br></pre></td></tr></table></figure>
+<p>这个过程最好有代理，下载会快一点</p>
+<p>之后创建QEMU的硬盘介质</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-img create -f qcow2 MyDisk.qcow2 64G</span><br></pre></td></tr></table></figure>
+
+<p>然后这个repo的脚本有一点点需要修改的地方</p>
+<p>首先是需要在basic.sh的脚本最后加上以下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-drive id = SystemDisk，<span class="keyword">if</span> = none，file = MyDisk.qcow2 </span><br><span class="line">-device ide-hd，bus = sata.4，drive = SystemDisk </span><br></pre></td></tr></table></figure>
+
+<p>然后是前面的MAC地址需要修改一下，这个可以用以下命令生成:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rand -hex 6 | sed <span class="string">&#x27;s/\(..\)/\1:/g; s/:$//&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>将结果复制过去就可以了</p>
+<p>最后运行这个脚本就可以启动MACOS</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/29/i3-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/29/i3-config/" class="post-title-link" itemprop="url">i3-config</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-29 01:27:51" itemprop="dateCreated datePublished" datetime="2019-06-29T01:27:51+08:00">2019-06-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="i3-config"><a href="#i3-config" class="headerlink" title="i3 config"></a>i3 config</h1><p>最近在配置i3,对着官网的配置文件过了一遍，写一下看到的内容</p>
+<!--more--->
+
+<h2 id="i3bar"><a href="#i3bar" class="headerlink" title="i3bar"></a>i3bar</h2><h3 id="显示模式"><a href="#显示模式" class="headerlink" title="显示模式"></a>显示模式</h3><p>bar 一共有三种模式(mode)</p>
+<ul>
+<li>hide 只有按下mod键时才会显示</li>
+<li>dock 默认，常驻</li>
+<li>invisible 不显示</li>
+</ul>
+<p>显示的位置可以在底部也可以在顶部(position)</p>
+<ul>
+<li>top</li>
+<li>bottom</li>
+</ul>
+<h3 id="鼠标交互"><a href="#鼠标交互" class="headerlink" title="鼠标交互"></a>鼠标交互</h3><p>鼠标交互主要分为左键、中键、右键点击以及滚轮上下滚动</p>
+<p>分别是button[1/2/3/4/5]</p>
+<p>例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bar &#123;</span><br><span class="line">    # disable clicking on workspace buttons</span><br><span class="line">    bindsym button1 nop</span><br><span class="line">    # Take a screenshot by right clicking on the bar</span><br><span class="line">    bindsym --release button3 exec --no-startup-id import &#x2F;tmp&#x2F;latest-screenshot.png</span><br><span class="line">    # execute custom script when scrolling downwards</span><br><span class="line">    bindsym button5 exec ~&#x2F;.i3&#x2F;scripts&#x2F;custom_wheel_down</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里设置的是右键会执行后面的命令，下滑滚轮会执行最下面的脚本</p>
+<h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p><code>separator_symbol “”</code></p>
+<p>在引号之中输入分隔符即可</p>
+<h3 id="工作区"><a href="#工作区" class="headerlink" title="工作区"></a>工作区</h3><p>工作区可以设置是否显示,workspace_button设置为no则会不显示</p>
+<p>另外两个选项用于设置对于<code>[n]:[NAME]</code>这样的工作区是显示数字还是名字</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">workspace_button yes</span><br><span class="line">strip_workspace_numbers yes</span><br><span class="line">strip_workspace_name no</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/23/linux%E5%86%85%E6%A0%B8list/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/23/linux%E5%86%85%E6%A0%B8list/" class="post-title-link" itemprop="url">linux内核list</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-23 15:14:07" itemprop="dateCreated datePublished" datetime="2019-06-23T15:14:07+08:00">2019-06-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Linux内核中有自己实现的链表数据结构<br>在<code>#include &lt;linux/list.h&gt;</code>头文件中</p>
+<!--more--->
+
+<h2 id="List-h"><a href="#List-h" class="headerlink" title="List.h"></a>List.h</h2><p>遍历列表的方法list_for_each_entry本质上是一个宏定义的函数和一个for循环</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_for_each_entry(pos,head,member) for(pos = list_enrty(head)-&gt;next,typeof(*pos),member);&amp;pos-&gt;member!=(head);pos=list_entry(pos-&gt;member.next,typeof(*pos),member))</span></span><br></pre></td></tr></table></figure>
+
+<p>而其中调用的list_entry又是另一个宏定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr,type,member) container_of(ptr,type,member)</span></span><br></pre></td></tr></table></figure>
+
+<p>而这个container_of函数，又双叒叕是个宏定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr,type,member)(&#123;typeof(((type *)0)-&gt;member)*__mptr=(ptr);\</span></span><br><span class="line">(type *)((<span class="keyword">char</span> *)__mptr - offsetof(type,member));&#125;)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/22/getopt-long/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/22/getopt-long/" class="post-title-link" itemprop="url">getopt_long</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-22 17:03:19" itemprop="dateCreated datePublished" datetime="2019-06-22T17:03:19+08:00">2019-06-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><code>getopt_long</code>是linux下C语言用来解析命令行参数的常用函数</p>
+<p>这里主要写命令行参数的解析方法                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </p>
+<!--more--->
+
+
+<h2 id="getopt-long"><a href="#getopt-long" class="headerlink" title="getopt_long"></a>getopt_long</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;getopt.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getopt</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* <span class="keyword">const</span> argv[],<span class="keyword">const</span> <span class="keyword">char</span> *optstring)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getopt_long</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span> *<span class="keyword">const</span> argv[],<span class="keyword">const</span> <span class="keyword">char</span> *optstring,<span class="keyword">const</span> struct option *longopts,<span class="keyword">int</span> *longindex)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getopt_long_only</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* <span class="keyword">const</span> argv[],<span class="keyword">const</span> <span class="keyword">char</span>* optstring,<span class="keyword">const</span> struct option *longopts,<span class="keyword">int</span> *longindex)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>相关的一共有三个函数</p>
+<ul>
+<li><code>getopt</code></li>
+<li><code>getopt_long</code></li>
+<li><code>getopt_long_only</code></li>
+</ul>
+<p>参数中，<code>argc</code>和<code>argv</code>都应该和<code>main</code>的参数相同</p>
+<p><code>optstring</code>表示短选项字符串</p>
+<blockquote>
+<p>例如<code>a:b::cd</code>，表示的optstring字符串</p>
+<p>有<code>-a</code>,<code>-b</code>,<code>-c</code>,<code>-d</code>四个参数，其中：</p>
+<p>不带冒号表示命令行选项 -c 、-d</p>
+<p>带一个冒号表示后面有一个参数 -a 100</p>
+<p>带两个冒号，表示后面有一个可选参数，如果带参数则不能用空格 -b200 或-b</p>
+</blockquote>
+<p><code>longopts</code>表示长选项的结构体</p>
+<p>其最后一行必须要用0填充</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">option</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">int</span> has_arg;</span><br><span class="line">    <span class="keyword">int</span> *flag;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">longOpts</span>[] = &#123;</span></span><br><span class="line">      &#123; <span class="string">&quot;daemon&quot;</span>, no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;D&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;dir&quot;</span>, required_argument, <span class="literal">NULL</span>, <span class="string">&#x27;d&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;out&quot;</span>, required_argument, <span class="literal">NULL</span>, <span class="string">&#x27;o&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;log&quot;</span>, required_argument, <span class="literal">NULL</span>, <span class="string">&#x27;l&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;split&quot;</span>, required_argument, <span class="literal">NULL</span>, <span class="string">&#x27;s&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;http-proxy&quot;</span>, required_argument, &amp;lopt, <span class="number">1</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;http-user&quot;</span>, required_argument, &amp;lopt, <span class="number">2</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;http-passwd&quot;</span>, required_argument, &amp;lopt, <span class="number">3</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;http-proxy-user&quot;</span>, required_argument, &amp;lopt, <span class="number">4</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;http-proxy-passwd&quot;</span>, required_argument, &amp;lopt, <span class="number">5</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;http-auth-scheme&quot;</span>, required_argument, &amp;lopt, <span class="number">6</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;version&quot;</span>, no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;v&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="string">&quot;help&quot;</span>, no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;h&#x27;</span> &#125;,</span><br><span class="line">      &#123; <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>val</code>表示指定函数找到该选项时的返回值</p>
+<p><code>longindex</code>指向的变量将记录当前找到参数符合<code>longopts</code>里的第几个元素的描述，即longopts的下标值</p>
+<p>这个函数的返回值有这么几种情况：</p>
+<ul>
+<li>如果短选项找到，返回短选项对应字符</li>
+<li>如果长选项找到，如果flag为NULL，返回val；如果flag不为空，返回0</li>
+<li>如果选项没有在长短字符里面，或者存在二义性，返回”?”</li>
+<li>解析所有字符都没有找到，返回-1</li>
+<li>如果选项忘了加参数，如果其第一个字符是“：”返回”:”,否则返回“？”</li>
+</ul>
+<p>除了这几个参数，还有几个可以使用的全局变量</p>
+<ul>
+<li>optarg: 当前选项对应的参数值</li>
+<li>optind: 下一个将被处理的argv下标值</li>
+<li>opterr: 设置在遇到错误时是否要输出</li>
+<li>optopt: 未被标识的选项</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/21/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E5%92%8C%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/21/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E5%92%8C%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E9%80%9A%E4%BF%A1/" class="post-title-link" itemprop="url">linux内核空间和用户空间通信</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-21 23:35:38" itemprop="dateCreated datePublished" datetime="2019-06-21T23:35:38+08:00">2019-06-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Linux 下用户空间和内核空间通信主要有这么两个方法</p>
+<p><code>netlink</code></p>
+<p>或者时<code>/proc/</code>虚拟文件</p>
+<p>正好两个都在防火墙的设计中用到了，整理下用法和内容</p>
+<!--more--->
+
+<h2 id="NetLink"><a href="#NetLink" class="headerlink" title="NetLink"></a>NetLink</h2><p>netlink的作用是在linux下用户空间和内核空间进行双向的通信</p>
+<p>可以理解成其作用是在内核空间和用户空间之间创建了一个socket</p>
+<p>两者可以使用这个socket来互相发送数据</p>
+<h3 id="用户空间设计"><a href="#用户空间设计" class="headerlink" title="用户空间设计"></a>用户空间设计</h3><p>和socket的模式类似，创建的过程主要也分以下几个步骤：</p>
+<ul>
+<li>socket()</li>
+<li>bind()</li>
+<li>sendmsg()</li>
+<li>recvmsg()</li>
+<li>close()</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> s = socket(AF_NETLINK,SOCK_RAW,NETLINK_ROUTE);</span><br></pre></td></tr></table></figure>
+
+<p>在使用bind时，需要将一个一个套接字结构和一个地址结构绑定</p>
+<p>地址结构的原型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">sa_family_t</span> nl_family;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> nl_pad;</span><br><span class="line">    __u32 nl_pid;</span><br><span class="line">    __u32 nl_groups;</span><br><span class="line">&#125; nladdr;</span><br></pre></td></tr></table></figure>
+
+<p>其中pid需要是当前进程的pid，可以用下面的获得</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nl_pid = getpid();</span><br><span class="line"></span><br><span class="line">bind(s,(struct sockaddr*) &amp;nladdr, <span class="keyword">sizeof</span>(nladdr));</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在通信时使用的sendmsg和recvmsg两个函数</p>
+<p>使用的数据结构和平常的socket通信中的消息类型比较类似</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nlmsghdr</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    __u32 nlmsg_len;</span><br><span class="line">    __u16 nlmsg_type;</span><br><span class="line">    __u16 nlmsg_flags;</span><br><span class="line">    __u32 nlmsg_seq;</span><br><span class="line">    __u32 nlmsg_pid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际发送时的结构:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">iovec</span> <span class="title">vec</span>;</span></span><br><span class="line">iov.iov_base = (<span class="keyword">void</span> *)nlmh;</span><br><span class="line">iov.iov_len = nlmh-&gt;nlmsg_len;</span><br><span class="line">msg.msg_iov = &amp;vec;</span><br><span class="line">msg.msg_iovlen =<span class="number">1</span> ;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="内核空间"><a href="#内核空间" class="headerlink" title="内核空间"></a>内核空间</h3><p>内核空间与用户空间有很大的差异</p>
+<p>不过差异主要也是在接口的部分</p>
+<p>创建socket</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct sock *<span class="title">netlink_kernel_create</span><span class="params">(<span class="keyword">int</span> unit,<span class="keyword">void</span> (*input)(struct sock *sk, <span class="keyword">int</span> len))</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>内核空间创建的套接字后一个参数是一个函数，作用是将这个输入函数绑定为套接字的回调函数</p>
+<p>创建成功后返回<code>structure sock</code>指针类型的值可以对这个值操作来操作内核的socket</p>
+<p>当用户空间通过socket发送信息后，会调用这个被绑定了的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">input</span><span class="params">(struct *sock,<span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sk_buf</span> *<span class="title">skb</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">nlmsghdr</span> *<span class="title">nlh</span> = <span class="title">NULL</span>;</span></span><br><span class="line">    u8 *payload = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>((skb = skb_dequeue(&amp;sk-&gt;receive_queue))!=<span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        nlh = (struct nlmsghdr *)skb-&gt;data;</span><br><span class="line">        payload = NLMSG_DATA(nlh);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在需要想用户空间发送数据时，要区分单播地址还是多播地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NETLINK_CB(skb).groups = local_groups;</span><br><span class="line">NETLINK_CB(skb).pid = <span class="number">0</span>;</span><br><span class="line">NETLINK(skb).dst_groups = dst_groups;</span><br><span class="line">NETLINK_CB(skb).dst_pid = dst_pid;</span><br></pre></td></tr></table></figure>
+
+<p>首先都需要设置发送地址和接受的地址</p>
+<p>之后如果发送单播</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">netlink_unicast</span><span class="params">(struct sock *ssk,struct sk_buff *skb,u32 pid, <span class="keyword">int</span> nonblock)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数ssk是创建socket时返回的那个指针</p>
+<p>skb-&gt;data应该指向要发送数据的缓冲区</p>
+<p>发送多播时</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">netlink_broadcast</span><span class="params">(struct sock *ssk,struct sk_buff *skb,u32 pid,u32 group,<span class="keyword">int</span> allocation)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>最后需要释放socket时</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sock_release</span><span class="params">(struct socket *sock)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="虚拟文件proc"><a href="#虚拟文件proc" class="headerlink" title="虚拟文件proc"></a>虚拟文件proc</h2><p>proc文件系统时一种虚拟文件系统，在proc虚拟文件系统中可以实现用户空间和内核空间通信</p>
+<h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><p>核心的文件数据结构时<code>struct proc_dir_entry</code>,用来表示一个虚拟的文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc_dir_entry</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">mode_t</span> mode;</span><br><span class="line">    <span class="keyword">uid_t</span> uid;</span><br><span class="line">    <span class="keyword">gid_t</span> gid;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">inode_opeartions</span> *<span class="title">proc_iops</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> *<span class="title">proc_fops</span>;</span></span><br><span class="line">    strutc proc_dir_entry *parent;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">read_proc_t</span> *read_proc;</span><br><span class="line">    <span class="keyword">write_proc_t</span> *write_proc;</span><br><span class="line">    <span class="keyword">void</span> *data;</span><br><span class="line">    <span class="keyword">atomic_t</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><p>创建文件目录的函数原型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct proc_dir_entry *<span class="title">proc_mkdir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *dir_name, struct proc_dir_entry *parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数在parent下创建一个名为dir_name的文件夹，创建失败时返回NULL</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct proc_dir_entry *<span class="title">create_proc_entry</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">mode_t</span> mode, struct proc_dir_entry *parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数会在文件系统中创建一个虚拟文件，文件名为name指定的字符串</p>
+<p>权限由mode指定，而parent说明此文件的位置</p>
+<p>对于parent这个参数，有这么几个预定义的值</p>
+<ul>
+<li><p>proc_root 代表路径/proc</p>
+</li>
+<li><p>proc_net 代表/proc/net</p>
+</li>
+<li><p>proc_bus 代表/proc/bus</p>
+</li>
+<li><p>proc_root_dirver 代表/proc/drivers</p>
+</li>
+<li><p>proc_root_fs 代表/proc/fs</p>
+</li>
+</ul>
+<h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><p>删除文件时需要指定文件名和父目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">remove_proc_entry</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, struct pro_dir_entry *parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件的读写"><a href="#文件的读写" class="headerlink" title="文件的读写"></a>文件的读写</h3><p>在用户态写入文件，内核态读取文件，就可以实现用户态和内核态的文件交互</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">write_proc_t</span><span class="params">(struct file *file,<span class="keyword">const</span> <span class="keyword">char</span> __user *buffer, <span class="keyword">unsigned</span> <span class="keyword">long</span> count, <span class="keyword">void</span> *data)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>buffer时传过来的数据指针，data是指向私有数据的指针</p>
+<p>在用户空间的程序读取创建的proc文件时，内核会分配给proc读取程序一页大小的内存空间</p>
+<p>读文件的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">proc_read</span><span class="params">(<span class="keyword">char</span> *page,<span class="keyword">char</span> **start,<span class="keyword">off_t</span> offset, <span class="keyword">int</span> count, <span class="keyword">int</span> *eof, <span class="keyword">void</span> *data)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="内核空间-1"><a href="#内核空间-1" class="headerlink" title="内核空间"></a>内核空间</h3><p>内核空间中对于proc文件操作的一整套接口都会发生变化</p>
+<h4 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct file *<span class="title">filp_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">int</span> flags, <span class="keyword">int</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="文件读写"><a href="#文件读写" class="headerlink" title="文件读写"></a>文件读写</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">vfs_read</span><span class="params">(struct file *filp, <span class="keyword">char</span> __user *buffer,<span class="keyword">size_t</span> len, <span class="keyword">loff_t</span> *pos)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">vfs_write</span><span class="params">(struct file *filp, <span class="keyword">const</span> <span class="keyword">char</span> __user*buffer,<span class="keyword">size_t</span> len, <span class="keyword">loff_t</span> *pos)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中filp是由前面<code>filp_open</code>返回的文件指针</p>
+<p>buffer是读出文件要读到的缓冲区，或是写入文件来自的数据</p>
+<p>pos是指针位置，指定从什么位置开始读写文件</p>
+<h4 id="关闭文件"><a href="#关闭文件" class="headerlink" title="关闭文件"></a>关闭文件</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">flip_close</span><span class="params">(struct file*filp, <span class="keyword">fl_owner_t</span> id)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/10/suid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/10/suid/" class="post-title-link" itemprop="url">suid</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-10 15:18:37" itemprop="dateCreated datePublished" datetime="2019-06-10T15:18:37+08:00">2019-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Some Hacking Tricks on SUID programs.</p>
+<!--more--->
+
+<p>A SUID program is a program that will always run as its owner’s privilege.</p>
+<p>A normal program is the same privilege with its runner, while a SUID program always run as its owner.</p>
+<p>A SUID program is -rw<strong>s</strong>r-xr-x . The forth privilege bit is <code>s</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 4755 file</span><br></pre></td></tr></table></figure>
+
+<p>The above command can turn on the Set-UID bit.</p>
+<p>Every Unix program is running in a specific environment, which consists of  a table of environment variables.</p>
+<p>In C, a program can use <code>getenv()</code> to get the values of environment variables.</p>
+<p>In C, <code>system(const char * cmd)</code> function will first invoke the <code>/bin/sh</code> program, and then let the shell execute <code>cmd</code></p>
+<h4 id="Some-important-variables"><a href="#Some-important-variables" class="headerlink" title="Some important variables"></a>Some important variables</h4><h5 id="PATH"><a href="#PATH" class="headerlink" title="PATH"></a>PATH</h5><p>A hacker can execute following commands to set the current dir as the first item in <code>PATH</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PATH=<span class="string">&quot;.:<span class="variable">$PATH</span>&quot;</span>;</span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="IFS"><a href="#IFS" class="headerlink" title="IFS"></a>IFS</h5><p>IFS determines the characters which would be interpreted as white space.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IFS=<span class="string">&quot;/ \t\n&quot;</span>;</span><br><span class="line"><span class="built_in">export</span> IFS</span><br></pre></td></tr></table></figure>
+
+<p>The above commands would let the ‘/‘ as space, which means any program attempt to use an absolute PATH will be translate into spaces.</p>
+<p><code>system(&quot;/bin/mail root&quot;)</code> —&gt; <code>bin mail root</code></p>
+<p>thus, the hacker can run his own program called <code>bin</code></p>
+<p>However, this bug has been fixed: the invoked new shell process will not inherbit IFS variable.</p>
+<h5 id="LD-LIBRARY-PATH"><a href="#LD-LIBRARY-PATH" class="headerlink" title="LD_LIBRARY_PATH"></a>LD_LIBRARY_PATH</h5><p>In Linux, most program requires dynamic link libraries at run time.</p>
+<p>Dynamic linker/loader: <code>ld.so</code>/<code>ld-linux.so</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldd /bin/ls</span><br></pre></td></tr></table></figure>
+
+<p>That will list all shared libraries that <code>ls</code> needed.</p>
+<p><strong>LD_LIBRARY_PATH</strong> contains a set of directories that <code>ld.so</code> will look for runtime libraries.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setenv LD_LIBRARY_PATH .:<span class="variable">$LD_LIBRARY_PATH</span> </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Never-use-C-shell-for-SUID-scripts"><a href="#Never-use-C-shell-for-SUID-scripts" class="headerlink" title="Never use C-shell for SUID scripts"></a>Never use C-shell for SUID scripts</h3><p>change-pass is a script like this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/csh -b</span></span><br><span class="line"><span class="built_in">set</span> user=<span class="variable">$1</span></span><br><span class="line">passwd <span class="variable">$user</span></span><br></pre></td></tr></table></figure>
+
+<p>This script is useful for root user to help changing other users’ password.</p>
+<p>But for the reason that csh scripts are vulnerable to manipulating environment variables.</p>
+<p>The hacker can run follow instructions:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">env TERM&#x3D;&#39;&#96;cp &#x2F;bin&#x2F;sh &#x2F;tmp&#x2F;sh;chown root &#x2F;tmp&#x2F;sh;</span><br><span class="line">chmod 4755&#x2F;tmp&#x2F;sh&#96;&#39;</span><br><span class="line">change-pass</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Use-Full-PATH"><a href="#Use-Full-PATH" class="headerlink" title="Use Full PATH"></a>Use Full PATH</h3><p>Now,we change the script to this one:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;ksh</span><br><span class="line">user&#x3D;$1</span><br><span class="line">passwd $user</span><br></pre></td></tr></table></figure>
+
+<p>This is also vulnerable, because the program uses relative path names</p>
+<p>The hacker can run following instructions to run his own program:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&#x27;/tmp&#x27;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;cp /bin/sh /tmp/sh;chown root /tmp/sh;chmod 4755/tmp/sh&quot;</span> &gt;/tmp/passwd<span class="string">&quot;</span></span><br><span class="line"><span class="string">./change-pass</span></span><br></pre></td></tr></table></figure>
+
+<p>Then the script runs <code>/tmp/passwd</code> instead of  <code>/usr/bin/passwd</code></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/08/tmux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/08/tmux/" class="post-title-link" itemprop="url">tmux</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-08 19:14:54" itemprop="dateCreated datePublished" datetime="2019-06-08T19:14:54+08:00">2019-06-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>tmux是一个终端分屏的工具<br>在ssh这样的远程访问时也可以使用<br>因此在纯图形化下很实用<br>但是这也是一个十分复杂的工具，快捷键多的让人头皮发麻</p>
+<!--more--->
+
+
+<h2 id="配置默认启动zsh"><a href="#配置默认启动zsh" class="headerlink" title="配置默认启动zsh"></a>配置默认启动zsh</h2><p>在<code>~/.tmux.conf</code>内加入如下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> -g default-shell /bin/zsh</span><br><span class="line"><span class="built_in">set</span> -g default-command /bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>这样启动tmux时会默认启动zsh而不是bash</p>
+<h2 id="配置使用vim快捷键"><a href="#配置使用vim快捷键" class="headerlink" title="配置使用vim快捷键"></a>配置使用vim快捷键</h2><p>tmux的移动很麻烦，我也不知道是不是emacs的移动方式</p>
+<p>不过很难记，就想要直接配置成vim的快捷键</p>
+<p>在<code>~/.tmux.conf</code>加入这些内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set-window-option -g mode-keys vi</span><br><span class="line"><span class="built_in">bind</span> h select-pane -L</span><br><span class="line"><span class="built_in">bind</span> j select-pane -D</span><br><span class="line"><span class="built_in">bind</span> k select-pane -U</span><br><span class="line"><span class="built_in">bind</span> l select-pane -R</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

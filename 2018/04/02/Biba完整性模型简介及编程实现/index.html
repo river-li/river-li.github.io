@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言 ​    ​    ​    ​    ​    ​    ​    ​    在一门名叫信息系统安全导论的课上老师留了一个作业，写一个报告简单介绍一下Biba模型，并且用编程描述一个场景实现一下。 ​    ​    ​    ​    ​    ​    ​    ​    嗯，听起来非常扯对不对，更扯的是后来老师也不知道自己到底留了点啥，结果每次有人去问具体要求他说的都不一样，得，那就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Biba完整性模型简介及编程实现">
+<meta property="og:url" content="https://river-li.xyz/2018/04/02/Biba%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="前言 ​    ​    ​    ​    ​    ​    ​    ​    在一门名叫信息系统安全导论的课上老师留了一个作业，写一个报告简单介绍一下Biba模型，并且用编程描述一个场景实现一下。 ​    ​    ​    ​    ​    ​    ​    ​    嗯，听起来非常扯对不对，更扯的是后来老师也不知道自己到底留了点啥，结果每次有人去问具体要求他说的都不一样，得，那就">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-02T02:43:42.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.625Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2018/04/02/Biba%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Biba完整性模型简介及编程实现 | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/04/02/Biba%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Biba完整性模型简介及编程实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-02 10:43:42" itemprop="dateCreated datePublished" datetime="2018-04-02T10:43:42+08:00">2018-04-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> ​    ​    ​    ​    ​    ​    ​    ​    在一门名叫信息系统安全导论的课上老师留了一个作业，写一个报告简单介绍一下Biba模型，并且用编程描述一个场景实现一下。</p>
+<p>​    ​    ​    ​    ​    ​    ​    ​    嗯，听起来非常扯对不对，更扯的是后来老师也不知道自己到底留了点啥，结果每次有人去问具体要求他说的都不一样，得，那就随便做点东西得了。</p>
+<a id="more"></a>
+
+<h3 id="访问控制模型"><a href="#访问控制模型" class="headerlink" title="访问控制模型"></a>访问控制模型</h3><p>​    ​    ​    ​    ​    ​    ​    ​    访问控制的主要作用是让得到授权的主体访问客体，同时组织没有授权的主题访问客体。访问控制可以划分为自主访问控制（<strong>DAC</strong>,Discretionary Access Control) 和强制访问控制（<strong>MAC</strong>,Mandatory Access Control) 两种类型。</p>
+<ul>
+<li><p>自主访问控制：</p>
+<p>​​    ​    ​    ​    ​    ​    ​    用户拥有权限对自己创建的文件进行访问，同时可以将权限授给其他用户，最典型的例子是linux下的访问控制，常见的chmod 777啥的就是修改了对各个类型的用户的权限，按照顺序的三位分别代表：</p>
+<p>` U 文件拥有者的权限</p>
+<p>` G 文件所属的用户群组</p>
+<p>` O 其他人</p>
+<p>而三个数字是三位二进制数的值，分别是rwx 即读、写、执行;</p>
+<p>7就是可读可写可执行，4就是只能读…</p>
+<p>​    而每个客体都有一个所属的限定主体，以及一个访问控制列表ACL</p>
+</li>
+</ul>
+<ul>
+<li><p>强制访问控制</p>
+<p>​​​​​​​​强制访问控制为每个主体、每个客体分配一个安全等级，当进行操作时对比主体和课题的等级，以确定能否进行相应操作。</p>
+<p>​    典型的模型有：</p>
+<ul>
+<li><p>Lattice模型</p>
+</li>
+<li><p>Bell-LaPadula模型</p>
+</li>
+<li><p>Biba模型</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Biba访问控制模型"><a href="#Biba访问控制模型" class="headerlink" title="Biba访问控制模型"></a><strong>Biba访问控制模型</strong></h3><p>​​​​​​​​    Biba完整性模型是一种强制访问控制（MAC）模型，其对文件的访问控制建立在完整性上，并不关心保密性，主要有一下几条准则：</p>
+<ol>
+<li><p><strong>设 i、j 是两个完整性级别，如果 i 级别的实体比 j 具有更高的完整性，则称完整性级别 i 绝对支配 j ,记作： i&lt;j  ;</strong></p>
+</li>
+<li><p><strong>设 i 和 j 是任意两个级别，当且仅当$i(O)&lt;=j(S)$则S可以写O ;</strong></p>
+</li>
+<li><p><strong>当且仅当 i(S1)&lt;=i(S2) ，S2可以执行S1;</strong></p>
+</li>
+<li><p>设S是主体，O是客体，min=min {i(S),j(O)},不管完整性如何，S都可以读O，但是读完后i (S)=min  </p>
+</li>
+<li><p>不管完整性如何，任何主体都可以读任何客体</p>
+</li>
+<li><p>当且仅当i (S)&lt;=j(O) ，主体S可以读客体O</p>
+</li>
+</ol>
+<p>  Biba模型又分为：</p>
+<ul>
+<li><p>Biba 低水标模型——-&gt;同时满足1、2、3、4</p>
+</li>
+<li><p>Biba 环模型————&gt;同时满足1、2、3、5</p>
+</li>
+<li><p>Biba 严格完整性模型—&gt;同时满足1、2、3、6</p>
+</li>
+</ul>
+<p>​        低水标模型的规则4可以理解为，当主体读过低完整性的内容后，可能会受到潜在影响，因此它的可信度就会降低;</p>
+<p>​        环模型并不控制读，仅控制写与执行;</p>
+<p>​        严格完整性模型一旦满足6,就已经满足了4,实质上也满足低水标的要求。</p>
+<p>​        归纳总结一下，即读高写低</p>
+<h3 id="编程实现"><a href="#编程实现" class="headerlink" title="编程实现"></a>编程实现</h3><p>下面使用python模拟简单的功能：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sh</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">UserLevel=&#123;&#125;</span><br><span class="line">UserPasswd=&#123;&#125;</span><br><span class="line">FileDict=&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先引入需要的模块，并且建立三个字典用于存储主客体的完整性等级</p>
+<p>简单分析一下需要实现的功能，可以主要划分为一下几点：</p>
+<ul>
+<li>用户登录功能</li>
+<li>对不同用户完整性评级</li>
+<li>对不同文件完整性评级</li>
+<li>用户访问文件时的等级对比</li>
+<li>阅读低级文档后主体的完整性降级（选）</li>
+</ul>
+<p>此处我选择使用严格完整性模型，模拟出一个类似终端登录的程序</p>
+<h5 id="用户登录模块"><a href="#用户登录模块" class="headerlink" title="用户登录模块"></a>用户登录模块</h5><ol>
+<li>读取/创建本地用户列表</li>
+<li>当用户登录时输入用户名和密码进入系统</li>
+<li>在登录状态下输入访问（读/写）文件的命令-&gt;调用评级对比模块</li>
+<li>允许读写或拒绝读写</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">log_in</span>():</span></span><br><span class="line">    print(<span class="string">&quot;login   :&quot;</span>,end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">global</span> user</span><br><span class="line">    user=input()</span><br><span class="line">    <span class="keyword">if</span> user <span class="keyword">in</span> UserPasswd:</span><br><span class="line">        print(<span class="string">&quot;password:&quot;</span>,end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        passwd=input()</span><br><span class="line">        <span class="keyword">if</span> UserLevel[user]==passwd:</span><br><span class="line">            print(<span class="string">&quot;Welcome!\n&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">&quot;Wrong password&quot;</span>)</span><br><span class="line">            Err_Report(user,<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>登录出现密码错误的情况则调用Err_Reportn函数将情况写入系统日志</p>
+<h5 id="操作模块"><a href="#操作模块" class="headerlink" title="操作模块"></a>操作模块</h5><ol>
+<li>ls</li>
+<li>read file</li>
+<li>write file</li>
+<li>run object</li>
+<li>su user</li>
+<li>catlog</li>
+</ol>
+<p>当用户登录之后程序等待用户的指令，再分别调用指令相应函数检测是否有权操作</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">R_file</span>(<span class="params">name,str</span>):</span></span><br><span class="line">    <span class="keyword">if</span> FileDict.get(str)==<span class="literal">False</span>:</span><br><span class="line">        Err_Report(type=<span class="number">3</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> UserLevel[name]&gt;FileDict[str]:</span><br><span class="line">        print(<span class="string">&quot;Permission Denied!\nYou can only read a higher level file!&quot;</span>)</span><br><span class="line">        Err_Report(name,type=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">with</span> open(str,<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            content=f.read()</span><br><span class="line">            print(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">W_file</span>(<span class="params">name,str</span>):</span></span><br><span class="line">    <span class="keyword">if</span> len(str)&lt;<span class="number">3</span>:<span class="keyword">return</span></span><br><span class="line">    <span class="keyword">if</span> FileDict.get(str[<span class="number">1</span>])==<span class="literal">False</span>:</span><br><span class="line">        Err_Report(type=<span class="number">3</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> UserLevel[name]&lt;FileDict[str[<span class="number">1</span>]]:</span><br><span class="line">        print(<span class="string">&quot;Permission Denied!\nYou can only write a lower level file!&quot;</span>)</span><br><span class="line">        Err_Report(name,type=<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">with</span> open(str,<span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(str[<span class="number">2</span>:])</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_instruction</span>(<span class="params">name</span>):</span></span><br><span class="line">    print(<span class="string">&quot;[%s@Biba %s]:&quot;</span> % (name,os.getcwd()),end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    ins=input()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ins.isspace()==<span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    ins=ins.split( )</span><br><span class="line">    <span class="keyword">if</span>(ins[<span class="number">0</span>]==<span class="string">&quot;exit&quot;</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span>(ins[<span class="number">0</span>]==<span class="string">&quot;ls&quot;</span>):</span><br><span class="line">            print(sh.ls())</span><br><span class="line">        <span class="keyword">elif</span>(ins[<span class="number">0</span>]==<span class="string">&quot;read&quot;</span>):</span><br><span class="line">            R_file(name,ins[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">elif</span>(ins[<span class="number">0</span>]==<span class="string">&quot;write&quot;</span>):</span><br><span class="line">            W_file(name,ins)</span><br><span class="line">        <span class="keyword">elif</span>(ins[<span class="number">0</span>]==<span class="string">&quot;help&quot;</span><span class="keyword">or</span> ins[<span class="number">0</span>]==<span class="string">&quot;?&quot;</span>):</span><br><span class="line">            Help_info()</span><br><span class="line">        <span class="keyword">elif</span>(ins[<span class="number">0</span>]==<span class="string">&quot;change&quot;</span> &amp;&amp; len(str)==<span class="number">2</span>):</span><br><span class="line">            Change_User(ins[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/02/linux%E6%A8%A1%E5%9D%97%E7%BC%96%E8%AF%91%E5%8F%8A%E5%8A%A0%E8%BD%BD/" rel="next" title="linux模块编译及加载">
+      linux模块编译及加载 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">访问控制模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Biba%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">Biba访问控制模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">编程实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E6%A8%A1%E5%9D%97"><span class="nav-number">4.0.1.</span> <span class="nav-text">用户登录模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97"><span class="nav-number">4.0.2.</span> <span class="nav-text">操作模块</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

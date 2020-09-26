@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="圣诞的时候入了Screeps，这是个MMO 编程的游戏，互相写程序强资源，但是我不太熟悉JS 在边玩边学，玩游戏的过程可以学到一些nodejs的编程知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Screeps">
+<meta property="og:url" content="https://river-li.xyz/2020/04/01/Screeps/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="圣诞的时候入了Screeps，这是个MMO 编程的游戏，互相写程序强资源，但是我不太熟悉JS 在边玩边学，玩游戏的过程可以学到一些nodejs的编程知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-01T10:05:12.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.588Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="Coding">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2020/04/01/Screeps/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Screeps | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/04/01/Screeps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Screeps
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-01 18:05:12" itemprop="dateCreated datePublished" datetime="2020-04-01T18:05:12+08:00">2020-04-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>圣诞的时候入了Screeps，这是个MMO 编程的游戏，互相写程序强资源，但是我不太熟悉JS</p>
+<p>在边玩边学，玩游戏的过程可以学到一些nodejs的编程知识</p>
+<a id="more"></a>
+
+<h2 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h2><p>首先是基本内容</p>
+<p>游戏的名称Screeps实际上是<code>Script the Creeps</code>的缩写，而<code>Creeps</code>这个词大概是小兵的意思；</p>
+<p>游戏每一局开始，会控制一个<code>spawn</code>，这个词查了意思是卵、产卵</p>
+<p>相当于红警之类的基地车吧（实际上这个游戏好像是模拟的星际争霸，不过没玩过不太了解）</p>
+<p>通过spawn可以生产出creep</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>].spawnCreep([WORK,CARRY,MOVE],<span class="string">&#x27;Harvester1&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这个是教程里给出的生产Creep的指令</p>
+<p>具体来看的话，<code>Game.spawns[&#39;Spawn1&#39;]</code>这里应该是指定到了具体的<code>spawns</code>，名称为<code>Spawn1</code>的这个<code>spawn</code>，之后调用了spawnCreep这个方法来生产Creep</p>
+<p>这个函数的两个参数，第一个参数是一个列表，里面的每一项是一个模块</p>
+<p>第二个参数是要生产的这个Creep的名称</p>
+<p>这个列表还是有点意义的，游戏中每个Creep是有生命值的</p>
+<p>在Creep受到攻击时会按照顺序依次失去列表中各个模块的能力</p>
+<p>比如这个Creep如果受到一点攻击，就无法<code>WORK</code>，但是还可以 <code>CARRY</code>和<code>MOVE</code></p>
+<p>受到了两点攻击就只能<code>MOVE</code>了，因此对于不同用处的Creep，最好给到不同的模块、顺序</p>
+<p>地图中存在黄色的点，是金矿一样的资源点，可以被具有<code>WORK</code>模块的Creep开采，被具有<code>CARRY</code>模块的Creep搬运</p>
+<p>对Creep下达一个循环指令</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports.loop = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> creep = Game.creeps[<span class="string">&#x27;Harvester1&#x27;</span>];</span><br><span class="line">    <span class="keyword">var</span> sources = creep.room.find(FIND_SOURCES);</span><br><span class="line">    <span class="keyword">if</span>(creep.harvest(sources[<span class="number">0</span>]) == ERR_NOT_IN_RANGE) &#123;</span><br><span class="line">        creep.moveTo(sources[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样这个creep就会去到资源所在的位置开始采集，但是并不会回到Spawn，因为没有给它指定回来的函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports.loop = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> creep = Game.creeps[<span class="string">&#x27;Harvester1&#x27;</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(creep.store.getFreeCapacity() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> sources = creep.room.find(FIND_SOURCES);</span><br><span class="line">        <span class="keyword">if</span>(creep.harvest(sources[<span class="number">0</span>]) == ERR_NOT_IN_RANGE) &#123;</span><br><span class="line">            creep.moveTo(sources[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>( creep.transfer(Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) &#123;</span><br><span class="line">            creep.moveTo(Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改的更丰富一些，对它可以存放的容量进行判断、之后回到卵的位置</p>
+<p>这样这个creep就会一直不停的工作直到死亡，每个creep具有寿命，可以存活1500个游戏时间ticks</p>
+<p>创建creep需要消耗不少的能量，创建出更多的creep以后</p>
+<p>这个函数也需要进一步改进，加入一个循环令所有的creep都去工作</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports.loop = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> name <span class="keyword">in</span> Game.creeps) &#123;</span><br><span class="line">        <span class="keyword">var</span> creep = Game.creeps[name];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(creep.store.getFreeCapacity() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> sources = creep.room.find(FIND_SOURCES);</span><br><span class="line">            <span class="keyword">if</span>(creep.harvest(sources[<span class="number">0</span>]) == ERR_NOT_IN_RANGE) &#123;</span><br><span class="line">                creep.moveTo(sources[<span class="number">0</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(creep.transfer(Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;</span><br><span class="line">                creep.moveTo(Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随着任务更加复杂，单独一个文件没办法组织起来工作，这时就可以创建一个新的module</p>
+<p>新建了一个module，文件命名为<code>role.harvester</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Module code goes here. Use &#x27;module.exports&#x27; to export things:</span></span><br><span class="line"><span class="comment"> * module.exports.thing = &#x27;a thing&#x27;;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * You can import it from another modules like this:</span></span><br><span class="line"><span class="comment"> * var mod = require(&#x27;role.harvester&#x27;);</span></span><br><span class="line"><span class="comment"> * mod.thing == &#x27;a thing&#x27;; // true</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> roleHarvester = &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** <span class="doctag">@param <span class="type">&#123;Creep&#125;</span> </span>creep **/</span></span><br><span class="line">    run: <span class="function"><span class="keyword">function</span>(<span class="params">creep</span>) </span>&#123;</span><br><span class="line">	    <span class="keyword">if</span>(creep.store.getFreeCapacity() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> sources = creep.room.find(FIND_SOURCES);</span><br><span class="line">            <span class="keyword">if</span>(creep.harvest(sources[<span class="number">0</span>]) == ERR_NOT_IN_RANGE) &#123;</span><br><span class="line">                creep.moveTo(sources[<span class="number">0</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(creep.transfer(Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) &#123;</span><br><span class="line">                creep.moveTo(Game.spawns[<span class="string">&#x27;Spawn1&#x27;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = roleHarvester;</span><br></pre></td></tr></table></figure>
+
+<p>之后可以重写main模块</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> roleHarvester = <span class="built_in">require</span>(<span class="string">&#x27;role.harvester&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports.loop = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> name <span class="keyword">in</span> Game.creeps) &#123;</span><br><span class="line">        <span class="keyword">var</span> creep = Game.creeps[name];</span><br><span class="line">        roleHarvester.run(creep);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样代码看起来就简洁很多了</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Coding/" rel="tag"># Coding</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/29/sqlite3/" rel="prev" title="sqlite3">
+      <i class="fa fa-chevron-left"></i> sqlite3
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/17/CTF-Web/" rel="next" title="CTF-Web">
+      CTF-Web <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Basic"><span class="nav-number">1.</span> <span class="nav-text">Basic</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

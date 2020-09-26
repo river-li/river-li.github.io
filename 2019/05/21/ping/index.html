@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Ping源码分析分析的内容为Linux中ip-utils中的ping为网络程序设计这门课要求的小作业   获取源码首先要知道ping的程序在哪个包里在命令行使用man ping查看手册最下面会写着来自于iputils百度找到源码与ping相关的文件主要有:  ping.c  ping_common.c ping_common.h  程序的main函数位于ping.c，从这里开始分析 main Ma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ping">
+<meta property="og:url" content="https://river-li.xyz/2019/05/21/ping/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="Ping源码分析分析的内容为Linux中ip-utils中的ping为网络程序设计这门课要求的小作业   获取源码首先要知道ping的程序在哪个包里在命令行使用man ping查看手册最下面会写着来自于iputils百度找到源码与ping相关的文件主要有:  ping.c  ping_common.c ping_common.h  程序的main函数位于ping.c，从这里开始分析 main Ma">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-21T11:21:00.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.492Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="coding">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2019/05/21/ping/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ping | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/21/ping/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ping
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-21 19:21:00" itemprop="dateCreated datePublished" datetime="2019-05-21T19:21:00+08:00">2019-05-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Ping源码分析"><a href="#Ping源码分析" class="headerlink" title="Ping源码分析"></a>Ping源码分析</h1><p>分析的内容为Linux中ip-utils中的ping<br>为网络程序设计这门课要求的小作业</p>
+<!--more--->
+
+<h3 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h3><p>首先要知道ping的程序在哪个包里<br>在命令行使用<code>man ping</code>查看手册<br>最下面会写着来自于iputils<br>百度找到源码<br>与ping相关的文件主要有:</p>
+<ul>
+<li>ping.c </li>
+<li>ping_common.c</li>
+<li>ping_common.h</li>
+</ul>
+<p>程序的main函数位于ping.c，从这里开始分析</p>
+<h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3>
+<p>Main函数非常的长，前面设置了许多属性，还有很多if判断语句用于判断设置的参数</p>
+<p>除了定义的内容，可以看到设置了capabilities以及locale</p>
+<p>之后下面建立了用于ping程序的icmp的socket<br>在这下面判断socket是否建立成功，并且获取到errno</p>
+<p>这下面可以看到一个while循环，不停的调用getopt获取命令行参数</p>
+<p>下面使用switch语句对相应的参数进行设置</p>
+
+
+<p>在最下面的default中调用了usage函数，其中内容如下：</p>
+
+
+<p>在switch语句之后，是对参数有效性进行检查，对于有问题的部分调用usage给用户</p>
+
+<p>下面的一个while循环比较重要，类似我们课上例子的ping程序的主函数部分</p>
+
+<p>这里可以看到，如果argv是ip地址则，hostname=target，否则（即是域名）调用gethostbyname函数获取实际的ip地址</p>
+<p>这下面是一些检测</p>
+
+
+<p>这里最初初始化时是全0，所以第一次调用时一定会执行，查看内容可以看到</p>
+
+
+
+
+<p>比较核心的地方在这个connect，根据报错的信息可以知道这里的目的是首先尝试创建一个socket并connect到目标主机，如果是广播地址就报错，或向用户确认是否要ping广播地址</p>
+<p>这里的一部分判断本机地址是否是0.0.0.0</p>
+
+
+<p>这个检测目标地址是否为0，如果是0.0.0.0则将目标地址设置为本机的地址，变成ping 127.0.0.1</p>
+<p>下面是检测icmp_sock是否建立成功</p>
+
+
+<p>如果出错则退出</p>
+<p>这个地方我们往上看可以看到之前也检测过一次icmp_sock是否小于0，但那时的解决方式是重试了一次，这里出错则直接退出。上面的判断：</p>
+
+
+<p>下面device是加了-i参数选择出口网卡interface时的内容，之后对msg作了一些设置</p>
+
+
+
+
+
+<p>这里针对ping广播地址的情况进行一些判断</p>
+<p>interval太小则会直接退出，这个值是两个包间间隔的时间长短</p>
+<p>pmtudisc这个值是根据ping –M参数后的内容设置的，在ping广播的情况下-M后的值必须是do，不能是don’t和want</p>
+
+
+<p>这里对using_ping_socket是否为0的两种情况</p>
+<p>可以看到之前一次创建socket如果失败，则会将using_ping_socket的值设置为1</p>
+<p>因此using_ping_socket的情况是创建socket失败一次的情况下对socket设置了几个option</p>
+
+
+<p>这里是针对参数-R时记录路由设置参数</p>
+
+<p>这里对-T设置参数，-T作用是设置timestamp</p>
+
+<p>这个地方的作用是设置没有设置-R –T时的参数<br>可以查看设置这个options 的地方</p>
+
+
+
+
+<p>这里根据注释可以得知作用是粗略估计数据包的长度</p>
+<p>之后用sock_setbufs设置socket的buf大小</p>
+<p>再下面检测了一些参数以及数据包长度；</p>
+<p>整个程序的主要功能在最下面的嵌套中，从main函数的底部看起</p>
+
+<p>可以看到底部printf打印了运行ping时常常看到的信息</p>
+<p>之后调用了setup函数以及main_loop<br>Setup和main_loop函数定义在ping_common.c中</p>
+<p>Setup函数的定义：</p>
+
+
+<p>根据注释可以得知，这个函数的作用是设置并检查参数</p>
+<p>跳过前面一部分检测的内容</p>
+
+
+<p>这里设置了SNDTIMEO来防止当网卡接口很慢或停止时永久阻塞，将小于1000的时间间隔统一设置为了1000</p>
+
+
+<p>设置RCVTIMEO优化避免冗余轮询</p>
+
+<p>设置ident这个值用来标识主机，使用的是进程的pid的后16位</p>
+
+<p>下面三句注册了三个信号，绑定了对应的函数</p>
+<p>之后是设置信号集set初始化并清空，之后改变信号屏蔽字</p>
+
+
+<p>deadline是设置的-w参数后面的值，即超时时间</p>
+<p>itimerval是一个定时器</p>
+<hr>
+<h3 id="main-loop"><a href="#main-loop" class="headerlink" title="main_loop"></a>main_loop</h3><p>下面看main_loop的定义</p>
+
+<p>整个函数的核心内容是这个for循环，for循环前面判断退出条件</p>
+<p>在这下面是一个比较重要的部分</p>
+
+<p>在一个循环中调用pinger函数</p>
+<p>这个pinger函数是真正用于发送icmp包的地方</p>
+<p>这里先放着继续向下看</p>
+
+<p>折叠了if后的内容后可以看到下面又进入了一个for循环</p>
+<p>这里的for循环的作用是接受icmp的回显包</p>
+<p>上图中可以看到调用parse_reply，这个函数是用来解析处理回显包的</p>
+<p>其中内容主要是设置了recev的相关内容以及调用函数recvmsg</p>
+
+<p>前面学习socket时了解到recvmsg是用于接受消息队列中消息的函数，这里的作用就是从socket中读取一个msg</p>
+<hr>
+<h3 id="pinger"><a href="#pinger" class="headerlink" title="pinger"></a>pinger</h3><p>在pinger函数前面有一段注释：</p>
+
+<p>可以看到，pinger函数的主要作用是compose 并transmit ICMP的回显包</p>
+<p>下面就参考着注释分析一下pinger函数的内部</p>
+
+<p>首先判断是否到达了退出条件，如果达到则返回1000</p>
+
+<p>这个条件主要目的是设置tokens和cur_time</p>
+<p>这里再往下直到pinger函数结束都是resend这个部分</p>
+
+<p>resend这里首先就调用了send_probe函数，之后对其返回值进行判断，根据不同返回值调用不同的部分，最终如果前面出错则调用一些处理，返回。</p>
+<p>因此我们可以判断出这一部分中实际的发送函数是send_probe,正常返回0，其他情况出错<br>下面进入这个函数</p>
+<h3 id="send-probe"><a href="#send-probe" class="headerlink" title="send_probe"></a>send_probe</h3>
+
+<p>最主要的是send_to和那个sendmsg</p>
+<p>如果使用的是cmsg，则设置数据包并调用sendmsg发送数据</p>
+<p>否则直接使用send_to向socket发送数据<br>最后判断返回值是否与len相等，相等则返回0，否则返回cc即send的返回值</p>
+<p>为了进一步了解这个len的值是如何得到的，我们进入build_niquery和build_echo两个函数看看</p>
+
+<p>可以看出这个build_niquery函数是构造了一个请求包，并用cc这个值记录它的实际大小<br>这个ni_hdr数据结构内部：</p>
+
+<p>得知这一部分是处理icmp6数据包的内容</p>
+<p>这个结构体的大小也应该是发送的请求icmp6的数据包大小</p>
+
+<p>这个是创建了一个回显包</p>
+<p>计算并最终返回回显包的长度</p>
+<p>对于pinger的分析到此结束</p>
+<hr>
+<h3 id="parse-reply"><a href="#parse-reply" class="headerlink" title="parse_reply"></a>parse_reply</h3>
+<p>首先看到注释</p>
+<p>这个函数的作用是分析获取到的icmp包，判断是否属于自己，是的话则将其打印</p>
+<p>这个判断的原因是ICMP的接口会受到所有的回显包，有可能同一台主机上有多个用户在使用ping程序</p>
+
+<p>这里的内容是检查ip头部</p>
+<p>这里主要是设置了一些属性，判断的地方只有ip包的长度，如果数据包长度过短则退出</p>
+<p>下面检测icmp部分</p>
+
+<p>可以看到，调用了一个in_cksum函数</p>
+<p>看名字即可看出这个函数是用来求校验和的</p>
+<hr>
+<h3 id="in-cksum"><a href="#in-cksum" class="headerlink" title="in_cksum"></a>in_cksum</h3>
+<p>查看注释，不难理解算法</p>
+<p>使用了一个32位的累加器，将16位的字加上去，最终将高16位和低16位相加</p>
+<p>最终结果需要取反</p>
+<p>Icmp的校验和是icmp报文中所有16位字段的补码的总和的16位补码</p>
+
+
+<p>下面这里是当得到的报文不是icmp_echoreply类型时进入</p>
+<p>出现这种情况，有可能是icmp包本身类型不对，也有可能是原本的icmp包在传输中出错<br>下面的一个大括号用来处理</p>
+
+<p>长度出错</p>
+
+<p>类型出错，或这个包并不是发给我们的，即收到了别人的回显包</p>
+
+<p>输出icmp包的序列号以及来源的地址</p>
+<p>如果csfailed，即在求校验和时出错则输出bad checksum</p>
+
+<p>看到default这里的注释是Must Not，原因是icmp包类型与上面的几个都不同，则一定是错误</p>
+
+
+<p>下面这里是正常时继续运行的内容，输出了受到包的时间，以及来自的主机ip<br>最终下面作了两个检测，正常退出</p>
+
+
+<p>到此整个ping程序中比较重要的部分就分析完毕了</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/coding/" rel="tag"># coding</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/21/simple-sipder/" rel="prev" title="simple-sipder">
+      <i class="fa fa-chevron-left"></i> simple-sipder
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/22/scrapy/" rel="next" title="scrapy">
+      scrapy <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ping%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Ping源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%BA%90%E7%A0%81"><span class="nav-number">1.0.1.</span> <span class="nav-text">获取源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main"><span class="nav-number">1.0.2.</span> <span class="nav-text">main</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main-loop"><span class="nav-number">1.0.3.</span> <span class="nav-text">main_loop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pinger"><span class="nav-number">1.0.4.</span> <span class="nav-text">pinger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#send-probe"><span class="nav-number">1.0.5.</span> <span class="nav-text">send_probe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parse-reply"><span class="nav-number">1.0.6.</span> <span class="nav-text">parse_reply</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#in-cksum"><span class="nav-number">1.0.7.</span> <span class="nav-text">in_cksum</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

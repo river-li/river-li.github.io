@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="WHU 网络空间安全在读">
+<meta property="og:type" content="website">
+<meta property="og:title" content="River&#39;s blog">
+<meta property="og:url" content="https://river-li.xyz/page/4/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="WHU 网络空间安全在读">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="River Li">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/page/4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/25/CrackMe-Day1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/25/CrackMe-Day1/" class="post-title-link" itemprop="url">CrackMe-Day1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-25 21:54:42" itemprop="dateCreated datePublished" datetime="2020-02-25T21:54:42+08:00">2020-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>吾爱破解论坛有160个面向新手的CrackMe，这里为了练手准备慢慢做一下WP，这是第一个程序的WP</p>
+<p>下载地址<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-709699-1-1.html">https://www.52pojie.cn/thread-709699-1-1.html</a></p>
+<!--more--->
+
+<h1 id="CrackMe1"><a href="#CrackMe1" class="headerlink" title="CrackMe1"></a>CrackMe1</h1><p>第一道CrackMe</p>
+<p>作者Acid burn</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序打开界面</p>
+
+
+<p>点击确定后进入程序主界面</p>
+
+
+<p>点击Serial/Name后进入输入序列号密码的界面，随便输入之后检查会告诉你错误</p>
+
+
+<p>give up之后又会回到原本的主界面</p>
+<p>另一个Serial是一个另外的序列号，也就是说一个程序中有两个序列号</p>
+
+
+<p>下面开始逆向</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="Serial-With-Name"><a href="#Serial-With-Name" class="headerlink" title="Serial With Name"></a>Serial With Name</h3><p>首先用OD打开，对API下断点，断在MessageBox相关的弹窗中</p>
+<p>结果运行发现运行不起来了</p>
+
+
+<p>堆栈中出现了这样的信息</p>
+<p>很奇怪，专门去论坛看了一下发现其他人没说这种情况，不知道是为啥</p>
+<p>就用win10换成了winxp，之后重新分析就可以了</p>
+<p>在API断点插件里下断点</p>
+
+
+<p>运行，第一次断在了最初的弹窗，之后输入错误的验证码出现第二次的弹窗</p>
+
+
+<p>但是发现断的位置断在了user32的库里</p>
+<p>查看堆栈找到前面压栈的地址0042A1A9</p>
+
+
+<p>断了之后继续单步步过执行，执行一段时间可以看到一块存放字符串的区域</p>
+<p>在这个MessageBoxA上面的Call下断点，查看程序被断时esi中是否是Sorry那个字符串</p>
+
+
+<p>发现图中所示的这个断点就没有断住了，而且这时看到右边的esi已经是sorry这样的字符串了</p>
+<p>我们首先还是在这个跳转来的开始位置，即这个<code>push ebp</code>下个断点</p>
+<p>查看这时的堆栈，发现跳转来自于0042fb37</p>
+
+
+<p>跟过去看一下，发现move了这样的字符串</p>
+
+
+<p>我们再接着向上看</p>
+
+
+<p>这一部分的代码以及这个条件跳转非常疑似进行判断的代码</p>
+<p>我们尝试将这个jnz修改为jz</p>
+
+
+<p>可以，直接破解成功了</p>
+<h3 id="Serial-Without-Name"><a href="#Serial-Without-Name" class="headerlink" title="Serial Without Name"></a>Serial Without Name</h3><p>在窗口中随便输入check后，同样还是先断在这个<code>push ebp</code></p>
+
+
+<p>看到堆栈这次来自了另外一个地址</p>
+<p>跟过去看一下</p>
+
+
+<p>结果发现这部分的代码和上面那边的结构类似</p>
+<p>也是一个jnz，我们还是直接改成jz</p>
+
+
+<p>fine，破解成功</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/22/Docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/22/Docker/" class="post-title-link" itemprop="url">Docker</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-22 22:14:34" itemprop="dateCreated datePublished" datetime="2020-02-22T22:14:34+08:00">2020-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/08/Swift%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/08/Swift%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">Swift基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-08 10:39:31" itemprop="dateCreated datePublished" datetime="2020-02-08T10:39:31+08:00">2020-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-Development/" itemprop="url" rel="index"><span itemprop="name">iOS Development</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p> 苹果官网对Swift提供了一些讲解特性的视频，还有相关的书，准备跟着这些来学一学iOS的开发。</p>
+<p>还有一门很好的课，斯坦福的CS193P，可以在B站搜到，也可以在iTunes里听到</p>
+<!--more--->
+
+
+
+<h2 id="Swift-Basic"><a href="#Swift-Basic" class="headerlink" title="Swift Basic"></a>Swift Basic</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/04/Python%E7%BB%88%E7%AB%AF%E8%BF%9B%E5%BA%A6%E6%9D%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/04/Python%E7%BB%88%E7%AB%AF%E8%BF%9B%E5%BA%A6%E6%9D%A1/" class="post-title-link" itemprop="url">Python终端进度条</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-04 01:42:56" itemprop="dateCreated datePublished" datetime="2020-02-04T01:42:56+08:00">2020-02-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>写爬虫的时候希望能有个终端里的进度条，但是用logging出现的信息有点太多了，于是希望能像一些开源软件那样出现进度条，查了一下发现有一个叫做<code>progress</code>的库，简单记录学一下用法。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/04/Python%E7%BB%88%E7%AB%AF%E8%BF%9B%E5%BA%A6%E6%9D%A1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/02/Selenium/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/02/Selenium/" class="post-title-link" itemprop="url">Selenium</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-02 14:52:19" itemprop="dateCreated datePublished" datetime="2020-02-02T14:52:19+08:00">2020-02-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>发现每次用到Selenium的时候都会忘记用法，迫不得已需要再学一遍，因此这次准备好好做一下笔记，至少以后用到有个查的地方</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/02/Selenium/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/01/27/useradd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/27/useradd/" class="post-title-link" itemprop="url">useradd</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-27 18:30:36" itemprop="dateCreated datePublished" datetime="2020-01-27T18:30:36+08:00">2020-01-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>linux的useradd指令可以添加一个新的用户，在添加用户时也可以将其添加到指定的组</p>
+<p>在渗透过程中可能需要创建一个新的特权级用户，记录一下创建的方法</p>
+<p>通过命令<code>groups</code>可以查看当前用户所属的组别</p>
+<p>如果希望添加用户到某一个组，可以使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -a -G groupA user</span><br></pre></td></tr></table></figure>
+
+<p>这样可以将用户<code>user</code>添加为<code>groupA</code>的一员</p>
+<p>这里的<code>-a</code>选项是必须的，如果没有这个参数，即</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -G groupA user</span><br></pre></td></tr></table></figure>
+
+<p>这样的命令会将用户<code>user</code>加入到<code>groupA</code>中，但是同时会从当前其所在的组中将其删除</p>
+<p>创建一个新的用户，并将其添加到特权级的指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd -m -g users -G wheel -s /bin/bash username</span><br></pre></td></tr></table></figure>
+
+<p>这样就添加了一个名为<code>username</code>的特权级用户</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/" class="post-title-link" itemprop="url">Mac配置指北</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-23 20:25:13" itemprop="dateCreated datePublished" datetime="2020-01-23T20:25:13+08:00">2020-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近换了一台Mac，很开心，但是Mac还是有很多地方用的不习惯，在这里记录一下各个软件完整的配置过程</p>
+<!--more--->
+
+
+
+<h2 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h2><p>首先是对Mac的基本设置，我主要设置了一下触控板，还有键位，以及安装了包管理软件brew</p>
+<h3 id="Touchpad"><a href="#Touchpad" class="headerlink" title="Touchpad"></a>Touchpad</h3><p>都说Mac的触控板好用，虽然看着这么大一块确实应该会挺舒服，但是在用之前我并没觉得可能会多好用，因为三指、四指的功能我都可以在Linux上面实现，（可以参照我<a target="_blank" rel="noopener" href="https://river-li.me/2019/07/06/pei-zhi-yi-ge-mac-yi-yang-de-hong-mo-ban/">之前的文章</a>）而且最近Windows也开始对触控板的功能进行优化了。</p>
+<p>但是还是没想到，用过之后感觉：这大概是笔记本上能做到的极致了，Linux怎么配置也赶不上的。</p>
+<p>Mac本身的触控板功能就很强了，不过还是有一些需要自己设置的地方</p>
+<p>比如拖拽，可以设置拖拽锁定、或者三指拖拽。虽然锁定更符合原本的Windows和Linux使用习惯，但是我还是在这里设置成了三指拖拽，适应了一段时间之后发现这个功能真的是触控板上最好用的功能了。</p>
+<p>还有一些动作需要自己设置打开，默认是关闭的，主要是多指的复杂操作。</p>
+<h3 id="Keys"><a href="#Keys" class="headerlink" title="Keys"></a>Keys</h3><p>这是一个改键位的软件<a target="_blank" rel="noopener" href="https://pqrs.org/osx/karabiner/">karabiner</a></p>
+<p>Mac的键盘布局还是传统的qwer键盘，并且没办法定制成colemak之类的键盘；因此为了比较大限度的提高键盘利用效率，还是需要对键盘上的键进行一些修改。</p>
+<p>看之前的博客也知道我比较喜欢使用Vim，这样做就需要频繁的用到ESC。虽然MBP16恢复了ESC键，但是按起来还是没那么容易，因此直接将ESC、Caps这两个键进行了调换</p>
+
+
+<p>软件本身还支持很多高级的改键功能，但是目前还没有这方面的需求，就只使用了基础的改键</p>
+<h3 id="Homebrew"><a href="#Homebrew" class="headerlink" title="Homebrew"></a>Homebrew</h3><p>homebrew 是Mac上的一款包管理程序，安装这个的原因是网上大多数第三方的程序都推荐使用这个，因此我也装了这个</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -e <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>安装brew的时候发现速度变得很慢，默认的repo源在github上，改成国内的源可以提升速度，执行下面的几个命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="string">&quot;<span class="subst">$(brew --repo)</span>&quot;</span></span><br><span class="line">git remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git</span><br><span class="line"><span class="built_in">cd</span> <span class="string">&quot;<span class="subst">$(brew --repo)</span>/Library/Taps/homwbrew/homebrew-core&quot;</span></span><br><span class="line">git remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git</span><br></pre></td></tr></table></figure>
+
+<p>之后速度就变快了，下载软件时可以类似这样</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install wget</span><br><span class="line"><span class="comment"># brew install &lt;package&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是，brew只能安装终端内的程序，想要安装图形界面程序需要借助一个扩展<code>brew cask</code></p>
+<p>安装cask首先需要执行这个命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew tap caskroom/cask</span><br></pre></td></tr></table></figure>
+
+<p>整体上这个工具需要依赖MacOS上的XCode，由于我本身也想做一些IOS开发之类的东西，也直接在App Store 上下载了XCode</p>
+<p>在安装第三方的图形界面程序时可以使用cask进行搜索和下载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew cask install atom</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Touchbar"><a href="#Touchbar" class="headerlink" title="Touchbar"></a>Touchbar</h3><p>新版的MacbookPro全线配置了Touchbar，这个说鸡肋也鸡肋但是有时候确实也觉得有点意思。</p>
+<p>为了最大程度的增加一些价值，还是装了一些东西来</p>
+<p>拓展的一个程序叫做<a target="_blank" rel="noopener" href="https://pock.dev/">pock</a>，同时还有一款类似的软件<a target="_blank" rel="noopener" href="https://hazeover.com/touchswitcher.html">TouchSwitcher</a></p>
+<p>对比了一下还是Pock的自定义程度比较高，用起来也比较好用</p>
+<p>但是其实这些工具都有一个缺点，就是在使用的时候一些原本touchbar功能比较好用的程序也用不了了</p>
+<p>所以最好还是能有一个可以切换的开关，比如pock可以双击control切换系统栏和自定义栏，很方便</p>
+
+
+
+
+<h2 id="Terminal"><a href="#Terminal" class="headerlink" title="Terminal"></a>Terminal</h2><p>Mac OS是一个基于BSD的系统，和linux很相似的终端同时还有很多常用的软件；</p>
+<h3 id="iterm2"><a href="#iterm2" class="headerlink" title="iterm2"></a>iterm2</h3><p>Mac自带的终端不是太好用，其实也还好，但是可以自定义的功能还是比较少</p>
+<p>iterm2是一个功能比较丰富的、可自定义的免费终端，基本可以说是最好的终端了</p>
+<p>iterm可以直接在<a target="_blank" rel="noopener" href="https://www.iterm2.com/">官网</a>下载</p>
+<p>下载下来，安装之后进行配置</p>
+<h4 id="Color"><a href="#Color" class="headerlink" title="Color"></a>Color</h4><p>首先要换一个好看的配色，按 <code>command+,</code></p>
+
+
+<p>在profile -&gt; colors 这里右下角可以看到一个选条，选择<code>Visit Online Gallery</code></p>
+<p>在网上可以找到自己喜欢的配色，下载之后双击安装即可</p>
+<p>我这里安装了一个<code>Snazzy</code>的配色</p>
+<h4 id="Font"><a href="#Font" class="headerlink" title="Font"></a>Font</h4><p>虽然Mac默认的字体还算好看，但是还是看习惯了Linux的开源字体，直接换一个字体来</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew tap caskroom/fonts</span><br><span class="line">brew cask install font-hack-nerd-font</span><br></pre></td></tr></table></figure>
+
+<p>之后在iterm的preference处修改字体即可</p>
+<h4 id="Hotkey"><a href="#Hotkey" class="headerlink" title="Hotkey"></a>Hotkey</h4><p>快捷键可以针对不同的profile进行设置，我仿照linux下常用的&lt;C-A  T&gt;</p>
+<p>设置了开启终端的快捷键</p>
+
+
+
+
+<h3 id="zsh"><a href="#zsh" class="headerlink" title="zsh"></a>zsh</h3><p>在终端中除了终端本身就是shell了，我这台mac自带的shell是bash，希望配置好zsh</p>
+<h4 id="oh-my-zsh"><a href="#oh-my-zsh" class="headerlink" title="oh-my-zsh"></a>oh-my-zsh</h4><p>首先安装了oh-my-zsh,这部分很简单，执行官网的命令就ok了，但是我这里出现的问题是联网的时候访问github速度非常慢，实时下载运行可能会出错，因此直接下载下来了脚本再执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh</span><br></pre></td></tr></table></figure>
+
+<p>下载下来再执行就好了</p>
+<h4 id="powerlevel10k"><a href="#powerlevel10k" class="headerlink" title="powerlevel10k"></a>powerlevel10k</h4><p>安装完zsh之后对其的主题进行配置，直接到<a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a>按照教程进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="variable">$ZSH_CUSTOM</span>/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
+
+<p>之后在zshrc中修改这么一个变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=powerlevel10k/powerlevel10k</span><br></pre></td></tr></table></figure>
+
+<p>完成之后重启一个shell</p>
+<p>执行<code>p10k configure</code></p>
+<p>之后按照提示选择自己的喜欢的终端风格即可</p>
+<h4 id="plugins"><a href="#plugins" class="headerlink" title="plugins"></a>plugins</h4><p>我们<a target="_blank" rel="noopener" href="https://river-li.me/2018/12/09/zsh/">之前</a>也讲过zsh有很多厉害的插件，因此换了新电脑肯定不能不装</p>
+<p>主要安装了这么几款</p>
+<ul>
+<li>git</li>
+<li>extract</li>
+<li>zsh-syntax-highlighting</li>
+<li>autojump</li>
+<li>zsh-autosuggestions</li>
+</ul>
+<p>比较值得注意的地方在于，语法高亮的插件必须放在最后一个</p>
+<p>安装方法大体上都一样，这里就省略了</p>
+<h3 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h3><p>Vim 是我很喜欢用的一款终端里的编辑器，主要是学会了一些高级的用法之后实在是方便的很，具体的配置过程就还是略去不写了，可以参照之前的<a target="_blank" rel="noopener" href="https://river-li.me/2018/12/11/vim-tai-qiang-liao/">文章</a></p>
+<h2 id="Development"><a href="#Development" class="headerlink" title="Development"></a>Development</h2><p>这肯定是买电脑的主要原因之一，学习iOS和MacOS的开发</p>
+<p>但是同时还会经常有一些别的东西需要写，都整理一下</p>
+<p>总共安装了这些</p>
+<ul>
+<li>Pycharm</li>
+<li>Webstorm</li>
+<li>VS Code</li>
+<li>Virtualbox</li>
+<li>X Code</li>
+<li>Parallels Desktop</li>
+</ul>
+<p>前面的一些都很常规，最后两项是Mac独有的软件，目前还没有体验X Code</p>
+<p>但是Parallels Desktop确实是比较好用的虚拟机，尤其是增强功能方面，安装的过程也非常快，直接一键就可以安装完成</p>
+<p>但是另一方面，在做靶机或者vulnhub的时候还是经常用到virtualbox和vmware这样的软件因此也不能代替</p>
+<h2 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h2><p>这一类都是一些小工具，但是也都是很实用有趣的那种</p>
+<p>有一些可以配置的很强大，我也稍微配置了一些</p>
+<h3 id="截图"><a href="#截图" class="headerlink" title="截图"></a>截图</h3><p>是的，这个软件名字就叫做截图，在App Store安装的，不知道是Mac上没有截图工具还是怎么样，我就直接下载了这个软件，可以设置截图的快捷键也可以直接录屏</p>
+
+
+
+
+<h3 id="RunCat"><a href="#RunCat" class="headerlink" title="RunCat"></a>RunCat</h3><p>这是一个在扩展栏的状态显示小工具，可以显示当前电脑的CPU、内存占用等信息</p>
+<p>我主要是用来看内存和网速的</p>
+<p>同样可以直接在App Store找到</p>
+
+
+
+
+<h3 id="CheatSheet"><a href="#CheatSheet" class="headerlink" title="CheatSheet"></a>CheatSheet</h3><p>这个程序是一个快捷键的列表</p>
+<p>由于刚刚用Mac，很多快捷键都不太熟悉，很多时候都不知道快捷键是啥</p>
+<p>而且键盘布局也和windows的键盘有点不同，所以有点不习惯</p>
+<p>在任何一个程序下长按<code>command</code>键就可以弹出一个快捷键的清单，其实效果有些像iPad外接键盘的效果</p>
+<p>下载时在App Store没有找到，官网好像也挂了</p>
+<p>我直接google找到了一个<a target="_blank" rel="noopener" href="https://cheatsheet-mac.en.softonic.com/mac">下载</a>链接</p>
+
+
+
+
+<h3 id="V2rayU"><a href="#V2rayU" class="headerlink" title="V2rayU"></a>V2rayU</h3><p>Emmm…这个就不用介绍了吧？功能大家都懂得</p>
+<h3 id="Mate"><a href="#Mate" class="headerlink" title="Mate"></a>Mate</h3><p>这是一个翻译的软件，设置快捷键后可以直接翻译剪贴板里的单词或者句子，有时候还是挺好用的，App Store有售</p>
+
+
+
+
+<h3 id="Lastpass"><a href="#Lastpass" class="headerlink" title="Lastpass"></a>Lastpass</h3><p>全平台的免费密码管理程序</p>
+<p>想要安装的话最好安装Safari的扩展版本</p>
+<p>但是这个版本在国内的苹果商店找不到，我最后也是网上搜到的程序</p>
+<h3 id="Dozer"><a href="#Dozer" class="headerlink" title="Dozer"></a>Dozer</h3><p>上面安装了这么多程序，加上平常用的QQ微信什么的，顶部的状态栏应该已经很满了吧？这时候就需要用到这个工具了，可以一键隐藏其他的图标</p>
+<p>直接在<a href="dozermac.com">官网</a>可以下载到</p>
+<p>对比一下效果</p>
+
+
+
+
+
+
+<h3 id="Alfred"><a href="#Alfred" class="headerlink" title="Alfred"></a>Alfred</h3><p>最后要介绍的就是两个比较复杂的工具了</p>
+<p>一是这个Alfred，苹果商店虽然能下载到但是版本非常的老，最好去<a target="_blank" rel="noopener" href="https://www.alfredapp.com/">官网</a></p>
+<p>其实我觉得苹果自带的spotlight就挺好用的了，只是不支持自定义的功能</p>
+<h4 id="General"><a href="#General" class="headerlink" title="General"></a>General</h4><p>首先修改一下快捷键，调整成按起来比较方便按出来的</p>
+<p>在Windows下的Wox我都是习惯ctrl+space的</p>
+<p>但是Mac的键盘左下角小拇指按到的键是Fn，按到ctrl的话不得不说是十分的难受</p>
+<p>因此我直接改成了双击command</p>
+<p>另外就是需要修改一下location</p>
+<p>这里最好选择为自己梯子的物理位置，这样访问Google会更快一点</p>
+<p>高级功能需要购买专业版才可以自己定制，不过专业版的价格还是有点贵</p>
+<p>25欧元，贵的不得了</p>
+<h4 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h4><p>这部分里面可以设置的内容很多</p>
+<h5 id="File-Search"><a href="#File-Search" class="headerlink" title="File Search"></a>File Search</h5><p>首先是文件搜索</p>
+<p>通过关键词find 可以查找文件，in可以查找文件内容，open可以直接打开</p>
+<p>tags功能我觉得比较鸡肋，就直接关闭了</p>
+<p>这部分主要设置开启了Fuzzy，并且设置了一下快捷键</p>
+
+
+
+
+<h5 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h5><p>这部分的功能是可以设置两个键，在搜索到选项的文件时按相应的键可以直接将其送到Action的页面，在那个页面可以对文件选择进一步的操作</p>
+
+
+
+
+<h5 id="Web-Search"><a href="#Web-Search" class="headerlink" title="Web Search"></a>Web Search</h5><p>Web的功能可以说是Alfred使用到的最多的功能了，因此这部分需要好好设置一下</p>
+<p>首先关闭所有的默认选项，因为大多数都用不到</p>
+<p>我只保留了Google的几个服务，另外添加了bilibili和baidu</p>
+<h4 id="Workflow"><a href="#Workflow" class="headerlink" title="Workflow"></a>Workflow</h4><p>链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1LYpb_YpL_TQGy6IFpDgcQQ">https://pan.baidu.com/s/1LYpb_YpL_TQGy6IFpDgcQQ</a> 提取码: mmnv</p>
+<p>这里面有一些现成的workflow，都还比较有用</p>
+<p>另外我还找到了一个v2ex的workflow，但是安装上之后刷新不出来消息，目前还不知道具体原因</p>
+
+
+
+
+<h3 id="HammerSpoon"><a href="#HammerSpoon" class="headerlink" title="HammerSpoon"></a>HammerSpoon</h3><p>这个软件可以支持用lua编写脚本自定义，功能很多也很复杂，目前还没玩透，准备学一学lua之后专门看一下</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/14/HTB-OpenAdmin/" class="post-title-link" itemprop="url">[HTB]OpenAdmin</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-14 20:25:55" itemprop="dateCreated datePublished" datetime="2020-01-14T20:25:55+08:00">2020-01-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hack-The-Box/" itemprop="url" rel="index"><span itemprop="name">Hack The Box</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>拿到的第三台机器的权限，还是一个active的，虽然也是个easy</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/01/14/HTB-OpenAdmin/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/01/11/HTB-Postman/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/11/HTB-Postman/" class="post-title-link" itemprop="url">[HTB]Postman</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-11 18:35:15" itemprop="dateCreated datePublished" datetime="2020-01-11T18:35:15+08:00">2020-01-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hack-The-Box/" itemprop="url" rel="index"><span itemprop="name">Hack The Box</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>第二台拿下root权限的机器, 虽然难度还是简单,但是很开心</p>
+<p>Happy Hacking!</p>
+<!--more--->
+
+<h2 id="Foothold"><a href="#Foothold" class="headerlink" title="Foothold"></a>Foothold</h2><p>首先nmap扫描看一下</p>
+
+
+<p>看到开了三个端口22,80,1000</p>
+<p>这三个服务里第三个不太熟悉, 于是先访问看一下</p>
+<p>直接在浏览器里访问<a target="_blank" rel="noopener" href="http://10.10.10.160:10000/">http://10.10.10.160:10000</a> 会提示要求访问HTTPS</p>
+<p>访问<a target="_blank" rel="noopener" href="https://10.10.10.160:10000/">https://10.10.10.160:10000</a></p>
+<p>看到是一个登录界面</p>
+
+
+<p>这个服务是一个webmin服务,于是自然的想用metasploit搜一下有没有相关的漏洞</p>
+<p>结果发现存在的漏洞大多需要用户名和密码</p>
+<p>有几个不需要的也利用不成功</p>
+<p>于是又试了一下爆破路径,结果也没发现什么有价值的东西</p>
+<p>只好求助论坛,发现论坛里面有人说需要全端口扫描,有人提示<code>r***s</code></p>
+<p>猜测是redis的服务,于是扫一下6379端口发现确实有收获</p>
+
+
+<p>但是实际上并没有用过redis,也不太了解相关的漏洞利用知识,于是搜了一下找到几个比较详细的文章</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/36529010">redis在渗透中getshell方法总结</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.am0s.com/penetration/215.html">redis渗透测试技巧总结</a></p>
+<p><a target="_blank" rel="noopener" href="https://packetstormsecurity.com/files/134200/Redis-Remote-Command-Execution.html">Redis Remote Command Execution</a></p>
+<p>学习之后发现有一种写ssh 私钥的方法,进行尝试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;xxx&quot;</span></span><br><span class="line">(<span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>;cat id_rsa.pub; <span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>) &gt; 1.txt</span><br><span class="line">redis-cli -h 10.10.10.160 flushall</span><br><span class="line">cat 1.txt | redis-cli -h 10.10.10.160 -x <span class="built_in">set</span> crackit</span><br></pre></td></tr></table></figure>
+
+<p>这边写进去之后用redis-cli连接,写一下dir和dbfilename两个字段的值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 10.10.10.160</span><br><span class="line">&gt; CONFIG SET dir /var/lib/redis/.ssh/</span><br><span class="line">&gt; CONFIG SET dbfilename <span class="string">&quot;authorized_keys&quot;</span></span><br><span class="line">&gt; save</span><br></pre></td></tr></table></figure>
+
+<p>写完之后连接先不要断,另开一个终端直接连过去</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i id_rsa redis@10.10.10.160</span><br></pre></td></tr></table></figure>
+
+<p>连接成功,得到了redis权限</p>
+<h2 id="Matt"><a href="#Matt" class="headerlink" title="Matt"></a>Matt</h2><p>在redis权限下一番搜索查看</p>
+<p>发现在<code>/tmp</code>目录下有其他大佬上传的脚本,正好直接运行一下</p>
+<p>发现<code>/opt/id_rsa.bak</code></p>
+<p>这个文件属于用户<code>Matt</code></p>
+<p>于是吧这个私钥搞下来,结果发现是加密的</p>
+<p>用我们之前在<a target="_blank" rel="noopener" href="https://river-li.me/2019/12/03/htb-traverxec/#more">Traverxec</a>写的爆破脚本跑一下,得到key的密码<code>computer2008</code></p>
+<p>之后尝试连接发现失败,解密后用key连接ssh也不行</p>
+<p>这时候想起webmin的登录界面,于是尝试用这个密码和用户名登录webmin</p>
+
+
+<p>结果居然登上了,这里就算是获取到了Matt的权限了</p>
+<h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>还记得之前用到的msf吗?</p>
+<p>既然已经有了一个Matt的用户名密码,就可以用msf里面的模块了</p>
+<p>用到一个<code>webmin_packageup_rce</code>的模块</p>
+
+
+<p>设置好参数直接run</p>
+
+
+<p>done!</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这次机器学到的知识点</p>
+<ol>
+<li>webmin服务及相关的漏洞</li>
+<li>redis配置不当的几种渗透方法</li>
+<li>redis写shell的方法</li>
+<li>ssh key爆破密码的方法</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/01/06/%E4%B8%87%E7%94%A8%E8%A1%A8%E7%94%A8%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/06/%E4%B8%87%E7%94%A8%E8%A1%A8%E7%94%A8%E6%B3%95/" class="post-title-link" itemprop="url">万用表用法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-06 14:12:29" itemprop="dateCreated datePublished" datetime="2020-01-06T14:12:29+08:00">2020-01-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>高中物理都还给老师了，最近做项目和硬件有点关系，需要用到万用表，在网上查了一些资料重新学一下怎么用</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/01/06/%E4%B8%87%E7%94%A8%E8%A1%A8%E7%94%A8%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

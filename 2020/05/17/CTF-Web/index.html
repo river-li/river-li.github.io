@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CTF Web专题毕设搞完了，暂时性的有了一些自幼学习的时间，准备系统的学一下CTF的东西 预计花上一两个月的时间把各类知识点全都看一遍，刷一些题吧，首先还是从比较简单的Web开始">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF-Web">
+<meta property="og:url" content="https://river-li.xyz/2020/05/17/CTF-Web/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="CTF Web专题毕设搞完了，暂时性的有了一些自幼学习的时间，准备系统的学一下CTF的东西 预计花上一两个月的时间把各类知识点全都看一遍，刷一些题吧，首先还是从比较简单的Web开始">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-17T14:33:26.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.446Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="hack">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2020/05/17/CTF-Web/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CTF-Web | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/05/17/CTF-Web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CTF-Web
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-17 22:33:26" itemprop="dateCreated datePublished" datetime="2020-05-17T22:33:26+08:00">2020-05-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="CTF-Web专题"><a href="#CTF-Web专题" class="headerlink" title="CTF Web专题"></a>CTF Web专题</h1><p>毕设搞完了，暂时性的有了一些自幼学习的时间，准备系统的学一下CTF的东西</p>
+<p>预计花上一两个月的时间把各类知识点全都看一遍，刷一些题吧，首先还是从比较简单的Web开始</p>
+<a id="more"></a>
+
+
+
+<h2 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h2><h3 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h3><p>首先是URL转码相关的内容，比较重要的几个字符</p>
+<table>
+<thead>
+<tr>
+<th>空格</th>
+<th>%20</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>‘</td>
+<td>%27</td>
+</tr>
+<tr>
+<td>#</td>
+<td>%23</td>
+</tr>
+<tr>
+<td>\</td>
+<td>%5c</td>
+</tr>
+</tbody></table>
+<h4 id="addslashes"><a href="#addslashes" class="headerlink" title="addslashes"></a>addslashes</h4><p>php存在一个函数<code>addslashes</code>，增加反斜线的函数，在代码审计中比较有用</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">string</span> addslashes(<span class="keyword">string</span> $str)</span><br></pre></td></tr></table></figure>
+
+<p>这个函数返回字符串，该字符串为了数据库查询在某些字符前加上<code>\</code></p>
+<p>由于这个函数的存在，导致输入的字符串无法直接执行</p>
+<p><code>addslashes</code>的绕过有两种思路</p>
+<ol>
+<li>在<code>\</code>前面再加一个<code>\</code></li>
+<li>把<code>\</code>弄没</li>
+</ol>
+<h4 id="宽字节注入的原理"><a href="#宽字节注入的原理" class="headerlink" title="宽字节注入的原理"></a>宽字节注入的原理</h4><p>这是利用了mysql的一个特性，在使用gbk编码时两个字符会认为是一个汉字，前一个ascii码的值要大于128</p>
+<p>比如<code>\&#39;</code>本身的URL编码是<code>%5c%27</code></p>
+<p>如果在前面加上一个<code>%df</code>，即<code>%df%5c%27</code></p>
+<p>这样将<code>%df%5c</code>识别为一个汉字，就令本身的<code>\</code>失去了作用</p>
+<p>在sqlmap中如果想要用到这个特性，可以使用上一个前缀</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap --prefix=<span class="string">&#x27;%aa%27&#x27;</span>这样的就可以</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="基于约束的SQL攻击"><a href="#基于约束的SQL攻击" class="headerlink" title="基于约束的SQL攻击"></a>基于约束的SQL攻击</h3><p>一个登录系统中，一般情况下注册用户实际上就是在数据库中插入一项新的条目；</p>
+<p>而登录请求则是对用户名和密码进行查询，典型的语句一般是<code>select * from user where username =&#39;admin&#39; and password=&#39;123456789&#39;</code></p>
+<p>如果查到的结果不为空，则认为输对了用户名密码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">user</span>(</span><br><span class="line"><span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">auto</span> <span class="keyword">increment</span></span><br><span class="line">username <span class="built_in">varchar</span>(<span class="number">30</span>) <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line"><span class="keyword">password</span> <span class="built_in">varchar</span>(<span class="number">30</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">primary <span class="keyword">key</span>(<span class="keyword">id</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="string">&#x27;&#x27;</span>,<span class="string">&#x27;admin&#x27;</span>,<span class="string">&#x27;123456789&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>以这样的一个表为例，这个表中存在的问题在于，<code>username</code>没有设置为<code>unique</code>，但是却有<code>30</code>个字符的长度限制</p>
+<p>这会导致在创建一个新用户时，如果输入一个长度为30以上的用户名，30位以后的内容都会被吞掉</p>
+<p>同时在mysql中又存在一个特性，查询时后面多余的空格会被删掉</p>
+<p>所以可以使用这样的指令在其中插入一个新的<code>admin</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into user values(&#39;&#39;,&#39;admin                 1&#39;,&#39;1111&#39;)</span><br></pre></td></tr></table></figure>
+
+<p>这样最后一个1因为长度超过30被吞掉，而一堆空格在查询时又会被忽略</p>
+<p>就导致实际上登录时如果输入<code>admin</code>和<code>1111</code></p>
+<p>执行的查询语句是<code>select * from user where username=&#39;admin&#39; and password=&#39;1111&#39;</code>，由于之前插入过一个新的admin，这个admin查询出的结果就不为空了</p>
+<p>导致可以登录成功</p>
+<h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><p>报错注入的原理就是注入一些会导致执行出错的语句，使得数据库在回显出错信息时输出想要的内容</p>
+<p>例子的话，首先看一个公式，这里面<code>user()</code>这个位置可以替换成想要执行的语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">and (<span class="keyword">select</span> <span class="number">1</span> <span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">count</span>(*),<span class="keyword">concat</span>(<span class="keyword">user</span>(),<span class="keyword">floor</span>(<span class="keyword">rand</span>(<span class="number">0</span>)*<span class="number">2</span>))x <span class="keyword">from</span> information_schema.tables <span class="keyword">group</span> <span class="keyword">by</span> x)a);</span><br></pre></td></tr></table></figure>
+
+<p>这里面的几个函数，<code>rand</code>是产生一个0-1的随机数，<code>floor</code>则是向下取整，rand乘以2得到的结果再向下取整就是一个0或1，<code>rand(0)</code>是以0为随机数种子生成随机数序列，由于种子固定，因此实际上这个随机数序列是固定的</p>
+<p>报错的原理：</p>
+<p><code>floor(rand(0)*2)</code>的结果序列前几位是011011</p>
+<p>首先这样一个语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">floor</span>(<span class="keyword">rand</span>(<span class="number">0</span>)*<span class="number">2</span>) <span class="keyword">from</span> information_schema.tables</span><br></pre></td></tr></table></figure>
+
+<p>这会得到<code>information_schema.tables</code>数量个的0或1</p>
+<p> 在上面的语句中，实际上是这样的语句出了错</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*),<span class="keyword">floor</span>(<span class="keyword">rand</span>(<span class="number">0</span>)*<span class="number">2</span>) <span class="keyword">from</span> information_schema.tables <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">floor</span>(<span class="keyword">rand</span>(<span class="number">0</span>)*<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这个查询的内容是从表中查<code>count(*),floor(rand(0)*2)</code>这样的东西</p>
+<ol>
+<li>查询前默认会建立空虚拟表</li>
+<li>取第一条记录,执行<code>floor(rand(0)*2)</code>,发现结果为0(第一次计算),查询虚拟<br> 表,发现0的键值不存在,则<code>floor(rand(0)*2)</code>会被再计算一次,结果为1(第<br> 次计算),插入虚表,这时第一条记录</li>
+<li>查询第二条记录,再次计算<code>floor(rand(0)*2)</code>,发现结果为1(第三次计算),<br> 查询虚表,发现1的键值存在,所以<code>floor(rand(0)*2)</code>不会被计算第二次,直接<br> <code>count(*)</code>加1,第二条记录查询完毕查询完毕</li>
+<li>查询第三条记录,再次计算<code>floor(rand(0)*2)</code>,发现结果为0(第4次计<br> 算),查询虛表,发现键值没有0,则数据库尝试插入一条新的数据,在插入<br> 数据时<code>floor(rand(0)*2)</code>被再次计算,作为虚表的主键,其值为1(第5次计算)<br> 然而1这个主键已经存在于虚拟表中,而新计算的值也为1(主键键值必须唯<br> ),所以插入的时候就直接报错了</li>
+</ol>
+<p>最终group by分组依据的键值有重复项，于是会出错 </p>
+<p>类似的报错函数含有很多，比如<code>updatexml</code>等等</p>
+<h3 id="基于时间的盲注"><a href="#基于时间的盲注" class="headerlink" title="基于时间的盲注"></a>基于时间的盲注</h3><p>对于没有回显的SQL注入，可以用一些时间相关的函数进行注入，判断时间变化</p>
+<p>最常用的一个就是sleep</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">and</span> <span class="keyword">sleep</span>(<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样的语句执行了的话会<code>sleep</code>4秒钟</p>
+<p>如果改一下这个逻辑</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">or</span> <span class="keyword">sleep</span>(<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样如果一个表，其中有<code>id=1，2，3，4，5</code></p>
+<p>那这条语句在执行时会<code>sleep16秒</code></p>
+<p>这是因为只有id=1时没有sleep，其他的地方发现<code>id=1</code>这个逻辑为假，执行了后面的<code>or</code></p>
+<p>除了sleep还有一些别的函数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">BENCHMARK</span>(<span class="number">100000</span>,<span class="keyword">sha</span>(<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
+
+<p>benchmark函数是执行第二个参数第一个参数次，结果值一般是0</p>
+<p>还可以不借用函数，使用笛卡尔积实现</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> information_schema.columns A,information_schema.columns B,information_schema.tables C</span><br></pre></td></tr></table></figure>
+
+<p>还有GET_LOCK</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET_LOCK(str,timeout)</span><br></pre></td></tr></table></figure>
+
+<p>这个函数是对字符串str上锁，超时时间为timeout秒</p>
+<p>以及在一个黑客大会上提出的一个方法</p>
+<p>RLIKE<br>通过<code>rpad</code>以及<code>repeat</code>构造长字符串，加上计算大量的pattern，通过repeat的参数控制延时长度</p>
+<h4 id="SQL语法中的IF"><a href="#SQL语法中的IF" class="headerlink" title="SQL语法中的IF"></a>SQL语法中的IF</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IF(exp1,exp2,exp3)</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>exp1</code>为真则返回<code>exp2</code>的值，为假则返回<code>exp3</code>的值</p>
+<h4 id="截取函数"><a href="#截取函数" class="headerlink" title="截取函数"></a>截取函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">substr(str,pos,len)</span><br><span class="line">substring(str,pos,len)</span><br><span class="line">substring(str,pos)</span><br><span class="line">substring(str from pos for len)</span><br><span class="line">substring(str from pos)</span><br><span class="line">substring_index(str,delim,count) <span class="comment"># 返回第count个delim出现前的str内容</span></span><br></pre></td></tr></table></figure>
+
+<p>通过这个截取函数，结合sleep函数可以对表中的用户名进行单字母的猜测</p>
+<p>也可以使用正则表达式结合sleep实现逐位匹配的方法</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">password</span> <span class="keyword">rlike</span> <span class="string">&#x27;^12&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">password</span> regexp <span class="string">&#x27;^13&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="CASE-WHEN语句"><a href="#CASE-WHEN语句" class="headerlink" title="CASE WHEN语句"></a>CASE WHEN语句</h4><p>结合CASE语句也可以实现类似的效果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">case</span> <span class="keyword">when</span> username=<span class="string">&#x27;admin&#x27;</span> <span class="keyword">then</span> <span class="string">&#x27;admin&#x27;</span> <span class="keyword">else</span> <span class="keyword">sleep</span>(<span class="number">3</span>) <span class="keyword">end</span> <span class="keyword">from</span> <span class="keyword">users</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="bool型盲注"><a href="#bool型盲注" class="headerlink" title="bool型盲注"></a>bool型盲注</h3><p>这类盲注的特点是页面只返回True或False两种情况，需要根据这个猜数据</p>
+<p>两个相关的截取函数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">left(str,length)</span><br><span class="line">right(str,length)</span><br></pre></td></tr></table></figure>
+
+<p>转换成数字可以使用到</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ascii()</span><br><span class="line">ord()</span><br></pre></td></tr></table></figure>
+
+<p>两个函数作用都是求字符串首字母的ascii值</p>
+<h4 id="判断注入点"><a href="#判断注入点" class="headerlink" title="判断注入点"></a>判断注入点</h4><p>bool型盲注的注入点不能通过报错判断，sql执行失败和没有查到数据都会返回false的页面</p>
+<p>只能通过逻辑值判断</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 整型注入 */</span></span><br><span class="line">sql-bool.php?name=user1 and 1=1</span><br><span class="line">sql-bool.php?name=user1 and 1=2</span><br><span class="line"><span class="comment">/* 字符型注入 */</span></span><br><span class="line">sql-bool.php?name=user1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">sql-bool.php?name=user1&#x27; and &#x27;1&#x27;=&#x27;2</span><br><span class="line"><span class="comment">/* 字符型注入 */</span></span><br><span class="line">sql-bool.php?name=user1&quot; and &quot;1&quot;=&quot;1</span><br><span class="line">sql-bool.php?name=user1&quot; and &quot;1&quot;=&quot;2</span><br></pre></td></tr></table></figure>
+
+<p>根据页面的返回情况判断注入的类型</p>
+<h4 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h4><p>由于盲注没有返回结果，获取数据是使用字符串截取的函数对字符串逐位比较得到的</p>
+<p>首先要猜字段的长度</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 判断库名长度 */</span></span><br><span class="line">sql-bool.php?name=user1&#x27; and (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())) = <span class="number">1</span> <span class="keyword">and</span> <span class="string">&#x27;1&#x27;</span>=<span class="string">&#x27;1</span></span><br><span class="line"><span class="string">sql-bool.php?name=user1&#x27;</span> <span class="keyword">and</span> (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())) = <span class="number">2</span> <span class="keyword">and</span> <span class="string">&#x27;1&#x27;</span>=<span class="string">&#x27;1</span></span><br><span class="line"><span class="string">sql-bool.php?name=user1&#x27;</span> <span class="keyword">and</span> (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())) = <span class="number">3</span> <span class="keyword">and</span> <span class="string">&#x27;1&#x27;</span>=<span class="string">&#x27;1</span></span><br><span class="line"><span class="string">sql-bool.php?name=user1&#x27;</span> <span class="keyword">and</span> (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())) = <span class="number">4</span> <span class="keyword">and</span> <span class="string">&#x27;1&#x27;</span>=<span class="string">&#x27;1</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hack/" rel="tag"># hack</a>
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/01/Screeps/" rel="prev" title="Screeps">
+      <i class="fa fa-chevron-left"></i> Screeps
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/18/mysql%E6%93%8D%E4%BD%9C/" rel="next" title="mysql操作">
+      mysql操作 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CTF-Web%E4%B8%93%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">CTF Web专题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.</span> <span class="nav-text">SQL注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.1.</span> <span class="nav-text">宽字节注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#addslashes"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">addslashes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">宽字节注入的原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%BA%A6%E6%9D%9F%E7%9A%84SQL%E6%94%BB%E5%87%BB"><span class="nav-number">1.1.2.</span> <span class="nav-text">基于约束的SQL攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="nav-number">1.1.3.</span> <span class="nav-text">报错注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E7%9B%B2%E6%B3%A8"><span class="nav-number">1.1.4.</span> <span class="nav-text">基于时间的盲注</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%E8%AF%AD%E6%B3%95%E4%B8%AD%E7%9A%84IF"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">SQL语法中的IF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%AA%E5%8F%96%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">截取函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CASE-WHEN%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">CASE WHEN语句</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bool%E5%9E%8B%E7%9B%B2%E6%B3%A8"><span class="nav-number">1.1.5.</span> <span class="nav-text">bool型盲注</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">判断注入点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">获取数据</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

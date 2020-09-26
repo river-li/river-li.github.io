@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="用于记录一些有用的vim快捷键 会根据我自己的掌握进度定期更新 vim主要有三种模式：normal, insert, visual     Normal Mode移动hjkl 左上下右移动 w\e 向后移动一个词 b 向前移动一个词 L\H\M 光标移动到当前页面最底端\顶端\中间 % （光标本身在括号上时）移动到另一端括号 $ 移动到该行末尾 0 移动到当前行首 ^ 移动到行首第一个非空字符 +">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim太强了">
+<meta property="og:url" content="https://river-li.xyz/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="用于记录一些有用的vim快捷键 会根据我自己的掌握进度定期更新 vim主要有三种模式：normal, insert, visual     Normal Mode移动hjkl 左上下右移动 w\e 向后移动一个词 b 向前移动一个词 L\H\M 光标移动到当前页面最底端\顶端\中间 % （光标本身在括号上时）移动到另一端括号 $ 移动到该行末尾 0 移动到当前行首 ^ 移动到行首第一个非空字符 +">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-11T08:48:07.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.628Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>vim太强了 | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vim太强了
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-11 16:48:07" itemprop="dateCreated datePublished" datetime="2018-12-11T16:48:07+08:00">2018-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>用于记录一些有用的vim快捷键</p>
+<p>会根据我自己的掌握进度定期更新</p>
+<p>vim主要有三种模式：normal, insert, visual</p>
+<!--more--->
+
+
+
+<h2 id="Normal-Mode"><a href="#Normal-Mode" class="headerlink" title="Normal Mode"></a>Normal Mode</h2><h3 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h3><p>hjkl 左上下右移动</p>
+<p>w\e 向后移动一个词</p>
+<p>b 向前移动一个词</p>
+<p>L\H\M 光标移动到当前页面最底端\顶端\中间</p>
+<p>% （光标本身在括号上时）移动到另一端括号</p>
+<p>$ 移动到该行末尾</p>
+<p>0 移动到当前行首</p>
+<p>^ 移动到行首第一个非空字符</p>
+<p>+ 移动到下一行的开始第一个字符</p>
+<p>- 移动到上一行开始第一个字符</p>
+<p>&lt;C-d&gt; 向下半屏</p>
+<p>&lt;C-u&gt; 向上半屏</p>
+<p>下面三个分别对应三种移动方式, section、paragraph、sentence</p>
+<ul>
+<li>{[[ ]]</li>
+<li>{ }</li>
+<li>( )</li>
+</ul>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><p>i 在当前字符进入插入模式</p>
+<p>a 在当前字符后一个字符进入插入模式</p>
+<p>x 删除当前字符</p>
+<p>s 删除当前字符并进入插入模式</p>
+<p>I 光标移动到当前行行首并进入插入模式</p>
+<p>A 光标移动到当前行行尾并进入插入模式</p>
+<p>o 在当前行下面新建一个空行并进入插入模式</p>
+<p>O 在当前行上面新建一个空行并进入插入模式</p>
+<p>p 粘贴到当前行下方</p>
+<p>P 粘贴到当前行上方</p>
+<p>u 撤回操作(undo)</p>
+<p>&lt;C-r&gt; 取消撤回(redo)</p>
+<p>yy 复制当前行</p>
+<p>dd 删除当前行</p>
+<p>&lt;C-n&gt; &lt;C-p&gt; 自动补全</p>
+<p>. 重复上一个操作</p>
+<p>f/F/t/T 行内搜索，只能接受一个字符为参数</p>
+<p>多行操作：</p>
+<p>[数字]+{y/p/d]</p>
+<h2 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h2><h3 id="代码折叠"><a href="#代码折叠" class="headerlink" title="代码折叠"></a>代码折叠</h3><p>代码折叠需要设置折叠方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> foldmethod=manual</span><br></pre></td></tr></table></figure>
+
+<p>其他方式还有marker、indent等</p>
+<p>在manual模式下，折叠代码时使用</p>
+<p>zf 创建一个折叠，后面可以接行数，也可以按照光标移动方式接参数</p>
+<p>zd 删除这个折叠</p>
+<p>一般情况下，例如写C的代码，可以用<code>zf%</code>折叠整个块结构</p>
+<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><p>vim 有一个特性，删除以及复制的内容会保存历史，按顺序九个记录依次保存在数字寄存器中，如果需要粘贴寄存器的内容可以</p>
+<p><code>&quot;1p</code>含义为粘贴一号寄存器的内容，等价于<code>p</code></p>
+<p>如果要搜索寄存器中的内容，可以<code>&quot;1pu.u.u</code>这样会逐渐递增寄存器标号</p>
+<p>同时，26个字母也是可以使用的寄存器，如果要保存在26个字母中，只需要</p>
+<p><code>&quot;ayy</code>即可复制保存在a寄存器</p>
+<p>如果使用大写字母，则会将其以append方式附加在寄存器中</p>
+<p><code>&quot;Ayy</code>不覆盖a寄存器中的内容，在其后面继续添加内容</p>
+<h3 id="书签"><a href="#书签" class="headerlink" title="书签"></a>书签</h3><p>vim还有一个书签功能，可以设置26个书签</p>
+<p><code>ma</code>即将目前所在位置标记为a</p>
+<p>之后可以快速回到这个位置，只需使用<code>&#39;a </code>或`a</p>
+<h2 id="Instruction"><a href="#Instruction" class="headerlink" title="Instruction"></a>Instruction</h2><p>:set nu 显示行号</p>
+<p>:set nonu 不显示行号</p>
+<p>:set relativenumber 设置显示相对行号</p>
+<p>:set ts=4 设置tab的宽度为4</p>
+<p>:open &lt;file&gt; 打开文件</p>
+<p>:x 保存退出</p>
+<p>:qa! 不保存退出</p>
+<p>:[addr]s/源字符串/目的字符串[options]</p>
+<p>vi 可以说是ex 编辑器的升级版，ex编辑器是一个没有图形化的编辑器，纯命令行的交互，而vi、vim也都完全支持了ex的命令</p>
+<p>这作为命令模式保留在了vi中</p>
+<p>例如替换的命令<code>:s/Hello/hello</code>即可将Hello替换为hello</p>
+<p>删除行的命令<code>:13,23d</code></p>
+<p>移动<code>:220,231m2</code>将220行到231行的内容移到第二行下面</p>
+<p><code>:/pattern/=</code>显示pattern第一次出现的行号</p>
+<p>ex模式中<code>.</code>代表当前行,<code>$</code>代表最后一行,<code>%</code>代表每一行</p>
+<p><code>:20r file</code> 读取file，并写在当前这个文件的20行处</p>
+<p><code>:e filename</code> 在编辑这个文件时打开另一个文件，编辑另一个文件结束后返回当前文件</p>
+<p><code>:e!</code> 回到先前编辑的文件</p>
+<p>当命令行启动跟着多个参数时，<code>:n</code>切换到下一个文件</p>
+<p>之后可以用<code>&lt;C-^&gt;</code>切换buffer</p>
+<p>在编辑多个文件时也可以使用寄存器保存复制和删除的内容，在多个文件间粘贴</p>
+<h3 id="匹配和替换"><a href="#匹配和替换" class="headerlink" title="匹配和替换"></a>匹配和替换</h3><p>源字符串和目的字符串可以用正则表达式</p>
+<p>addr:</p>
+<ul>
+<li>%全局</li>
+<li>1,20 一到二十行</li>
+<li>.,$ 当前行到文件尾</li>
+<li>空着默认只有当前行</li>
+</ul>
+<p>options:</p>
+<ul>
+<li>g 全局</li>
+<li>c 每一个替换时进行确认</li>
+<li>p 结果逐行显示</li>
+</ul>
+<p>搜索中使用的正则表达式和python中语法相同：</p>
+<p><code>^开始； $结束；*重复0次到多次；[]一个字符；（）一个表达式</code></p>
+<h2 id="Vimrc"><a href="#Vimrc" class="headerlink" title="Vimrc"></a>Vimrc</h2><p>vimrc是vim的配置文件，可以设置每次启动vim时执行的命令</p>
+<p>例如上面instruction的一些内容可以直接写在vimrc中使得每次启动自动执行</p>
+<p>不过vimrc最重要的一个功能还是按键的映射，可以将按键映射为不同的功能和指令</p>
+<p>首先我们设置一下LEADER键</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> mapleader=<span class="string">&quot; &quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以设置leader键为空格</p>
+<p>之后可以通过map设置一些用空格触发的快捷键</p>
+<h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><p>vim的插件属于更高级，更个性化的用法，在熟悉了前面的基础操作后逐步增加插件</p>
+<h3 id="vim-plug"><a href="#vim-plug" class="headerlink" title="vim-plug"></a>vim-plug</h3><p>vim-plug是vim的一个插件管理插件；</p>
+<p>安装方法:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fLo ~/.vim/<span class="built_in">autoload</span>/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后需要在<code>.vimrc</code>中添加这样的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call plug<span class="comment">#begin(&#x27;~/.vim/plugged&#x27;)</span></span><br><span class="line">	Plug <span class="string">&#x27;...&#x27;</span></span><br><span class="line">call plug<span class="comment">#end()</span></span><br></pre></td></tr></table></figure>
+
+<p>在需要安装内容时将<code>...</code>替换为需要安装的插件的github上repo链接即可</p>
+<p>只需要链接的后半部分，例如：</p>
+<p><code>github.com/garbas/vim-snipmate.git</code>只需要写<code>garbas/vim-snipmate</code>即可</p>
+<p>设置好vimrc后在启动vim时使用<code>:PlugInstall</code>就会自动安装</p>
+<p>需要更新插件时<code>:PlugUpdate</code>，更新<code>vim-plug</code>本身<code>:PlugUpgrade</code></p>
+<h3 id="NerdTree"><a href="#NerdTree" class="headerlink" title="NerdTree"></a>NerdTree</h3><p>NerdTree可以作为侧边栏出现文件树，方便打开同一个工程内的其他文件</p>
+<p>repo位置<code>scrooloose/nerdtree</code></p>
+<p>在vimrc中加入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map &lt;LEADER&gt;f :NERDTreeToggle &lt;CR&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以将打开关闭树的功能与LEADER加f键绑定</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/09/zsh/" rel="prev" title="zsh">
+      <i class="fa fa-chevron-left"></i> zsh
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/21/simple-sipder/" rel="next" title="simple-sipder">
+      simple-sipder <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Normal-Mode"><span class="nav-number">1.</span> <span class="nav-text">Normal Mode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8"><span class="nav-number">1.1.</span> <span class="nav-text">移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">高级用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%8A%98%E5%8F%A0"><span class="nav-number">2.1.</span> <span class="nav-text">代码折叠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%A6%E7%AD%BE"><span class="nav-number">2.3.</span> <span class="nav-text">书签</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Instruction"><span class="nav-number">3.</span> <span class="nav-text">Instruction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E5%92%8C%E6%9B%BF%E6%8D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">匹配和替换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vimrc"><span class="nav-number">4.</span> <span class="nav-text">Vimrc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vim-plug"><span class="nav-number">5.1.</span> <span class="nav-text">vim-plug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NerdTree"><span class="nav-number">5.2.</span> <span class="nav-text">NerdTree</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

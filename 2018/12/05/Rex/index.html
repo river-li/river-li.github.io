@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="rex是Shellphish开发的用于自动化漏洞挖掘的漏洞分类器，该团队用这个库参加CGC获得了很好的名次，但是这个库的依赖十分混乱，导致不是很容易看懂代码，本文整理了Rex的安装过程及对原理、源代码的分析。   环境搭建rex在github上的地址：https:&#x2F;&#x2F;github.com&#x2F;shellphish&#x2F;rex clone下来看到其中有一个requirements.txt 可以看到其中涉及到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rex">
+<meta property="og:url" content="https://river-li.xyz/2018/12/05/Rex/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="rex是Shellphish开发的用于自动化漏洞挖掘的漏洞分类器，该团队用这个库参加CGC获得了很好的名次，但是这个库的依赖十分混乱，导致不是很容易看懂代码，本文整理了Rex的安装过程及对原理、源代码的分析。   环境搭建rex在github上的地址：https:&#x2F;&#x2F;github.com&#x2F;shellphish&#x2F;rex clone下来看到其中有一个requirements.txt 可以看到其中涉及到">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-05T06:41:09.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.632Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="hack">
+<meta property="article:tag" content="作业">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2018/12/05/Rex/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>rex | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/05/Rex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rex
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-05 14:41:09" itemprop="dateCreated datePublished" datetime="2018-12-05T14:41:09+08:00">2018-12-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hack-tools/" itemprop="url" rel="index"><span itemprop="name">hack tools</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>rex是Shellphish开发的用于自动化漏洞挖掘的漏洞分类器，该团队用这个库参加CGC获得了很好的名次，但是这个库的依赖十分混乱，导致不是很容易看懂代码，本文整理了Rex的安装过程及对原理、源代码的分析。</p>
+<!--more--->
+
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p>rex在github上的地址：<a target="_blank" rel="noopener" href="https://github.com/shellphish/rex">https://github.com/shellphish/rex</a></p>
+<p>clone下来看到其中有一个<strong>requirements.txt</strong></p>
+<p>可以看到其中涉及到的依赖有：</p>
+<blockquote>
+<p>angr</p>
+<p>tracer</p>
+<p>angrop</p>
+<p>compilerex</p>
+<p>shellphish-qemu</p>
+<p>povsim</p>
+</blockquote>
+<p><code>pip install -r requirements.txt</code>安装其中涉及到的依赖时会出错，建议分别单独安装</p>
+<p>如果单独使用pip安装时出错，就在github上寻找相应的地址下载下来安装</p>
+<p>以compilerex为例：地址：<a target="_blank" rel="noopener" href="https://github.com/mechaphish/compilerex">github.com/mechaphish/compilerex</a></p>
+<p>下载下来后在其目录中输入<code>python3 setup.py install</code></p>
+<p>依赖全部安装完成后在rex目录中也执行该命令</p>
+<p>之后在ipython交互界面中尝试导入rex：<code>import rex</code></p>
+<p> 如果没有错误则成功安装</p>
+<p>如果出现差错，建议直接clone出问题的库源码安装（build）</p>
+<p><strong>compilerex</strong> 需要cp到python解释器的目录里面，因为在使用rex时会需要编译c代码生成pov</p>
+<h3 id="Crash类"><a href="#Crash类" class="headerlink" title="Crash类"></a>Crash类</h3><p>下面开始分析源码，目录结构如下：</p>
+
+
+<p> 其中crash.py中有一个Crash类，是初始化时使用到的一个类;</p>
+<h4 id="Crash-init"><a href="#Crash-init" class="headerlink" title="Crash.__init__()"></a>Crash.__init__()</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, binary, 	<span class="comment">#Path to the binary which crashed. </span></span></span></span><br><span class="line"><span class="function"><span class="params">             crash=None,  <span class="comment">#String of input which crashed the binary</span></span></span></span><br><span class="line"><span class="function"><span class="params">             pov_file=None,  <span class="comment">#CGC PoV describing a crash.</span></span></span></span><br><span class="line"><span class="function"><span class="params">             aslr=None,  <span class="comment">#Analyze the crash with aslr on or off</span></span></span></span><br><span class="line"><span class="function"><span class="params">             constrained_addrs=None,  <span class="comment">#List of addrs which have been constrained during exploration.</span></span></span></span><br><span class="line"><span class="function"><span class="params">             crash_state=None, <span class="comment">#An already traced crash state.</span></span></span></span><br><span class="line"><span class="function"><span class="params">             prev_path=None,  <span class="comment">#Path leading up to the crashing block</span></span></span></span><br><span class="line"><span class="function"><span class="params">             hooks=None,   <span class="comment">#Dictionary of simprocedure hooks, addresses to simprocedures.</span></span></span></span><br><span class="line"><span class="function"><span class="params">             format_infos=None, </span></span></span><br><span class="line"><span class="function"><span class="params">             rop_cache_tuple=None, </span></span></span><br><span class="line"><span class="function"><span class="params">             use_rop=True, </span></span></span><br><span class="line"><span class="function"><span class="params">             fast_mode=False,</span></span></span><br><span class="line"><span class="function"><span class="params">             explore_steps=<span class="number">0</span>, </span></span></span><br><span class="line"><span class="function"><span class="params">             angrop_object=None, </span></span></span><br><span class="line"><span class="function"><span class="params">             argv=None,</span></span></span><br><span class="line"><span class="function"><span class="params">             concrete_fs=False, </span></span></span><br><span class="line"><span class="function"><span class="params">             chroot=None, </span></span></span><br><span class="line"><span class="function"><span class="params">             rop_cache_path=None,</span></span></span><br><span class="line"><span class="function"><span class="params">             trace_timeout=<span class="number">10</span>, </span></span></span><br><span class="line"><span class="function"><span class="params">             input_type=CrashInputType.STDIN,</span></span></span><br><span class="line"><span class="function"><span class="params">             port=None, </span></span></span><br><span class="line"><span class="function"><span class="params">             use_crash_input=False,</span></span></span><br><span class="line"><span class="function"><span class="params">             tracer_args=None,</span></span></span><br><span class="line"><span class="function"><span class="params">             initial_state=None</span>):</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，参数巨多，因此我们只关注最重要的几个; </p>
+<p>initi函数主要对类的属性进行了初始化，作了一些检测和判断来确定缺省值，有一个重要的属性：<strong>self.project</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">self.project = angr.Project(binary)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>这里对输入的二进制文件创建了一个angr的Project;</p>
+<p>下面是关于Rop的部分操作，比较复杂，在此首先略过，最后再来看对于Rop的操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> crash_state <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    self.state = crash_state</span><br><span class="line">    self.prev = prev_path</span><br><span class="line">    self._t = <span class="literal">None</span>    </span><br></pre></td></tr></table></figure>
+
+<p>如果crash_state在创建时没有声明，这部分的代码会调用tracer来获取crash_state</p>
+<p>展开详细一点看这部分，其中有一行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = tracer.QEMURunner(binary=binary, input=input_data, argv=argv, trace_timeout=trace_timeout, **tracer_args)</span><br></pre></td></tr></table></figure>
+
+<p>这里调用了tracer创建了一个QEMURunner对象</p>
+<p>为了方便了解Tracer到底是个啥，我特意去找了QEMURunner类的描述和其中的注释</p>
+<blockquote>
+<p>Trace an angr path with a concrete input using QEMU</p>
+</blockquote>
+<p>就是用QEMU跟踪具体input到达的angr路径</p>
+<p>这里还算比较好理解，input_data现在就是导致crash的输入，r这个对象就是要跟踪导致这个输入的程序执行路径</p>
+<p>好的，我们继续</p>
+<p>下面有一个部分，判断了一下input_type,然后根据这个input_type 生成了一个input_file</p>
+<p>CrashInputType是个啥？在文件头那里发现是从enum.py引入的，去看了看：</p>
+<blockquote>
+<p>class CrashInputType:</p>
+<pre><code>STDIN=0type was an arbitrary-write, this routine doesn&#39;t care about taking advantage
+    # of the write it just wants to try to find a more valuable crash by pointing the write
+    # at some writable memory</code></pre>
+<p>​    POV_FILE=1</p>
+<p>​    TCP=2</p>
+<p>​    UDP=3</p>
+</blockquote>
+<p>就这些，看来是要根据这个输入到底是否需要用到网络文件设定的一个分类</p>
+<p>我们继续看</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> input_type == CrashInputType.TCP:</span><br><span class="line">    input_file = input_sock = SimFileStream(name=<span class="string">&quot;aeg_tcp_in&quot;</span>, ident=<span class="string">&#x27;aeg_stdin&#x27;</span>)</span><br><span class="line">    output_sock = SimFileStream(name=<span class="string">&quot;aeg_tcp_out&quot;</span>)</span><br><span class="line">    socket_queue = [ <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span>, (input_sock, output_sock) ] <span class="comment"># FIXME THIS IS A HACK</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    input_file = stdin_file = SimFileStream(name=<span class="string">&#x27;stdin&#x27;</span>, ident=<span class="string">&#x27;aeg_stdin&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>反正不管是啥类型都要创建个input_file</p>
+<p>这个file是用<code>SimFileStream</code>生成的，又是angr的一个部分，具体怎么实现的就先不管了，反正是angr模拟出来的文件</p>
+<p>下面吧啦吧啦又初始化了一大堆东西，有这么一行比较重要</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">simgr.run()</span><br></pre></td></tr></table></figure>
+
+<p><strong>这是angr的factory运行起来了啊！</strong>可以说从最开始初始化一大堆就是为了这么个run，all right，我们再仔细看一下这个simgr是怎么创建的</p>
+<p>上面设定的一些属性里面有一个是我们关心的地方：</p>
+<blockquote>
+<p>self._t = angr.exploration_techniques.Tracer(trace=r.trace, resiliency=False, keep_predecessors=2, crash_addr=r.crash_addr)</p>
+<p>simgr.use_technique(self._t)</p>
+<p>simgr.use_technique(angr.exploration_techniques.Oppologist())</p>
+</blockquote>
+<p>这个technique名字有点意思，感觉上像是漏洞利用技巧，我们看看它这部分有点啥</p>
+<p>Tracer类的描述</p>
+<blockquote>
+<p>An exploration technique that follows an angr path with a concrete input</p>
+</blockquote>
+<p>再看看这个Oppologist</p>
+<blockquote>
+<p>The Oppologist is an exploration technique that forces uncooperative code through qemu</p>
+</blockquote>
+<p>在simgr运行了之后，对得到的结果进行了一些判断，并且得到内存的map，之后有这么一句</p>
+<blockquote>
+<p>self._triage_crash()</p>
+</blockquote>
+<p>之后开始对crash进行分类</p>
+<h4 id="Crash-triage-crash-self"><a href="#Crash-triage-crash-self" class="headerlink" title="Crash._triage_crash(self)"></a>Crash._triage_crash(self)</h4><p>大致一眼看上去，可以看到这个函数进行了几个判断，判断漏洞类型是否是任意转移、ip任意写、部分ip任意写、bp任意写、部分bp任意写几种类型。</p>
+<p>我们一个一个看，看看是如何判断漏洞类型的。</p>
+<h5 id="Arbitrary-Transmit"><a href="#Arbitrary-Transmit" class="headerlink" title="Arbitrary Transmit"></a>Arbitrary Transmit</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">zp = self.state.get_plugin(<span class="string">&#x27;zen_plugin&#x27;</span>) <span class="keyword">if</span> self.os == <span class="string">&#x27;cgc&#x27;</span> <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> zp <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> len(zp.controlled_transmits):</span><br><span class="line">    l.debug(<span class="string">&quot;detected arbitrary transmit vulnerability&quot;</span>)</span><br><span class="line">    self.crash_types.append(Vulnerability.ARBITRARY_TRANSMIT)</span><br></pre></td></tr></table></figure>
+
+<p>emmmm有点微妙，第一行做了一个判断，看来rex只能对cgc系统的机器检测是否有这种漏洞，那我们暂且略过，时间充裕的话再来看。</p>
+<h5 id="IP-Overwrite"><a href="#IP-Overwrite" class="headerlink" title="IP Overwrite"></a>IP Overwrite</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> self.state.solver.symbolic(ip):</span><br><span class="line">    <span class="comment"># how much control of ip do we have?</span></span><br><span class="line">    <span class="keyword">if</span> self._symbolic_control(ip) &gt;= self.state.arch.bits:</span><br><span class="line">        l.info(<span class="string">&quot;detected ip overwrite vulnerability&quot;</span>)</span><br><span class="line">        self.crash_types.append(Vulnerability.IP_OVERWRITE)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        l.info(<span class="string">&quot;detected partial ip overwrite vulnerability&quot;</span>)</span><br><span class="line">        self.crash_types.append(Vulnerability.PARTIAL_IP_OVERWRITE)</span><br></pre></td></tr></table></figure>
+
+<p>调用的一个_symbolic_control(ip)函数定义如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_symbolic_control</span>(<span class="params">self, st</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        determine the amount of symbolic bits in an ast, useful to determining how much control we have</span></span><br><span class="line"><span class="string">        over registers</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">    sbits = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> bitidx <span class="keyword">in</span> range(self.state.arch.bits):</span><br><span class="line">        <span class="keyword">if</span> st[bitidx].symbolic:</span><br><span class="line">            sbits += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> sbits</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这个函数将输入之后的一段按位判断是否被符号化，如果被符号化则说明是可控制的状态</p>
+<p>结合上面那部分可以得知，如果所有的比特都能被我们控制，则认为是IP Overwrite，如果只有一部分可控，则是partial ip overwrite</p>
+<h5 id="BP-Overwrite"><a href="#BP-Overwrite" class="headerlink" title="BP Overwrite"></a>BP Overwrite</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> self.state.solver.symbolic(bp):</span><br><span class="line">    <span class="comment"># how much control of bp do we have</span></span><br><span class="line">    <span class="keyword">if</span> self._symbolic_control(bp) &gt;= self.state.arch.bits:</span><br><span class="line">        l.info(<span class="string">&quot;detected bp overwrite vulnerability&quot;</span>)</span><br><span class="line">        self.crash_types.append(Vulnerability.BP_OVERWRITE)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        l.info(<span class="string">&quot;detected partial bp overwrite vulnerability&quot;</span>)</span><br><span class="line">        self.crash_types.append(Vulnerability.PARTIAL_BP_OVERWRITE)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>与前面同理，判断BP的可控制比特</p>
+<h5 id="Write-amp-Read"><a href="#Write-amp-Read" class="headerlink" title="Write &amp; Read"></a>Write &amp; Read</h5><p>这部分可以看到首先是创建了一个symbolic_actions列表</p>
+<p>之后对crash前state进行的操作进行判断，如果是对内存（mem）进行操作的类型</p>
+<p>则将其添加至列表中</p>
+<p>再对列表中的各个操作（action）进行判断，判断其中的写操作是否符号化</p>
+<p>如果存在符号化的写指令，则被判断为<strong>Write-What-Where</strong></p>
+<p>如果存在写指令，但没有被符号化，则判断为<strong>Write-X-Where</strong></p>
+<p>如果存在读指令，则被判断为<strong>Arbitary-Read</strong></p>
+<hr>
+<p>当以上两个函数执行完毕，我们得到了一个列表：<strong>self.violating_action</strong></p>
+<p>里面存放着这个crash的类型</p>
+<hr>
+<h4 id="Crash-explore-self-path-file-None"><a href="#Crash-explore-self-path-file-None" class="headerlink" title="Crash.explore(self,path_file=None)"></a>Crash.explore(self,path_file=None)</h4><p>这个模块的函数主要是对前面已经得到的漏洞类型进行进一步的漏洞利用</p>
+<p>具体可以对这部分利用的漏洞类型只有Write-X-Where、Write-What-Where、Arbitary-Read</p>
+<p>这部分函数首先判断是否属于前面的类型，之后再调用相应的利用函数</p>
+<h5 id="Crash-explore-arbitrary-read-self-path-file-None"><a href="#Crash-explore-arbitrary-read-self-path-file-None" class="headerlink" title="Crash._explore_arbitrary_read(self,path_file=None)"></a>Crash._explore_arbitrary_read(self,path_file=None)</h5><p>我们先直接看到这个函数的最后面</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">self.__init__(self.binary,</span><br><span class="line">             new_input,</span><br><span class="line">             explore_steps=self.explore_steps+<span class="number">1</span>,</span><br><span class="line">             constrained_addrs=self.constrained_addrs + [self.violating_action],</span><br><span class="line">             use_rop=use_rop</span><br><span class="line">             angrop_object=self.rop)</span><br></pre></td></tr></table></figure>
+
+<p>咦？有点熟悉，这不是最初初始化的函数吗，看来这个函数在最后又重新创建了一个新的Crash</p>
+<p>这也符合explore那里的描述</p>
+<blockquote>
+<p>explore a crash futher to find new bugs</p>
+</blockquote>
+<p>这样看来new_input这个参数就是能够导致读到flag的输入了</p>
+<p>向上看到这个输入的构造：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new_input = ChallRespInfo.atoi_dumps(self.state)</span><br></pre></td></tr></table></figure>
+
+<p>真是让人头秃，又是新的类和函数调用</p>
+<p>ChallRespInfo是最开始从angr里import的</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> angr.state_plugins.trace_additions <span class="keyword">import</span> ChallRespInfo, ZenPlugin</span><br></pre></td></tr></table></figure>
+
+<p>我们去看一看这个函数的定义</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">atoi_dumps(state,require_same_length=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这里就是将可以执行到<code>self.state</code>状态的输入dump出来作为crash</p>
+<p>因此在这一步之前对state进行了修改，看一下前面与state有关的操作</p>
+<p>首先将constraint赋初值为<code>None</code>，之后在每一个page和region进行判断</p>
+<p>如果page在violating_action中，则认为这里的内存是可以约束的</p>
+<h5 id="Crash-explore-arbitrary-write-path-file"><a href="#Crash-explore-arbitrary-write-path-file" class="headerlink" title="Crash._explore_arbitrary_write(path_file):"></a>Crash._explore_arbitrary_write(path_file):</h5><p>首先可以看到注释:</p>
+<blockquote>
+<p>crash type was an arbitrary-write, this routine doesn’t care about taking advantage </p>
+<p>of the write it just wants to try to find a more valuable crash by pointing the write</p>
+<p>at some writable memory</p>
+</blockquote>
+<p>首先获取loader中所有的ELF文件，对其进行判断筛选得到可写的文件</p>
+<p>之后对可写的文件逐页判断是否在violating_action.addr中，最后将执行到可利用地址的输入dump出来作为一个新的输入，再创建一个新的Crash对象</p>
+<h4 id="Crash-exploit"><a href="#Crash-exploit" class="headerlink" title="Crash.exploit()"></a>Crash.exploit()</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span>(<span class="params">self,blacklist_symbolic_explore=True,**kwargs</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    craft an exploit for a crash</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    	factory = self._prepare_exploit_factory(blacklist_symbolic_explore, **kwargs)</span><br><span class="line">        factory.initialize()</span><br><span class="line">        <span class="keyword">return</span> factory</span><br></pre></td></tr></table></figure>
+
+<p>创建了一个factory，初始化后return</p>
+<p>正好这个<code>_prepare_exploit_factory</code>函数就在上面</p>
+<p>前面一些初始化操作之后，判断系统类型</p>
+<p>返回了一个<code>ExploitFactory</code>或者是<code>CGCExploitFactory</code>对象</p>
+<p>这个类是继承了Exploit类的，描述是</p>
+<blockquote>
+<p>Exploit factory object responsible for managing exploits and creating exploit objects</p>
+</blockquote>
+<h3 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h3><p>官方的README中实例如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># triage a crash</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>crash = rex.Crash(<span class="string">&quot;./legit_00003&quot;</span>, <span class="string">b&quot;\x00\x0b1\xc1\x00\x0c\xeb\xe4\xf1\xf1\x14\r\rM\r\xf3\x1b\r\r\r~\x7f\x1b\xe3\x0c`_222\r\rM\r\xf3\x1b\r\x7f\x002\x7f~\x7f\xe2\xff\x7f\xff\xff\x8b\xc7\xc9\x83\x8b\x0c\xeb\x80\x002\xac\xe2\xff\xff\x00t\x8bt\x8bt_o_\x00t\x8b\xc7\xdd\x83\xc2t~n~~\xac\xe2\xff\xff_k_\x00t\x8b\xc7\xdd\x83\xc2t~n~~\xac\xe2\xff\xff\x00t\x8bt\x8b\xac\xf1\x83\xc2t~c\x00\x00\x00~~\x7f\xe2\xff\xff\x00t\x9e\xac\xe2\xf1\xf2@\x83\xc3t&quot;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>crash.crash_types</span><br><span class="line">[<span class="string">&#x27;write_what_where&#x27;</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>crash.explorable()</span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="comment"># explore the crash by setting segfaulting pointers to sane values and re-tracing</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>crash.explore()</span><br><span class="line"><span class="comment"># now we can see that we control instruction pointer</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>crash.crash_types</span><br><span class="line"><span class="string">&#x27;ip_overwrite&#x27;</span></span><br><span class="line"><span class="comment"># generate exploits based off of this crash</span></span><br><span class="line"><span class="comment"># it may take several minutes</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arsenal = crash.exploit()</span><br><span class="line"><span class="comment"># we generated a type 1 POV for every register</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>len(arsenal.register_setters) <span class="comment"># we generate one circumstantial register setter, one shellcode register setter</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="comment"># and one Type 2 which can leak arbitrary memory</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>len(arsenal.leakers)</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="comment"># exploits are graded based on reliability, and what kind of defenses they can</span></span><br><span class="line"><span class="comment"># bypass, the two best exploits are put into the &#x27;best_type1&#x27; and &#x27;best_type2&#x27; attributes</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arsenal.best_type1.register</span><br><span class="line"><span class="string">&#x27;ebp&#x27;</span></span><br><span class="line"><span class="comment"># exploits can be dumped in C, Python, or as a compiled POV</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arsenal.best_type2.dump_c(<span class="string">&#x27;legit3_x.c&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arsenal.best_type2.dump_python(<span class="string">&#x27;legit3_x.py&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arsenal.best_type2.dump_binary(<span class="string">&#x27;legit3_x.pov&#x27;</span>)</span><br><span class="line"><span class="comment"># also POVs can be tested against a simulation of the CGC architecture</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arsenal.best_type1.test_binary()</span><br><span class="line"><span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p>这里用到了一个CGC二进制文件：<a target="_blank" rel="noopener" href="https://github.com/angr/binaries">https://github.com/angr/binaries</a> </p>
+<p>这个repo下面的defcon24目录下有一个<code>legit00003</code>程序</p>
+<p>首先使用AFL fuzzing出来一个crash</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b&quot;\x00\x0b1\xc1\x00\x0c\xeb\xe4\xf1\xf1\x14\r\rM\r\xf3\x1b\r\r\r~\x7f\x1b\xe3\x0c&#96;_222\r\rM\r\xf3\x1b\r\x7f\x002\x7f~\x7f\xe2\xff\x7f\xff\xff\x8b\xc7\xc9\x83\x8b\x0c\xeb\x80\x002\xac\xe2\xff\xff\x00t\x8bt\x8bt_o_\x00t\x8b\xc7\xdd\x83\xc2t~n~~\xac\xe2\xff\xff_k_\x00t\x8b\xc7\xdd\x83\xc2t~n~~\xac\xe2\xff\xff\x00t\x8bt\x8b\xac\xf1\x83\xc2t~c\x00\x00\x00~~\x7f\xe2\xff\xff\x00t\x9e\xac\xe2\xf1\xf2@\x83\xc3t&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在ipython中导入rex库，创建一个Crash对象</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/hack/" rel="tag"># hack</a>
+              <a href="/tags/%E4%BD%9C%E4%B8%9A/" rel="tag"># 作业</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/10/arch%E5%8D%87%E7%BA%A7%E5%A3%B0%E5%8D%A1%E5%B4%A9%E6%BA%83%E8%A7%A3%E5%86%B3/" rel="prev" title="arch升级声卡崩溃解决">
+      <i class="fa fa-chevron-left"></i> arch升级声卡崩溃解决
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/06/hexo%E5%BC%95%E7%94%A8%E5%9B%BE%E7%89%87/" rel="next" title="hexo引用图片">
+      hexo引用图片 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crash%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">Crash类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Crash-init"><span class="nav-number">2.1.</span> <span class="nav-text">Crash.__init__()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crash-triage-crash-self"><span class="nav-number">2.2.</span> <span class="nav-text">Crash._triage_crash(self)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Arbitrary-Transmit"><span class="nav-number">2.2.1.</span> <span class="nav-text">Arbitrary Transmit</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#IP-Overwrite"><span class="nav-number">2.2.2.</span> <span class="nav-text">IP Overwrite</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#BP-Overwrite"><span class="nav-number">2.2.3.</span> <span class="nav-text">BP Overwrite</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Write-amp-Read"><span class="nav-number">2.2.4.</span> <span class="nav-text">Write &amp; Read</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crash-explore-self-path-file-None"><span class="nav-number">2.3.</span> <span class="nav-text">Crash.explore(self,path_file&#x3D;None)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Crash-explore-arbitrary-read-self-path-file-None"><span class="nav-number">2.3.1.</span> <span class="nav-text">Crash._explore_arbitrary_read(self,path_file&#x3D;None)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Crash-explore-arbitrary-write-path-file"><span class="nav-number">2.3.2.</span> <span class="nav-text">Crash._explore_arbitrary_write(path_file):</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crash-exploit"><span class="nav-number">2.4.</span> <span class="nav-text">Crash.exploit()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Examples"><span class="nav-number">3.</span> <span class="nav-text">Examples</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

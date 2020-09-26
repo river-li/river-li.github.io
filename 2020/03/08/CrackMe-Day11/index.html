@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CrackMe11第十一道CrackMe 作者Andrenalin 程序运行状态这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样   虽然能输入，但是没有找到有回车之类的按键 推测是不是实时检测的，如果对了就自动成功 逆向分析  这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西 由于从字符串上没找到很有价值的东西，所以考虑从API来下断点   我们之前分析过前面的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CrackMe-Day11">
+<meta property="og:url" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="CrackMe11第十一道CrackMe 作者Andrenalin 程序运行状态这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样   虽然能输入，但是没有找到有回车之类的按键 推测是不是实时检测的，如果对了就自动成功 逆向分析  这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西 由于从字符串上没找到很有价值的东西，所以考虑从API来下断点   我们之前分析过前面的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-08T15:53:11.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:47:04.476Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="hack">
+<meta property="article:tag" content="re">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2020/03/08/CrackMe-Day11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CrackMe-Day11 | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/08/CrackMe-Day11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CrackMe-Day11
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-08 23:53:11" itemprop="dateCreated datePublished" datetime="2020-03-08T23:53:11+08:00">2020-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
+<p>作者Andrenalin</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
+
+
+<p>虽然能输入，但是没有找到有回车之类的按键</p>
+<p>推测是不是实时检测的，如果对了就自动成功</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
+
+<p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
+<p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
+
+
+<p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
+<p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
+
+
+<p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
+<p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
+<p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
+
+
+
+
+<p>下面还是进一步分析程序</p>
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>我们仔细看一下这个前面的判断比较的内容</p>
+<p><code>dword ptr ss:[ebp-0x34]</code></p>
+<p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
+<p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
+
+
+
+
+<p>看一下循环中调用了哪些API</p>
+
+
+<p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
+<p>获得str、之后转换为ASCII码</p>
+<p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
+<p>准备反编译看一下，找来了VB Decompiler</p>
+
+
+<p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
+<p>还有4个时间器的函数</p>
+<p>其中有一个click的函数和其他的不太一样</p>
+
+
+<p>对比一下</p>
+
+
+<p>发现多了长度减一，这个应该是退格键</p>
+<p>检查一下时间器的代码，发现四个时间器代码都差不多</p>
+<p>核心的部分都是那一段</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> loc_00406ED6: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br><span class="line"> loc_00406EDC: </span><br><span class="line">loc_00406EDE: <span class="keyword">If</span> var_24 = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_0040700D</span><br><span class="line"> loc_00406F79: var_7C = (Asc(<span class="keyword">Mid</span>$(<span class="built_in">CStr</span>(var_44), <span class="built_in">CLng</span>(var_24), <span class="number">1</span>)) + Val(<span class="built_in">CStr</span>(Left(var_44, <span class="number">2</span>))))</span><br><span class="line"> loc_00406F8C: var_8C = Hex$(var_7C)</span><br><span class="line"> loc_00406FB9: var_34 = <span class="number">0</span> &amp; Hex$(var_7C)</span><br><span class="line"> loc_00407002: <span class="keyword">Next</span> var_24</span><br><span class="line"> loc_00407008: <span class="keyword">GoTo</span> loc_00406EDC</span><br><span class="line"> loc_0040700D: <span class="comment">&#x27;Referenced from: 00406EDE</span></span><br><span class="line"> loc_00407035: <span class="keyword">If</span> (var_34 = <span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C&quot;</span>) = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_00407083</span><br><span class="line"> loc_0040705C: Label3.Caption = <span class="string">&quot;REGISTRIERT&quot;</span></span><br><span class="line"> loc_00407083: <span class="comment">&#x27;Referenced from: 00407035</span></span><br><span class="line"> loc_004070F3: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><code>var_24</code>为0时直接跳转到下面的判断</p>
+<p>而对正常的每个字符，执行的操作是：</p>
+<ol>
+<li><code>var_7C = (Asc(Mid$(CStr(var_44), CLng(var_24), 1)) + Val(CStr(Left(var_44, 2))))</code><ol>
+<li><code>CLng</code>将<code>var_24</code>转换成长整形</li>
+<li><code>CStr</code>将<code>var_44</code>转换成字符串</li>
+<li><code>Left</code>函数返回<code>var_44</code>左数两个字符</li>
+<li><code>Val</code>函数将字符串转换为数值，这个函数会在不能识别</li>
+<li><code>Mid</code>函数将<code>var_44</code>左起第<code>var_24</code>位，长度1提取出来</li>
+<li><code>ASC</code>函数返回字符串中第一个字符的ASCII码</li>
+</ol>
+</li>
+<li><code>var_8C = Hex$(var_7c)</code> 将其转换为Hex的值</li>
+<li><code>var_34 = 0 &amp; Hex$(var_7C)</code> 结果和0相与</li>
+<li>最终结果要等于<code>0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C</code></li>
+</ol>
+<p>最后的程序直接参照了网上的注册机</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">string</span> kb=<span class="string">&quot;0123456789*#&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> kb_dec[]=&#123;<span class="number">48</span>,<span class="number">49</span>,<span class="number">50</span>,<span class="number">51</span>,<span class="number">52</span>,<span class="number">53</span>,<span class="number">54</span>,<span class="number">55</span>,<span class="number">56</span>,<span class="number">57</span>,<span class="number">42</span>,<span class="number">35</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> kb_hex[]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>,<span class="number">15</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> hexlist=<span class="string">&quot;0123456789ABCDEF&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> key_num=<span class="number">2</span>;</span><br><span class="line"><span class="built_in">string</span> key=<span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7B7C7D826D817E7B7C&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hexstr_to_dec</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> s)</span> <span class="comment">//转16进制两位字符到十进制数</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        a=hexlist.find(s[<span class="number">0</span>]);</span><br><span class="line">        b=hexlist.find(s[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> a*<span class="number">16</span>+b;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span>   </span></span><br><span class="line"><span class="function">        </span>&#123; </span><br><span class="line">        <span class="keyword">int</span> key_value;</span><br><span class="line">        <span class="keyword">int</span> base_value;</span><br><span class="line">        <span class="built_in">string</span> psword;</span><br><span class="line">        <span class="keyword">char</span> p;</span><br><span class="line">        <span class="built_in">string</span> key_str=key.substr(<span class="number">1</span>,<span class="number">2</span>);  <span class="comment">//取Key的二、三位</span></span><br><span class="line">        key_value=hexstr_to_dec(key_str);</span><br><span class="line">         </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;=<span class="number">9</span>;x++)                <span class="comment">//确定公共值base_value                 </span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;y&lt;=<span class="number">9</span>;y++)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">if</span> (y+x*<span class="number">10</span>+kb_dec[x]==key_value)</span><br><span class="line">                        &#123;</span><br><span class="line">                        base_value=x*<span class="number">10</span>+y;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;公共值:&quot;</span>&lt;&lt;base_value&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;key.length();x+=<span class="number">2</span>)          <span class="comment">/*计算 注册码 部分*/</span></span><br><span class="line">                &#123;</span><br><span class="line">                key_str=key.substr(x,<span class="number">2</span>);</span><br><span class="line">                key_value=hexstr_to_dec(key_str);</span><br><span class="line">                p=(<span class="keyword">char</span>)(key_value-base_value);</span><br><span class="line">                psword=psword+p;</span><br><span class="line">                &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;password:&quot;</span>&lt;&lt;psword&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        system(<span class="string">&quot;pause&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hack/" rel="tag"># hack</a>
+              <a href="/tags/re/" rel="tag"># re</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/07/CrackMe-Day10/" rel="prev" title="CrackMe-Day10">
+      <i class="fa fa-chevron-left"></i> CrackMe-Day10
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/09/CrackMe-Day12/" rel="next" title="CrackMe-Day12">
+      CrackMe-Day12 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CrackMe11"><span class="nav-number">1.</span> <span class="nav-text">CrackMe11</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E7%8A%B6%E6%80%81"><span class="nav-number">1.1.</span> <span class="nav-text">程序运行状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">逆向分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">进一步分析</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
