@@ -139,6 +139,11 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
+        <li class="menu-item menu-item-friends">
+
+    <a href="/friends/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
   </ul>
 </nav>
 
@@ -185,7 +190,125 @@
       
       
       <div class="post-body">
-          
+            
+  
+  
+  
+
+    <div id="friends">
+        <style>
+
+            #friends{
+               margin-top: 5rem;
+            }
+
+            .friends-content{
+                margin-top:1rem;
+            }
+
+            .link-navigation::after {
+                content: " ";
+                display: block;
+                clear: both;
+            }
+
+            .card {
+                width: 300px;
+                font-size: 1rem;
+                padding: 10px 20px;
+                border-radius: 4px;
+                transition-duration: 0.15s;
+                margin-bottom: 1rem;
+                display:flex;
+            }
+            .card:nth-child(odd) {
+                float: left;
+            }
+            .card:nth-child(even) {
+                float: right;
+            }
+            .card:hover {
+                transform: scale(1.1);
+                box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
+            }
+            .card a {
+                border:none;
+            }
+            .card .ava {
+                width: 3rem!important;
+                height: 3rem!important;
+                margin:0!important;
+                margin-right: 1em!important;
+                border-radius:4px;
+
+            }
+            .card .card-header {
+                font-style: italic;
+                overflow: hidden;
+                width: 236px;
+            }
+            .card .card-header a {
+                font-style: normal;
+                color: #2bbc8a;
+                font-weight: bold;
+                text-decoration: none;
+            }
+            .card .card-header a:hover {
+                color: #d480aa;
+                text-decoration: none;
+            }
+            .card .card-header .info {
+                font-style:normal;
+                color:#a3a3a3;
+                font-size:14px;
+                min-width: 0;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+        </style>
+        <div class="friends-content">
+            <div class="link-navigation">
+
+                
+
+                    <div class="card">
+                        <img class="ava" src="https://cool-y.github.io/images/avatar.png"/>
+                        <div class="card-header">
+                           <div>
+                              <a href="https://cool-y.github.io" target="_blank"> Cool-y</a>
+                              <a href="https://cool-y.github.io" target="_blank"><span class="focus-friends">关注</span></a>
+                           </div>
+                           <div class="info">手握无数大厂安全岗offer的严处</div>
+                        </div>
+                    </div>
+
+                
+
+                    <div class="card">
+                        <img class="ava" src="https://avatars3.githubusercontent.com/u/45705837?s=460&v=4"/>
+                        <div class="card-header">
+                           <div>
+                              <a href="https://zekyou.github.io" target="_blank"> Zekyou</a>
+                              <a href="https://zekyou.github.io" target="_blank"><span class="focus-friends">关注</span></a>
+                           </div>
+                           <div class="info">地球物理大佬</div>
+                        </div>
+                    </div>
+
+                
+
+            </div>
+            
+            </div>
+        </div>
+
+  
+  
+  
+
+
+        
       </div>
       
       
@@ -261,7 +384,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

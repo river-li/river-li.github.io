@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="学习堆利用中关于溢出部分的技巧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="heap-overflow">
+<meta property="og:url" content="https://river-li.xyz/2020/09/26/heap-overflow/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="学习堆利用中关于溢出部分的技巧">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926194107247.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926202511078.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926195340455.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200927204517434.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200927204730211.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200927213357312.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200928094900882.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200928110059338.png">
+<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200928110142911.png">
+<meta property="article:published_time" content="2020-09-26T09:03:43.000Z">
+<meta property="article:modified_time" content="2020-09-29T11:27:44.895Z">
+<meta property="article:author" content="River Li">
+<meta property="article:tag" content="hack">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926194107247.png">
+
+<link rel="canonical" href="https://river-li.xyz/2020/09/26/heap-overflow/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>heap-overflow | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-friends">
+
+    <a href="/friends/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/09/26/heap-overflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          heap-overflow
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-26 17:03:43" itemprop="dateCreated datePublished" datetime="2020-09-26T17:03:43+08:00">2020-09-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-29 19:27:44" itemprop="dateModified" datetime="2020-09-29T19:27:44+08:00">2020-09-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>学习堆利用中关于溢出部分的技巧</p>
+<a id="more"></a>
+
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
+<p>漏洞利用的思路一般是：</p>
+<ol>
+<li>寻找堆分配函数</li>
+<li>寻找危险函数</li>
+<li>确定填充长度</li>
+</ol>
+<h3 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h3><p>堆分配函数一般是malloc、calloc、realloc等；</p>
+<p>其中calloc在分配内存区域之后会将其置0；</p>
+<p>realloc函数则和另外两个有些不同，具有两个参数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
+
+<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
+<ul>
+<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
+</li>
+<li><p>如果申请 size &gt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<ul>
+<li>如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果申请 size &lt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<ul>
+<li>如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
+</li>
+</ul>
+<h3 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h3><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
+<p>包括：</p>
+<ul>
+<li>gets、scanf、vscanf</li>
+<li>sprintf</li>
+<li>strcpy、strcat、bcopy</li>
+</ul>
+<p>等</p>
+<h3 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h3><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
+<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
+<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
+<h3 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h3><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
+<p>off-by-one漏洞的利用思路：</p>
+<ol>
+<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
+<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
+<li>unlink进行处理；</li>
+<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
+</ol>
+</li>
+</ol>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>以几道CTF来练一下手</p>
+<h3 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h3><p>首先检查程序的安全机制</p>
+<p><img src="heap-overflow/image-20200926194107247.png"></p>
+<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
+<p>运行一下程序，功能是一个图书管理的程序</p>
+<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
+<p>反编译得到main函数的伪代码</p>
+<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
+<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
+<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
+<p>我们暂且将其称为<code>new_read</code></p>
+<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
+<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
+<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
+<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
+<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
+<p>设置author name为一个32字节长的内容</p>
+<p>之后创建一个book之后，调用第四个方法print</p>
+<p>就会出现这样的效果</p>
+<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
+<p>看到除了author name之外还出现了一些其他的字符串</p>
+<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
+<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
+<p>存储的位置是在off_202010这个地方的指向的位置</p>
+<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
+<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
+<p>利用的思路：</p>
+<ol>
+<li>使author name长度为32</li>
+<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
+<li>调用print泄漏第一个book结构的地址</li>
+<li>创建第二个book</li>
+<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
+<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hack/" rel="tag"># hack</a>
+              <a href="/tags/pwn/" rel="tag"># pwn</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/23/heap-basic/" rel="prev" title="heap-basic">
+      <i class="fa fa-chevron-left"></i> heap-basic
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E5%A0%86%E5%88%86%E9%85%8D%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">寻找堆分配函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">危险函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E5%A1%AB%E5%85%85%E9%95%BF%E5%BA%A6"><span class="nav-number">1.3.</span> <span class="nav-text">确定填充长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA"><span class="nav-number">1.4.</span> <span class="nav-text">特殊的堆溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Asis-CTF-2016-b00k"><span class="nav-number">2.1.</span> <span class="nav-text">Asis CTF 2016 b00k</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

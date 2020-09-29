@@ -136,6 +136,11 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
+        <li class="menu-item menu-item-friends">
+
+    <a href="/friends/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
   </ul>
 </nav>
 
@@ -159,6 +164,74 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/08/tkinter%E5%AF%BC%E5%85%A5%E9%94%99%E8%AF%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/08/tkinter%E5%AF%BC%E5%85%A5%E9%94%99%E8%AF%AF/" class="post-title-link" itemprop="url">tkinter导入错误</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-08 23:36:20" itemprop="dateCreated datePublished" datetime="2019-07-08T23:36:20+08:00">2019-07-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在运行python写的程序时发现无法<code>import tkinter</code>,会报错缺少一个静态链接库</p>
+<p><code>libtk8.5.so</code></p>
+<p>解决办法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S tk</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1138,83 +1211,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/08/tmux/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/08/tmux/" class="post-title-link" itemprop="url">tmux</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-08 19:14:54" itemprop="dateCreated datePublished" datetime="2019-06-08T19:14:54+08:00">2019-06-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>tmux是一个终端分屏的工具<br>在ssh这样的远程访问时也可以使用<br>因此在纯图形化下很实用<br>但是这也是一个十分复杂的工具，快捷键多的让人头皮发麻</p>
-<!--more--->
-
-
-<h2 id="配置默认启动zsh"><a href="#配置默认启动zsh" class="headerlink" title="配置默认启动zsh"></a>配置默认启动zsh</h2><p>在<code>~/.tmux.conf</code>内加入如下内容</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> -g default-shell /bin/zsh</span><br><span class="line"><span class="built_in">set</span> -g default-command /bin/zsh</span><br></pre></td></tr></table></figure>
-
-<p>这样启动tmux时会默认启动zsh而不是bash</p>
-<h2 id="配置使用vim快捷键"><a href="#配置使用vim快捷键" class="headerlink" title="配置使用vim快捷键"></a>配置使用vim快捷键</h2><p>tmux的移动很麻烦，我也不知道是不是emacs的移动方式</p>
-<p>不过很难记，就想要直接配置成vim的快捷键</p>
-<p>在<code>~/.tmux.conf</code>加入这些内容：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set-window-option -g mode-keys vi</span><br><span class="line"><span class="built_in">bind</span> h select-pane -L</span><br><span class="line"><span class="built_in">bind</span> j select-pane -D</span><br><span class="line"><span class="built_in">bind</span> k select-pane -U</span><br><span class="line"><span class="built_in">bind</span> l select-pane -R</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1286,7 +1282,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
