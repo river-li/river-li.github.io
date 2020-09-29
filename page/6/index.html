@@ -168,6 +168,161 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/11/Malware-Data-Science-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/11/Malware-Data-Science-1/" class="post-title-link" itemprop="url">Malware-Data-Science-1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-11 12:08:41" itemprop="dateCreated datePublished" datetime="2019-07-11T12:08:41+08:00">2019-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Malware-Data-Science/" itemprop="url" rel="index"><span itemprop="name">Malware Data Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这本书的前4章内容，主要介绍了一些基本的方法</p>
+<p>pefile是Python的一个库，可以用来操作Exe文件</p>
+<p>这里的内容主要是看<em>Malware Data Science</em>记的笔记</p>
+<!--more--->
+
+
+<h2 id="Basic-Static-Malware-Analysis"><a href="#Basic-Static-Malware-Analysis" class="headerlink" title="Basic Static Malware Analysis"></a>Basic Static Malware Analysis</h2><p>PE文件的格式如图</p>
+
+
+<p>之前都学过，就不怎么说了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line">pe = pefile.PE(<span class="string">&quot;ircbot.exe&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> entry <span class="keyword">in</span> pe.DIRECTORY_ENTRY_IMPORT:</span><br><span class="line">    print(entry.dll)</span><br><span class="line">    <span class="keyword">for</span> function <span class="keyword">in</span> entry.imports:</span><br><span class="line">        print(<span class="string">&#x27;\t&#x27;</span>+function.name)</span><br></pre></td></tr></table></figure>
+
+<p>使用pefile这个库打印PE文件导入的dll以及相应的函数</p>
+<h2 id="X86-Disassembly"><a href="#X86-Disassembly" class="headerlink" title="X86 Disassembly"></a>X86 Disassembly</h2><p>这里还有一个库<code>capstone</code></p>
+<p>这是一个开源的反汇编库</p>
+<p>首先是导入库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line"><span class="keyword">import</span> capstone</span><br></pre></td></tr></table></figure>
+
+<p>加载PE文件的方法从前一节可以得知</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pe = pefile.PE(filename)</span><br></pre></td></tr></table></figure>
+<p>一般情况获取到PE文件首先要看入口地址，读取入口地址的函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">entrypoint = pe.OPTIONAL_HEADER.AddressOfEntryPoint</span><br><span class="line">entrypoint_address = entrypoint + pe.OPTIONAL_HEADER.ImageBase</span><br></pre></td></tr></table></figure>
+<p>由于入口地址在可选文件头部分，因此也比较容易理解这个接口</p>
+<p>不过我们知道PE文件里写的入口地址没有加上<code>ImageBase</code>,因此实际的地址还要加上这个</p>
+<p>读取出文件中的二进制的方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binary_code = pe.get_memory_mapped_image()</span><br></pre></td></tr></table></figure>
+
+<p>读出来的是一个Bytes结构</p>
+<p>下面就涉及另一个库的用法了</p>
+<p>读出文件的二进制之后我们希望能得到汇编的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">disassembler = capstone.Cs(CS_ARCH_x86, CS_MODE_32)</span><br><span class="line"><span class="keyword">for</span> instruction <span class="keyword">in</span> disassembler.disasm(binary_code, entrypoint_address):</span><br><span class="line">    print(<span class="string">&quot;%s\t%s&quot;</span>,instruction.mnemonic, instruction.op_str)</span><br></pre></td></tr></table></figure>
+<p>首先声明了一个反汇编器，需要指定相应的架构</p>
+<p>之后使用这个汇编器的<code>disasm</code>方法就可以反汇编出相应的代码</p>
+<p>不过有一些程序有反汇编的机制，比如动态的修改自身代码等等</p>
+<p>这种情况下就不是很容易得到正确结果，只有动态调试才比较可行</p>
+<h2 id="Dynamic-Analysis"><a href="#Dynamic-Analysis" class="headerlink" title="Dynamic Analysis"></a>Dynamic Analysis</h2><p>恶意软件的分析一般要分为静态分析和动态分析</p>
+<p>动态分析的过程需要实际的运行</p>
+<p>典型的恶意软件行为：</p>
+<ul>
+<li>修改文件系统</li>
+<li>修改Windows注册表或系统配置</li>
+<li>网络操作</li>
+<li>加载设备驱动（例如Keylogger）</li>
+</ul>
+<p>这里书里推荐了一个网站<a href="malwr.com">malwr.com</a></p>
+<p>基本的动态分析也有一些缺陷</p>
+<p>比如有的程序会检测自身是否处于虚拟环境中</p>
+<p>是的话就不会释放恶意代码</p>
+<p>还有一些行为比如连接了远程服务器后等待接受指令</p>
+<p>但远程的控制服务器一直没有发指令过来，这个过程的分析就无法分析会有哪些行为</p>
+<h2 id="Malware-Network-Analysis"><a href="#Malware-Network-Analysis" class="headerlink" title="Malware Network Analysis"></a>Malware Network Analysis</h2><p>将每一个独立的Malware视为一个节点，将他们之间的关系视为边</p>
+<p>这里的边包含共享代码的关系以及网络行为上的关联</p>
+<p>之后可以得到一个图</p>
+<p>IP地址也可以作为一个点</p>
+<p>这样IP地址或域名以及Malware可以构成一个二分图</p>
+<p>溯源时可以根据这样的原理来找到相同攻击者的样本</p>
+<p>当图中的节点数目比较大时，图中的节点分布可能比较乱，并且难以合理规划位置</p>
+<p>可以使用力导向布局算法简化图的构造</p>
+<p>这个算法原理就是模拟物理世界中弹簧受力</p>
+<p>在拉或者推弹簧时都会有一个趋向原本长度的力</p>
+<p>构造网络用的一个库:<code>NetworkX</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> networkx</span><br><span class="line">network = networkx.Graph()</span><br><span class="line"></span><br><span class="line">nodes = [<span class="string">&quot;hello&quot;</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> node <span class="keyword">in</span> nodes:</span><br><span class="line">    network.add_node(node)</span><br><span class="line"></span><br><span class="line">network.add_edge(<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line">network.add_edge(<span class="number">1</span>,<span class="number">3</span>)</span><br><span class="line">network.add_edge(<span class="number">1</span>,<span class="string">&quot;hello&quot;</span>)</span><br><span class="line"></span><br><span class="line">networkx.drawing.nx_agraph.write_dot(network,<span class="string">&quot;network.dot&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面就是构造图的基本方法</p>
+<p>当需要为节点或边添加额外的属性时只需要在后面加属性即可<br>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">network.add_node(<span class="number">1</span>,myattribute=<span class="string">&quot;foo&quot;</span>)</span><br><span class="line">network.add_edge(<span class="string">&quot;node1&quot;</span>,<span class="string">&quot;node2&quot;</span>,myattribute=<span class="string">&quot;fish&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>需要网络可视化时可以使用<code>GraphViz</code></p>
+<p>这是一个软件包，linux下面可以直接安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S graphviz</span><br></pre></td></tr></table></figure>
+<p>用法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neato/sfdp/fdp network.dot -T png -o network.png</span><br></pre></td></tr></table></figure>
+
+<p>fdp的意思是绘制成<code>force-directed picture</code>,即前面说的力导向图</p>
+<p>sfdp 是绘制<code>supernodes</code>的fdp</p>
+<p>neato是另一种图，包含了无连接节点的图</p>
+<p>在画图前也可以直接在networkx中设置一些图的属性</p>
+<p>比如节点的颜色、形状、边的宽度等</p>
+<p>也可以直接在图中添加一些标签</p>
+<p>书里还附带了几个脚本提取PE文件中的Host并且构造出图</p>
+<p>这里放上一个有点用的提取Host的函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_hostnames</span>(<span class="params">string</span>):</span></span><br><span class="line">    possible_hostnames = re.findall(<span class="string">r&#x27;(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]&#123;,61&#125;[a-zA-Z0-9])?\.)+[a-zA-Z]&#123;2,6&#125;&#x27;</span>,string)</span><br><span class="line">    valid_hostnames = filter(</span><br><span class="line">    <span class="keyword">lambda</span> hostname: hostname.split(<span class="string">&quot;.&quot;</span>)[<span class="number">-1</span>].lower() <span class="keyword">in</span> valid_hostname_suffixes, possible_hostnames</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> valid_hostnames</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/08/tkinter%E5%AF%BC%E5%85%A5%E9%94%99%E8%AF%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1093,124 +1248,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/10/suid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/10/suid/" class="post-title-link" itemprop="url">suid</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-10 15:18:37" itemprop="dateCreated datePublished" datetime="2019-06-10T15:18:37+08:00">2019-06-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Some Hacking Tricks on SUID programs.</p>
-<!--more--->
-
-<p>A SUID program is a program that will always run as its owner’s privilege.</p>
-<p>A normal program is the same privilege with its runner, while a SUID program always run as its owner.</p>
-<p>A SUID program is -rw<strong>s</strong>r-xr-x . The forth privilege bit is <code>s</code>.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 4755 file</span><br></pre></td></tr></table></figure>
-
-<p>The above command can turn on the Set-UID bit.</p>
-<p>Every Unix program is running in a specific environment, which consists of  a table of environment variables.</p>
-<p>In C, a program can use <code>getenv()</code> to get the values of environment variables.</p>
-<p>In C, <code>system(const char * cmd)</code> function will first invoke the <code>/bin/sh</code> program, and then let the shell execute <code>cmd</code></p>
-<h4 id="Some-important-variables"><a href="#Some-important-variables" class="headerlink" title="Some important variables"></a>Some important variables</h4><h5 id="PATH"><a href="#PATH" class="headerlink" title="PATH"></a>PATH</h5><p>A hacker can execute following commands to set the current dir as the first item in <code>PATH</code>.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PATH=<span class="string">&quot;.:<span class="variable">$PATH</span>&quot;</span>;</span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="IFS"><a href="#IFS" class="headerlink" title="IFS"></a>IFS</h5><p>IFS determines the characters which would be interpreted as white space.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IFS=<span class="string">&quot;/ \t\n&quot;</span>;</span><br><span class="line"><span class="built_in">export</span> IFS</span><br></pre></td></tr></table></figure>
-
-<p>The above commands would let the ‘/‘ as space, which means any program attempt to use an absolute PATH will be translate into spaces.</p>
-<p><code>system(&quot;/bin/mail root&quot;)</code> —&gt; <code>bin mail root</code></p>
-<p>thus, the hacker can run his own program called <code>bin</code></p>
-<p>However, this bug has been fixed: the invoked new shell process will not inherbit IFS variable.</p>
-<h5 id="LD-LIBRARY-PATH"><a href="#LD-LIBRARY-PATH" class="headerlink" title="LD_LIBRARY_PATH"></a>LD_LIBRARY_PATH</h5><p>In Linux, most program requires dynamic link libraries at run time.</p>
-<p>Dynamic linker/loader: <code>ld.so</code>/<code>ld-linux.so</code>.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldd /bin/ls</span><br></pre></td></tr></table></figure>
-
-<p>That will list all shared libraries that <code>ls</code> needed.</p>
-<p><strong>LD_LIBRARY_PATH</strong> contains a set of directories that <code>ld.so</code> will look for runtime libraries.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setenv LD_LIBRARY_PATH .:<span class="variable">$LD_LIBRARY_PATH</span> </span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="Never-use-C-shell-for-SUID-scripts"><a href="#Never-use-C-shell-for-SUID-scripts" class="headerlink" title="Never use C-shell for SUID scripts"></a>Never use C-shell for SUID scripts</h3><p>change-pass is a script like this:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/csh -b</span></span><br><span class="line"><span class="built_in">set</span> user=<span class="variable">$1</span></span><br><span class="line">passwd <span class="variable">$user</span></span><br></pre></td></tr></table></figure>
-
-<p>This script is useful for root user to help changing other users’ password.</p>
-<p>But for the reason that csh scripts are vulnerable to manipulating environment variables.</p>
-<p>The hacker can run follow instructions:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">env TERM&#x3D;&#39;&#96;cp &#x2F;bin&#x2F;sh &#x2F;tmp&#x2F;sh;chown root &#x2F;tmp&#x2F;sh;</span><br><span class="line">chmod 4755&#x2F;tmp&#x2F;sh&#96;&#39;</span><br><span class="line">change-pass</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Use-Full-PATH"><a href="#Use-Full-PATH" class="headerlink" title="Use Full PATH"></a>Use Full PATH</h3><p>Now,we change the script to this one:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;ksh</span><br><span class="line">user&#x3D;$1</span><br><span class="line">passwd $user</span><br></pre></td></tr></table></figure>
-
-<p>This is also vulnerable, because the program uses relative path names</p>
-<p>The hacker can run following instructions to run his own program:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&#x27;/tmp&#x27;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;cp /bin/sh /tmp/sh;chown root /tmp/sh;chmod 4755/tmp/sh&quot;</span> &gt;/tmp/passwd<span class="string">&quot;</span></span><br><span class="line"><span class="string">./change-pass</span></span><br></pre></td></tr></table></figure>
-
-<p>Then the script runs <code>/tmp/passwd</code> instead of  <code>/usr/bin/passwd</code></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1282,20 +1319,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-count">83</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
