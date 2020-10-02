@@ -168,6 +168,151 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/28/jieba/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/28/jieba/" class="post-title-link" itemprop="url">jieba</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-28 14:49:36" itemprop="dateCreated datePublished" datetime="2019-05-28T14:49:36+08:00">2019-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>jieba是一个python的中文分词库，在数据处理中用处比较大</p>
+<p>这次主要介绍分词的原理和库的用法</p>
+<!--more--->
+
+<h2 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h2><p>汉语的分词方法主要有三种：</p>
+<ul>
+<li>基于字典、词库的匹配分词方法</li>
+<li>基于词频度统计的分词方法</li>
+<li>基于知识理解的分词方法</li>
+</ul>
+<p>jieba分词使用的就是第二种，基于统计的原理；</p>
+<p>采用了动态规划查找最大概率路径找出基于词频的最大切分组合；</p>
+<p>对于未登录的词使用了基于汉字成词能力的HMM模型，和Viterbi算法；</p>
+<p>基于前缀词典实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图；</p>
+<p>jieba分词有三种分词模式，</p>
+<ul>
+<li>全模式</li>
+<li>精确模式</li>
+<li>搜索引擎模式</li>
+</ul>
+<p>全模式中会将一个字串分成最小单位的词；</p>
+<p>精确模式是默认的分词模式，是对句子的一个概率最佳分词；</p>
+<p>搜索引擎模式会将长词再拆分成短词，以关键词的形式出现；</p>
+<h2 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h2><h3 id="分词方法"><a href="#分词方法" class="headerlink" title="分词方法"></a>分词方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cut(self,sentence,cut_all=<span class="literal">False</span>,HMM=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>cut_all</code>这个参数是标识是否开始全模式分词的参数</p>
+<p>默认状态为精确模式，因此为False</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cut_for_search(self,sentence,HMM=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>两种分词方法返回的结构都是一个可迭代的generator，可以通过for循环直接得到分词后的每一个词语（Unicode）</p>
+<p>另外还有两个<code>lcut</code>和<code>lcut_for_search</code>直接返回列表</p>
+<h3 id="自定义字典"><a href="#自定义字典" class="headerlink" title="自定义字典"></a>自定义字典</h3><p><code>load_userdict(file_name)</code></p>
+<p>由于jieba是基于统计的分词方法，因此用户可以自己加载自定义的字典</p>
+<p>字典的格式要求：</p>
+<ul>
+<li>一个词占一行</li>
+<li>每一行分三个部分：词语、词频、词性</li>
+<li>用空格隔开</li>
+<li>词频和词性可以省略</li>
+</ul>
+<p>调整词典的方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">add_word(word,freq=<span class="literal">None</span>,tag=<span class="literal">None</span>)</span><br><span class="line">del_word(word)</span><br><span class="line">suggest_freq(segment,tune=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>第三个方法作用是调整单个词语的词频</p>
+<p>例如<code>台中</code>这个词，有可能被jieba的词典切开，但是这在某些句子中应该作为一个整体，则可以使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jieba.suggest_freq(<span class="string">&#x27;台中&#x27;</span>,<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>使台中作为一个整体的频率提升，之后就不会被切分出来了</p>
+<h3 id="关键词提取"><a href="#关键词提取" class="headerlink" title="关键词提取"></a>关键词提取</h3><h4 id="TF-IDF统计方法"><a href="#TF-IDF统计方法" class="headerlink" title="TF-IDF统计方法"></a>TF-IDF统计方法</h4><p>字词的重要性随着它在文件中出现的次数成正比，但是会随着它在语料库中出现的频率成反比</p>
+<p>例如,<code>的地得</code>在文件a中出现频率很高，但是这三个字在整体的语料库中频率也很高，因此其重要性比较低</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jieba.analyse.extract_tags(sentence,topK=<span class="number">20</span>,withWeight=<span class="literal">False</span>,allowPOS=())</span><br></pre></td></tr></table></figure>
+
+<p>sentence是待提取的文本</p>
+<p>topK是返回TF/IDF权重最大的关键词的数量</p>
+<p>withWeight为True时会一并返回关键词的权重值</p>
+<p>allowPOS为True时仅包括指定词性的词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jieba.analyse.set_stop_words(filename)</span><br></pre></td></tr></table></figure>
+
+<p>这个方法可以将停止词的词典替换为自定义的词典</p>
+<h4 id="TextRank"><a href="#TextRank" class="headerlink" title="TextRank"></a>TextRank</h4><p>这种算法也是一个文本排序的算法，来源于搜索引擎的排序算法<code>PageRank</code></p>
+<p>主要是使用矩阵迭代的代数知识对每个文本词语进行分析，最后得到数值最大则重要性越高</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jieba.analyse.textrank(sentence,topK=<span class="number">20</span>,withWeight=<span class="literal">False</span>,allowPOS=(<span class="string">&#x27;ns&#x27;</span>,<span class="string">&#x27;n&#x27;</span>,<span class="string">&#x27;vn&#x27;</span>,<span class="string">&#x27;v&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jieba.analyse.TextRank()</span><br></pre></td></tr></table></figure>
+
+<p>新建一个TextRank实例</p>
+<h3 id="词性标注"><a href="#词性标注" class="headerlink" title="词性标注"></a>词性标注</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jieba.posseg.POSTokenizer(tokenizer=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+
+<p>新建一个自定义分词器，标注句子中每个词的词性，采用和ictclass兼容的标记法</p>
+<p>例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jieba.posseg <span class="keyword">as</span> pseg</span><br><span class="line">words = pseg.cut(<span class="string">&quot;我爱北京天安门&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> word,flag <span class="keyword">in</span> words:</span><br><span class="line">    print(word)</span><br><span class="line">    print(flag)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/22/netfilter/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1566,78 +1711,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/05/10/arch%E5%8D%87%E7%BA%A7%E5%A3%B0%E5%8D%A1%E5%B4%A9%E6%BA%83%E8%A7%A3%E5%86%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/05/10/arch%E5%8D%87%E7%BA%A7%E5%A3%B0%E5%8D%A1%E5%B4%A9%E6%BA%83%E8%A7%A3%E5%86%B3/" class="post-title-link" itemprop="url">arch升级声卡崩溃解决</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-10 23:37:46" itemprop="dateCreated datePublished" datetime="2018-05-10T23:37:46+08:00">2018-05-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>arch相比debian好就好在滚动更新，不存在跨版本升级的问题，总体来说很稳定，尤其是内核相关的问题上;<br>自从使用ubuntu和deepin都因为跨版本升级挂掉了一次之后，对于dist-upgrade就产生了心理阴影，因此寒假时转入arch邪教，虽然安装时不是debian那些傻瓜式的，但是安装好配置完成之后相当稳定，基本不会出现啥问题。<br>因此养成了一个习惯——每天电脑一开机，第一件事就是<code>yaourt -Syu</code>,一直也都没什么问题，各种软件也都用的最新版也很爽————直到昨天</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/05/10/arch%E5%8D%87%E7%BA%A7%E5%A3%B0%E5%8D%A1%E5%B4%A9%E6%BA%83%E8%A7%A3%E5%86%B3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1709,7 +1782,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

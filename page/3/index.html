@@ -168,6 +168,143 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/12/CrackMe-Day15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/CrackMe-Day15/" class="post-title-link" itemprop="url">CrackMe-Day15</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-12 21:41:24" itemprop="dateCreated datePublished" datetime="2020-03-12T21:41:24+08:00">2020-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe15"><a href="#CrackMe15" class="headerlink" title="CrackMe15"></a>CrackMe15</h1><p>第十五道CrackMe</p>
+<p>作者blaster99</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后首先弹了这么一个窗</p>
+
+
+<p>也不知道上面写的是什么语</p>
+<p>用ocr识别再翻译一下看看</p>
+<p>好吧，居然是德语</p>
+
+
+<p>那么意思就是要删除这个NAG窗口或者获取正确的密码</p>
+
+
+<p>点击确定之后窗口变成这样的</p>
+<p>输入注册码之后注册</p>
+
+
+<p>给了一个错误的弹窗</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>这个程序说了自己是VB写的，那么首先查看一下反编译的代码</p>
+
+
+<p>控件相关有这些内容，主要需要看<code>Form_Load</code>以及<code>Command1_Click</code></p>
+<h3 id="去NAG"><a href="#去NAG" class="headerlink" title="去NAG"></a>去NAG</h3><p><code>Form_Load</code>可以看到函数一开始就有一个MessageBox的调用</p>
+<p>这就是我们想去掉的那个NAG窗口，在OD里把这句Nop掉</p>
+
+
+<p>对照着汇编代码，我首先尝试NOP掉这个字符串下面的CALL</p>
+
+
+<p>结果这个窗口还是出现了，只是失去了中间的内容</p>
+
+
+<p>再往下一些有一个call，<code>rtcMsgBox</code></p>
+
+
+<p>这次把这一句nop掉</p>
+<p>结果程序直接退出了，仔细想想也是，毕竟弹窗之后只有点确定才能去到CrackMe</p>
+<p>如果点了取消，那CrackMe就退出了</p>
+<p>所以我们现在应该找到确定点击后的窗口位置</p>
+<p>跟踪调试发现，在这个MsgBox下面存在</p>
+
+
+<p>这样的代码，MsgBox返回1或0，存在eax中，这里再根据结果决定是否跳转</p>
+<p>所以我们希望去掉NAG窗口，即直接从点击确定后的地方开始运行</p>
+<p>那么需要改两处地方，一是nop掉msgbox的call；二是修改这个<code>test ax,ax</code>下面的<code>jnz</code>为无条件的<code>jmp</code></p>
+
+
+<p>运行发现，没有NAG窗口了</p>
+<h3 id="Passwd"><a href="#Passwd" class="headerlink" title="Passwd"></a>Passwd</h3><p>至于破解序列号，我们就还是看一下字符串先</p>
+
+
+<p>定位到成功的字符串处，可以很轻松的发现这个关键跳转</p>
+
+
+<p>修改为jnz，再运行</p>
+
+
+<p>成功</p>
+<p>想要知道确切的序列号条件，那么我们可以看一下前面<code>command1_click</code>的代码</p>
+
+
+<p>里面比较的条件很简单粗暴，就是一个字符串</p>
+<p>输入之后就成功</p>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/12/VPS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1340,159 +1477,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/03/CrackMe-Day6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/03/CrackMe-Day6/" class="post-title-link" itemprop="url">CrackMe-Day6</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-03 14:52:05" itemprop="dateCreated datePublished" datetime="2020-03-03T14:52:05+08:00">2020-03-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="CrackMe6"><a href="#CrackMe6" class="headerlink" title="CrackMe6"></a>CrackMe6</h1><p> 第六道CrackMe</p>
-<p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
-<p>作者aLoNg3x</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先窗口一共有两个输入，三个按钮</p>
-
-
-<p>初始状态下OK是点不了的，点击help会陆续弹框以下内容：</p>
-<ol>
-<li></li>
-<li>
-
-</li>
-</ol>
-<p>3和4内容不重要，意思就是如果你需要帮助可以给我发邮件，并留下了邮箱</p>
-<p>提示也给了，我们首先要做的应该就是想办法让程序的逻辑正常，让OK键能够正常按下</p>
-<p>下面开始逆向</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查看字符串</p>
-<p>可以看到Delphi这样的字眼，另外看程序入口点的特征也和前面的程序比较相似</p>
-
-
-
-
-<p>那么我们还是用上次用过的那个<code>DeDeDark</code>来看一下程序各个控件和事件函数</p>
-
-
-<p>看到控件和我们看到的也差不太多，就这么几个，除了一个Pannello，不过应该是存放图片的一个Panel吧</p>
-
-
-<p>事件栏里面可以看到这些事件，三个按钮点击的事件，以及两个输入变化的事件</p>
-<p>另外下面还有五个不知道是啥玩意的事件</p>
-<p>在窗体这里还可以看到每个组件的属性</p>
-
-
-<p>看到这里OK这个Button的有一个<code>Enabled</code>属性设置为了<code>False</code></p>
-<p>上面说到程序的最终效果是点击确定后隐藏了这两个button</p>
-<p>那么大概的正常流程可能是：修改name、code使得符合要求-&gt;OK键可用-&gt;点击OK-&gt;两个按键隐藏</p>
-<p>那么首先去看一下<code>NomeChange</code>和<code>CodiceChange</code>这两个函数</p>
-<h3 id="NomeChange"><a href="#NomeChange" class="headerlink" title="NomeChange"></a>NomeChange</h3><p>这个函数每次在更改了用户名这个字段时都会触发</p>
-<p>里面有两个跳转比较可疑</p>
-<p>一是函数开始一小段后的这个</p>
-
-
-<p>这里看到一个cmp紧跟着一个jnz</p>
-<p>下面jnz没有触发的话就将dl置为1，很像是enable</p>
-<p>另一处是下面临近函数结束的一个判断</p>
-
-
-<p>这个je，也是下面将dl置为了1</p>
-<p>分别修改一下测试</p>
-<p>发现两个jmp都有效果，但是实际上有效果的是<code>mov dl,0x1</code>下面紧跟着的那个call</p>
-<p>那个call对窗口状态进行了刷新的操作，但是这里如果将上面的jnz修改为了jz</p>
-<p>那么下面这个jmp还是会正常下来，触发<code>xor edx,edx</code>以及下面的那个<code>call</code></p>
-<p>这样ok键就又不能用了</p>
-<p>所以我们选择将下面的je修改为jne</p>
-
-
-<h3 id="CodiceChange"><a href="#CodiceChange" class="headerlink" title="CodiceChange"></a>CodiceChange</h3><p>上面我们修改name字段使得ok键可以点击了</p>
-<p>但是在修改Codice字段时可能又触发了状态的刷新，导致又无法点击了</p>
-<p>进来后发现代码类似呀，也是有两个关键跳转</p>
-<p>我们还是修改下面的那个</p>
-
-
-<p>之后再怎么修改name和code都可以保持ok键常亮了</p>
-<p>但是这时点击OK还没有预想中的效果，现在就需要具体看一下OK键触发的函数了</p>
-<h3 id="OkClick"><a href="#OkClick" class="headerlink" title="OkClick"></a>OkClick</h3><p>这段代码不是很长，同样也是可以看到两个条件转移</p>
-
-
-<p>下面的那个je，和之前的类似，如果没有跳转的话会刷新ok键的状态，我们还是先修改了它</p>
-<p>至于上面那个jnz的跳转，发现和前面两个函数的jnz功能不同，调用了另外的函数，将它修改为jz</p>
-<p>运行发现OK键消失了</p>
-
-
-<p>但是这个Cancella还没去掉呀，咋回事</p>
-<p>那看来有可能在点击Canella这个事件中</p>
-<h3 id="CancellaClick"><a href="#CancellaClick" class="headerlink" title="CancellaClick"></a>CancellaClick</h3><p>整个函数只有一个关键跳转</p>
-
-
-<p>直接改成jne，搞定</p>
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1564,7 +1548,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
