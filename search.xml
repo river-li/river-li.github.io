@@ -5990,4 +5990,86 @@
         <tag>pwn</tag>
       </tags>
   </entry>
+  <entry>
+    <title>mips汇编</title>
+    <url>/2020/10/08/mips%E6%B1%87%E7%BC%96/</url>
+    <content><![CDATA[<p>路由器中一般用到的架构是arm或者是mips</p>
+<p>mips的汇编语法和平时常见的x86、amd64都有些差异</p>
+<p>并且mips中存在一些机制上的不同；</p>
+<p>因此在分析时还是需要专门大概学一下；</p>
+<a id="more"></a>
+
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>MIPS中一共有32个通用寄存器，寄存器以$开头</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号</th>
+<th>寄存器名</th>
+<th>寄存器用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>zero</td>
+<td>永远为0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>$at</td>
+<td>汇编保留寄存器</td>
+</tr>
+<tr>
+<td>2-3</td>
+<td>$v0-$v1</td>
+<td>存储表达式或函数的返回值</td>
+</tr>
+<tr>
+<td>4-7</td>
+<td>$a0-$a3</td>
+<td>存储子函数的前4个参数，在调用过程释放</td>
+</tr>
+<tr>
+<td>8-15</td>
+<td>$t0-$t7</td>
+<td>临时变量</td>
+</tr>
+<tr>
+<td>16-23</td>
+<td>$s0-$s7</td>
+<td>Callee 保存的变量</td>
+</tr>
+<tr>
+<td>24-25</td>
+<td>$t8-$t9</td>
+<td>临时变量</td>
+</tr>
+<tr>
+<td>26-27</td>
+<td>$k0-$k1</td>
+<td>用于interrupt/trap handler</td>
+</tr>
+<tr>
+<td>28</td>
+<td>$gp</td>
+<td>Global pointer 指向64k大小的静态数据块</td>
+</tr>
+<tr>
+<td>29</td>
+<td>$sp</td>
+<td>Stack Pointer 指向栈顶</td>
+</tr>
+<tr>
+<td>30</td>
+<td>$s8/$fp</td>
+<td>Frame Pointer 类似与pc里的bp，指向栈底</td>
+</tr>
+<tr>
+<td>31</td>
+<td>$ra</td>
+<td>return address</td>
+</tr>
+</tbody></table>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p>指令读法和Intel读法一样，目标操作数在左边</p>
+]]></content>
+  </entry>
 </search>
