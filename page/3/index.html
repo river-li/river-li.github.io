@@ -196,6 +196,207 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/15/CrackMe-Day18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/15/CrackMe-Day18/" class="post-title-link" itemprop="url">CrackMe-Day18</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 15:56:06" itemprop="dateCreated datePublished" datetime="2020-03-15T15:56:06+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe18"><a href="#CrackMe18" class="headerlink" title="CrackMe18"></a>CrackMe18</h1><p>第十八道CrackMe</p>
+<p>作者Brad Soblesky</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后还是朴实无华的窗口</p>
+
+
+<p>只有一个输入条</p>
+<p>输入错误之后是一个弹窗</p>
+
+
+
+
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先搜索字符串</p>
+
+
+<p>定位到Correct</p>
+<p>在上方有一个很明显的关键跳转</p>
+
+
+<p>修改为jz</p>
+
+
+<p>爆破成功</p>
+<p>那么之后还是看一下真正的序列号</p>
+<p>注意到上面有一个strcmp，在这个call上下断点再跑一次</p>
+
+
+<p>String1是我们自己输入的字符串，那么真正的序列号就一目了然了</p>
+<p><code>&lt;BrD-SoB&gt;</code></p>
+
+
+<p>最近感觉对爆破都已经比较熟练了，之后的题目都以获取序列码/注册机为最终目标吧</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/14/CrackMe-Day17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/14/CrackMe-Day17/" class="post-title-link" itemprop="url">CrackMe-Day17</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-14 23:52:42" itemprop="dateCreated datePublished" datetime="2020-03-14T23:52:42+08:00">2020-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe17"><a href="#CrackMe17" class="headerlink" title="CrackMe17"></a>CrackMe17</h1><p>第十七道CrackMe</p>
+<p>作者bjanes</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>样子、效果都和前两天的程序一模一样</p>
+
+
+<p>甚至我顺手试了一下前一次的序列号直接就过了</p>
+
+
+<p>emmmmm</p>
+<p>逆向看一下差在哪里吧</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先看一下字符串</p>
+
+
+<p>印象里前面的程序应该是没有这么多内容的，而且看到还多了SMARTCHECK</p>
+<p>定位到了Good job那里</p>
+
+
+<p>发现上面存在一个跳到失败的跳转</p>
+<p>直接改成jnz</p>
+<p>就。。过了？</p>
+
+
+<p>似乎改了算法方面的机制之后反而导致程序最后关键跳转更明显了</p>
+<p>算法上的分析明天再仔细研究</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/13/CrackMe-Day16/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1325,215 +1526,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/06/CrackMe-Day9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/06/CrackMe-Day9/" class="post-title-link" itemprop="url">CrackMe-Day9</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-06 15:19:58" itemprop="dateCreated datePublished" datetime="2020-03-06T15:19:58+08:00">2020-03-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="CrackMe9"><a href="#CrackMe9" class="headerlink" title="CrackMe9"></a>CrackMe9</h1><p>第九道CrackMe</p>
-<p>作者Andrenalin</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>和上一道似乎比较类似，也是那种很基础的题目</p>
-
-
-<p>只是多了个name</p>
-<p>而且这个OK键和之前那个比较难的不一样，是只要name和key有东西就可以点击的</p>
-<p>输入错误后提示如下</p>
-
-
-
-
-<p>根据前面那个题目来看，这个难度应该也不大，直接分析</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>搜索字符串</p>
-
-
-<p>跟过去道right那里</p>
-
-
-<p>上面不远有一个je</p>
-<p>在这里下断点，尝试改成jne</p>
-
-
-<p>好吧，破解完成</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/05/CrackMe-Day8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/05/CrackMe-Day8/" class="post-title-link" itemprop="url">CrackMe-Day8</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-05 16:09:49" itemprop="dateCreated datePublished" datetime="2020-03-05T16:09:49+08:00">2020-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="CrackMe8"><a href="#CrackMe8" class="headerlink" title="CrackMe8"></a>CrackMe8</h1><p>第八道CrackMe</p>
-<p>作者Andrnalin</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
-
-<p>窗口这次直接是一个key的输入，和一个ok键</p>
-<p>随便输入东西，之后弹了这么个框</p>
-
-
-<p>由于之前遇到过这样的问题，可能是类型错误之类的</p>
-<p>输入一次纯数字看看</p>
-<p>弹窗一样</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>由于这次只有一个key，首先想着会不会用grep就能找到flag，试一试</p>
-
-
-<p>都是一堆奇奇怪怪得内容，唯一有点像的也不对</p>
-<p>那么我们开始逆向</p>
-<p>搜索字符串找到这么些内容</p>
-
-
-<p>发现最后一个是错误的提示，跟进去</p>
-
-
-<p>这个往上看可以找到类似成功后的提示字符串</p>
-<p>在这上面不远有一个疑似关键跳转</p>
-
-
-<p>直接改成jnz</p>
-
-
-<p>emmmm，难度突然变低，这就成功了</p>
-<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>由于这次太水了，准备破天荒的写个注册机看看</p>
-<p>那么首先还是向上看，看到有一处调用strcmp</p>
-
-
-<p>这时的堆栈有点迷，直接就把字符串写出来了</p>
-
-
-<p>行吧，合着连注册机都不用写了</p>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1605,7 +1597,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

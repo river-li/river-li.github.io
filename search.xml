@@ -6070,6 +6070,159 @@
 </tr>
 </tbody></table>
 <h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p>指令读法和Intel读法一样，目标操作数在左边</p>
+<p>最常规的栈溢出中，一般shellcode会保存在栈中，在执行shellcode前的一部分代码最终目的是跳转到栈上受我们控制的位置；</p>
+<p>以使用ROP为例，在跳转回到栈上之前需要一些gadget，可能比较关注的有：</p>
+<ol>
+<li>从可控的寄存器赋值到<code>$ra, $t9, $v0</code></li>
+<li>跳转到寄存器<code>jr $ra; nop;</code>或<code>jr $v0; nop;</code>或<code>jr $t9; nop;</code></li>
+</ol>
+<h2 id="MIPS特性"><a href="#MIPS特性" class="headerlink" title="MIPS特性"></a>MIPS特性</h2><p>MIPS 中的<code>jr</code>即jump register指令并不是所有的寄存器都允许跳转的，只有<code>ra,t9,v0</code>三个寄存器是可以跳的。</p>
+<p>另外就是MIPS在设计时的Delay Slot延迟槽机制，在跳转指令后面的一条指令实际上也是会执行的，因此如果不想造成其他的影响最好选择jr指令后是nop指令的gadget；</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>tun和tap</title>
+    <url>/2020/10/17/tun%E5%92%8Ctap/</url>
+    <content><![CDATA[<p>在使用qemu的系统模式来模拟嵌入式设备的固件时，一般需要专门为虚拟机来配置网络，这使用到的功能就是Linux中比较基本的虚拟网络设备相关的功能，即tun和tap</p>
+<a id="more"></a>
+
+
+
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>tun和tap相当于是linux上创建出来的虚拟网络设备，使用软件的方式模拟出来实现硬件的功能，在创建虚拟机的时候，一般VMM会自动创建出新的虚拟网卡，就是利用了这样的功能。</p>
+<p>tun是工作在第三层的网络层设备，而tap是工作在第二层的链路层设备</p>
+<p>tun表示虚拟的是点对点设备，tap虚拟的是以太网设备</p>
+<p>在创建了tap或tun之后，在<code>/dev/net/</code>目录下的<code>tun</code>文件就会处于激活状态，这时就可以通过读写这个设备，实现内核空间和用户空间的数据交互；这中交互方式也是linux的一种设计思想（万物皆文件）</p>
+<p>创建tun/tap可以使用tunctl或者ip tuntap这两种方式</p>
+<h2 id="tunctl"><a href="#tunctl" class="headerlink" title="tunctl"></a>tunctl</h2><p>tunctl不是系统自带的，首先需要安装相关的包</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt-get install uml-utilities</span><br></pre></td></tr></table></figure>
+
+<p>创建的虚拟网卡设备上的操作，不会影响到物理设备，也可以说通过这种方式实现了一种隔离，因此VPS、云服务等等一般都是用这些来实现的；</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tunctl -t tap0 -u `whoami`</span><br></pre></td></tr></table></figure>
+
+<p>创建设备，并将其分配给了当前的用户</p>
+<p>为这个设备分配IP地址并启动</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ifconfig tap0 192.168.0.1/24 up</span><br></pre></td></tr></table></figure>
+
+<p>如果要删除这个设备，同样可以使用<code>tunctl</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tunctl -d tap0</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ip-tuntap"><a href="#ip-tuntap" class="headerlink" title="ip tuntap"></a>ip tuntap</h2><p>ip tuntap可以创建tap设备，也可以创建tun设备</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip tuntap add dev tap0 mod tap</span><br><span class="line">ip tuntap add dev tun0 mod tun</span><br></pre></td></tr></table></figure>
+
+<p>两者差异只在于后面的mod指定设备类型</p>
+<p>需要删除设备时使用</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip tuntap del dev tap0 mod tap</span><br><span class="line">ip tuntap del dev tun0 mod tun</span><br></pre></td></tr></table></figure>
+
+<p>在需要指定设备的ip地址时，同样可以使用ifconfig</p>
+<p>或者可以使用ip命令中的address</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip address add dev tap0 192.168.2.1/24</span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>邮件安全</title>
+    <url>/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/</url>
+    <content><![CDATA[<p>参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；</p>
+<a id="more"></a>
+
+<p>做的三道题目内容分别是：</p>
+<ol>
+<li>从5000封邮件中识别100封左右的伪造发件人的邮件；</li>
+<li>将24000封邮件进行分类（例如垃圾邮件、攻击邮件、钓鱼邮件等）</li>
+<li>从80w封邮件中识别出其中安全威胁最高的一些邮件（即最有可能是用来攻击的）</li>
+</ol>
+<h2 id="邮件的各个字段"><a href="#邮件的各个字段" class="headerlink" title="邮件的各个字段"></a>邮件的各个字段</h2><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x-mailer</td>
+<td>发送邮件用到的客户端</td>
+</tr>
+<tr>
+<td>from</td>
+<td>显示给用户看到的发件人</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>近几年的顶级会议中出现过相关的文章，2020年的USENIX和2018年USENIX分别有一篇相关的论文，其中20年关注的是如何绕过，18年关注的是如何检测；</p>
+<blockquote>
+<p>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</p>
+<p>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</p>
+</blockquote>
+<h2 id="伪造发件人"><a href="#伪造发件人" class="headerlink" title="伪造发件人"></a>伪造发件人</h2><p>SMTP协议本身在设计时是没有考虑很多安全方面的问题（身份识别）的</p>
+<p>其中包含<code>Mail From</code>, <code>From</code>等字段</p>
+<blockquote>
+<p>Mail From: The first represents the user who <em>transmitted</em> the message, and is usually not displayed to the recipient. </p>
+<p>From: The second represents the user who <em>composed</em> the message, and is visible to the recipient.</p>
+</blockquote>
+<p>除了这两个字段，SMTP协议还有诸如*<code>Hello</code>, <code>Sender</code>, <code>Resent-From</code>*等字段，都是用来标示发信的用户的；</p>
+<p>为了对抗邮件发件人伪造的攻击，后续又在SMTP协议中增加了很多认证的方式，包括SPF、DKIM、DMARC、BIMI、ARC等；前三种认证方案应用的比较广，而后两个目前还没有被广泛应用；</p>
+<h3 id="Sender-Policy-Framework-SPF"><a href="#Sender-Policy-Framework-SPF" class="headerlink" title="Sender Policy Framework (SPF)"></a>Sender Policy Framework (SPF)</h3><p>假设邮件服务器收到了一封邮件，来自主机的 IP 是<code>173.194.72.103</code>，并且声称发件人为<code>email@example.com</code>。为了确认发件人不是伪造的，邮件服务器会去查询<code>example.com</code>的 SPF 记录。如果该域的 SPF 记录设置允许 IP 为<code>173.194.72.103</code>的主机发送邮件，则服务器就认为这封邮件是合法的；如果不允许，则通常会退信，或将其标记为垃圾/仿冒邮件。</p>
+<p>每一条SPF的记录会包含多种类型</p>
+<ul>
+<li>all</li>
+<li>ip4</li>
+<li>ip6</li>
+<li>a</li>
+<li>mx</li>
+<li>ptr</li>
+<li>exsits</li>
+<li>include</li>
+</ul>
+<p>每一种会存在这样几种类型的结果</p>
+<table>
+<thead>
+<tr>
+<th>结果</th>
+<th>处理方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pass</td>
+<td>查到记录合法，接收邮件</td>
+</tr>
+<tr>
+<td>Fail</td>
+<td>查到记录非法，退信</td>
+</tr>
+<tr>
+<td>Neutral</td>
+<td>查询记录没有查到是否合法</td>
+</tr>
+<tr>
+<td>None</td>
+<td>没有查询到服务器存在SPF记录</td>
+</tr>
+</tbody></table>
+<h2 id="伪造邮件的特点"><a href="#伪造邮件的特点" class="headerlink" title="伪造邮件的特点"></a>伪造邮件的特点</h2><p>伪造邮件一般伪造的是From这个字段，在用户收到邮件时，一般也是这个字段显示在页面中</p>
+<p>即看到的发件人；</p>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>有一些邮件伪造发件人可能是想要钓鱼，用户点击链接跳转后输入用户名密码，导致用户名密码被窃取</p>
+<p>这样的特征是**<em>邮件内容中的链接和实际跳转的链接不一致**</em></p>
+<h3 id="Message-ID"><a href="#Message-ID" class="headerlink" title="Message-ID"></a>Message-ID</h3><p>正常来说这个字段是发送方添加的；</p>
+<p>但是伪造邮件有时候会添加多个Received字段，导致这里Message-ID这个字段是中转的服务器添加的。</p>
+<h2 id="End-to-end-measurement-of-email-spoofing-attack"><a href="#End-to-end-measurement-of-email-spoofing-attack" class="headerlink" title="End-to-end measurement of email spoofing attack"></a>End-to-end measurement of email spoofing attack</h2><p>在SMTP邮件协议中，dkim、spf、dmarc这样的协议都是可选的，并没有在协议本身附带；</p>
+<p>因此很多的邮件厂商都没有采用这些机制；</p>
+<p>这篇文章提出了一种评估方法，评估各种流行的邮件厂商是如何检测、处理spoofed email的</p>
+<h3 id="Background-and-Methdology"><a href="#Background-and-Methdology" class="headerlink" title="Background and Methdology"></a>Background and Methdology</h3><p>SMTP协议在发信的时候主要是分为三个步骤：</p>
+<ol>
+<li>发信人的MUA通过SMTP将邮件发送到发件人服务提供商的MSA；</li>
+<li>发件人服务商的MTA通过SMTP将邮件发送到收件人的服务商；</li>
+<li>使用IMAP或POP3协议通过MDA发送到收件人的MUA</li>
+</ol>
 ]]></content>
   </entry>
 </search>

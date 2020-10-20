@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="邮件安全">
+<meta property="og:url" content="https://river-li.xyz/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-11T07:41:04.000Z">
+<meta property="article:modified_time" content="2020-10-15T02:55:12.295Z">
+<meta property="article:author" content="River Li">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://river-li.xyz/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>邮件安全 | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-friends">
+
+    <a href="/friends/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          邮件安全
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-11 15:41:04" itemprop="dateCreated datePublished" datetime="2020-10-11T15:41:04+08:00">2020-10-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-15 10:55:12" itemprop="dateModified" datetime="2020-10-15T10:55:12+08:00">2020-10-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；</p>
+<a id="more"></a>
+
+<p>做的三道题目内容分别是：</p>
+<ol>
+<li>从5000封邮件中识别100封左右的伪造发件人的邮件；</li>
+<li>将24000封邮件进行分类（例如垃圾邮件、攻击邮件、钓鱼邮件等）</li>
+<li>从80w封邮件中识别出其中安全威胁最高的一些邮件（即最有可能是用来攻击的）</li>
+</ol>
+<h2 id="邮件的各个字段"><a href="#邮件的各个字段" class="headerlink" title="邮件的各个字段"></a>邮件的各个字段</h2><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x-mailer</td>
+<td>发送邮件用到的客户端</td>
+</tr>
+<tr>
+<td>from</td>
+<td>显示给用户看到的发件人</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>近几年的顶级会议中出现过相关的文章，2020年的USENIX和2018年USENIX分别有一篇相关的论文，其中20年关注的是如何绕过，18年关注的是如何检测；</p>
+<blockquote>
+<p>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</p>
+<p>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</p>
+</blockquote>
+<h2 id="伪造发件人"><a href="#伪造发件人" class="headerlink" title="伪造发件人"></a>伪造发件人</h2><p>SMTP协议本身在设计时是没有考虑很多安全方面的问题（身份识别）的</p>
+<p>其中包含<code>Mail From</code>, <code>From</code>等字段</p>
+<blockquote>
+<p>Mail From: The first represents the user who <em>transmitted</em> the message, and is usually not displayed to the recipient. </p>
+<p>From: The second represents the user who <em>composed</em> the message, and is visible to the recipient.</p>
+</blockquote>
+<p>除了这两个字段，SMTP协议还有诸如*<code>Hello</code>, <code>Sender</code>, <code>Resent-From</code>*等字段，都是用来标示发信的用户的；</p>
+<p>为了对抗邮件发件人伪造的攻击，后续又在SMTP协议中增加了很多认证的方式，包括SPF、DKIM、DMARC、BIMI、ARC等；前三种认证方案应用的比较广，而后两个目前还没有被广泛应用；</p>
+<h3 id="Sender-Policy-Framework-SPF"><a href="#Sender-Policy-Framework-SPF" class="headerlink" title="Sender Policy Framework (SPF)"></a>Sender Policy Framework (SPF)</h3><p>假设邮件服务器收到了一封邮件，来自主机的 IP 是<code>173.194.72.103</code>，并且声称发件人为<code>email@example.com</code>。为了确认发件人不是伪造的，邮件服务器会去查询<code>example.com</code>的 SPF 记录。如果该域的 SPF 记录设置允许 IP 为<code>173.194.72.103</code>的主机发送邮件，则服务器就认为这封邮件是合法的；如果不允许，则通常会退信，或将其标记为垃圾/仿冒邮件。</p>
+<p>每一条SPF的记录会包含多种类型</p>
+<ul>
+<li>all</li>
+<li>ip4</li>
+<li>ip6</li>
+<li>a</li>
+<li>mx</li>
+<li>ptr</li>
+<li>exsits</li>
+<li>include</li>
+</ul>
+<p>每一种会存在这样几种类型的结果</p>
+<table>
+<thead>
+<tr>
+<th>结果</th>
+<th>处理方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pass</td>
+<td>查到记录合法，接收邮件</td>
+</tr>
+<tr>
+<td>Fail</td>
+<td>查到记录非法，退信</td>
+</tr>
+<tr>
+<td>Neutral</td>
+<td>查询记录没有查到是否合法</td>
+</tr>
+<tr>
+<td>None</td>
+<td>没有查询到服务器存在SPF记录</td>
+</tr>
+</tbody></table>
+<h2 id="伪造邮件的特点"><a href="#伪造邮件的特点" class="headerlink" title="伪造邮件的特点"></a>伪造邮件的特点</h2><p>伪造邮件一般伪造的是From这个字段，在用户收到邮件时，一般也是这个字段显示在页面中</p>
+<p>即看到的发件人；</p>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>有一些邮件伪造发件人可能是想要钓鱼，用户点击链接跳转后输入用户名密码，导致用户名密码被窃取</p>
+<p>这样的特征是**<em>邮件内容中的链接和实际跳转的链接不一致**</em></p>
+<h3 id="Message-ID"><a href="#Message-ID" class="headerlink" title="Message-ID"></a>Message-ID</h3><p>正常来说这个字段是发送方添加的；</p>
+<p>但是伪造邮件有时候会添加多个Received字段，导致这里Message-ID这个字段是中转的服务器添加的。</p>
+<h2 id="End-to-end-measurement-of-email-spoofing-attack"><a href="#End-to-end-measurement-of-email-spoofing-attack" class="headerlink" title="End-to-end measurement of email spoofing attack"></a>End-to-end measurement of email spoofing attack</h2><p>在SMTP邮件协议中，dkim、spf、dmarc这样的协议都是可选的，并没有在协议本身附带；</p>
+<p>因此很多的邮件厂商都没有采用这些机制；</p>
+<p>这篇文章提出了一种评估方法，评估各种流行的邮件厂商是如何检测、处理spoofed email的</p>
+<h3 id="Background-and-Methdology"><a href="#Background-and-Methdology" class="headerlink" title="Background and Methdology"></a>Background and Methdology</h3><p>SMTP协议在发信的时候主要是分为三个步骤：</p>
+<ol>
+<li>发信人的MUA通过SMTP将邮件发送到发件人服务提供商的MSA；</li>
+<li>发件人服务商的MTA通过SMTP将邮件发送到收件人的服务商；</li>
+<li>使用IMAP或POP3协议通过MDA发送到收件人的MUA</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/08/mips%E6%B1%87%E7%BC%96/" rel="prev" title="mips汇编">
+      <i class="fa fa-chevron-left"></i> mips汇编
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/17/tun%E5%92%8Ctap/" rel="next" title="tun和tap">
+      tun和tap <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6%E7%9A%84%E5%90%84%E4%B8%AA%E5%AD%97%E6%AE%B5"><span class="nav-number">1.</span> <span class="nav-text">邮件的各个字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E9%80%A0%E5%8F%91%E4%BB%B6%E4%BA%BA"><span class="nav-number">2.</span> <span class="nav-text">伪造发件人</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sender-Policy-Framework-SPF"><span class="nav-number">2.1.</span> <span class="nav-text">Sender Policy Framework (SPF)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E9%80%A0%E9%82%AE%E4%BB%B6%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">伪造邮件的特点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">3.1.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Message-ID"><span class="nav-number">3.2.</span> <span class="nav-text">Message-ID</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#End-to-end-measurement-of-email-spoofing-attack"><span class="nav-number">4.</span> <span class="nav-text">End-to-end measurement of email spoofing attack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Background-and-Methdology"><span class="nav-number">4.1.</span> <span class="nav-text">Background and Methdology</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fa fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fa fa-compass fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
