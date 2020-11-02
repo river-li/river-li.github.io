@@ -196,6 +196,121 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/09/zsh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/09/zsh/" class="post-title-link" itemprop="url">zsh</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-09 17:26:38" itemprop="dateCreated datePublished" datetime="2018-12-09T17:26:38+08:00">2018-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>之前就一直知道zsh，但是一直懒得弄，今天突然找点事做配好了zsh</p>
+<p>不得不说zsh实在是太强了</p>
+<!--more--->
+
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>arch系直接<code>pacman -S oh-my-zsh</code></p>
+<p>装好之后会有一个提示，按照提示执行：</p>
+<blockquote>
+<p>cp /usr/share/oh-my-zsh/zshrc ~/.zshrc</p>
+</blockquote>
+<p>完了之后oh-my-zsh就装好了</p>
+<p>deepin和debian系使用<code>sudo apt install zsh</code></p>
+<p>之后还需要<code>wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh</code></p>
+<p>不过想要切换默认的shell为zsh还需要执行这个命令</p>
+<p><code>chsh -s /bin/zsh</code></p>
+<p>这时候在term里面输入<code>zsh</code>就能进入zsh的窗口里</p>
+<p>想要用bash替代zsh还需要修改终端的默认指令，不过这个依图形界面而异，就不统一说明方法了</p>
+<p>一般就是在终端的配置文件那里修改bash为zsh即可</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>首先是zsh的主题</p>
+<p>在zshrc里面修改里面的theme就可以</p>
+<p>例如我改成了random，之后每一次启动zsh就会得到不同的特效主题</p>
+<p>在plugins那一部分里面，默认有git这个插件，有一些比较好用的也最好加上</p>
+<p>我现在装的有</p>
+<ul>
+<li>git</li>
+<li>extract</li>
+<li>autojump</li>
+<li>bat</li>
+<li>zsh-autosuggestion</li>
+</ul>
+<p>后面三个是需要再单独安装包的</p>
+<p>分别<code>pacman -S</code></p>
+<p>另外最后需要在zshrc中加</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="debian系"><a href="#debian系" class="headerlink" title="debian系"></a>debian系</h4><p>配置autojump需要执行一句</p>
+<p><code>sudo apt install autojump</code></p>
+<p>之后</p>
+<p><code>[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] &amp;&amp; . ~/.autojump/etc/profile.d/autojump.sh</code></p>
+<p>之后在zshrc中plugins处加入autojump</p>
+<hr>
+<p>配置autosuggestion</p>
+<p><code>git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions</code></p>
+<p>之后在zshrc中plugins中加入zsh-autosuggestions</p>
+<hr>
+<p>还可以配置history插件，直接在zshrc中加入即可，作用是在zsh的terminal中输入history后可以出现历史命令</p>
+<hr>
+<p>bat这个插件除了macOS和arch以外都需要编译安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/sharkdp/bat.git</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/07/nvidia/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1034,7 +1149,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -196,6 +196,121 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/" class="post-title-link" itemprop="url">我终于在Linux玩上了Overwatch</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-01 23:59:43" itemprop="dateCreated datePublished" datetime="2019-07-01T23:59:43+08:00">2019-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>linux什么都比windows好，除了游戏少这一点</p>
+<p>不过其实一般玩的游戏也就那么几个，能支持了就满足了</p>
+<p>从16年起就一直在玩守望先锋，中间有几次都想着在Linux上装一下，结果没搞成</p>
+<p>一是由于当时用linux用的还比较少，很多地方都不太会配置</p>
+<p>二来也是因为当时水平比较菜，各种官方文档看起来都费劲</p>
+<p>现在好歹也是个3年的Linux User了，于是又想起来想着搞一搞，还真就让我给装成了。</p>
+<!--more--->
+
+<h2 id="显卡驱动"><a href="#显卡驱动" class="headerlink" title="显卡驱动"></a>显卡驱动</h2><p>首先，想打游戏肯定离不开显卡驱动</p>
+<p>(然而Nvidia的显卡驱动在Linux下面就是个天坑)</p>
+<p>之前无数次翻车都是在显卡驱动上</p>
+<p>而且之前每一次出问题，由于不会修又只能重装系统</p>
+<p>直到后来从头撸了一遍Arch WIki，对linux安装的过程也有了点了解</p>
+<p>其实和写代码一样的，哪怕图形界面崩了拿个U盘看着log就能debug</p>
+<p>慢慢修总能修好的，不至于每次都重装</p>
+<p>废话不多说了，具体安装驱动的方法可以回顾<a target="_blank" rel="noopener" href="http://river-li.me/2018/12/07/nvidia/">这篇博客</a></p>
+<p>记得一定要看到最后，因为有一个包需要删掉(bbswitch)</p>
+<h2 id="相关软件包"><a href="#相关软件包" class="headerlink" title="相关软件包"></a>相关软件包</h2><p>首先，想在linux上玩游戏，有一款软件是一定不能错过的，那就是<strong>Lutris</strong></p>
+<p>Lutris可以管理linux下面各种平台的游戏，都可以在这里面运行</p>
+<p>安装起来也是十分的方便;</p>
+<p>安装好lutris之后直接在官网搜索想玩的游戏点install就可以了</p>
+<p>有一个需要注意的点，如果使用了向我之前那样安装驱动的方法,那么在需要显卡运行程序时必须要有primusrun启动的</p>
+<p>在安装好守望先锋这样的游戏之后需要在System Options里设置</p>
+
+
+<p>同时，要发挥出显卡的性能，还需要安装DXVK</p>
+<p>但是DXVK支持的GPU一般都有一点久，最新的nvidia GPU有可能不支持，可以在lutris的github里的wiki看一看自己的GPU是否支持</p>
+<p>安装DXVK时可以使用pacman</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S dxvk-bin</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后需要运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setup-dxvk</span><br></pre></td></tr></table></figure>
+
+<p>来安装，之后在lutris里对游戏设置相应的dxvk版本即可</p>
+
+
+<p>注意在安装时选择的winee的版本，最好按照官方的推荐，不然大概率运行不了</p>
+<p>utris_20190702005257.pngwine的版本管理也可以直接在lutris中完成</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>这些都设置完成之后就可以启动一下看一看能不能运行</p>
+<p>同时也可以开一个终端运行指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+
+<p>来查看GPU的状态，如果成功在显卡跑起来会有相应的进程的</p>
+
+
+<p>最后放一张运行lutris里库的游戏图</p>
+
+
+<p>没错，我又开始下载APEX来玩了</p>
+<p>这么多游戏可以玩，还要windows有啥用</p>
+<p>嘻嘻</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/01/KVM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1189,194 +1304,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">音频处理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-05 09:04:30" itemprop="dateCreated datePublished" datetime="2019-06-05T09:04:30+08:00">2019-06-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>python音频处理有许多的模块，首先了解音频的相关知识，之后主要看一下wave库和LibROSA库的用法</p>
-<!--more--->
-
-
-
-<h3 id="音频基础知识"><a href="#音频基础知识" class="headerlink" title="音频基础知识"></a>音频基础知识</h3><p>首先需要了解<strong>奈奎斯特采样定律</strong></p>
-<blockquote>
-<p>想要完整保留原始信号中的信息，需要采样频率大于信号中最高频率的两倍</p>
-</blockquote>
-<p>而人耳的听力范围是20~20kHZ</p>
-<p>音频文件主要有这么几类格式</p>
-<ul>
-<li>标准格式 WAV，采样频率是44.1kHZ</li>
-<li>有损编码 MP3等</li>
-<li>无损编码 APE、FLAC</li>
-</ul>
-<p>在数据分析中，提取音频特征时可能有以下指标</p>
-<h4 id="MFCC"><a href="#MFCC" class="headerlink" title="MFCC"></a>MFCC</h4><p>梅尔频率倒谱系数时基于人耳频率提出的，它与频率成非线性对应关系<br>$$<br>m=256log_{10}(1+\frac{f}{700})<br>$$<br>当频率在1000Hz以下时人耳听觉能力随频率线性增长</p>
-<p>而当频率超过1000Hz时，听觉能力与频率呈对数增长</p>
-<p>MFCC是利用这个特点计算得到的特征，可以用于特征提取和数据降维</p>
-<p>特征计算的过程：</p>
-<ul>
-<li>傅里叶变换</li>
-<li>使用Mel滤波器组滤波</li>
-<li>对数运算</li>
-<li>DCT变换，得到Mel参数</li>
-</ul>
-<h4 id="Chroma"><a href="#Chroma" class="headerlink" title="Chroma"></a>Chroma</h4><p>Chroma色度特征是色度向量(Chroma Vector)和色度图谱(Chromagram)的总称</p>
-<p>色度图谱是色度向量的序列</p>
-<p>色度向量可以理解为将声音用12个元素的向量表示</p>
-<p>这12个向量是音乐中do,re,mi…si共7个白键以及另外5个半音的黑键组成</p>
-<p>不同八度同样的音是向量中同一个元素的能量累加得到的</p>
-<p>因此用这个12维的向量即可表示某个时间点的声音</p>
-<p>而向量随时间组成的序列即为色度图谱</p>
-<p>特征计算的步骤：</p>
-<ul>
-<li>首先对音频文件傅里叶变换</li>
-<li>降噪</li>
-<li>将不同的声音定频到钢琴固定的频率</li>
-<li>记录每一个音高在每一帧内的能量，得到音高图谱</li>
-<li>将同一时间不同八度音符的能量叠加到相同的音级，得到色度图谱</li>
-</ul>
-<h3 id="wave"><a href="#wave" class="headerlink" title="wave"></a>wave</h3><p>这个库是python自带的音频处理的库</p>
-<p>不需要单独安装</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f = wave.open(filename,mode)</span><br></pre></td></tr></table></figure>
-
-<p>读取文件的函数就和常规的open类似，参数分别是文件名和打开的模式(读写等)</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">params = f.getparams()</span><br></pre></td></tr></table></figure>
-
-<p>返回的结果是一个类的对象,内容是打开的文件的各个参数</p>
-<p>各个参数依次是</p>
-<ul>
-<li>nchannels 声道数</li>
-<li>sampwidth 位深度，返回的结果是字节数</li>
-<li>framerate 采样频率，wav文件固定是44.1K</li>
-<li>nframes 采样点数</li>
-<li>comtype 是否被压缩</li>
-<li>compname 压缩类型</li>
-</ul>
-<p>返回的这些结果可以作为对象的属性获取，也可以像访问列表一样获取</p>
-
-
-
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data = f.readframe(nframes)</span><br></pre></td></tr></table></figure>
-
-<p>这个nframes是音频的采样点个数，这个数据和文件采样频率和长度有关</p>
-<p>返回的结果是读取到的波形数据</p>
-<p>这个数据是bytes格式的，由一串16进制的字符串组成</p>
-<p>注意，wave.open打开的文件同样也需要close</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f.close()</span><br></pre></td></tr></table></figure>
-
-
-
-<p>下面使用matplotlib对数据进行绘图</p>
-<p>以上面的音乐文件为例</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">wave_data = np.frombuffer(data,dtype=np.short)</span><br><span class="line">wave_data.shape=<span class="number">-1</span>,<span class="number">2</span></span><br><span class="line"><span class="comment">#由于wav文件位深度16位，因此可以用short表示</span></span><br><span class="line">time = np.arange(<span class="number">0</span>,params.nframes)*(<span class="number">1.0</span>/params.framerate)</span><br><span class="line">plt.subplot(<span class="number">211</span>)</span><br><span class="line">plt.plot(time,wave_data.T[<span class="number">0</span>])</span><br><span class="line">plt.subplot(<span class="number">212</span>)</span><br><span class="line">plt.plot(time,wave_data.T[<span class="number">1</span>],c=<span class="string">&#x27;g&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-<p>由于音乐文件有两个声道，将其转换到np的数组后进行转置</p>
-<p>两项数据分别对应两个声道</p>
-<p>绘制的结果如图</p>
-
-
-<h3 id="LibROSA"><a href="#LibROSA" class="headerlink" title="LibROSA"></a>LibROSA</h3><p>LibROSA是一个用于音乐分析的库</p>
-<p>整个库下面又分成很多个模块,下面用到哪个说哪个</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y,sr=librosa.load(filename)</span><br></pre></td></tr></table></figure>
-
-<p>返回的两个结果中y是采样的数据，sr是采样频率</p>
-<p>这个函数默认的采样频率是22050，如果要使用文件原本的频率需要增加参数</p>
-<p><code>librosa.load(filename,sr=None)</code></p>
-
-
-<h4 id="librosa-beat"><a href="#librosa-beat" class="headerlink" title="librosa.beat"></a>librosa.beat</h4><p>这个模块是librosa中用于分析节拍的模块</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">y,sr = librosa.load(<span class="string">&#x27;music.wav&#x27;</span>)</span><br><span class="line"><span class="comment">#结果中y是数据，sr是采样频率</span></span><br><span class="line">tempo,beat_frames = librosa.beat.beat_track(y=y,sr=sr)</span><br><span class="line"><span class="comment"># tempo是每分钟的节拍数</span></span><br><span class="line"><span class="comment"># beat_frames 是节拍发生的帧</span></span><br><span class="line">beat_times = librosa.frames_to_time(beat_frames,sr=sr)</span><br></pre></td></tr></table></figure>
-
-<p>最后会得到一个数组，相当于是每一个节拍发生的时间戳信息，单位是秒</p>
-
-
-
-
-<h4 id="librosa-feature"><a href="#librosa-feature" class="headerlink" title="librosa.feature"></a>librosa.feature</h4><p>这个模块中内置了很多特征的计算方法</p>
-<p>使用这个模块来计算音乐的MFCC值和Chroma值</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y,sr = librosa.load(<span class="string">&#x27;music.wav&#x27;</span>)</span><br><span class="line">hop = <span class="number">512</span></span><br><span class="line">mfcc = librosa.feature.mfcc(y=y,sr=sr,hop_length=hop,n_mfcc=<span class="number">13</span>)</span><br></pre></td></tr></table></figure>
-
-<p>计算得到的mfcc值</p>
-
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chroma_cq = librosa.feature.chroma_cqt(y=y,sr=sr)</span><br></pre></td></tr></table></figure>
-
-<p>虽然计算chroma值的api调用起来很简单，但是在使用这个函数之前还需要首先过滤掉音乐中的冲击信号</p>
-<p>这一步可以使用librosa.effects.hpss进行处理</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y_harmonic,y_percussive = librosa.effects.hpss(y)</span><br></pre></td></tr></table></figure>
-
-<p>得到的chroma值</p>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1448,7 +1375,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

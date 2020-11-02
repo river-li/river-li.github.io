@@ -196,6 +196,106 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/11/29/Cryptography/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/29/Cryptography/" class="post-title-link" itemprop="url">Cryptography</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-29 16:09:22" itemprop="dateCreated datePublished" datetime="2019-11-29T16:09:22+08:00">2019-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>内容来源于picoctf，其中的补充知识资料</p>
+<p><a href="picoctf.com/learning_guides/Book-2-Cryptography.pdf">原始资料链接</a></p>
+<!--more--->
+
+
+<h2 id="Example-Ciphers"><a href="#Example-Ciphers" class="headerlink" title="Example Ciphers"></a>Example Ciphers</h2><ol>
+<li>Caesar Cipher</li>
+<li>Affine Cipher</li>
+<li>Vigenere Cipher</li>
+<li>Hill Cipher</li>
+</ol>
+<h4 id="Caesar-Cipher"><a href="#Caesar-Cipher" class="headerlink" title="Caesar Cipher"></a>Caesar Cipher</h4><p>即凯撒密码，选择一个0-25的数字作为key，之后将plaintext的每一个字符向前或向后移动key位，得到的为ciphertext</p>
+<p>这种密码非常容易破解，只需要列出26个字符串找出其中有意义的那个即可</p>
+<h4 id="Affine-Cipher"><a href="#Affine-Cipher" class="headerlink" title="Affine Cipher"></a>Affine Cipher</h4><p>仿射密码，是凯撒密码的一般性密码；</p>
+<p>首先将字母全部转换为数字，之后用一个线性的函数对其处理，得到的数字再转换为字母；<br>$$<br>y=a * x+b<br>$$<br>凯撒密码是系数为1时的情况；</p>
+<h4 id="Vigenere-Cipher"><a href="#Vigenere-Cipher" class="headerlink" title="Vigenere Cipher"></a>Vigenere Cipher</h4><p>维吉尼亚密码</p>
+<p>虽然也是一个置换密码，但是移动的位数是一个随key的每个字符变化的数；</p>
+<p>一般变化方式是通过字母变换的表格，如图所示</p>
+
+
+
+
+<h4 id="Hill-Cipher"><a href="#Hill-Cipher" class="headerlink" title="Hill Cipher"></a>Hill Cipher</h4><p>希尔密码；</p>
+<p>首先将包含n个字母长的信息写成具有n个元素的列向量，向量的每一个元素是一个数字，代表相应的字母；</p>
+<p>密钥key是一个 n*n的随机数矩阵；</p>
+<p>将密钥矩阵和原始信息相乘再每一个元素模26，最后将得到的向量转化成字母即为密文。</p>
+<p>解密的过程与之类似，只是矩阵的左右乘需要改变一下</p>
+<h2 id="Hashing"><a href="#Hashing" class="headerlink" title="Hashing"></a>Hashing</h2><p>一个好的哈希函数需要满足的几个特点：</p>
+<ol>
+<li>给定一个输入，易于计算哈希值</li>
+<li>给定一个哈希值，很难计算出原本的输入值</li>
+<li>无碰撞，不应该存在两个具有相同哈希的数</li>
+</ol>
+<h2 id="Cipher-Attack"><a href="#Cipher-Attack" class="headerlink" title="Cipher Attack"></a>Cipher Attack</h2><p>对于凯撒密码，可以使用Frequency Analysis分析字母出现的频率，英文单词中各个字母出现的频率一般是固定的</p>
+<p>对于维吉尼亚密码，如果知道密钥的长度就会容易许多，而猜测密钥的长度就因此是一个很关键的步骤；有两个猜想，<em>The Kasiki Test</em> 和 <em>The Friedman Test</em>；如果一个字符串足够长，就有很大的可能包含了重复的key；假设一个密文中有重复加密的key，则可以对其间隔进行分组，每一组相当于都是凯撒密码，对其进行频率分析得到一个可能的key</p>
+<p>对于DH密钥交换的攻击，<u>Man In The Middle Attack</u>，中间人攻击，在协商对称密钥时中间人拦截消息后和双方分别协商会话密钥</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1233,121 +1333,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/" class="post-title-link" itemprop="url">我终于在Linux玩上了Overwatch</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-01 23:59:43" itemprop="dateCreated datePublished" datetime="2019-07-01T23:59:43+08:00">2019-07-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>linux什么都比windows好，除了游戏少这一点</p>
-<p>不过其实一般玩的游戏也就那么几个，能支持了就满足了</p>
-<p>从16年起就一直在玩守望先锋，中间有几次都想着在Linux上装一下，结果没搞成</p>
-<p>一是由于当时用linux用的还比较少，很多地方都不太会配置</p>
-<p>二来也是因为当时水平比较菜，各种官方文档看起来都费劲</p>
-<p>现在好歹也是个3年的Linux User了，于是又想起来想着搞一搞，还真就让我给装成了。</p>
-<!--more--->
-
-<h2 id="显卡驱动"><a href="#显卡驱动" class="headerlink" title="显卡驱动"></a>显卡驱动</h2><p>首先，想打游戏肯定离不开显卡驱动</p>
-<p>(然而Nvidia的显卡驱动在Linux下面就是个天坑)</p>
-<p>之前无数次翻车都是在显卡驱动上</p>
-<p>而且之前每一次出问题，由于不会修又只能重装系统</p>
-<p>直到后来从头撸了一遍Arch WIki，对linux安装的过程也有了点了解</p>
-<p>其实和写代码一样的，哪怕图形界面崩了拿个U盘看着log就能debug</p>
-<p>慢慢修总能修好的，不至于每次都重装</p>
-<p>废话不多说了，具体安装驱动的方法可以回顾<a target="_blank" rel="noopener" href="http://river-li.me/2018/12/07/nvidia/">这篇博客</a></p>
-<p>记得一定要看到最后，因为有一个包需要删掉(bbswitch)</p>
-<h2 id="相关软件包"><a href="#相关软件包" class="headerlink" title="相关软件包"></a>相关软件包</h2><p>首先，想在linux上玩游戏，有一款软件是一定不能错过的，那就是<strong>Lutris</strong></p>
-<p>Lutris可以管理linux下面各种平台的游戏，都可以在这里面运行</p>
-<p>安装起来也是十分的方便;</p>
-<p>安装好lutris之后直接在官网搜索想玩的游戏点install就可以了</p>
-<p>有一个需要注意的点，如果使用了向我之前那样安装驱动的方法,那么在需要显卡运行程序时必须要有primusrun启动的</p>
-<p>在安装好守望先锋这样的游戏之后需要在System Options里设置</p>
-
-
-<p>同时，要发挥出显卡的性能，还需要安装DXVK</p>
-<p>但是DXVK支持的GPU一般都有一点久，最新的nvidia GPU有可能不支持，可以在lutris的github里的wiki看一看自己的GPU是否支持</p>
-<p>安装DXVK时可以使用pacman</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S dxvk-bin</span><br></pre></td></tr></table></figure>
-
-<p>安装完成后需要运行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setup-dxvk</span><br></pre></td></tr></table></figure>
-
-<p>来安装，之后在lutris里对游戏设置相应的dxvk版本即可</p>
-
-
-<p>注意在安装时选择的winee的版本，最好按照官方的推荐，不然大概率运行不了</p>
-<p>utris_20190702005257.pngwine的版本管理也可以直接在lutris中完成</p>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>这些都设置完成之后就可以启动一下看一看能不能运行</p>
-<p>同时也可以开一个终端运行指令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
-
-<p>来查看GPU的状态，如果成功在显卡跑起来会有相应的进程的</p>
-
-
-<p>最后放一张运行lutris里库的游戏图</p>
-
-
-<p>没错，我又开始下载APEX来玩了</p>
-<p>这么多游戏可以玩，还要windows有啥用</p>
-<p>嘻嘻</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1419,7 +1404,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

