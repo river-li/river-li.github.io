@@ -1485,7 +1485,8 @@
 <p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
 <p>作者aLoNg3x</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先窗口一共有两个输入，三个按钮</p>
-<p><a href="./image-20200303135204271.png"></a></p>
+<img src="/2020/03/03/CrackMe-Day6/image-20200303135204271.png" class="">
+
 <p>初始状态下OK是点不了的，点击help会陆续弹框以下内容：</p>
 <ol>
 <li><img src="/2020/03/03/CrackMe-Day6/image-20200303135256166.png" class=""></li>
