@@ -266,11 +266,9 @@
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序打开界面</p>
 <p><a href="./image-20200225200555397.png"></a></p>
 <p>点击确定后进入程序主界面</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225200747797.png" class="">
-
+<p><a href="./image-20200225200747797.png"></a></p>
 <p>点击Serial/Name后进入输入序列号密码的界面，随便输入之后检查会告诉你错误</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225200901134.png" class="">
-
+<p><a href="./image-20200225200901134.png"></a></p>
 <p>give up之后又会回到原本的主界面</p>
 <p>另一个Serial是一个另外的序列号，也就是说一个程序中有两个序列号</p>
 <img src="/2020/02/25/CrackMe-Day1/image-20200225200944116.png" class="">
