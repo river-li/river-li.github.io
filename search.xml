@@ -264,66 +264,65 @@
 <h1 id="CrackMe1"><a href="#CrackMe1" class="headerlink" title="CrackMe1"></a>CrackMe1</h1><p>第一道CrackMe</p>
 <p>作者Acid burn</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序打开界面</p>
-
-
+<p><a href="./image-20200225200555397.png"></a></p>
 <p>点击确定后进入程序主界面</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200747797.png" class="">
 
 <p>点击Serial/Name后进入输入序列号密码的界面，随便输入之后检查会告诉你错误</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200901134.png" class="">
 
 <p>give up之后又会回到原本的主界面</p>
 <p>另一个Serial是一个另外的序列号，也就是说一个程序中有两个序列号</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200944116.png" class="">
 
 <p>下面开始逆向</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="Serial-With-Name"><a href="#Serial-With-Name" class="headerlink" title="Serial With Name"></a>Serial With Name</h3><p>首先用OD打开，对API下断点，断在MessageBox相关的弹窗中</p>
 <p>结果运行发现运行不起来了</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225201938989.png" class="">
 
 <p>堆栈中出现了这样的信息</p>
 <p>很奇怪，专门去论坛看了一下发现其他人没说这种情况，不知道是为啥</p>
 <p>就用win10换成了winxp，之后重新分析就可以了</p>
 <p>在API断点插件里下断点</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225204313676.png" class="">
 
 <p>运行，第一次断在了最初的弹窗，之后输入错误的验证码出现第二次的弹窗</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225205516326.png" class="">
 
 <p>但是发现断的位置断在了user32的库里</p>
 <p>查看堆栈找到前面压栈的地址0042A1A9</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225210150192.png" class="">
 
 <p>断了之后继续单步步过执行，执行一段时间可以看到一块存放字符串的区域</p>
 <p>在这个MessageBoxA上面的Call下断点，查看程序被断时esi中是否是Sorry那个字符串</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213557948.png" class="">
 
 <p>发现图中所示的这个断点就没有断住了，而且这时看到右边的esi已经是sorry这样的字符串了</p>
 <p>我们首先还是在这个跳转来的开始位置，即这个<code>push ebp</code>下个断点</p>
 <p>查看这时的堆栈，发现跳转来自于0042fb37</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213757602.png" class="">
 
 <p>跟过去看一下，发现move了这样的字符串</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213849953.png" class="">
 
 <p>我们再接着向上看</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214226496.png" class="">
 
 <p>这一部分的代码以及这个条件跳转非常疑似进行判断的代码</p>
 <p>我们尝试将这个jnz修改为jz</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214335361.png" class="">
 
 <p>可以，直接破解成功了</p>
 <h3 id="Serial-Without-Name"><a href="#Serial-Without-Name" class="headerlink" title="Serial Without Name"></a>Serial Without Name</h3><p>在窗口中随便输入check后，同样还是先断在这个<code>push ebp</code></p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214627033.png" class="">
 
 <p>看到堆栈这次来自了另外一个地址</p>
 <p>跟过去看一下</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214716077.png" class="">
 
 <p>结果发现这部分的代码和上面那边的结构类似</p>
 <p>也是一个jnz，我们还是直接改成jz</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214810468.png" class="">
 
 <p>fine，破解成功</p>
 ]]></content>
@@ -490,21 +489,20 @@
 <p>作者attackiko</p>
 <p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
-
-
+<p><a href="./image-20200309172308082.png"></a></p>
 <p>输入错误后获得一个弹窗</p>
-
+<img src="/2020/03/09/CrackMe-Day12/image-20200309172335715.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
-
+<img src="/2020/03/09/CrackMe-Day12/image-20200309172453445.png" class="">
 
 <p>用Exeinfo看了一下</p>
-
+<img src="/2020/03/09/CrackMe-Day12/image-20200309181655765.png" class="">
 
 <p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
-
+<img src="/2020/03/09/CrackMe-Day12/image-20200309181743824.png" class="">
 
 <p>得，居然是DOS的程序</p>
 <p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
@@ -536,45 +534,44 @@
     <content><![CDATA[<h1 id="CrackMe13"><a href="#CrackMe13" class="headerlink" title="CrackMe13"></a>CrackMe13</h1><p>第十三道CrackMe</p>
 <p>作者badboy</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序运行一打开有一个选择条，可以选择1.0和2.0</p>
-
-
+<p><a href="./image-20200310150353885.png"></a></p>
 <p>点击1.0之后窗口变成这样，只有一个序列号可以输入</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310150502948.png" class="">
 
 <p>输入错误的码之后点击Try，输入框的字会变成Try Again</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310150801434.png" class="">
 
 <p>切换到2.0之后窗口多了一个Name的条</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310151045125.png" class="">
 
 <p>输入错误之后点击Try</p>
 <p>同样会在Serial提示一个Try Again</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310151156449.png" class="">
 
 <p>但是Name必须有至少5个字母</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>搜索字符串居然什么也没搜到</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310151818635.png" class="">
 
 <p>那只好从头好好看一下了</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310152130006.png" class="">
 
 <p>根据这个结构，push+call，上面是一堆jump判断是VB的程序</p>
 <p>那我们可以用VB Decompiler来看一下相关控件的信息</p>
 <p>看到最初选择题目的那个combobox</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310153758873.png" class="">
 
 <p>可以看一下点击这个combo box的事件函数</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310153939547.png" class="">
 
 <p>看到这段代码前面首先将本来出现的选项都隐藏</p>
 <p>中间有一个大的IF ELSE判断</p>
 <p>根据选择的选项设置相应的控件的显示</p>
 <p>去前面控件那里再看一下Frame和Commander是和哪些对应的</p>
 <p>看到Command4的点击事件</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310155732811.png" class="">
 
 <p>以及Command2的点击事件</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310155846152.png" class="">
 
 <p>我们可以判断出分别对应了1.0和2.0的检测函数</p>
 <p>仔细阅读 一下这两块代码</p>
@@ -583,11 +580,11 @@
 <p><code>Me.Text3.Text==Me.Label3.Caption</code></p>
 <p>可以判断出<code>Text3.Text</code>就是我们输入的序列号，那么需要做的就是看一下<code>Label3.Caption</code>具体值是多少了</p>
 <p>看一下2.0的代码，发现其中有一句</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310191747466.png" class="">
 
 <p>对<code>Label3.Caption</code>进行了赋值</p>
 <p>在<code>Combo1_Click</code>函数中也存在对这个变量的赋值</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310192156461.png" class="">
 
 <p>这边等于的这个变量相关的值就在上面</p>
 <figure class="highlight vb"><table><tr><td class="code"><pre><span class="line">var_15C = ((Day(Now) * Day(<span class="number">23</span>)) + (Month(Now) * Month(<span class="number">2</span>)))</span><br><span class="line">var_1CC = (var_15C + (Year(Now) * Year(<span class="number">3</span>)))</span><br><span class="line">var_1D0 = <span class="built_in">CStr</span>((((<span class="built_in">CLng</span>(var_1CC) + <span class="built_in">CLng</span>(var_1CC)) + <span class="built_in">CLng</span>((Day(<span class="number">14</span>) * Year(<span class="number">2020</span>)))) + <span class="built_in">CLng</span>((Day(<span class="number">14</span>) * Year(<span class="number">2020</span>)))))</span><br></pre></td></tr></table></figure>
@@ -599,26 +596,26 @@
 
 <p>计算结果”7725976”</p>
 <p>填进去试了一下</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310194118225.png" class="">
 
 
 
 <h3 id="2-0"><a href="#2-0" class="headerlink" title="2.0"></a>2.0</h3><p>这一问相比就更加复杂了一些</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310194417710.png" class="">
 
 <p>一开始先对Name长度进行判断，要求至少5个字符</p>
 <p>之后下面第一个比较重要的运算</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310195046894.png" class="">
 
 <p>这个循环从输入的名称的第五位开始循环</p>
 <p><code>(CDbl(Asc(Mid$(name, CLng(pos), 1))) * Val(Mid$(const_str, CLng((var_A8 * 3)), 3))))</code></p>
 <p> 这一步将name[pos]位置的字符ASCII码 和 const_str第<code>var_A8*3</code>位开始连续3位的值 相乘</p>
 <p>结果每一轮加在var_90上</p>
 <p>这下面的几个语句其实很疑惑，不太明白啥意思</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310195737989.png" class="">
 
 <p>在这下面的一块代码</p>
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310195903851.png" class="">
 
 <p>这里特别长的那一句</p>
 <p>将name[pos]的字符ASCII和 <code>name[pos-1]</code>处的字符ASCII相乘，结果再乘const_str第<code>var_A8*2</code>处长度为2的字符串值</p>
@@ -628,7 +625,7 @@
 <p>使用Python写了一个注册机</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_serial</span>(<span class="params">name</span>):</span></span><br><span class="line">  const_str = <span class="string">&quot;0110617121214051216101106141404110614140411091211100810101608040610121608100416&quot;</span></span><br><span class="line">  </span><br><span class="line">  var_90 = <span class="number">0</span></span><br><span class="line">  var_A8 = <span class="number">1</span></span><br><span class="line">  <span class="keyword">for</span> pos <span class="keyword">in</span> range(<span class="number">3</span>,len(name)):</span><br><span class="line">    var_90 = var_90+ord(name[pos])*int(const_str[var_A8*<span class="number">3</span><span class="number">-1</span>:var_A8*<span class="number">3</span>+<span class="number">2</span>])</span><br><span class="line">    var_A8 = var_A8+<span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> var_A8&gt;<span class="number">39</span>:</span><br><span class="line">      Var_A8=<span class="number">0</span></span><br><span class="line">    </span><br><span class="line">  var_A8 = <span class="number">1</span></span><br><span class="line">  var_178 = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> pos <span class="keyword">in</span> range(<span class="number">3</span>,len(name)):</span><br><span class="line">    var_178 = var_178 + ord(name[pos<span class="number">-1</span>])*ord(name[pos])*int(const_str[var_A8*<span class="number">2</span><span class="number">-1</span>:var_A8*<span class="number">2</span>+<span class="number">1</span>])</span><br><span class="line">    var_A8 = var_A8+<span class="number">1</span></span><br><span class="line">    </span><br><span class="line">  print(str(var_90)+<span class="string">&#x27;-&#x27;</span>+str(var_178))</span><br></pre></td></tr></table></figure>
 
-
+<img src="/2020/03/10/CrackMe-Day13/image-20200310205602983.png" class="">
 
 <p>关于边界条件这里由于对VB不熟悉还是费了很大劲，不过最后好歹还是做出来了</p>
 <h2 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h2><p>程序还可以爆破，虽然在OD里没有直接定位到关键跳转，要定位估计也要费点功夫了；</p>
@@ -811,8 +808,7 @@
     <content><![CDATA[<h1 id="CrackMe16"><a href="#CrackMe16" class="headerlink" title="CrackMe16"></a>CrackMe16</h1><p>第十六道CrackMe</p>
 <p>作者bjanes</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开就是一个窗口，只能输入一个序列号</p>
-
-
+<p><a href="./image-20200313175926310.png"></a></p>
 <p>输入错误的码之后一个小弹窗</p>
 
 
@@ -913,24 +909,23 @@
     <content><![CDATA[<h1 id="CrackMe17"><a href="#CrackMe17" class="headerlink" title="CrackMe17"></a>CrackMe17</h1><p>第十七道CrackMe</p>
 <p>作者bjanes</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>样子、效果都和前两天的程序一模一样</p>
-
-
+<p><a href="./image-20200314234515009.png"></a></p>
 <p>甚至我顺手试了一下前一次的序列号直接就过了</p>
-
+<img src="/2020/03/14/CrackMe-Day17/image-20200314234557219.png" class="">
 
 <p>emmmmm</p>
 <p>逆向看一下差在哪里吧</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先看一下字符串</p>
-
+<img src="/2020/03/14/CrackMe-Day17/image-20200314234849351.png" class="">
 
 <p>印象里前面的程序应该是没有这么多内容的，而且看到还多了SMARTCHECK</p>
 <p>定位到了Good job那里</p>
-
+<img src="/2020/03/14/CrackMe-Day17/image-20200314235044822.png" class="">
 
 <p>发现上面存在一个跳到失败的跳转</p>
 <p>直接改成jnz</p>
 <p>就。。过了？</p>
-
+<img src="/2020/03/14/CrackMe-Day17/image-20200314235128472.png" class="">
 
 <p>似乎改了算法方面的机制之后反而导致程序最后关键跳转更明显了</p>
 <p>算法上的分析明天再仔细研究</p>
@@ -992,59 +987,58 @@
     <content><![CDATA[<h1 id="CrackMe19"><a href="#CrackMe19" class="headerlink" title="CrackMe19"></a>CrackMe19</h1><p>第十九道CrackMe</p>
 <p>作者Brad Soblesky</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>相比昨天那个一开始的界面变成了两个输入</p>
-
-
+<p><a href="./image-20200316125839211.png"></a></p>
 <p>其中用户名必须至少5个字符</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316125911940.png" class="">
 
 <p>输入错误后弹窗和原来一样</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316125933258.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>首先看字符串</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316130007375.png" class="">
 
 <p>定位过去之后上面不远就可以看到一个关键跳转</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316130432713.png" class="">
 
 <p>将jnz修改为jz</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316130357174.png" class="">
 
 <p>破解成功</p>
 <h3 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h3><p>下面具体看一下代码</p>
 <p>我们从上面那个关键跳转看起，看一下触发关键跳转的条件到底是什么</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316130613790.png" class="">
 
 <p>最下面是关键跳转，看到这边call了两个程序的函数</p>
 <p>上面是一个循环的结构，应该是对字符串中的每个字符进行循环</p>
 <p>这个循环本身并不难，仔细对照着指令运行一遍就可以明白含义</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316144707709.png" class="">
 
 <p>其中<code>[local.8]</code>保存着当前循环控制变量<code>i</code></p>
 <p> <code>[local.7]</code>保存着<code>name</code>的长度 </p>
 <p><code>[local.4]</code>是最终的结果<code>s</code></p>
 <p>循环结束之后再调用cstring中的format</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316145005210.png" class="">
 
 <p>将这个结果转换为字符串</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316145220716.png" class="">
 
 <p>当运行到这个位置时，ecx中存放的是我们输入的序列号</p>
 <p>eax中是经过运算的到的正确的序列号</p>
 <p>调用这个call之后对两者进行比较，判断是否正确</p>
 <p>直接写了一个注册机，结果发现不对</p>
 <p>原来程序开始是有赋初值的</p>
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316165456311.png" class="">
 
 <p>这里对<code>[local.4]</code>赋值为<code>0x81276345</code></p>
 <p>注册机</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line">  <span class="keyword">int</span> s = <span class="number">0x81276345</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">cin</span>&gt;&gt;name;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;name.size();i++)</span><br><span class="line">  &#123;</span><br><span class="line">    s+=name[i];</span><br><span class="line">    s=s^(i&lt;&lt;<span class="number">8</span>);</span><br><span class="line">    s*=(i+<span class="number">1</span>)*(~(name.size()*i));</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Key: %lu\n&quot;</span>,s);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>运行测试一下</p>
+<img src="/2020/03/16/CrackMe-Day19/image-20200316170146919.png" class="">
 
-
-
+<img src="/2020/03/16/CrackMe-Day19/image-20200316170158815.png" class="">
 
 <p>正确，已通过</p>
 ]]></content>
@@ -1433,46 +1427,45 @@
 <p>作者ajj</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战</p>
 <p>这个CrackMe 没有确定键</p>
-
-
+<p><a href="./image-20200228130932213.png"></a></p>
 <p>使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205140589.png" class="">
 
 <p>跟进去看一看</p>
 <p>单步运行到图中这个位置之后就是一个死循环</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205452132.png" class="">
 
 <p>在这个je这里不停的循环，这时候程序的窗口已经出现了，在不停通过<code>call CKme.00440D38</code>这个指令循环刷新窗口的状态</p>
 <p>跑起来，输入内容之后再暂停，发现暂停在了库中，查看这时的堆栈</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205724774.png" class="">
 
 <p>是调用了<code>WaitMessage</code>之后在等待，我们转到图中的那个地址<code>0xc</code></p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205913591.png" class="">
 
 <p>这里下个断点吧，再运行一下，结果又跑回上面那个循环了</p>
 <p>直接硬看没看出什么头绪，还是看一下字符串，能不能找到注册成功的字符串</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228210735421.png" class="">
 
 <p>看到这么一条</p>
 <p>跟随过去，向上查看找到了一个疑似关键跳转</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228210850901.png" class="">
 
 <p><code>nop</code>这个<code>jnz</code></p>
 <p>继续运行，成功了</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228211017033.png" class="">
 
 <p>什么用户名都没输入就ok了</p>
 <p>说实话对这个程序前面的逻辑还是不太清楚</p>
 <p>重新看一下代码</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228211942816.png" class="">
 
 <p>在上面那个关键跳转的上面一段，这块的汇编代码看起来很像是一个函数调用前期的处理</p>
 <p>这实际上是点击了那个panel之后跳转到的代码，也就是说这个程序看上去没有一个确定键，实际上确定键就是那个放图片的panel</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228212807703.png" class="">
 
 <p>实际上似乎是判断字符长度之类的，总共循环了13次的一个循环，最后一个判断</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228212750603.png" class="">
 
 <p>  具体要分析算法就需要接着看那个循环里call的几个函数的具体内容了</p>
 ]]></content>

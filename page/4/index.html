@@ -844,7 +844,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+                <time title="修改时间：2020-11-04 14:59:34" itemprop="dateModified" datetime="2020-11-04T14:59:34+08:00">2020-11-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -871,46 +871,45 @@
 <p>作者ajj</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战</p>
 <p>这个CrackMe 没有确定键</p>
-
-
+<p><a href="./image-20200228130932213.png"></a></p>
 <p>使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205140589.png" class="">
 
 <p>跟进去看一看</p>
 <p>单步运行到图中这个位置之后就是一个死循环</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205452132.png" class="">
 
 <p>在这个je这里不停的循环，这时候程序的窗口已经出现了，在不停通过<code>call CKme.00440D38</code>这个指令循环刷新窗口的状态</p>
 <p>跑起来，输入内容之后再暂停，发现暂停在了库中，查看这时的堆栈</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205724774.png" class="">
 
 <p>是调用了<code>WaitMessage</code>之后在等待，我们转到图中的那个地址<code>0xc</code></p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205913591.png" class="">
 
 <p>这里下个断点吧，再运行一下，结果又跑回上面那个循环了</p>
 <p>直接硬看没看出什么头绪，还是看一下字符串，能不能找到注册成功的字符串</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228210735421.png" class="">
 
 <p>看到这么一条</p>
 <p>跟随过去，向上查看找到了一个疑似关键跳转</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228210850901.png" class="">
 
 <p><code>nop</code>这个<code>jnz</code></p>
 <p>继续运行，成功了</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228211017033.png" class="">
 
 <p>什么用户名都没输入就ok了</p>
 <p>说实话对这个程序前面的逻辑还是不太清楚</p>
 <p>重新看一下代码</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228211942816.png" class="">
 
 <p>在上面那个关键跳转的上面一段，这块的汇编代码看起来很像是一个函数调用前期的处理</p>
 <p>这实际上是点击了那个panel之后跳转到的代码，也就是说这个程序看上去没有一个确定键，实际上确定键就是那个放图片的panel</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228212807703.png" class="">
 
 <p>实际上似乎是判断字符长度之类的，总共循环了13次的一个循环，最后一个判断</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228212750603.png" class="">
 
 <p>  具体要分析算法就需要接着看那个循环里call的几个函数的具体内容了</p>
 
@@ -1231,7 +1230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+                <time title="修改时间：2020-11-04 14:59:02" itemprop="dateModified" datetime="2020-11-04T14:59:02+08:00">2020-11-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1261,66 +1260,65 @@
 <h1 id="CrackMe1"><a href="#CrackMe1" class="headerlink" title="CrackMe1"></a>CrackMe1</h1><p>第一道CrackMe</p>
 <p>作者Acid burn</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序打开界面</p>
-
-
+<p><a href="./image-20200225200555397.png"></a></p>
 <p>点击确定后进入程序主界面</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200747797.png" class="">
 
 <p>点击Serial/Name后进入输入序列号密码的界面，随便输入之后检查会告诉你错误</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200901134.png" class="">
 
 <p>give up之后又会回到原本的主界面</p>
 <p>另一个Serial是一个另外的序列号，也就是说一个程序中有两个序列号</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200944116.png" class="">
 
 <p>下面开始逆向</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="Serial-With-Name"><a href="#Serial-With-Name" class="headerlink" title="Serial With Name"></a>Serial With Name</h3><p>首先用OD打开，对API下断点，断在MessageBox相关的弹窗中</p>
 <p>结果运行发现运行不起来了</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225201938989.png" class="">
 
 <p>堆栈中出现了这样的信息</p>
 <p>很奇怪，专门去论坛看了一下发现其他人没说这种情况，不知道是为啥</p>
 <p>就用win10换成了winxp，之后重新分析就可以了</p>
 <p>在API断点插件里下断点</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225204313676.png" class="">
 
 <p>运行，第一次断在了最初的弹窗，之后输入错误的验证码出现第二次的弹窗</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225205516326.png" class="">
 
 <p>但是发现断的位置断在了user32的库里</p>
 <p>查看堆栈找到前面压栈的地址0042A1A9</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225210150192.png" class="">
 
 <p>断了之后继续单步步过执行，执行一段时间可以看到一块存放字符串的区域</p>
 <p>在这个MessageBoxA上面的Call下断点，查看程序被断时esi中是否是Sorry那个字符串</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213557948.png" class="">
 
 <p>发现图中所示的这个断点就没有断住了，而且这时看到右边的esi已经是sorry这样的字符串了</p>
 <p>我们首先还是在这个跳转来的开始位置，即这个<code>push ebp</code>下个断点</p>
 <p>查看这时的堆栈，发现跳转来自于0042fb37</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213757602.png" class="">
 
 <p>跟过去看一下，发现move了这样的字符串</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213849953.png" class="">
 
 <p>我们再接着向上看</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214226496.png" class="">
 
 <p>这一部分的代码以及这个条件跳转非常疑似进行判断的代码</p>
 <p>我们尝试将这个jnz修改为jz</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214335361.png" class="">
 
 <p>可以，直接破解成功了</p>
 <h3 id="Serial-Without-Name"><a href="#Serial-Without-Name" class="headerlink" title="Serial Without Name"></a>Serial Without Name</h3><p>在窗口中随便输入check后，同样还是先断在这个<code>push ebp</code></p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214627033.png" class="">
 
 <p>看到堆栈这次来自了另外一个地址</p>
 <p>跟过去看一下</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214716077.png" class="">
 
 <p>结果发现这部分的代码和上面那边的结构类似</p>
 <p>也是一个jnz，我们还是直接改成jz</p>
-
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214810468.png" class="">
 
 <p>fine，破解成功</p>
 

@@ -20,19 +20,30 @@
     var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="CrackMe4第四道CrackMe 作者ajj 程序运行状态这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战 这个CrackMe 没有确定键   使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪 逆向分析程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call   跟进去看一看 单步运行到图中这个位置之后就是一个死循环">
+  <meta name="description" content="CrackMe4第四道CrackMe 作者ajj 程序运行状态这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战 这个CrackMe 没有确定键  使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪 逆向分析程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call   跟进去看一看 单步运行到图中这个位置之后就是一个死循环">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CrackMe-Day4">
 <meta property="og:url" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/index.html">
 <meta property="og:site_name" content="River&#39;s blog">
-<meta property="og:description" content="CrackMe4第四道CrackMe 作者ajj 程序运行状态这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战 这个CrackMe 没有确定键   使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪 逆向分析程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call   跟进去看一看 单步运行到图中这个位置之后就是一个死循环">
+<meta property="og:description" content="CrackMe4第四道CrackMe 作者ajj 程序运行状态这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战 这个CrackMe 没有确定键  使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪 逆向分析程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call   跟进去看一看 单步运行到图中这个位置之后就是一个死循环">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228205140589.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228205452132.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228205724774.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228205913591.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228210735421.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228210850901.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228211017033.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228211942816.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228212807703.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228212750603.png">
 <meta property="article:published_time" content="2020-02-28T13:30:05.000Z">
-<meta property="article:modified_time" content="2020-09-26T06:47:04.631Z">
+<meta property="article:modified_time" content="2020-11-04T06:59:34.583Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day4/image-20200228205140589.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/02/28/CrackMe-Day4/">
 
@@ -231,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+                <time title="修改时间：2020-11-04 14:59:34" itemprop="dateModified" datetime="2020-11-04T14:59:34+08:00">2020-11-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,46 +269,45 @@
 <p>作者ajj</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战</p>
 <p>这个CrackMe 没有确定键</p>
-
-
+<p><a href="./image-20200228130932213.png"></a></p>
 <p>使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205140589.png" class="">
 
 <p>跟进去看一看</p>
 <p>单步运行到图中这个位置之后就是一个死循环</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205452132.png" class="">
 
 <p>在这个je这里不停的循环，这时候程序的窗口已经出现了，在不停通过<code>call CKme.00440D38</code>这个指令循环刷新窗口的状态</p>
 <p>跑起来，输入内容之后再暂停，发现暂停在了库中，查看这时的堆栈</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205724774.png" class="">
 
 <p>是调用了<code>WaitMessage</code>之后在等待，我们转到图中的那个地址<code>0xc</code></p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228205913591.png" class="">
 
 <p>这里下个断点吧，再运行一下，结果又跑回上面那个循环了</p>
 <p>直接硬看没看出什么头绪，还是看一下字符串，能不能找到注册成功的字符串</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228210735421.png" class="">
 
 <p>看到这么一条</p>
 <p>跟随过去，向上查看找到了一个疑似关键跳转</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228210850901.png" class="">
 
 <p><code>nop</code>这个<code>jnz</code></p>
 <p>继续运行，成功了</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228211017033.png" class="">
 
 <p>什么用户名都没输入就ok了</p>
 <p>说实话对这个程序前面的逻辑还是不太清楚</p>
 <p>重新看一下代码</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228211942816.png" class="">
 
 <p>在上面那个关键跳转的上面一段，这块的汇编代码看起来很像是一个函数调用前期的处理</p>
 <p>这实际上是点击了那个panel之后跳转到的代码，也就是说这个程序看上去没有一个确定键，实际上确定键就是那个放图片的panel</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228212807703.png" class="">
 
 <p>实际上似乎是判断字符长度之类的，总共循环了13次的一个循环，最后一个判断</p>
-
+<img src="/2020/02/28/CrackMe-Day4/image-20200228212750603.png" class="">
 
 <p>  具体要分析算法就需要接着看那个循环里call的几个函数的具体内容了</p>
 
