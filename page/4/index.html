@@ -691,7 +691,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+                <time title="修改时间：2020-11-04 15:10:15" itemprop="dateModified" datetime="2020-11-04T15:10:15+08:00">2020-11-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -718,12 +718,11 @@
 <p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
 <p>作者aLoNg3x</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先窗口一共有两个输入，三个按钮</p>
-
-
+<p><a href="./image-20200303135204271.png"></a></p>
 <p>初始状态下OK是点不了的，点击help会陆续弹框以下内容：</p>
 <ol>
-<li></li>
-<li>
+<li><img src="/2020/03/03/CrackMe-Day6/image-20200303135256166.png" class=""></li>
+<li><img src="/2020/03/03/CrackMe-Day6/image-20200303135310112.png" class="">
 
 </li>
 </ol>
@@ -732,20 +731,20 @@
 <p>下面开始逆向</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查看字符串</p>
 <p>可以看到Delphi这样的字眼，另外看程序入口点的特征也和前面的程序比较相似</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303135632360.png" class="">
 
 
 
 <p>那么我们还是用上次用过的那个<code>DeDeDark</code>来看一下程序各个控件和事件函数</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303135947440.png" class="">
 
 <p>看到控件和我们看到的也差不太多，就这么几个，除了一个Pannello，不过应该是存放图片的一个Panel吧</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303140052956.png" class="">
 
 <p>事件栏里面可以看到这些事件，三个按钮点击的事件，以及两个输入变化的事件</p>
 <p>另外下面还有五个不知道是啥玩意的事件</p>
 <p>在窗体这里还可以看到每个组件的属性</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303141831901.png" class="">
 
 <p>看到这里OK这个Button的有一个<code>Enabled</code>属性设置为了<code>False</code></p>
 <p>上面说到程序的最终效果是点击确定后隐藏了这两个button</p>
@@ -754,12 +753,12 @@
 <h3 id="NomeChange"><a href="#NomeChange" class="headerlink" title="NomeChange"></a>NomeChange</h3><p>这个函数每次在更改了用户名这个字段时都会触发</p>
 <p>里面有两个跳转比较可疑</p>
 <p>一是函数开始一小段后的这个</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303142737744.png" class="">
 
 <p>这里看到一个cmp紧跟着一个jnz</p>
 <p>下面jnz没有触发的话就将dl置为1，很像是enable</p>
 <p>另一处是下面临近函数结束的一个判断</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303142852210.png" class="">
 
 <p>这个je，也是下面将dl置为了1</p>
 <p>分别修改一下测试</p>
@@ -768,31 +767,31 @@
 <p>那么下面这个jmp还是会正常下来，触发<code>xor edx,edx</code>以及下面的那个<code>call</code></p>
 <p>这样ok键就又不能用了</p>
 <p>所以我们选择将下面的je修改为jne</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303143359957.png" class="">
 
 <h3 id="CodiceChange"><a href="#CodiceChange" class="headerlink" title="CodiceChange"></a>CodiceChange</h3><p>上面我们修改name字段使得ok键可以点击了</p>
 <p>但是在修改Codice字段时可能又触发了状态的刷新，导致又无法点击了</p>
 <p>进来后发现代码类似呀，也是有两个关键跳转</p>
 <p>我们还是修改下面的那个</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303143659088.png" class="">
 
 <p>之后再怎么修改name和code都可以保持ok键常亮了</p>
 <p>但是这时点击OK还没有预想中的效果，现在就需要具体看一下OK键触发的函数了</p>
 <h3 id="OkClick"><a href="#OkClick" class="headerlink" title="OkClick"></a>OkClick</h3><p>这段代码不是很长，同样也是可以看到两个条件转移</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303144004184.png" class="">
 
 <p>下面的那个je，和之前的类似，如果没有跳转的话会刷新ok键的状态，我们还是先修改了它</p>
 <p>至于上面那个jnz的跳转，发现和前面两个函数的jnz功能不同，调用了另外的函数，将它修改为jz</p>
 <p>运行发现OK键消失了</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303144224298.png" class="">
 
 <p>但是这个Cancella还没去掉呀，咋回事</p>
 <p>那看来有可能在点击Canella这个事件中</p>
 <h3 id="CancellaClick"><a href="#CancellaClick" class="headerlink" title="CancellaClick"></a>CancellaClick</h3><p>整个函数只有一个关键跳转</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303145025917.png" class="">
 
 <p>直接改成jne，搞定</p>
-
+<img src="/2020/03/03/CrackMe-Day6/image-20200303145135478.png" class="">
 
 
       
