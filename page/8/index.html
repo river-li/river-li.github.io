@@ -196,6 +196,261 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/07/rdesktop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/07/rdesktop/" class="post-title-link" itemprop="url">rdesktop</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-07 12:02:19" itemprop="dateCreated datePublished" datetime="2019-06-07T12:02:19+08:00">2019-06-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-03 09:29:12" itemprop="dateModified" datetime="2020-10-03T09:29:12+08:00">2020-10-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="rdesktop"><a href="#rdesktop" class="headerlink" title="rdesktop"></a>rdesktop</h2><p>rdesktop是linux下面的远程桌面，可以用来连接windows的rdp服务</p>
+<p>rdp服务一般开3389端口</p>
+<p>在渗透测试时可能经常需要用到</p>
+<p>常用的命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdesktop -u user -p pass 192.168.1.1 -f</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-u参数后面接用户名</li>
+<li>-p参数接密码</li>
+<li>-f选项意思是全屏</li>
+<li>-g 1024*720 不想全屏也可以这样设置分辨率</li>
+</ul>
+<p>除了这几个还有一个比较重要的参数:</p>
+<ul>
+<li>-r 作用是多媒体重定向</li>
+</ul>
+<p>可以通过<code>-r</code>的参数将声卡映射过去，也可以将本地的文件夹映射</p>
+<p>例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdesktop -u user -p pass -r disk:aa=/root/Documents [ip]</span><br></pre></td></tr></table></figure>
+
+<p>这样会将linux下面的<code>/root/Documents</code>文件夹在windows中作为一个磁盘出现</p>
+<p>也可以映射成一些其他的东西</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdesktop -u user -p pass -r sound:<span class="built_in">local</span> [ip]</span><br></pre></td></tr></table></figure>
+
+<p>可以将本地的声卡映射过去，这样在远程桌面播放声音时本地这里会响</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/05/Firewall/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/05/Firewall/" class="post-title-link" itemprop="url">Firewall</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-05 19:58:22" itemprop="dateCreated datePublished" datetime="2019-06-05T19:58:22+08:00">2019-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>防火墙主要应该包括这些功能：</p>
+<ul>
+<li>读取解析命令行参数</li>
+<li>读取解析配置文件（选）</li>
+<li>用户态和内核态的交互</li>
+<li>对数据包进行过滤</li>
+<li>将拦截记录在日志文件（选）</li>
+</ul>
+<p>其中关于数据包过滤的部分，应该能够支持这几种过滤方式：</p>
+<ul>
+<li>默认过滤（黑名单或白名单机制）</li>
+<li>根据IP地址过滤</li>
+<li>根据端口过滤</li>
+<li>根据协议类型过滤</li>
+</ul>
+<p>内核级别的防火墙能够从内核态对所有的数据包进行过滤</p>
+<p>这一步骤是通过Netfilter框架设置的Hook实现的</p>
+<p>但是防火墙的配置需要用户态的用户进行，无论是命令行解析还是用户查看日志、查看配置；这些都需要用户态和内核态的交互，用户态和内核态的交互主要需要通过两种方式，NetLink或是通过读写文件</p>
+<p>下面我们按照内核态和用户态来进行分析</p>
+<h2 id="用户态"><a href="#用户态" class="headerlink" title="用户态"></a>用户态</h2><p>用户态应该是用户实际执行的二进制程序</p>
+<p>这个程序应该实现这些功能：</p>
+<ul>
+<li>解析输入</li>
+<li>显示用法</li>
+<li>发送指令给内核态的模块</li>
+<li>接受内核态的回复</li>
+</ul>
+<p>实现一个最基本的防火墙只需要实现这些功能就可以</p>
+<p>而具体的实现方法</p>
+<p>解析输入可以使用<code>get_opt</code>函数</p>
+<p>显示用法可以直接用<code>printf</code></p>
+<p>与内核态的交互可以通过读写文件的方式进行</p>
+<h3 id="解析参数"><a href="#解析参数" class="headerlink" title="解析参数"></a>解析参数</h3><p>下面具体设计一下应该包括哪些参数</p>
+<p>防火墙的根本上是在于一条条的规则</p>
+<p>因此用户态进程的主要任务便是添加或删除规则，我们设置这两个参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-a 	--add</span><br><span class="line">-r	--remove</span><br></pre></td></tr></table></figure>
+
+<p>分别对应添加和删除规则</p>
+<p>由前面学习netfilter时可以得知，在netfilter中主要有5个hook点</p>
+<p>一般情况下不需要对转发的数据包进行处理，因此放弃不管forword这里</p>
+<p>防火墙一般只需要处理与本机相关的数据包，因此我们实际上只需要关注两个hook点：</p>
+<ul>
+<li>local_in</li>
+<li>local_out</li>
+</ul>
+<p>一个用来对发送给本机的包进行检测</p>
+<p>一个用来对本机要发送出去的包进行检测</p>
+<p>因此这里设置两个参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-i --<span class="keyword">in</span></span><br><span class="line">-o --out</span><br></pre></td></tr></table></figure>
+
+<p>这两个参数用来指定这条规则要挂钩子的位置</p>
+<p>之后就是具体的过滤部分，根据要求，我们需要能支持地址、端口、协议的过滤，并且还要能够设置默认处理方式</p>
+<p>首先设置默认的参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-d --default</span><br></pre></td></tr></table></figure>
+
+<p>之后对于协议类型</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-p --protocol</span><br></pre></td></tr></table></figure>
+
+<p>设置端口和地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--s_port</span><br><span class="line">--d_port</span><br><span class="line">--s_ip</span><br><span class="line">--d_ip</span><br></pre></td></tr></table></figure>
+
+<p>除了要设置规则的参数，还应该支持查看help的参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-h --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+
+<p>查看当前规则的参数，这个地方就读取与内核约定好的虚拟文件即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-v --view</span><br></pre></td></tr></table></figure>
+
+<p>总结一下，我们的用户态防火墙程序最终运行时希望达到这样的效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sfw -d drop </span><br><span class="line"><span class="comment">#添加默认规则，默认丢弃</span></span><br><span class="line">sfw --add --<span class="keyword">in</span> --s_ip 192.168.1.2 accept</span><br><span class="line"><span class="comment">#添加一个规则，允许192.168.1.2的主机向本机发送数据包</span></span><br><span class="line">sfw --<span class="built_in">help</span></span><br><span class="line"><span class="comment">#查看帮助页面</span></span><br><span class="line">sfw --view</span><br><span class="line"><span class="comment">#查看当前的过滤规则</span></span><br><span class="line"><span class="comment">#这里应该显示两条，一条是*.*.*.*=&gt;localhost::drop</span></span><br><span class="line"><span class="comment">#一条是 192.168.1.2=&gt;localhost::accept</span></span><br></pre></td></tr></table></figure>
+
+<p>大致我们希望最终的用户程序实现这样的效果</p>
+<h3 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h3><p>和内核态的通信部分就直接采用读写文件的方法</p>
+<p>添加规则后写入文件</p>
+<p>规则被删除后在文件中删除</p>
+<p>需要查看当前规则时读取文件</p>
+<h2 id="内核态"><a href="#内核态" class="headerlink" title="内核态"></a>内核态</h2><p>内核态应该是一个linux的内核模块，可以动态加载</p>
+<p>这个内核模块应该实现这些功能：</p>
+<ul>
+<li>与用户态交互，读取配置文件</li>
+<li>动态的修改local_in和local_out两个hook点上的函数</li>
+<li>注册两个hook</li>
+<li>在拦截数据包后写入日志（或是dmesg）</li>
+</ul>
+<p>最核心的部分还是netfilter的hook的用法，以及读取虚拟文件系统的配置</p>
+<p>内核态整体的工作流程应该如下：</p>
+<ul>
+<li>module_init()</li>
+<li>module_exit()</li>
+</ul>
+<p>而模块初始化的函数需要完成hook的注册:</p>
+<ul>
+<li>nf_register_hook()</li>
+</ul>
+<p>函数的参数是nf_hook_ops</p>
+<p>这个结构体中指向的函数应该是由可变的防火墙规则决定</p>
+<p>由于每一个hook点都需要有多个规则</p>
+<p>因此使用一个链表维护这个规则链即可，因此我们一共需要两个链表</p>
+<p>一个负责维护local_in处的规则</p>
+<p>一个负责维护local_out处的规则</p>
+<p>从逻辑上来看，local_in处的函数应该与local_out的函数并没有什么本质的区别</p>
+<p>除了应用的规则来自不同的链表</p>
+<p>因此为了提高代码的重用性，我们将两者抽象为一个函数</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1488,283 +1743,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/21/simple-sipder/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/21/simple-sipder/" class="post-title-link" itemprop="url">simple-sipder</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-21 14:15:20" itemprop="dateCreated datePublished" datetime="2019-05-21T14:15:20+08:00">2019-05-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="文字爬虫"><a href="#文字爬虫" class="headerlink" title="文字爬虫"></a>文字爬虫</h1><p>这篇文字主要使用requests和BeautifulSoup写了几个比较简单的小爬虫</p>
-<!--more--->
-
-<h2 id="百度搜索热榜"><a href="#百度搜索热榜" class="headerlink" title="百度搜索热榜"></a>百度搜索热榜</h2><p>在浏览器中打开top.baidu.com</p>
-
-
-<p>目标为左侧的实时热点以及七日关注<br>打开开发者工具，查看该标签</p>
-<p>看到榜单使用无序列表布置的，因此爬取的内容为class=”list”的ul中的项</p>
-<p>使用requests得到了网页内容后使用beautifulsoup解析，对得到的内容使用find_all找到其中的两个无序列表，解析得到里面li的内容并写在top.txt中</p>
-<p>结果如图，格式为排行 名称 搜索指数</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/" class="post-title-link" itemprop="url">vim太强了</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-12-11 16:48:07" itemprop="dateCreated datePublished" datetime="2018-12-11T16:48:07+08:00">2018-12-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>用于记录一些有用的vim快捷键</p>
-<p>会根据我自己的掌握进度定期更新</p>
-<p>vim主要有三种模式：normal, insert, visual</p>
-<!--more--->
-
-
-
-<h2 id="Normal-Mode"><a href="#Normal-Mode" class="headerlink" title="Normal Mode"></a>Normal Mode</h2><h3 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h3><p>hjkl 左上下右移动</p>
-<p>w\e 向后移动一个词</p>
-<p>b 向前移动一个词</p>
-<p>L\H\M 光标移动到当前页面最底端\顶端\中间</p>
-<p>% （光标本身在括号上时）移动到另一端括号</p>
-<p>$ 移动到该行末尾</p>
-<p>0 移动到当前行首</p>
-<p>^ 移动到行首第一个非空字符</p>
-<p>+ 移动到下一行的开始第一个字符</p>
-<p>- 移动到上一行开始第一个字符</p>
-<p>&lt;C-d&gt; 向下半屏</p>
-<p>&lt;C-u&gt; 向上半屏</p>
-<p>下面三个分别对应三种移动方式, section、paragraph、sentence</p>
-<ul>
-<li>{[[ ]]</li>
-<li>{ }</li>
-<li>( )</li>
-</ul>
-<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><p>i 在当前字符进入插入模式</p>
-<p>a 在当前字符后一个字符进入插入模式</p>
-<p>x 删除当前字符</p>
-<p>s 删除当前字符并进入插入模式</p>
-<p>I 光标移动到当前行行首并进入插入模式</p>
-<p>A 光标移动到当前行行尾并进入插入模式</p>
-<p>o 在当前行下面新建一个空行并进入插入模式</p>
-<p>O 在当前行上面新建一个空行并进入插入模式</p>
-<p>p 粘贴到当前行下方</p>
-<p>P 粘贴到当前行上方</p>
-<p>u 撤回操作(undo)</p>
-<p>&lt;C-r&gt; 取消撤回(redo)</p>
-<p>yy 复制当前行</p>
-<p>dd 删除当前行</p>
-<p>&lt;C-n&gt; &lt;C-p&gt; 自动补全</p>
-<p>. 重复上一个操作</p>
-<p>f/F/t/T 行内搜索，只能接受一个字符为参数</p>
-<p>多行操作：</p>
-<p>[数字]+{y/p/d]</p>
-<h2 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h2><h3 id="代码折叠"><a href="#代码折叠" class="headerlink" title="代码折叠"></a>代码折叠</h3><p>代码折叠需要设置折叠方式</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> foldmethod=manual</span><br></pre></td></tr></table></figure>
-
-<p>其他方式还有marker、indent等</p>
-<p>在manual模式下，折叠代码时使用</p>
-<p>zf 创建一个折叠，后面可以接行数，也可以按照光标移动方式接参数</p>
-<p>zd 删除这个折叠</p>
-<p>一般情况下，例如写C的代码，可以用<code>zf%</code>折叠整个块结构</p>
-<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><p>vim 有一个特性，删除以及复制的内容会保存历史，按顺序九个记录依次保存在数字寄存器中，如果需要粘贴寄存器的内容可以</p>
-<p><code>&quot;1p</code>含义为粘贴一号寄存器的内容，等价于<code>p</code></p>
-<p>如果要搜索寄存器中的内容，可以<code>&quot;1pu.u.u</code>这样会逐渐递增寄存器标号</p>
-<p>同时，26个字母也是可以使用的寄存器，如果要保存在26个字母中，只需要</p>
-<p><code>&quot;ayy</code>即可复制保存在a寄存器</p>
-<p>如果使用大写字母，则会将其以append方式附加在寄存器中</p>
-<p><code>&quot;Ayy</code>不覆盖a寄存器中的内容，在其后面继续添加内容</p>
-<h3 id="书签"><a href="#书签" class="headerlink" title="书签"></a>书签</h3><p>vim还有一个书签功能，可以设置26个书签</p>
-<p><code>ma</code>即将目前所在位置标记为a</p>
-<p>之后可以快速回到这个位置，只需使用<code>&#39;a </code>或`a</p>
-<h2 id="Instruction"><a href="#Instruction" class="headerlink" title="Instruction"></a>Instruction</h2><p>:set nu 显示行号</p>
-<p>:set nonu 不显示行号</p>
-<p>:set relativenumber 设置显示相对行号</p>
-<p>:set ts=4 设置tab的宽度为4</p>
-<p>:open &lt;file&gt; 打开文件</p>
-<p>:x 保存退出</p>
-<p>:qa! 不保存退出</p>
-<p>:[addr]s/源字符串/目的字符串[options]</p>
-<p>vi 可以说是ex 编辑器的升级版，ex编辑器是一个没有图形化的编辑器，纯命令行的交互，而vi、vim也都完全支持了ex的命令</p>
-<p>这作为命令模式保留在了vi中</p>
-<p>例如替换的命令<code>:s/Hello/hello</code>即可将Hello替换为hello</p>
-<p>删除行的命令<code>:13,23d</code></p>
-<p>移动<code>:220,231m2</code>将220行到231行的内容移到第二行下面</p>
-<p><code>:/pattern/=</code>显示pattern第一次出现的行号</p>
-<p>ex模式中<code>.</code>代表当前行,<code>$</code>代表最后一行,<code>%</code>代表每一行</p>
-<p><code>:20r file</code> 读取file，并写在当前这个文件的20行处</p>
-<p><code>:e filename</code> 在编辑这个文件时打开另一个文件，编辑另一个文件结束后返回当前文件</p>
-<p><code>:e!</code> 回到先前编辑的文件</p>
-<p>当命令行启动跟着多个参数时，<code>:n</code>切换到下一个文件</p>
-<p>之后可以用<code>&lt;C-^&gt;</code>切换buffer</p>
-<p>在编辑多个文件时也可以使用寄存器保存复制和删除的内容，在多个文件间粘贴</p>
-<h3 id="匹配和替换"><a href="#匹配和替换" class="headerlink" title="匹配和替换"></a>匹配和替换</h3><p>源字符串和目的字符串可以用正则表达式</p>
-<p>addr:</p>
-<ul>
-<li>%全局</li>
-<li>1,20 一到二十行</li>
-<li>.,$ 当前行到文件尾</li>
-<li>空着默认只有当前行</li>
-</ul>
-<p>options:</p>
-<ul>
-<li>g 全局</li>
-<li>c 每一个替换时进行确认</li>
-<li>p 结果逐行显示</li>
-</ul>
-<p>搜索中使用的正则表达式和python中语法相同：</p>
-<p><code>^开始； $结束；*重复0次到多次；[]一个字符；（）一个表达式</code></p>
-<h2 id="Vimrc"><a href="#Vimrc" class="headerlink" title="Vimrc"></a>Vimrc</h2><p>vimrc是vim的配置文件，可以设置每次启动vim时执行的命令</p>
-<p>例如上面instruction的一些内容可以直接写在vimrc中使得每次启动自动执行</p>
-<p>不过vimrc最重要的一个功能还是按键的映射，可以将按键映射为不同的功能和指令</p>
-<p>首先我们设置一下LEADER键</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> mapleader=<span class="string">&quot; &quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>可以设置leader键为空格</p>
-<p>之后可以通过map设置一些用空格触发的快捷键</p>
-<h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><p>vim的插件属于更高级，更个性化的用法，在熟悉了前面的基础操作后逐步增加插件</p>
-<h3 id="vim-plug"><a href="#vim-plug" class="headerlink" title="vim-plug"></a>vim-plug</h3><p>vim-plug是vim的一个插件管理插件；</p>
-<p>安装方法:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fLo ~/.vim/<span class="built_in">autoload</span>/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br></pre></td></tr></table></figure>
-
-<p>安装完成后需要在<code>.vimrc</code>中添加这样的内容：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call plug<span class="comment">#begin(&#x27;~/.vim/plugged&#x27;)</span></span><br><span class="line">	Plug <span class="string">&#x27;...&#x27;</span></span><br><span class="line">call plug<span class="comment">#end()</span></span><br></pre></td></tr></table></figure>
-
-<p>在需要安装内容时将<code>...</code>替换为需要安装的插件的github上repo链接即可</p>
-<p>只需要链接的后半部分，例如：</p>
-<p><code>github.com/garbas/vim-snipmate.git</code>只需要写<code>garbas/vim-snipmate</code>即可</p>
-<p>设置好vimrc后在启动vim时使用<code>:PlugInstall</code>就会自动安装</p>
-<p>需要更新插件时<code>:PlugUpdate</code>，更新<code>vim-plug</code>本身<code>:PlugUpgrade</code></p>
-<h3 id="NerdTree"><a href="#NerdTree" class="headerlink" title="NerdTree"></a>NerdTree</h3><p>NerdTree可以作为侧边栏出现文件树，方便打开同一个工程内的其他文件</p>
-<p>repo位置<code>scrooloose/nerdtree</code></p>
-<p>在vimrc中加入</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map &lt;LEADER&gt;f :NERDTreeToggle &lt;CR&gt;</span><br></pre></td></tr></table></figure>
-
-<p>可以将打开关闭树的功能与LEADER加f键绑定</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1832,14 +1814,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">

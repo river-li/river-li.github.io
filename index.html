@@ -196,6 +196,148 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/11/06/ROP%E8%BF%9B%E9%98%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/06/ROP%E8%BF%9B%E9%98%B6/" class="post-title-link" itemprop="url">ROP进阶</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-06 19:48:22 / 修改时间：22:12:06" itemprop="dateCreated datePublished" datetime="2020-11-06T19:48:22+08:00">2020-11-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index"><span itemprop="name">pwn</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>ROP本身原理还是比较好理解的，简单的ROP做了一些题之后就比较熟练了，更难的ROP还是要一点一点学一下原理；</p>
+<p>记一下各种类型的ROP原理；</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/11/06/ROP%E8%BF%9B%E9%98%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/" class="post-title-link" itemprop="url">IDA反编译出错</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-06 11:05:00 / 修改时间：11:12:03" itemprop="dateCreated datePublished" datetime="2020-11-06T11:05:00+08:00">2020-11-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="报错Decompile-Error"><a href="#报错Decompile-Error" class="headerlink" title="报错Decompile Error"></a>报错Decompile Error</h2><p>提示为某一个地址analysis failed</p>
+<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111005929.png" alt="image-20201106111005929"></p>
+<p>找到这个对应的地址，发现是一个<code>call scanf</code></p>
+<p>可能是这个<code>scanf</code>的参数解析出现了错误</p>
+<p>在scanf上按Y重新定义</p>
+<p>写上正确的定义</p>
+<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111142655.png" alt="image-20201106111142655"></p>
+<p>之后就可以反编译了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/10/30/macOS%E4%B8%8A%E7%9A%84qemu/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -219,10 +361,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-10-30 17:04:57 / 修改时间：17:31:30" itemprop="dateCreated datePublished" datetime="2020-10-30T17:04:57+08:00">2020-10-30</time>
+              <time title="创建时间：2020-10-30 17:04:57" itemprop="dateCreated datePublished" datetime="2020-10-30T17:04:57+08:00">2020-10-30</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-06 15:59:33" itemprop="dateModified" datetime="2020-11-06T15:59:33+08:00">2020-11-06</time>
+              </span>
 
           
 
@@ -235,7 +383,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
+          <p>主要是想用qemu的系统模式来调试路由器里的二进制程序，如果用linux虚拟机再加一层qemu有点套娃，而且没办法用mac里的IDA连接过去调试。</p>
+<p>这里记录一下配置各种环境的坑；</p>
+<h2 id="buildroot编译gdb和gdbserver"><a href="#buildroot编译gdb和gdbserver" class="headerlink" title="buildroot编译gdb和gdbserver"></a>buildroot编译gdb和gdbserver</h2><p>buildroot本身是可以编译出一套固件，同时还可以配置好host机的调试环境以及交叉编译的环境；</p>
+<p>配置buildroot的博客还是有不少的，但是质量感人；</p>
+<h3 id="配置buildroot"><a href="#配置buildroot" class="headerlink" title="配置buildroot"></a>配置buildroot</h3><p>首先下载buildroot，官网<a target="_blank" rel="noopener" href="https://buildroot.org/">buildroot.org</a></p>
+<p>下载下来之后解压，之后准备编译，依赖的话需要一个<code>libncurse-dev</code>，其他的包一般应该都有装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>进入一个选择界面</p>
+<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201106151300225.png" alt="image-20201106151300225"></p>
+<p>首先简单介绍一下交叉编译时的几个选项</p>
+<ul>
+<li><code>host</code></li>
+<li><code>target</code></li>
+<li></li>
+</ul>
+<p>在buildroot编译时可能遇到的问题：</p>
+<h3 id="报错137"><a href="#报错137" class="headerlink" title="报错137"></a>报错137</h3><p>Error 137，这个错误出现的原因是因为swap空间不足</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">user@~: su</span><br><span class="line">root@/home/user: dd <span class="keyword">if</span>=/dev/zero of=/home/swap bs=1024 count=2048000</span><br><span class="line">root@/home/user: mkswap /home/swap</span><br><span class="line">root@/home/user: swapon /home/swap</span><br></pre></td></tr></table></figure>
+
+<p>这样新增一个swap分区之后再编译时就不会出现这个报错了</p>
+<p>如果要检查一下swap分区是否加载了进去</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">free -m</span><br></pre></td></tr></table></figure>
+
+<p>可以看到目前的内存和swap分区使用情况</p>
+<h2 id="gdb连接到gdbserver时报错"><a href="#gdb连接到gdbserver时报错" class="headerlink" title="gdb连接到gdbserver时报错"></a>gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Ignoring packet error, continuing...</span><br><span class="line">warning: unrecognized item &quot;timeout&quot; in &quot;qSupported&quot; response</span><br><span class="line">Ignoring packet error, continuing...</span><br><span class="line">Remote replied unexpectedly to &#39;vMustReplyEmpty&#39;: timeout</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
 
       
     </div>
@@ -798,166 +977,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/09/23/heap-basic/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/23/heap-basic/" class="post-title-link" itemprop="url">heap-basic</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-23 06:23:31" itemprop="dateCreated datePublished" datetime="2020-09-23T06:23:31+08:00">2020-09-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-29 21:13:21" itemprop="dateModified" datetime="2020-09-29T21:13:21+08:00">2020-09-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>讲一些学到的linux堆基础</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/23/heap-basic/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/05/27/WHUCTF-WP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/27/WHUCTF-WP/" class="post-title-link" itemprop="url">WHUCTF-WP</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-27 23:30:43" itemprop="dateCreated datePublished" datetime="2020-05-27T23:30:43+08:00">2020-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这两天做了学校的CTF，各个类型的简单题倒是都能做出来，但是难度一高就做不出来了</p>
-<p>结果虽然做了不少题，分数却不高，还是需要专精一方面呀</p>
-<p>八说了，我是垃圾</p>
-<p>整理了一下做出来了的各个方面的简单题目Write Up</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/05/27/WHUCTF-WP/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1025,14 +1048,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">

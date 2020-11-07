@@ -196,6 +196,262 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/09/CrackMe-Day12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/09/CrackMe-Day12/" class="post-title-link" itemprop="url">CrackMe-Day12</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-09 23:42:27" itemprop="dateCreated datePublished" datetime="2020-03-09T23:42:27+08:00">2020-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-04 15:00:18" itemprop="dateModified" datetime="2020-11-04T15:00:18+08:00">2020-11-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
+<p>作者attackiko</p>
+<p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
+<p><a href="./image-20200309172308082.png"></a></p>
+<p>输入错误后获得一个弹窗</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309172335715.png" class="">
+
+
+
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309172453445.png" class="">
+
+<p>用Exeinfo看了一下</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309181655765.png" class="">
+
+<p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309181743824.png" class="">
+
+<p>得，居然是DOS的程序</p>
+<p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
+<p>具体动态分析时网上建议的环境是<code>win95+TRW2000</code></p>
+<p>这还要专门装虚拟机就有点麻烦了，毕竟16位的程序一般也很少见了，这年头32位的程序都要逐渐被淘汰了，不过如果不能动态跑起来，至少看一下别人的WP达到能看懂的程度吧。</p>
+<h2 id="WP学习"><a href="#WP学习" class="headerlink" title="WP学习"></a>WP学习</h2><p>首先还是根据错误字符串定位程序的关键代码入口</p>
+<p>逆向的代码里看到有很多浮点运算相关的汇编指令，平常用的不是很多</p>
+<p>大致流程看别人的write up梳理的很清楚</p>
+<ol>
+<li>获取所有字符求和记为<code>ldsum</code>，长度记为<code>len</code></li>
+<li>计算<code>cos(ldsum(sqrt(ldsum*d1)+ln(ldsum/2))+sin(len)*cos(len*ldsum))</code></li>
+<li>将结果作为科学计数法保存为字符串，记录E前面的17位为一个长度17的字符串记为S17</li>
+<li>通过17位中的8位进行一个简单的加减法，得到一个新的9位记为S9</li>
+<li>上面9位的结果S9所有字符ASC求和+len和<code>9*S17[4]+4*S17[5]+20</code>比较是否相等</li>
+</ol>
+<p>看到的一个教程贴，这里先mark一下吧，这道题看上去挺复杂的，之后进一步学习可以再对着学一下<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-906688-1-1.html">https://www.52pojie.cn/thread-906688-1-1.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/08/CrackMe-Day11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/08/CrackMe-Day11/" class="post-title-link" itemprop="url">CrackMe-Day11</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-08 23:53:11" itemprop="dateCreated datePublished" datetime="2020-03-08T23:53:11+08:00">2020-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
+<p>作者Andrenalin</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
+
+
+<p>虽然能输入，但是没有找到有回车之类的按键</p>
+<p>推测是不是实时检测的，如果对了就自动成功</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
+
+<p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
+<p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
+
+
+<p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
+<p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
+
+
+<p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
+<p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
+<p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
+
+
+
+
+<p>下面还是进一步分析程序</p>
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>我们仔细看一下这个前面的判断比较的内容</p>
+<p><code>dword ptr ss:[ebp-0x34]</code></p>
+<p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
+<p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
+
+
+
+
+<p>看一下循环中调用了哪些API</p>
+
+
+<p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
+<p>获得str、之后转换为ASCII码</p>
+<p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
+<p>准备反编译看一下，找来了VB Decompiler</p>
+
+
+<p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
+<p>还有4个时间器的函数</p>
+<p>其中有一个click的函数和其他的不太一样</p>
+
+
+<p>对比一下</p>
+
+
+<p>发现多了长度减一，这个应该是退格键</p>
+<p>检查一下时间器的代码，发现四个时间器代码都差不多</p>
+<p>核心的部分都是那一段</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> loc_00406ED6: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br><span class="line"> loc_00406EDC: </span><br><span class="line">loc_00406EDE: <span class="keyword">If</span> var_24 = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_0040700D</span><br><span class="line"> loc_00406F79: var_7C = (Asc(<span class="keyword">Mid</span>$(<span class="built_in">CStr</span>(var_44), <span class="built_in">CLng</span>(var_24), <span class="number">1</span>)) + Val(<span class="built_in">CStr</span>(Left(var_44, <span class="number">2</span>))))</span><br><span class="line"> loc_00406F8C: var_8C = Hex$(var_7C)</span><br><span class="line"> loc_00406FB9: var_34 = <span class="number">0</span> &amp; Hex$(var_7C)</span><br><span class="line"> loc_00407002: <span class="keyword">Next</span> var_24</span><br><span class="line"> loc_00407008: <span class="keyword">GoTo</span> loc_00406EDC</span><br><span class="line"> loc_0040700D: <span class="comment">&#x27;Referenced from: 00406EDE</span></span><br><span class="line"> loc_00407035: <span class="keyword">If</span> (var_34 = <span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C&quot;</span>) = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_00407083</span><br><span class="line"> loc_0040705C: Label3.Caption = <span class="string">&quot;REGISTRIERT&quot;</span></span><br><span class="line"> loc_00407083: <span class="comment">&#x27;Referenced from: 00407035</span></span><br><span class="line"> loc_004070F3: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><code>var_24</code>为0时直接跳转到下面的判断</p>
+<p>而对正常的每个字符，执行的操作是：</p>
+<ol>
+<li><code>var_7C = (Asc(Mid$(CStr(var_44), CLng(var_24), 1)) + Val(CStr(Left(var_44, 2))))</code><ol>
+<li><code>CLng</code>将<code>var_24</code>转换成长整形</li>
+<li><code>CStr</code>将<code>var_44</code>转换成字符串</li>
+<li><code>Left</code>函数返回<code>var_44</code>左数两个字符</li>
+<li><code>Val</code>函数将字符串转换为数值，这个函数会在不能识别</li>
+<li><code>Mid</code>函数将<code>var_44</code>左起第<code>var_24</code>位，长度1提取出来</li>
+<li><code>ASC</code>函数返回字符串中第一个字符的ASCII码</li>
+</ol>
+</li>
+<li><code>var_8C = Hex$(var_7c)</code> 将其转换为Hex的值</li>
+<li><code>var_34 = 0 &amp; Hex$(var_7C)</code> 结果和0相与</li>
+<li>最终结果要等于<code>0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C</code></li>
+</ol>
+<p>最后的程序直接参照了网上的注册机</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">string</span> kb=<span class="string">&quot;0123456789*#&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> kb_dec[]=&#123;<span class="number">48</span>,<span class="number">49</span>,<span class="number">50</span>,<span class="number">51</span>,<span class="number">52</span>,<span class="number">53</span>,<span class="number">54</span>,<span class="number">55</span>,<span class="number">56</span>,<span class="number">57</span>,<span class="number">42</span>,<span class="number">35</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> kb_hex[]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>,<span class="number">15</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> hexlist=<span class="string">&quot;0123456789ABCDEF&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> key_num=<span class="number">2</span>;</span><br><span class="line"><span class="built_in">string</span> key=<span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7B7C7D826D817E7B7C&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hexstr_to_dec</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> s)</span> <span class="comment">//转16进制两位字符到十进制数</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        a=hexlist.find(s[<span class="number">0</span>]);</span><br><span class="line">        b=hexlist.find(s[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> a*<span class="number">16</span>+b;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span>   </span></span><br><span class="line"><span class="function">        </span>&#123; </span><br><span class="line">        <span class="keyword">int</span> key_value;</span><br><span class="line">        <span class="keyword">int</span> base_value;</span><br><span class="line">        <span class="built_in">string</span> psword;</span><br><span class="line">        <span class="keyword">char</span> p;</span><br><span class="line">        <span class="built_in">string</span> key_str=key.substr(<span class="number">1</span>,<span class="number">2</span>);  <span class="comment">//取Key的二、三位</span></span><br><span class="line">        key_value=hexstr_to_dec(key_str);</span><br><span class="line">         </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;=<span class="number">9</span>;x++)                <span class="comment">//确定公共值base_value                 </span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;y&lt;=<span class="number">9</span>;y++)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">if</span> (y+x*<span class="number">10</span>+kb_dec[x]==key_value)</span><br><span class="line">                        &#123;</span><br><span class="line">                        base_value=x*<span class="number">10</span>+y;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;公共值:&quot;</span>&lt;&lt;base_value&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;key.length();x+=<span class="number">2</span>)          <span class="comment">/*计算 注册码 部分*/</span></span><br><span class="line">                &#123;</span><br><span class="line">                key_str=key.substr(x,<span class="number">2</span>);</span><br><span class="line">                key_value=hexstr_to_dec(key_str);</span><br><span class="line">                p=(<span class="keyword">char</span>)(key_value-base_value);</span><br><span class="line">                psword=psword+p;</span><br><span class="line">                &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;password:&quot;</span>&lt;&lt;psword&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        system(<span class="string">&quot;pause&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/07/CrackMe-Day10/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1195,216 +1451,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/25/CrackMe-Day1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/25/CrackMe-Day1/" class="post-title-link" itemprop="url">CrackMe-Day1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-25 21:54:42" itemprop="dateCreated datePublished" datetime="2020-02-25T21:54:42+08:00">2020-02-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 15:05:42" itemprop="dateModified" datetime="2020-11-04T15:05:42+08:00">2020-11-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>吾爱破解论坛有160个面向新手的CrackMe，这里为了练手准备慢慢做一下WP，这是第一个程序的WP</p>
-<p>下载地址<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-709699-1-1.html">https://www.52pojie.cn/thread-709699-1-1.html</a></p>
-<!--more--->
-
-<h1 id="CrackMe1"><a href="#CrackMe1" class="headerlink" title="CrackMe1"></a>CrackMe1</h1><p>第一道CrackMe</p>
-<p>作者Acid burn</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序打开界面</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225200555397.png" class="">
-
-<p>点击确定后进入程序主界面</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225200747797.png" class="">
-
-<p>点击Serial/Name后进入输入序列号密码的界面，随便输入之后检查会告诉你错误</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225200901134.png" class="">
-
-<p>give up之后又会回到原本的主界面</p>
-<p>另一个Serial是一个另外的序列号，也就是说一个程序中有两个序列号</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225200944116.png" class="">
-
-<p>下面开始逆向</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="Serial-With-Name"><a href="#Serial-With-Name" class="headerlink" title="Serial With Name"></a>Serial With Name</h3><p>首先用OD打开，对API下断点，断在MessageBox相关的弹窗中</p>
-<p>结果运行发现运行不起来了</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225201938989.png" class="">
-
-<p>堆栈中出现了这样的信息</p>
-<p>很奇怪，专门去论坛看了一下发现其他人没说这种情况，不知道是为啥</p>
-<p>就用win10换成了winxp，之后重新分析就可以了</p>
-<p>在API断点插件里下断点</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225204313676.png" class="">
-
-<p>运行，第一次断在了最初的弹窗，之后输入错误的验证码出现第二次的弹窗</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225205516326.png" class="">
-
-<p>但是发现断的位置断在了user32的库里</p>
-<p>查看堆栈找到前面压栈的地址0042A1A9</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225210150192.png" class="">
-
-<p>断了之后继续单步步过执行，执行一段时间可以看到一块存放字符串的区域</p>
-<p>在这个MessageBoxA上面的Call下断点，查看程序被断时esi中是否是Sorry那个字符串</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225213557948.png" class="">
-
-<p>发现图中所示的这个断点就没有断住了，而且这时看到右边的esi已经是sorry这样的字符串了</p>
-<p>我们首先还是在这个跳转来的开始位置，即这个<code>push ebp</code>下个断点</p>
-<p>查看这时的堆栈，发现跳转来自于0042fb37</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225213757602.png" class="">
-
-<p>跟过去看一下，发现move了这样的字符串</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225213849953.png" class="">
-
-<p>我们再接着向上看</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225214226496.png" class="">
-
-<p>这一部分的代码以及这个条件跳转非常疑似进行判断的代码</p>
-<p>我们尝试将这个jnz修改为jz</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225214335361.png" class="">
-
-<p>可以，直接破解成功了</p>
-<h3 id="Serial-Without-Name"><a href="#Serial-Without-Name" class="headerlink" title="Serial Without Name"></a>Serial Without Name</h3><p>在窗口中随便输入check后，同样还是先断在这个<code>push ebp</code></p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225214627033.png" class="">
-
-<p>看到堆栈这次来自了另外一个地址</p>
-<p>跟过去看一下</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225214716077.png" class="">
-
-<p>结果发现这部分的代码和上面那边的结构类似</p>
-<p>也是一个jnz，我们还是直接改成jz</p>
-<img src="/2020/02/25/CrackMe-Day1/image-20200225214810468.png" class="">
-
-<p>fine，破解成功</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/22/Docker/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/22/Docker/" class="post-title-link" itemprop="url">Docker</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-22 22:14:34" itemprop="dateCreated datePublished" datetime="2020-02-22T22:14:34+08:00">2020-02-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1472,14 +1522,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">

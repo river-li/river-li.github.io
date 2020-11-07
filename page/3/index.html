@@ -196,6 +196,352 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/18/CrackMe-Day21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/18/CrackMe-Day21/" class="post-title-link" itemprop="url">CrackMe-Day21</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-18 20:29:38" itemprop="dateCreated datePublished" datetime="2020-03-18T20:29:38+08:00">2020-03-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe21"><a href="#CrackMe21" class="headerlink" title="CrackMe21"></a>CrackMe21</h1><p>第21道CrackMe</p>
+<p>作者Cabeca</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这个程序和以前的不太一样</p>
+<p>有三个输入</p>
+
+
+<p>随便输入之后有这么一个弹窗</p>
+
+
+<p>感觉好像是没有满足什么条件</p>
+<p>还是直接分析看看吧</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>拖到OD里面</p>
+
+
+<p>定位字符串，到成功的那里</p>
+<p>这附近正好有一个跳转到这下面的 jump</p>
+
+
+<p>这个应该就是关键跳转了</p>
+<p>但是还是先要看一下上面提示的那个语句是因为没有满足什么条件</p>
+<p>这一块一共有四个je都是跳转到这句的</p>
+
+
+<p>三个输入全空会直接在第一个地方跳转</p>
+<p>输入了用户名之后没有输入序列号，在第四个跳转那边变成了True</p>
+
+
+<p>三个输入条都有内容之后运行</p>
+
+
+<p>会在那个jnz跳转，但这次提示的内容不太一样</p>
+<p>那既然跳转到了这里，我们就修改一下上面发现的那个关键跳</p>
+
+
+<p>之后直接运行</p>
+<p>发现还是提示失败，再单步运行一下，发现关键跳转在这里</p>
+
+
+<p>修改一下这一处</p>
+<p>还有再往下一点的这里</p>
+
+
+<p>提示成功</p>
+
+
+<p>那么爆破完成，之后分析算法的部分</p>
+<h3 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h3><p>要写注册机主要还是要看懂代码</p>
+<p>首先用查壳软件看一下编写的语言</p>
+
+
+<p>那就用<code>DeDeDark</code>看一下对应的代码</p>
+<p>发现我们上面修改的关键跳转就是位于button的事件响应函数中</p>
+<p>而且Delphi的反编译功能也不是很好，就直接在OD里看吧</p>
+<p>看我们修改的那个跳转后面的具体条件</p>
+
+
+<p>第一处看到上面是<code>cmp dword ptr ds:[0x42f714],0x0</code>这个值不为0就继续执行</p>
+<p>我们一共修改了两处关键跳转，正好可以对应两次序列号的比较，推测每次关键跳转上面可能就是对比一个序列号是否正确；</p>
+<p>下面我们改动的第一处条件跳转上面没有看到条件</p>
+
+
+<p>反而是一个call函数，地址<code>0x004838D0</code></p>
+<p>再往上看一些，这附近一共有三个挨着的call函数</p>
+
+
+<p>正好可以对应一个计算真码、一个计算假码、最后一个比较</p>
+<p>单步运行我们可以发现第三个是比较的call，其中传递的参数edx就是我们放着的假码</p>
+<p>在<code>0x42d48f</code>处的mov指令将真码放到eax中，看到堆栈可以发现除了我们自己输入的之外多了一串数字</p>
+
+
+<p>运行到第三个call时查看寄存器发现正好是一个我们自己输入的和一个第一个call计算出来的</p>
+
+
+<p>之后在第一个关键跳jnz处为真，我们重新运行一次，这次输入的serial1为“1270734”</p>
+<p>看看这里是否还会跳转</p>
+<p>这一次运行过来时堆栈中的四个值</p>
+
+
+<p>并且在关键跳转处写着跳转未实现</p>
+
+
+<p>那么下面的三个call就是同理比较serial2了</p>
+<p>如果想写注册机，那么就要具体分析这两个计算真码的关键函数了</p>
+<h4 id="Serial1"><a href="#Serial1" class="headerlink" title="Serial1"></a>Serial1</h4><p>第一个序列号的真码计算函数很简单</p>
+
+
+<p>只有这么一小段，但是里面嵌套了一个call</p>
+<p>在运行到这个call的时候，eax指向的一片空间存储着name和serial等</p>
+
+
+
+
+<p>跟进去之后计算的真码是保存在<code>[local.1002]</code>中的</p>
+<p>实际上又是一个子函数在计算（禁止套娃）</p>
+<p>看了半天没什么发现，就去看了看WP，WP有个大佬说序列号的值不是这里算出来的，原本就是有的</p>
+<p>跟到<code>42f714</code>看到里面有一个值</p>
+
+
+<p>这边的两个值转换成十进制就是序列号，这个值一开始就存在了</p>
+<p>查找这个地址的参考，发现有一个跳转表</p>
+
+
+<p>事件函数中还有一个Edit1KeyPress</p>
+
+
+<p>这个看来是边输入边触发的</p>
+<p>每次输入name的一个字符都会运行一遍</p>
+
+
+<p>之后根据<code>ds:[edx*4+0x42CEC0]</code>的值跳到对应分支，向<code>ds:[0x42f714]</code>和<code>ds:[0x42f718]</code>两个地方加上特定的值</p>
+<p>所以注册机就需要写一个大的跳转表，这有点麻烦了，主要是这么多情况抄数据比较慢</p>
+<p>Python直接用列表应该就可以</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/17/CrackMe-Day20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/17/CrackMe-Day20/" class="post-title-link" itemprop="url">CrackMe-Day20</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-17 19:27:44" itemprop="dateCreated datePublished" datetime="2020-03-17T19:27:44+08:00">2020-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe20"><a href="#CrackMe20" class="headerlink" title="CrackMe20"></a>CrackMe20</h1><p>第二十道CrackMe</p>
+<p>作者Bullet</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次程序样子比较特别</p>
+
+
+<p>目的是输入一个Serial</p>
+<p>使得得到的Reg Nr和下面那个值相等</p>
+<p>每点一下spider就会移动一步，移动到网上之后还不一样的话就会自己退出</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h3><p>用OD打开提示可能带壳</p>
+
+
+<p>用查壳工具看一下</p>
+
+
+<p>提示尝试用Quick unpacker脱壳</p>
+<p>不过话说回来这里WWPack这个东西也没听过</p>
+<p>看到程序各个节名称</p>
+
+
+<p>那首先需要脱壳</p>
+<p>使用PEID的插件通用脱壳成功脱下来</p>
+
+
+<p>检测出来的OEP为<code>0x0044A648</code></p>
+
+
+<p>脱壳之后的文件再用od查看</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>搜索字符串</p>
+
+
+<p>这里面实际上没有看到很有价值的字符串</p>
+<p>我们在运行的时候也发现并没有弹窗之类的效果</p>
+<p>只能单步执行一段</p>
+<p>执行到这里就是一个循环</p>
+
+
+<p>不停的刷新窗口状态</p>
+<p>这块代码再往下可以看到一小段代码，调用了<code>PostQuitMessage</code></p>
+
+
+<p>这个看名字应该就是退出的代码了，在这里下断点</p>
+<p>果然在运行到网上要退出时停住了</p>
+
+
+<p>观察这里的堆栈，跟到调用的地方</p>
+
+
+<p>那么这附近的代码就很有可能是程序在实际运算判断的代码了</p>
+<p>但是发现并不是，只是最后挂了的时候的函数</p>
+<p>没办法，再用查壳工具看一下是啥语言写的吧</p>
+
+
+<p>delphin，那在看一下控件信息</p>
+
+
+<p>看到存在这个click的事件，我们在这里下断点，运行发现果然是处理的函数</p>
+<p>在这块代码中看到这样一个条件跳转，就是判断是否要结束的，调用的函数也是最后exit的那个</p>
+
+
+<p>在这上面有一个jnz，很像是关键跳转，我们直接改掉</p>
+
+
+<p>结果成功了</p>
+
+
+<p>下面具体看看真实的序列号应该怎么得到</p>
+<p>运行到这边这个call时，查看堆栈</p>
+
+
+<p>已经是0000042了</p>
+
+
+<p>而看到call之后有一个<code>mov edx,[local.4]</code>，再下面又是一个call，推测就是判断两者是否相等的函数，<code>[local.4]</code>中就是这个常量</p>
+<p>果然</p>
+
+
+<p>mov后edx值就是这个常数</p>
+<p>那我们就需要知道这个0000042是怎么计算来的了，由于是栈顶数据，根据对堆栈的操作定位到了call</p>
+
+
+
+
+
+
+<p>有点太扯了，找规律发现计算出来的数字直接就是输入乘以3</p>
+
+
+<p>答案反过来除了一下直接就出来了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/16/CrackMe-Day19/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1274,266 +1620,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/09/CrackMe-Day12/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/09/CrackMe-Day12/" class="post-title-link" itemprop="url">CrackMe-Day12</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-09 23:42:27" itemprop="dateCreated datePublished" datetime="2020-03-09T23:42:27+08:00">2020-03-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 15:00:18" itemprop="dateModified" datetime="2020-11-04T15:00:18+08:00">2020-11-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
-<p>作者attackiko</p>
-<p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
-<p><a href="./image-20200309172308082.png"></a></p>
-<p>输入错误后获得一个弹窗</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309172335715.png" class="">
-
-
-
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309172453445.png" class="">
-
-<p>用Exeinfo看了一下</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309181655765.png" class="">
-
-<p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309181743824.png" class="">
-
-<p>得，居然是DOS的程序</p>
-<p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
-<p>具体动态分析时网上建议的环境是<code>win95+TRW2000</code></p>
-<p>这还要专门装虚拟机就有点麻烦了，毕竟16位的程序一般也很少见了，这年头32位的程序都要逐渐被淘汰了，不过如果不能动态跑起来，至少看一下别人的WP达到能看懂的程度吧。</p>
-<h2 id="WP学习"><a href="#WP学习" class="headerlink" title="WP学习"></a>WP学习</h2><p>首先还是根据错误字符串定位程序的关键代码入口</p>
-<p>逆向的代码里看到有很多浮点运算相关的汇编指令，平常用的不是很多</p>
-<p>大致流程看别人的write up梳理的很清楚</p>
-<ol>
-<li>获取所有字符求和记为<code>ldsum</code>，长度记为<code>len</code></li>
-<li>计算<code>cos(ldsum(sqrt(ldsum*d1)+ln(ldsum/2))+sin(len)*cos(len*ldsum))</code></li>
-<li>将结果作为科学计数法保存为字符串，记录E前面的17位为一个长度17的字符串记为S17</li>
-<li>通过17位中的8位进行一个简单的加减法，得到一个新的9位记为S9</li>
-<li>上面9位的结果S9所有字符ASC求和+len和<code>9*S17[4]+4*S17[5]+20</code>比较是否相等</li>
-</ol>
-<p>看到的一个教程贴，这里先mark一下吧，这道题看上去挺复杂的，之后进一步学习可以再对着学一下<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-906688-1-1.html">https://www.52pojie.cn/thread-906688-1-1.html</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/08/CrackMe-Day11/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/08/CrackMe-Day11/" class="post-title-link" itemprop="url">CrackMe-Day11</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-08 23:53:11" itemprop="dateCreated datePublished" datetime="2020-03-08T23:53:11+08:00">2020-03-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
-<p>作者Andrenalin</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
-
-
-<p>虽然能输入，但是没有找到有回车之类的按键</p>
-<p>推测是不是实时检测的，如果对了就自动成功</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
-
-<p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
-<p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
-
-
-<p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
-<p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
-
-
-<p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
-<p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
-<p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
-
-
-
-
-<p>下面还是进一步分析程序</p>
-<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>我们仔细看一下这个前面的判断比较的内容</p>
-<p><code>dword ptr ss:[ebp-0x34]</code></p>
-<p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
-<p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
-
-
-
-
-<p>看一下循环中调用了哪些API</p>
-
-
-<p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
-<p>获得str、之后转换为ASCII码</p>
-<p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
-<p>准备反编译看一下，找来了VB Decompiler</p>
-
-
-<p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
-<p>还有4个时间器的函数</p>
-<p>其中有一个click的函数和其他的不太一样</p>
-
-
-<p>对比一下</p>
-
-
-<p>发现多了长度减一，这个应该是退格键</p>
-<p>检查一下时间器的代码，发现四个时间器代码都差不多</p>
-<p>核心的部分都是那一段</p>
-<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> loc_00406ED6: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br><span class="line"> loc_00406EDC: </span><br><span class="line">loc_00406EDE: <span class="keyword">If</span> var_24 = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_0040700D</span><br><span class="line"> loc_00406F79: var_7C = (Asc(<span class="keyword">Mid</span>$(<span class="built_in">CStr</span>(var_44), <span class="built_in">CLng</span>(var_24), <span class="number">1</span>)) + Val(<span class="built_in">CStr</span>(Left(var_44, <span class="number">2</span>))))</span><br><span class="line"> loc_00406F8C: var_8C = Hex$(var_7C)</span><br><span class="line"> loc_00406FB9: var_34 = <span class="number">0</span> &amp; Hex$(var_7C)</span><br><span class="line"> loc_00407002: <span class="keyword">Next</span> var_24</span><br><span class="line"> loc_00407008: <span class="keyword">GoTo</span> loc_00406EDC</span><br><span class="line"> loc_0040700D: <span class="comment">&#x27;Referenced from: 00406EDE</span></span><br><span class="line"> loc_00407035: <span class="keyword">If</span> (var_34 = <span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C&quot;</span>) = <span class="number">0</span> <span class="keyword">Then</span> <span class="keyword">GoTo</span> loc_00407083</span><br><span class="line"> loc_0040705C: Label3.Caption = <span class="string">&quot;REGISTRIERT&quot;</span></span><br><span class="line"> loc_00407083: <span class="comment">&#x27;Referenced from: 00407035</span></span><br><span class="line"> loc_004070F3: <span class="keyword">For</span> var_24 = <span class="number">1</span> <span class="keyword">To</span> Len(var_44) <span class="keyword">Step</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p><code>var_24</code>为0时直接跳转到下面的判断</p>
-<p>而对正常的每个字符，执行的操作是：</p>
-<ol>
-<li><code>var_7C = (Asc(Mid$(CStr(var_44), CLng(var_24), 1)) + Val(CStr(Left(var_44, 2))))</code><ol>
-<li><code>CLng</code>将<code>var_24</code>转换成长整形</li>
-<li><code>CStr</code>将<code>var_44</code>转换成字符串</li>
-<li><code>Left</code>函数返回<code>var_44</code>左数两个字符</li>
-<li><code>Val</code>函数将字符串转换为数值，这个函数会在不能识别</li>
-<li><code>Mid</code>函数将<code>var_44</code>左起第<code>var_24</code>位，长度1提取出来</li>
-<li><code>ASC</code>函数返回字符串中第一个字符的ASCII码</li>
-</ol>
-</li>
-<li><code>var_8C = Hex$(var_7c)</code> 将其转换为Hex的值</li>
-<li><code>var_34 = 0 &amp; Hex$(var_7C)</code> 结果和0相与</li>
-<li>最终结果要等于<code>0817E747D7A7D7C7F82836D74747A7F7E7G7C7D826D817E7B7C</code></li>
-</ol>
-<p>最后的程序直接参照了网上的注册机</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">string</span> kb=<span class="string">&quot;0123456789*#&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> kb_dec[]=&#123;<span class="number">48</span>,<span class="number">49</span>,<span class="number">50</span>,<span class="number">51</span>,<span class="number">52</span>,<span class="number">53</span>,<span class="number">54</span>,<span class="number">55</span>,<span class="number">56</span>,<span class="number">57</span>,<span class="number">42</span>,<span class="number">35</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> kb_hex[]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>,<span class="number">15</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> hexlist=<span class="string">&quot;0123456789ABCDEF&quot;</span>;</span><br><span class="line"><span class="keyword">int</span> key_num=<span class="number">2</span>;</span><br><span class="line"><span class="built_in">string</span> key=<span class="string">&quot;0817E747D7A7D7C7F82836D74747A7F7E7B7C7D826D817E7B7C&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hexstr_to_dec</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> s)</span> <span class="comment">//转16进制两位字符到十进制数</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a,b;</span><br><span class="line">        a=hexlist.find(s[<span class="number">0</span>]);</span><br><span class="line">        b=hexlist.find(s[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> a*<span class="number">16</span>+b;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span>   </span></span><br><span class="line"><span class="function">        </span>&#123; </span><br><span class="line">        <span class="keyword">int</span> key_value;</span><br><span class="line">        <span class="keyword">int</span> base_value;</span><br><span class="line">        <span class="built_in">string</span> psword;</span><br><span class="line">        <span class="keyword">char</span> p;</span><br><span class="line">        <span class="built_in">string</span> key_str=key.substr(<span class="number">1</span>,<span class="number">2</span>);  <span class="comment">//取Key的二、三位</span></span><br><span class="line">        key_value=hexstr_to_dec(key_str);</span><br><span class="line">         </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;=<span class="number">9</span>;x++)                <span class="comment">//确定公共值base_value                 </span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;y&lt;=<span class="number">9</span>;y++)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">if</span> (y+x*<span class="number">10</span>+kb_dec[x]==key_value)</span><br><span class="line">                        &#123;</span><br><span class="line">                        base_value=x*<span class="number">10</span>+y;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;公共值:&quot;</span>&lt;&lt;base_value&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">1</span>;x&lt;key.length();x+=<span class="number">2</span>)          <span class="comment">/*计算 注册码 部分*/</span></span><br><span class="line">                &#123;</span><br><span class="line">                key_str=key.substr(x,<span class="number">2</span>);</span><br><span class="line">                key_value=hexstr_to_dec(key_str);</span><br><span class="line">                p=(<span class="keyword">char</span>)(key_value-base_value);</span><br><span class="line">                psword=psword+p;</span><br><span class="line">                &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;password:&quot;</span>&lt;&lt;psword&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        system(<span class="string">&quot;pause&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1601,14 +1691,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">

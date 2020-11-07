@@ -196,6 +196,279 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/21/simple-sipder/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/21/simple-sipder/" class="post-title-link" itemprop="url">simple-sipder</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-21 14:15:20" itemprop="dateCreated datePublished" datetime="2019-05-21T14:15:20+08:00">2019-05-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="文字爬虫"><a href="#文字爬虫" class="headerlink" title="文字爬虫"></a>文字爬虫</h1><p>这篇文字主要使用requests和BeautifulSoup写了几个比较简单的小爬虫</p>
+<!--more--->
+
+<h2 id="百度搜索热榜"><a href="#百度搜索热榜" class="headerlink" title="百度搜索热榜"></a>百度搜索热榜</h2><p>在浏览器中打开top.baidu.com</p>
+
+
+<p>目标为左侧的实时热点以及七日关注<br>打开开发者工具，查看该标签</p>
+<p>看到榜单使用无序列表布置的，因此爬取的内容为class=”list”的ul中的项</p>
+<p>使用requests得到了网页内容后使用beautifulsoup解析，对得到的内容使用find_all找到其中的两个无序列表，解析得到里面li的内容并写在top.txt中</p>
+<p>结果如图，格式为排行 名称 搜索指数</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/11/vim%E5%A4%AA%E5%BC%BA%E4%BA%86/" class="post-title-link" itemprop="url">vim太强了</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-11 16:48:07" itemprop="dateCreated datePublished" datetime="2018-12-11T16:48:07+08:00">2018-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>用于记录一些有用的vim快捷键</p>
+<p>会根据我自己的掌握进度定期更新</p>
+<p>vim主要有三种模式：normal, insert, visual</p>
+<!--more--->
+
+
+
+<h2 id="Normal-Mode"><a href="#Normal-Mode" class="headerlink" title="Normal Mode"></a>Normal Mode</h2><h3 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h3><p>hjkl 左上下右移动</p>
+<p>w\e 向后移动一个词</p>
+<p>b 向前移动一个词</p>
+<p>L\H\M 光标移动到当前页面最底端\顶端\中间</p>
+<p>% （光标本身在括号上时）移动到另一端括号</p>
+<p>$ 移动到该行末尾</p>
+<p>0 移动到当前行首</p>
+<p>^ 移动到行首第一个非空字符</p>
+<p>+ 移动到下一行的开始第一个字符</p>
+<p>- 移动到上一行开始第一个字符</p>
+<p>&lt;C-d&gt; 向下半屏</p>
+<p>&lt;C-u&gt; 向上半屏</p>
+<p>下面三个分别对应三种移动方式, section、paragraph、sentence</p>
+<ul>
+<li>{[[ ]]</li>
+<li>{ }</li>
+<li>( )</li>
+</ul>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><p>i 在当前字符进入插入模式</p>
+<p>a 在当前字符后一个字符进入插入模式</p>
+<p>x 删除当前字符</p>
+<p>s 删除当前字符并进入插入模式</p>
+<p>I 光标移动到当前行行首并进入插入模式</p>
+<p>A 光标移动到当前行行尾并进入插入模式</p>
+<p>o 在当前行下面新建一个空行并进入插入模式</p>
+<p>O 在当前行上面新建一个空行并进入插入模式</p>
+<p>p 粘贴到当前行下方</p>
+<p>P 粘贴到当前行上方</p>
+<p>u 撤回操作(undo)</p>
+<p>&lt;C-r&gt; 取消撤回(redo)</p>
+<p>yy 复制当前行</p>
+<p>dd 删除当前行</p>
+<p>&lt;C-n&gt; &lt;C-p&gt; 自动补全</p>
+<p>. 重复上一个操作</p>
+<p>f/F/t/T 行内搜索，只能接受一个字符为参数</p>
+<p>多行操作：</p>
+<p>[数字]+{y/p/d]</p>
+<h2 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h2><h3 id="代码折叠"><a href="#代码折叠" class="headerlink" title="代码折叠"></a>代码折叠</h3><p>代码折叠需要设置折叠方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> foldmethod=manual</span><br></pre></td></tr></table></figure>
+
+<p>其他方式还有marker、indent等</p>
+<p>在manual模式下，折叠代码时使用</p>
+<p>zf 创建一个折叠，后面可以接行数，也可以按照光标移动方式接参数</p>
+<p>zd 删除这个折叠</p>
+<p>一般情况下，例如写C的代码，可以用<code>zf%</code>折叠整个块结构</p>
+<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><p>vim 有一个特性，删除以及复制的内容会保存历史，按顺序九个记录依次保存在数字寄存器中，如果需要粘贴寄存器的内容可以</p>
+<p><code>&quot;1p</code>含义为粘贴一号寄存器的内容，等价于<code>p</code></p>
+<p>如果要搜索寄存器中的内容，可以<code>&quot;1pu.u.u</code>这样会逐渐递增寄存器标号</p>
+<p>同时，26个字母也是可以使用的寄存器，如果要保存在26个字母中，只需要</p>
+<p><code>&quot;ayy</code>即可复制保存在a寄存器</p>
+<p>如果使用大写字母，则会将其以append方式附加在寄存器中</p>
+<p><code>&quot;Ayy</code>不覆盖a寄存器中的内容，在其后面继续添加内容</p>
+<h3 id="书签"><a href="#书签" class="headerlink" title="书签"></a>书签</h3><p>vim还有一个书签功能，可以设置26个书签</p>
+<p><code>ma</code>即将目前所在位置标记为a</p>
+<p>之后可以快速回到这个位置，只需使用<code>&#39;a </code>或`a</p>
+<h2 id="Instruction"><a href="#Instruction" class="headerlink" title="Instruction"></a>Instruction</h2><p>:set nu 显示行号</p>
+<p>:set nonu 不显示行号</p>
+<p>:set relativenumber 设置显示相对行号</p>
+<p>:set ts=4 设置tab的宽度为4</p>
+<p>:open &lt;file&gt; 打开文件</p>
+<p>:x 保存退出</p>
+<p>:qa! 不保存退出</p>
+<p>:[addr]s/源字符串/目的字符串[options]</p>
+<p>vi 可以说是ex 编辑器的升级版，ex编辑器是一个没有图形化的编辑器，纯命令行的交互，而vi、vim也都完全支持了ex的命令</p>
+<p>这作为命令模式保留在了vi中</p>
+<p>例如替换的命令<code>:s/Hello/hello</code>即可将Hello替换为hello</p>
+<p>删除行的命令<code>:13,23d</code></p>
+<p>移动<code>:220,231m2</code>将220行到231行的内容移到第二行下面</p>
+<p><code>:/pattern/=</code>显示pattern第一次出现的行号</p>
+<p>ex模式中<code>.</code>代表当前行,<code>$</code>代表最后一行,<code>%</code>代表每一行</p>
+<p><code>:20r file</code> 读取file，并写在当前这个文件的20行处</p>
+<p><code>:e filename</code> 在编辑这个文件时打开另一个文件，编辑另一个文件结束后返回当前文件</p>
+<p><code>:e!</code> 回到先前编辑的文件</p>
+<p>当命令行启动跟着多个参数时，<code>:n</code>切换到下一个文件</p>
+<p>之后可以用<code>&lt;C-^&gt;</code>切换buffer</p>
+<p>在编辑多个文件时也可以使用寄存器保存复制和删除的内容，在多个文件间粘贴</p>
+<h3 id="匹配和替换"><a href="#匹配和替换" class="headerlink" title="匹配和替换"></a>匹配和替换</h3><p>源字符串和目的字符串可以用正则表达式</p>
+<p>addr:</p>
+<ul>
+<li>%全局</li>
+<li>1,20 一到二十行</li>
+<li>.,$ 当前行到文件尾</li>
+<li>空着默认只有当前行</li>
+</ul>
+<p>options:</p>
+<ul>
+<li>g 全局</li>
+<li>c 每一个替换时进行确认</li>
+<li>p 结果逐行显示</li>
+</ul>
+<p>搜索中使用的正则表达式和python中语法相同：</p>
+<p><code>^开始； $结束；*重复0次到多次；[]一个字符；（）一个表达式</code></p>
+<h2 id="Vimrc"><a href="#Vimrc" class="headerlink" title="Vimrc"></a>Vimrc</h2><p>vimrc是vim的配置文件，可以设置每次启动vim时执行的命令</p>
+<p>例如上面instruction的一些内容可以直接写在vimrc中使得每次启动自动执行</p>
+<p>不过vimrc最重要的一个功能还是按键的映射，可以将按键映射为不同的功能和指令</p>
+<p>首先我们设置一下LEADER键</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> mapleader=<span class="string">&quot; &quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以设置leader键为空格</p>
+<p>之后可以通过map设置一些用空格触发的快捷键</p>
+<h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><p>vim的插件属于更高级，更个性化的用法，在熟悉了前面的基础操作后逐步增加插件</p>
+<h3 id="vim-plug"><a href="#vim-plug" class="headerlink" title="vim-plug"></a>vim-plug</h3><p>vim-plug是vim的一个插件管理插件；</p>
+<p>安装方法:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fLo ~/.vim/<span class="built_in">autoload</span>/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后需要在<code>.vimrc</code>中添加这样的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call plug<span class="comment">#begin(&#x27;~/.vim/plugged&#x27;)</span></span><br><span class="line">	Plug <span class="string">&#x27;...&#x27;</span></span><br><span class="line">call plug<span class="comment">#end()</span></span><br></pre></td></tr></table></figure>
+
+<p>在需要安装内容时将<code>...</code>替换为需要安装的插件的github上repo链接即可</p>
+<p>只需要链接的后半部分，例如：</p>
+<p><code>github.com/garbas/vim-snipmate.git</code>只需要写<code>garbas/vim-snipmate</code>即可</p>
+<p>设置好vimrc后在启动vim时使用<code>:PlugInstall</code>就会自动安装</p>
+<p>需要更新插件时<code>:PlugUpdate</code>，更新<code>vim-plug</code>本身<code>:PlugUpgrade</code></p>
+<h3 id="NerdTree"><a href="#NerdTree" class="headerlink" title="NerdTree"></a>NerdTree</h3><p>NerdTree可以作为侧边栏出现文件树，方便打开同一个工程内的其他文件</p>
+<p>repo位置<code>scrooloose/nerdtree</code></p>
+<p>在vimrc中加入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map &lt;LEADER&gt;f :NERDTreeToggle &lt;CR&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以将打开关闭树的功能与LEADER加f键绑定</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/12/09/zsh/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1005,83 +1278,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/04/02/Biba%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/02/Biba%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">Biba完整性模型简介及编程实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-04-02 10:43:42" itemprop="dateCreated datePublished" datetime="2018-04-02T10:43:42+08:00">2018-04-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> ​    ​    ​    ​    ​    ​    ​    ​    在一门名叫信息系统安全导论的课上老师留了一个作业，写一个报告简单介绍一下Biba模型，并且用编程描述一个场景实现一下。</p>
-<p>​    ​    ​    ​    ​    ​    ​    ​    嗯，听起来非常扯对不对，更扯的是后来老师也不知道自己到底留了点啥，结果每次有人去问具体要求他说的都不一样，得，那就随便做点东西得了。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/02/Biba%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1149,14 +1349,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1266,6 +1466,59 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

