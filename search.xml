@@ -255,6 +255,29 @@
       </tags>
   </entry>
   <entry>
+    <title>Chunk-Extend</title>
+    <url>/2020/09/30/Chunk-Extend/</url>
+    <content><![CDATA[<p>chunk extend在对堆进行扩展时可能会出现overlapping的情况</p>
+<p>即不同的堆块之间造成重叠；</p>
+<p>利用需要以下条件：</p>
+<ul>
+<li>程序中存在基于堆的漏洞</li>
+<li>漏洞可以控制chunk header中的数据</li>
+</ul>
+<p>类似的还有一种利用方式是chunk shrink</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>由于在ptmalloc中对堆的各种操作是很频繁的，因此其中的很多操作直接是以宏的形式实现的；</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize(p) (chunksize_nomask(p) &amp; ~(SIZE_BITS))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize_nomask(p) ((p)-&gt;mchunk_size)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> next_chunk(p) ((mchunkptr) (((char *)(p))+chunksize(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_chunk(p) ((mchunkptr)((char *)(p) - prev_size(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse(p) ((((mchunkptr) (((char *)(p))+chunksize(p))) -&gt; mchunk_size) &amp; PREV_INUSE)</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>PWN</category>
+      </categories>
+      <tags>
+        <tag>hack</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CrackMe-Day1</title>
     <url>/2020/02/25/CrackMe-Day1/</url>
     <content><![CDATA[<p>吾爱破解论坛有160个面向新手的CrackMe，这里为了练手准备慢慢做一下WP，这是第一个程序的WP</p>
@@ -341,49 +364,49 @@
     <content><![CDATA[<h1 id="CrackMe10"><a href="#CrackMe10" class="headerlink" title="CrackMe10"></a>CrackMe10</h1><p>第十道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>运行，窗口和第八题长得一样，只有一个序列号，但是难度是difficult</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307121620307.png" class="">
 
 <p>略慌，输入之后弹窗也和之前一样</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307121646873.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查找字符串</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185556507.png" class="">
 
 <p>在Right上方找到关键跳转</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185540489.png" class="">
 
 <p>修改为jne试试看</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185636538.png" class="">
 
 <p>直接爆破成功了。。</p>
 <p>不过看题目描述难度比较高，还是进一步看一下吧</p>
 <h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>在搜索字符串的时候应该就注意到了，有一个奇怪的字符串</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307190912877.png" class="">
 
 <p>这个字符串是最后关键跳转上面的一个call，再观察发现这上面不远有一个向上的jump</p>
 <p>并且这个jump跳转之前还有一个<code>__vbaVarForNext</code>，虽然没写过VBA的程序，但是根据调用的API名字我们可以推测这是个循环</p>
 <p>对输入的字符串进行处理，每一个字符进行一定转换之后要求得到这个奇怪的东西，最后不同就跳转</p>
 <p>那么下面就是需要看一下都做了啥</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307192423989.png" class="">
 
 <p>首先这里这个<code>__vbaLenVar</code>对字符串的长度进行获取，结果保存在了ecx中</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307192800985.png" class="">
 
 <p>这里得到具体的字符，之后调用<code>rtcAnsiValueBstr</code>这个函数，将字符转化为了ASCII吗</p>
 <p>紧跟着下面是一个<code>add ax,0xA</code> 对得到的结果加了10;</p>
 <p>下面这个<code>jo</code>之前还真没见过，是如果溢出就跳转</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193051810.png" class="">
 
 <p>之后再调用了这个函数，将ASCII转换回字符</p>
 <p>那么就可以编写一个简单的程序了</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">&#123;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">string</span> target = <span class="string">&quot;kXy^rO|*yXo*m\\kMuOn*+&quot;</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> length = target.size( %&#125;;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;length;i++ %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#123;</span></span></span><br><span class="line"><span class="function"><span class="params">    target[i]=target[i]<span class="number">-0xA</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">cout</span>&lt;&lt;target&lt;&lt;<span class="built_in">endl</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">&#125;</span></span></span><br></pre></td></tr></table></figure>
 
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193821555.png" class="">
 
 <p>得到这个字符串，输入试一下</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193914328.png" class="">
 
 <p>成功</p>
 ]]></content>
@@ -401,24 +424,24 @@
     <content><![CDATA[<h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308174224014.png" class="">
 
 <p>虽然能输入，但是没有找到有回车之类的按键</p>
 <p>推测是不是实时检测的，如果对了就自动成功</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><img src="/2020/03/08/CrackMe-Day11/image-20200308175443437.png" class="">
 
 <p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
 <p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308182243874.png" class="">
 
 <p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
 <p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308194754661.png" class="">
 
 <p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
 <p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
 <p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308194631026.png" class="">
 
 
 
@@ -427,26 +450,26 @@
 <p><code>dword ptr ss:[ebp-0x34]</code></p>
 <p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
 <p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308195525622.png" class="">
 
 
 
 <p>看一下循环中调用了哪些API</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308204138395.png" class="">
 
 <p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
 <p>获得str、之后转换为ASCII码</p>
 <p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
 <p>准备反编译看一下，找来了VB Decompiler</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222148547.png" class="">
 
 <p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
 <p>还有4个时间器的函数</p>
 <p>其中有一个click的函数和其他的不太一样</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222738802.png" class="">
 
 <p>对比一下</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222753112.png" class="">
 
 <p>发现多了长度减一，这个应该是退格键</p>
 <p>检查一下时间器的代码，发现四个时间器代码都差不多</p>
@@ -489,6 +512,8 @@
     <content><![CDATA[<h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
 <p>作者attackiko</p>
 <p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
 <p><a href="./image-20200309172308082.png"></a></p>
 <p>输入错误后获得一个弹窗</p>
@@ -534,6 +559,8 @@
     <url>/2020/03/10/CrackMe-Day13/</url>
     <content><![CDATA[<h1 id="CrackMe13"><a href="#CrackMe13" class="headerlink" title="CrackMe13"></a>CrackMe13</h1><p>第十三道CrackMe</p>
 <p>作者badboy</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序运行一打开有一个选择条，可以选择1.0和2.0</p>
 <p><a href="./image-20200310150353885.png"></a></p>
 <p>点击1.0之后窗口变成这样，只有一个序列号可以输入</p>
@@ -680,6 +707,8 @@
     <url>/2020/03/11/CrackMe-Day14/</url>
     <content><![CDATA[<h1 id="CrackMe14"><a href="#CrackMe14" class="headerlink" title="CrackMe14"></a>CrackMe14</h1><p>第十四道CrackMe</p>
 <p>作者bjanes</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后有一个输入和两个按钮</p>
 <p><a href="./image-20200311151820729.png"></a></p>
 <p>随便输入之后check，弹出一个窗口</p>
@@ -733,67 +762,67 @@
     <content><![CDATA[<h1 id="CrackMe15"><a href="#CrackMe15" class="headerlink" title="CrackMe15"></a>CrackMe15</h1><p>第十五道CrackMe</p>
 <p>作者blaster99</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后首先弹了这么一个窗</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203102755.png" class="">
 
 <p>也不知道上面写的是什么语</p>
 <p>用ocr识别再翻译一下看看</p>
 <p>好吧，居然是德语</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203245757.png" class="">
 
 <p>那么意思就是要删除这个NAG窗口或者获取正确的密码</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203328363.png" class="">
 
 <p>点击确定之后窗口变成这样的</p>
 <p>输入注册码之后注册</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203358227.png" class="">
 
 <p>给了一个错误的弹窗</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>这个程序说了自己是VB写的，那么首先查看一下反编译的代码</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203520142.png" class="">
 
 <p>控件相关有这些内容，主要需要看<code>Form_Load</code>以及<code>Command1_Click</code></p>
 <h3 id="去NAG"><a href="#去NAG" class="headerlink" title="去NAG"></a>去NAG</h3><p><code>Form_Load</code>可以看到函数一开始就有一个MessageBox的调用</p>
 <p>这就是我们想去掉的那个NAG窗口，在OD里把这句Nop掉</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203603325.png" class="">
 
 <p>对照着汇编代码，我首先尝试NOP掉这个字符串下面的CALL</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203850822.png" class="">
 
 <p>结果这个窗口还是出现了，只是失去了中间的内容</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203919107.png" class="">
 
 <p>再往下一些有一个call，<code>rtcMsgBox</code></p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204002238.png" class="">
 
 <p>这次把这一句nop掉</p>
 <p>结果程序直接退出了，仔细想想也是，毕竟弹窗之后只有点确定才能去到CrackMe</p>
 <p>如果点了取消，那CrackMe就退出了</p>
 <p>所以我们现在应该找到确定点击后的窗口位置</p>
 <p>跟踪调试发现，在这个MsgBox下面存在</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204438821.png" class="">
 
 <p>这样的代码，MsgBox返回1或0，存在eax中，这里再根据结果决定是否跳转</p>
 <p>所以我们希望去掉NAG窗口，即直接从点击确定后的地方开始运行</p>
 <p>那么需要改两处地方，一是nop掉msgbox的call；二是修改这个<code>test ax,ax</code>下面的<code>jnz</code>为无条件的<code>jmp</code></p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204746681.png" class="">
 
 <p>运行发现，没有NAG窗口了</p>
 <h3 id="Passwd"><a href="#Passwd" class="headerlink" title="Passwd"></a>Passwd</h3><p>至于破解序列号，我们就还是看一下字符串先</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204842749.png" class="">
 
 <p>定位到成功的字符串处，可以很轻松的发现这个关键跳转</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205033918.png" class="">
 
 <p>修改为jnz，再运行</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205049932.png" class="">
 
 <p>成功</p>
 <p>想要知道确切的序列号条件，那么我们可以看一下前面<code>command1_click</code>的代码</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205224555.png" class="">
 
 <p>里面比较的条件很简单粗暴，就是一个字符串</p>
 <p>输入之后就成功</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205256842.png" class="">
 ]]></content>
       <categories>
         <category>CrackMe</category>
@@ -808,6 +837,8 @@
     <url>/2020/03/13/CrackMe-Day16/</url>
     <content><![CDATA[<h1 id="CrackMe16"><a href="#CrackMe16" class="headerlink" title="CrackMe16"></a>CrackMe16</h1><p>第十六道CrackMe</p>
 <p>作者bjanes</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开就是一个窗口，只能输入一个序列号</p>
 <p><a href="./CrackMe-Day16/image-20200313175926310.png"></a></p>
 <p>输入错误的码之后一个小弹窗</p>
@@ -909,6 +940,8 @@
     <url>/2020/03/14/CrackMe-Day17/</url>
     <content><![CDATA[<h1 id="CrackMe17"><a href="#CrackMe17" class="headerlink" title="CrackMe17"></a>CrackMe17</h1><p>第十七道CrackMe</p>
 <p>作者bjanes</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>样子、效果都和前两天的程序一模一样</p>
 <p><a href="./image-20200314234515009.png"></a></p>
 <p>甚至我顺手试了一下前一次的序列号直接就过了</p>
@@ -945,32 +978,32 @@
     <content><![CDATA[<h1 id="CrackMe18"><a href="#CrackMe18" class="headerlink" title="CrackMe18"></a>CrackMe18</h1><p>第十八道CrackMe</p>
 <p>作者Brad Soblesky</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后还是朴实无华的窗口</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315154922619.png" class="">
 
 <p>只有一个输入条</p>
 <p>输入错误之后是一个弹窗</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155040292.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先搜索字符串</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155122459.png" class="">
 
 <p>定位到Correct</p>
 <p>在上方有一个很明显的关键跳转</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155200246.png" class="">
 
 <p>修改为jz</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155230001.png" class="">
 
 <p>爆破成功</p>
 <p>那么之后还是看一下真正的序列号</p>
 <p>注意到上面有一个strcmp，在这个call上下断点再跑一次</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155349676.png" class="">
 
 <p>String1是我们自己输入的字符串，那么真正的序列号就一目了然了</p>
 <p><code>&lt;BrD-SoB&gt;</code></p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155509143.png" class="">
 
 <p>最近感觉对爆破都已经比较熟练了，之后的题目都以获取序列码/注册机为最终目标吧</p>
 ]]></content>
@@ -987,6 +1020,8 @@
     <url>/2020/03/16/CrackMe-Day19/</url>
     <content><![CDATA[<h1 id="CrackMe19"><a href="#CrackMe19" class="headerlink" title="CrackMe19"></a>CrackMe19</h1><p>第十九道CrackMe</p>
 <p>作者Brad Soblesky</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>相比昨天那个一开始的界面变成了两个输入</p>
 <p><a href="./image-20200316125839211.png"></a></p>
 <p>其中用户名必须至少5个字符</p>
@@ -1057,47 +1092,47 @@
     <content><![CDATA[<h1 id="CrackMe2"><a href="#CrackMe2" class="headerlink" title="CrackMe2"></a>CrackMe2</h1><p>第二道CrackMe</p>
 <p>作者Afkayas</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先在xp下正常运行一下看看</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226154851799.png" class="">
 
 <p>是一个非常标准的输入名称和序列号的这样一个窗口</p>
 <p>随便输入一些之后点击ok</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226154951571.png" class="">
 
 <p>得到了这样一个弹窗</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是用OD打开，对MessageBox下API断点</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155146563.png" class="">
 
 <p>运行，结果居然没断下来</p>
 <p>那看来这个弹窗就不是单纯的直接用MessageBox实现的了</p>
 <p>干脆直接勾选其他所有的弹窗API，重新运行</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155402844.png" class="">
 
 <p>首先是直接在这里断住，但是这时需要填序列号的那个弹窗都还没出现，放过</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155511156.png" class="">
 
 <p>之后出现序列号窗口，修改一下里面的字符串之后，运行</p>
 <p>断在了这里的GetWindowTextA，但是发现这里是一个库里，并不是原本的程序内存</p>
 <p>这里往下一直单步步过，直到离开这个库</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160209239.png" class="">
 
 <p>走到图中位置可以看到栈中存在我们输入的序列号</p>
 <p>这个call下方可以看到一个<code>vbaStrCmp</code></p>
 <p>那这不就好说了，运行到这一步时看到堆栈的两个参数</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160354346.png" class="">
 
 <p>因此那个字符串应该就是序列号了吧</p>
 <p>重新运行一遍</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160707195.png" class="">
 
 <p>哎，难度略低呀，破解成功</p>
 <p>但是这实际上只得到一对序列号，序列号是根据Name来生成的</p>
 <p>所以再进一步看一下</p>
 <p>在上面那个<code>StrCmp</code>执行完之后，再单步运行一段时间可以看到这样的一个jmp</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226161102668.png" class="">
 
 <p>把je修改成jne</p>
 <p>这样就得到了一个随意输入都能成功的程序了</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226161252111.png" class="">
 
 ]]></content>
       <categories>
@@ -1215,91 +1250,91 @@
 <p>作者Cabeca</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这个程序和以前的不太一样</p>
 <p>有三个输入</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134159796.png" class="">
 
 <p>随便输入之后有这么一个弹窗</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134230752.png" class="">
 
 <p>感觉好像是没有满足什么条件</p>
 <p>还是直接分析看看吧</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>拖到OD里面</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134403696.png" class="">
 
 <p>定位字符串，到成功的那里</p>
 <p>这附近正好有一个跳转到这下面的 jump</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134510757.png" class="">
 
 <p>这个应该就是关键跳转了</p>
 <p>但是还是先要看一下上面提示的那个语句是因为没有满足什么条件</p>
 <p>这一块一共有四个je都是跳转到这句的</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134644759.png" class="">
 
 <p>三个输入全空会直接在第一个地方跳转</p>
 <p>输入了用户名之后没有输入序列号，在第四个跳转那边变成了True</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135017120.png" class="">
 
 <p>三个输入条都有内容之后运行</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135154506.png" class="">
 
 <p>会在那个jnz跳转，但这次提示的内容不太一样</p>
 <p>那既然跳转到了这里，我们就修改一下上面发现的那个关键跳</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135344222.png" class="">
 
 <p>之后直接运行</p>
 <p>发现还是提示失败，再单步运行一下，发现关键跳转在这里</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135528024.png" class="">
 
 <p>修改一下这一处</p>
 <p>还有再往下一点的这里</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135843211.png" class="">
 
 <p>提示成功</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135905579.png" class="">
 
 <p>那么爆破完成，之后分析算法的部分</p>
 <h3 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h3><p>要写注册机主要还是要看懂代码</p>
 <p>首先用查壳软件看一下编写的语言</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318141313431.png" class="">
 
 <p>那就用<code>DeDeDark</code>看一下对应的代码</p>
 <p>发现我们上面修改的关键跳转就是位于button的事件响应函数中</p>
 <p>而且Delphi的反编译功能也不是很好，就直接在OD里看吧</p>
 <p>看我们修改的那个跳转后面的具体条件</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318142533645.png" class="">
 
 <p>第一处看到上面是<code>cmp dword ptr ds:[0x42f714],0x0</code>这个值不为0就继续执行</p>
 <p>我们一共修改了两处关键跳转，正好可以对应两次序列号的比较，推测每次关键跳转上面可能就是对比一个序列号是否正确；</p>
 <p>下面我们改动的第一处条件跳转上面没有看到条件</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318144503444.png" class="">
 
 <p>反而是一个call函数，地址<code>0x004838D0</code></p>
 <p>再往上看一些，这附近一共有三个挨着的call函数</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318190912192.png" class="">
 
 <p>正好可以对应一个计算真码、一个计算假码、最后一个比较</p>
 <p>单步运行我们可以发现第三个是比较的call，其中传递的参数edx就是我们放着的假码</p>
 <p>在<code>0x42d48f</code>处的mov指令将真码放到eax中，看到堆栈可以发现除了我们自己输入的之外多了一串数字</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191334509.png" class="">
 
 <p>运行到第三个call时查看寄存器发现正好是一个我们自己输入的和一个第一个call计算出来的</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191457684.png" class="">
 
 <p>之后在第一个关键跳jnz处为真，我们重新运行一次，这次输入的serial1为“1270734”</p>
 <p>看看这里是否还会跳转</p>
 <p>这一次运行过来时堆栈中的四个值</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191912453.png" class="">
 
 <p>并且在关键跳转处写着跳转未实现</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191946746.png" class="">
 
 <p>那么下面的三个call就是同理比较serial2了</p>
 <p>如果想写注册机，那么就要具体分析这两个计算真码的关键函数了</p>
 <h4 id="Serial1"><a href="#Serial1" class="headerlink" title="Serial1"></a>Serial1</h4><p>第一个序列号的真码计算函数很简单</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318192127539.png" class="">
 
 <p>只有这么一小段，但是里面嵌套了一个call</p>
 <p>在运行到这个call的时候，eax指向的一片空间存储着name和serial等</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318192502089.png" class="">
 
 
 
@@ -1307,18 +1342,18 @@
 <p>实际上又是一个子函数在计算（禁止套娃）</p>
 <p>看了半天没什么发现，就去看了看WP，WP有个大佬说序列号的值不是这里算出来的，原本就是有的</p>
 <p>跟到<code>42f714</code>看到里面有一个值</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318194842861.png" class="">
 
 <p>这边的两个值转换成十进制就是序列号，这个值一开始就存在了</p>
 <p>查找这个地址的参考，发现有一个跳转表</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195001584.png" class="">
 
 <p>事件函数中还有一个Edit1KeyPress</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195046534.png" class="">
 
 <p>这个看来是边输入边触发的</p>
 <p>每次输入name的一个字符都会运行一遍</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195238673.png" class="">
 
 <p>之后根据<code>ds:[edx*4+0x42CEC0]</code>的值跳到对应分支，向<code>ds:[0x42f714]</code>和<code>ds:[0x42f718]</code>两个地方加上特定的值</p>
 <p>所以注册机就需要写一个大的跳转表，这有点麻烦了，主要是这么多情况抄数据比较慢</p>
@@ -1338,40 +1373,40 @@
     <content><![CDATA[<h1 id="CrackMe3"><a href="#CrackMe3" class="headerlink" title="CrackMe3"></a>CrackMe3</h1><p>第三道CrackMe</p>
 <p>作者AfkayAs</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>启动之后首先有一个动画一样的弹窗</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164603230.png" class="">
 
 <p>之后进入这个界面</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164459599.png" class="">
 
 <p>输入一些字符后点击ok</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164843248.png" class="">
 
 <p>这个弹窗点击确定之后整个程序就会退出</p>
 <p>好像是类型不对导致的，输入序列号全都是数字，正常弹窗</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227173927161.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>拖到OD发现提示代码被压缩</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164944748.png" class="">
 
 <p>也就是说程序可能是带壳的</p>
 <p>于是用Exeinfo打开</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227165226364.png" class="">
 
 <p>提示说没有加壳，那好吧，应该是只有压缩，就直接开干</p>
 <p>我先是一步一步执行看了看，但是没看出啥东西，所以决定还是看看运行错误的堆栈调用</p>
 <p>随便输入序列码，弹窗后在OD暂停程序，菜单栏那里的K查看堆栈的调用</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174113261.png" class="">
 
 <p>看到最下面那个调用是源程序调的，在上面右键，显示调用</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174208155.png" class="">
 
 <p>看到这部分的代码就比较正常，向上看一下有可能存在关键跳转的地方</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174300388.png" class="">
 
 <p>这边有一个je，修改为jne试试看</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174501527.png" class="">
 
 <p>这部分是成功了</p>
 <p>但是题目其实还有一部分要求，就是<code>Kill The Nag</code></p>
@@ -1383,23 +1418,23 @@
 <p>程序执行开始时，先<code>push</code>了一个值，之后<code>call</code>主函数</p>
 <p>由于没有见过VB的程序，我也专门去看了看《使用OllyDbg从零开始Cracking》中的相应章节，里面讲到了一个4C法</p>
 <p>VB的程序都是以push、call开始的</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227211656911.png" class="">
 
 <p>首先在数据窗口跟随第一条指令压栈的值，这个地方就是VB程序的头部</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227215439473.png" class="">
 
 <p>这个头部起始位置加上4C，0x406820</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227221514963.png" class="">
 
 <p>这个位置指向一个区域，跟随过去</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227221701486.png" class="">
 
 <p>这边的代码以50h为单位有两块</p>
 <p>每一块的第24h位置是一个标志位，其中为0的表示这段会被首先执行，之后才是1标志的这段</p>
 <p>这个表示的是程序执行的顺序</p>
 <p>我们将这两个标志位颠倒一下，这样程序启动的主窗口就会先出来了</p>
 <p>重新启动，nga窗口已经消失了</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227222022718.png" class="">
 
 
 
@@ -1426,6 +1461,8 @@
     <url>/2020/02/28/CrackMe-Day4/</url>
     <content><![CDATA[<h1 id="CrackMe4"><a href="#CrackMe4" class="headerlink" title="CrackMe4"></a>CrackMe4</h1><p>第四道CrackMe</p>
 <p>作者ajj</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战</p>
 <p>这个CrackMe 没有确定键</p>
 <p><a href="./image-20200228130932213.png"></a></p>
@@ -1484,6 +1521,8 @@
     <content><![CDATA[<h1 id="CrackMe6"><a href="#CrackMe6" class="headerlink" title="CrackMe6"></a>CrackMe6</h1><p> 第六道CrackMe</p>
 <p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
 <p>作者aLoNg3x</p>
+<a id="more"></a>
+
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先窗口一共有两个输入，三个按钮</p>
 <img src="/2020/03/03/CrackMe-Day6/image-20200303135204271.png" class="">
 
@@ -1575,30 +1614,30 @@
     <url>/2020/03/04/CrackMe-Day7/</url>
     <content><![CDATA[<h1 id="CrackMe7"><a href="#CrackMe7" class="headerlink" title="CrackMe7"></a>CrackMe7</h1><p>第七道CrackMe</p>
 <p>作者aLoNg3x</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><img src="/2020/03/04/CrackMe-Day7/image-20200304204903573.png" class="">
 
 <p>和上一次的长得有点像，点击About说目的类似，是要隐藏那个Register键</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205042352.png" class="">
 
 <p>这一次直接就可以点，也没有什么其他特别的地方了</p>
 <p>有一点比较在意，他说<code>CANNOT patch the .exe</code></p>
 <p>这一句不知道什么意思</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是搜索字符串</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205317952.png" class="">
 
 <p>这次找到这样的内容</p>
 <p>定位过去之后Great附近倒是一下子没看出什么</p>
 <p>拖到<code>DeDeDark</code>看了一下控件和事件</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205703535.png" class="">
 
 <p>发现这一次几个事件都是Click相关的，但是一共3个按键怎么4个事件呢</p>
 <p>另外还有一个比较奇怪的事情，上面找到的那个Great居然是在CancellaClick中</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205746750.png" class="">
 
 <p>控件这边也能看到这个Again</p>
 <p>于是去看一下具体的窗口信息</p>
 <p>果然，找到了这么一个隐藏的窗体</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205850666.png" class="">
 
 <p>但是它是不可见的</p>
 <p>那么这次有可能就是这样的流程：</p>
@@ -1606,28 +1645,28 @@
 <p>或许这里面还需要点击Cancel那个按键</p>
 <p>那么我们分析一下Register的事件函数</p>
 <h3 id="RegisterzClick"><a href="#RegisterzClick" class="headerlink" title="RegisterzClick"></a>RegisterzClick</h3><p>首先运行，找到第一个跳转，这个跳转判断的是输入的code长度方面的内容</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220225327.png" class="">
 
 <p>这个跳转不用改，下面这个jle是判断Code是否为负数的</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220310483.png" class="">
 
 <p>也不用修改</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220409030.png" class="">
 
 <p>那么就只剩下中间这个je了，修改为jne</p>
 <p>之后运行发现按键变了</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220628711.png" class="">
 
 <p>Register消失，出现了again</p>
 <h2 id="AgainClick"><a href="#AgainClick" class="headerlink" title="AgainClick"></a>AgainClick</h2><p>最初一个条件跳转，和上面一样，是判断长度是否有效的</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220813850.png" class="">
 
 <p>中间一个jle，也是直接正常执行</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304222147224.png" class="">
 
 <p>下面那个je改掉，改成jne</p>
 <p>继续执行</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304222235191.png" class="">
 
 <p>按钮消失了</p>
 <p>感觉目前已经有些直觉一样的哪个跳转要过去，哪个跳转需要修改了；</p>
@@ -1648,43 +1687,43 @@
     <url>/2020/03/05/CrackMe-Day8/</url>
     <content><![CDATA[<h1 id="CrackMe8"><a href="#CrackMe8" class="headerlink" title="CrackMe8"></a>CrackMe8</h1><p>第八道CrackMe</p>
 <p>作者Andrnalin</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><img src="/2020/03/05/CrackMe-Day8/image-20200305155740267.png" class="">
 
 <p>窗口这次直接是一个key的输入，和一个ok键</p>
 <p>随便输入东西，之后弹了这么个框</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305155812379.png" class="">
 
 <p>由于之前遇到过这样的问题，可能是类型错误之类的</p>
 <p>输入一次纯数字看看</p>
 <p>弹窗一样</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>由于这次只有一个key，首先想着会不会用grep就能找到flag，试一试</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160115705.png" class="">
 
 <p>都是一堆奇奇怪怪得内容，唯一有点像的也不对</p>
 <p>那么我们开始逆向</p>
 <p>搜索字符串找到这么些内容</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160213190.png" class="">
 
 <p>发现最后一个是错误的提示，跟进去</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160317833.png" class="">
 
 <p>这个往上看可以找到类似成功后的提示字符串</p>
 <p>在这上面不远有一个疑似关键跳转</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160404338.png" class="">
 
 <p>直接改成jnz</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160443079.png" class="">
 
 <p>emmmm，难度突然变低，这就成功了</p>
 <h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>由于这次太水了，准备破天荒的写个注册机看看</p>
 <p>那么首先还是向上看，看到有一处调用strcmp</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160917848.png" class="">
 
 <p>这时的堆栈有点迷，直接就把字符串写出来了</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160648469.png" class="">
 
 <p>行吧，合着连注册机都不用写了</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160820969.png" class="">
 ]]></content>
       <categories>
         <category>CrackMe</category>
@@ -1700,25 +1739,25 @@
     <content><![CDATA[<h1 id="CrackMe9"><a href="#CrackMe9" class="headerlink" title="CrackMe9"></a>CrackMe9</h1><p>第九道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>和上一道似乎比较类似，也是那种很基础的题目</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151447083.png" class="">
 
 <p>只是多了个name</p>
 <p>而且这个OK键和之前那个比较难的不一样，是只要name和key有东西就可以点击的</p>
 <p>输入错误后提示如下</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151537651.png" class="">
 
 
 
 <p>根据前面那个题目来看，这个难度应该也不大，直接分析</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>搜索字符串</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151647628.png" class="">
 
 <p>跟过去道right那里</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151750407.png" class="">
 
 <p>上面不远有一个je</p>
 <p>在这里下断点，尝试改成jne</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151905901.png" class="">
 
 <p>好吧，破解完成</p>
 ]]></content>
@@ -1751,7 +1790,7 @@
 <h4 id="Vigenere-Cipher"><a href="#Vigenere-Cipher" class="headerlink" title="Vigenere Cipher"></a>Vigenere Cipher</h4><p>维吉尼亚密码</p>
 <p>虽然也是一个置换密码，但是移动的位数是一个随key的每个字符变化的数；</p>
 <p>一般变化方式是通过字母变换的表格，如图所示</p>
-
+<img src="/2019/11/29/Cryptography/0.png" class="" title="0.png">
 
 
 
@@ -1898,62 +1937,62 @@
 <a id="more"></a>
 
 <h2 id="foothold"><a href="#foothold" class="headerlink" title="foothold"></a>foothold</h2><p>首先进行nmap扫描</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/nmap.png" class="" title="nmap.png">
 
 <p>发现开启了80端口和22端口</p>
 <p>下面对80端口的目录进行扫描</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/gobuster.png" class="" title="gobuster.png">
 
 <p>发现了两个目录，<code>/artwork</code>和<code>/music</code></p>
 <p>两个目录分别访问了一下，在<code>/artwork</code>没有什么发现，但是在<code>/music</code>发现存在一个登录的位置</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/music.png" class="" title="music.png">
 
 <p>进去发现是一个叫做ona的东西，仔细看一下发现是<code>opennetadmin</code></p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/ona.png" class="" title="ona.png">
 
 <p>于是更新了一下<code>exploitdb</code>,搜索一下有没有相关的漏洞</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/exploitdb.png" class="" title="exploitdb.png">
 
 <p>运行，获取到<code>www-data</code>权限</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/foothold.png" class="" title="foothold.png">
 
 
 
 <h2 id="Jimmy"><a href="#Jimmy" class="headerlink" title="Jimmy"></a>Jimmy</h2><p>获得到<code>www-data</code>权限后，在当前的目录下查看文件，找到了一个配置文件中包含密码</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/pass.png" class="" title="pass.png">
 
 <p>之后<code>ls /home</code> 发现存在两个用户，分别是<code>jimmy</code>和<code>joanna</code></p>
 <p>用这个文件的密码尝试登录，发现是<code>jimmy</code>的密码</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/jimmy.png" class="" title="jimmy.png">
 
 
 
 <h2 id="joanna"><a href="#joanna" class="headerlink" title="joanna"></a>joanna</h2><p>获取到<code>jimmy</code>的权限后，在根目录没有发现<code>user.txt</code>，因此可能在<code>joanna</code>的目录中</p>
 <p>继续查看文件，在<code>/var/www/internal</code>中发现了一个<code>php</code>文件</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/jimmy.png" class="" title="jimmy.png">
 
 <p>根据名字推测可能是开放了只有内网才可以访问的端口，在<code>apache</code>的配置文件目录那里找到了一个配置文件</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/apache.png" class="" title="apache.png">
 
 <p>文件提示开放的端口是52846</p>
 <p>结合上面看到的<code>main.php</code>使用<code>jimmy</code>的权限发起请求，得到了<code>joanna</code>的<code>ssh-key</code></p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/ssh-key.png" class="" title="ssh-key.png">
 
 <p>这个key经过了加密，使用ssh2john转换之后再用john进行爆破，这里字典用的是<code>rockyou.txt</code></p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/rockyou.png" class="" title="rockyou.png">
 
 <p>这里得到了<code>joanna</code>的<code>passphrase</code></p>
 <p>使用这个key连接，得到joanna的权限</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/joanna.png" class="" title="joanna.png">
 
 
 
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>获取到joanna的权限后上传了一个<code>lse.sh</code></p>
 <p>扫描之后发现存在sudo不需要密码的问题</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/sudo.png" class="" title="sudo.png">
 
 <p>最后结合gtfobins中nano的条目绕过，获得root权限</p>
-]]></content>
+<img src="/2020/01/14/HTB-OpenAdmin/root.png" class="" title="root.png">]]></content>
       <categories>
         <category>Hack The Box</category>
       </categories>
@@ -1969,14 +2008,14 @@
 <!--more--->
 
 <h2 id="Foothold"><a href="#Foothold" class="headerlink" title="Foothold"></a>Foothold</h2><p>首先nmap扫描看一下</p>
-
+<img src="/2020/01/11/HTB-Postman/nmap.jpg" class="" title="nmap.jpg">
 
 <p>看到开了三个端口22,80,1000</p>
 <p>这三个服务里第三个不太熟悉, 于是先访问看一下</p>
 <p>直接在浏览器里访问<a href="http://10.10.10.160:10000/">http://10.10.10.160:10000</a> 会提示要求访问HTTPS</p>
 <p>访问<a href="https://10.10.10.160:10000/">https://10.10.10.160:10000</a></p>
 <p>看到是一个登录界面</p>
-
+<img src="/2020/01/11/HTB-Postman/login.jpg" class="" title="login.jpg">
 
 <p>这个服务是一个webmin服务,于是自然的想用metasploit搜一下有没有相关的漏洞</p>
 <p>结果发现存在的漏洞大多需要用户名和密码</p>
@@ -1984,7 +2023,7 @@
 <p>于是又试了一下爆破路径,结果也没发现什么有价值的东西</p>
 <p>只好求助论坛,发现论坛里面有人说需要全端口扫描,有人提示<code>r***s</code></p>
 <p>猜测是redis的服务,于是扫一下6379端口发现确实有收获</p>
-
+<img src="/2020/01/11/HTB-Postman/redis.jpg" class="" title="redis.jpg">
 
 <p>但是实际上并没有用过redis,也不太了解相关的漏洞利用知识,于是搜了一下找到几个比较详细的文章</p>
 <p><a href="https://zhuanlan.zhihu.com/p/36529010">redis在渗透中getshell方法总结</a></p>
@@ -2008,16 +2047,16 @@
 <p>用我们之前在<a href="https://river-li.me/2019/12/03/htb-traverxec/#more">Traverxec</a>写的爆破脚本跑一下,得到key的密码<code>computer2008</code></p>
 <p>之后尝试连接发现失败,解密后用key连接ssh也不行</p>
 <p>这时候想起webmin的登录界面,于是尝试用这个密码和用户名登录webmin</p>
-
+<img src="/2020/01/11/HTB-Postman/webmin.jpg" class="" title="webmin.jpg">
 
 <p>结果居然登上了,这里就算是获取到了Matt的权限了</p>
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>还记得之前用到的msf吗?</p>
 <p>既然已经有了一个Matt的用户名密码,就可以用msf里面的模块了</p>
 <p>用到一个<code>webmin_packageup_rce</code>的模块</p>
-
+<img src="/2020/01/11/HTB-Postman/msfconsole.jpg" class="" title="msfconsole.jpg">
 
 <p>设置好参数直接run</p>
-
+<img src="/2020/01/11/HTB-Postman/run.jpg" class="" title="run.jpg">
 
 <p>done!</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这次机器学到的知识点</p>
@@ -2090,13 +2129,13 @@
 <p>其实也可以使用john来爆破key，首先使用ssh2john将其转换为john可以爆破的内容，之后直接用john和字典就可以</p>
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>首先做的事情就是查看david的目录下有没有比较有用的内容</p>
 <p>发现david的目录下的结构</p>
-
+<img src="/2019/12/03/HTB-Traverxec/david.jpg" class="" title="david.jpg">
 
 <p>这个<code>bin</code>目录下的server-status.sh比较有趣</p>
-
+<img src="/2019/12/03/HTB-Traverxec/server-stats.jpg" class="" title="server-stats.jpg">
 
 <p>运行这个脚本可以看到</p>
-
+<img src="/2019/12/03/HTB-Traverxec/run.jpg" class="" title="run.jpg">
 
 <p>发现最后一行是使用了<code>sudo</code>运行<code>journalctl</code>这个程序</p>
 <p>但是却没有需要输入david的密码，因此如果可以获得这个程序本身的权限就可以得到root的权限了</p>
@@ -2105,9 +2144,9 @@
 
 <p>这样也不需要输入密码，最后也是进入了<code>sudo</code>权限的<code>less</code>中</p>
 <p>在<code>less</code>中可以类似<code>vim</code>那样使用<code>!</code>来执行外部的程序</p>
+<img src="/2019/12/03/HTB-Traverxec/root1.jpg" class="" title="root1.jpg">
 
-
-
+<img src="/2019/12/03/HTB-Traverxec/root2.jpg" class="" title="root2.jpg">
 
 <p>done!</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下这个靶机中学到的新知识</p>
@@ -2124,6 +2163,22 @@
       <tags>
         <tag>hack</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>IDA反编译出错</title>
+    <url>/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/</url>
+    <content><![CDATA[<p>用IDA反编译遇到的一些问题和解决方案</p>
+<a id="more"></a>
+
+<h2 id="报错Decompile-Error"><a href="#报错Decompile-Error" class="headerlink" title="报错Decompile Error"></a>报错Decompile Error</h2><p>提示为某一个地址analysis failed</p>
+<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111005929.png" alt="image-20201106111005929"></p>
+<p>找到这个对应的地址，发现是一个<code>call scanf</code></p>
+<p>可能是这个<code>scanf</code>的参数解析出现了错误</p>
+<p>在scanf上按Y重新定义</p>
+<p>写上正确的定义</p>
+<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111142655.png" alt="image-20201106111142655"></p>
+<p>之后就可以反编译了</p>
+]]></content>
   </entry>
   <entry>
     <title>KVM</title>
@@ -2213,7 +2268,7 @@
 <h3 id="Keys"><a href="#Keys" class="headerlink" title="Keys"></a>Keys</h3><p>这是一个改键位的软件<a href="https://pqrs.org/osx/karabiner/">karabiner</a></p>
 <p>Mac的键盘布局还是传统的qwer键盘，并且没办法定制成colemak之类的键盘；因此为了比较大限度的提高键盘利用效率，还是需要对键盘上的键进行一些修改。</p>
 <p>看之前的博客也知道我比较喜欢使用Vim，这样做就需要频繁的用到ESC。虽然MBP16恢复了ESC键，但是按起来还是没那么容易，因此直接将ESC、Caps这两个键进行了调换</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/k-element.jpg" class="" title="k-element.jpg">
 
 <p>软件本身还支持很多高级的改键功能，但是目前还没有这方面的需求，就只使用了基础的改键</p>
 <h3 id="Homebrew"><a href="#Homebrew" class="headerlink" title="Homebrew"></a>Homebrew</h3><p>homebrew 是Mac上的一款包管理程序，安装这个的原因是网上大多数第三方的程序都推荐使用这个，因此我也装了这个</p>
@@ -2241,7 +2296,7 @@
 <p>对比了一下还是Pock的自定义程度比较高，用起来也比较好用</p>
 <p>但是其实这些工具都有一个缺点，就是在使用的时候一些原本touchbar功能比较好用的程序也用不了了</p>
 <p>所以最好还是能有一个可以切换的开关，比如pock可以双击control切换系统栏和自定义栏，很方便</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/pock.jpg" class="" title="pock.jpg">
 
 
 
@@ -2251,7 +2306,7 @@
 <p>iterm可以直接在<a href="https://www.iterm2.com/">官网</a>下载</p>
 <p>下载下来，安装之后进行配置</p>
 <h4 id="Color"><a href="#Color" class="headerlink" title="Color"></a>Color</h4><p>首先要换一个好看的配色，按 <code>command+,</code></p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/iterm-color.jpg" class="" title="iterm-color.jpg">
 
 <p>在profile -&gt; colors 这里右下角可以看到一个选条，选择<code>Visit Online Gallery</code></p>
 <p>在网上可以找到自己喜欢的配色，下载之后双击安装即可</p>
@@ -2262,7 +2317,7 @@
 <p>之后在iterm的preference处修改字体即可</p>
 <h4 id="Hotkey"><a href="#Hotkey" class="headerlink" title="Hotkey"></a>Hotkey</h4><p>快捷键可以针对不同的profile进行设置，我仿照linux下常用的&lt;C-A  T&gt;</p>
 <p>设置了开启终端的快捷键</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/iterm-hotkey.jpg" class="" title="iterm-hotkey.jpg">
 
 
 
@@ -2309,14 +2364,14 @@
 <h2 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h2><p>这一类都是一些小工具，但是也都是很实用有趣的那种</p>
 <p>有一些可以配置的很强大，我也稍微配置了一些</p>
 <h3 id="截图"><a href="#截图" class="headerlink" title="截图"></a>截图</h3><p>是的，这个软件名字就叫做截图，在App Store安装的，不知道是Mac上没有截图工具还是怎么样，我就直接下载了这个软件，可以设置截图的快捷键也可以直接录屏</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/jietu.jpg" class="" title="jietu.jpg">
 
 
 
 <h3 id="RunCat"><a href="#RunCat" class="headerlink" title="RunCat"></a>RunCat</h3><p>这是一个在扩展栏的状态显示小工具，可以显示当前电脑的CPU、内存占用等信息</p>
 <p>我主要是用来看内存和网速的</p>
 <p>同样可以直接在App Store找到</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/runcat.jpg" class="" title="runcat.jpg">
 
 
 
@@ -2326,13 +2381,13 @@
 <p>在任何一个程序下长按<code>command</code>键就可以弹出一个快捷键的清单，其实效果有些像iPad外接键盘的效果</p>
 <p>下载时在App Store没有找到，官网好像也挂了</p>
 <p>我直接google找到了一个<a href="https://cheatsheet-mac.en.softonic.com/mac">下载</a>链接</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/cheatsheet.jpg" class="" title="cheatsheet.jpg">
 
 
 
 <h3 id="V2rayU"><a href="#V2rayU" class="headerlink" title="V2rayU"></a>V2rayU</h3><p>Emmm…这个就不用介绍了吧？功能大家都懂得</p>
 <h3 id="Mate"><a href="#Mate" class="headerlink" title="Mate"></a>Mate</h3><p>这是一个翻译的软件，设置快捷键后可以直接翻译剪贴板里的单词或者句子，有时候还是挺好用的，App Store有售</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/mate.jpg" class="" title="mate.jpg">
 
 
 
@@ -2342,9 +2397,9 @@
 <h3 id="Dozer"><a href="#Dozer" class="headerlink" title="Dozer"></a>Dozer</h3><p>上面安装了这么多程序，加上平常用的QQ微信什么的，顶部的状态栏应该已经很满了吧？这时候就需要用到这个工具了，可以一键隐藏其他的图标</p>
 <p>直接在<a href="dozermac.com">官网</a>可以下载到</p>
 <p>对比一下效果</p>
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/dozer1.jpg" class="" title="dozer1.jpg">
 
-
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/dozer2.jpg" class="" title="dozer2.jpg">
 
 
 
@@ -2364,12 +2419,12 @@
 <p>通过关键词find 可以查找文件，in可以查找文件内容，open可以直接打开</p>
 <p>tags功能我觉得比较鸡肋，就直接关闭了</p>
 <p>这部分主要设置开启了Fuzzy，并且设置了一下快捷键</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/file.jpg" class="" title="file.jpg">
 
 
 
 <h5 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h5><p>这部分的功能是可以设置两个键，在搜索到选项的文件时按相应的键可以直接将其送到Action的页面，在那个页面可以对文件选择进一步的操作</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/action.jpg" class="" title="action.jpg">
 
 
 
@@ -2379,7 +2434,7 @@
 <h4 id="Workflow"><a href="#Workflow" class="headerlink" title="Workflow"></a>Workflow</h4><p>链接: <a href="https://pan.baidu.com/s/1LYpb_YpL_TQGy6IFpDgcQQ">https://pan.baidu.com/s/1LYpb_YpL_TQGy6IFpDgcQQ</a> 提取码: mmnv</p>
 <p>这里面有一些现成的workflow，都还比较有用</p>
 <p>另外我还找到了一个v2ex的workflow，但是安装上之后刷新不出来消息，目前还不知道具体原因</p>
-
+<img src="/2020/01/23/Mac%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8C%97/workflow.jpg" class="" title="workflow.jpg">
 
 
 
@@ -2399,7 +2454,7 @@
 
 
 <h2 id="Basic-Static-Malware-Analysis"><a href="#Basic-Static-Malware-Analysis" class="headerlink" title="Basic Static Malware Analysis"></a>Basic Static Malware Analysis</h2><p>PE文件的格式如图</p>
-
+<img src="/2019/07/11/Malware-Data-Science-1/1.png" class="" title="1.png">
 
 <p>之前都学过，就不怎么说了</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line">pe = pefile.PE(<span class="string">&quot;ircbot.exe&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> entry <span class="keyword">in</span> pe.DIRECTORY_ENTRY_IMPORT:</span><br><span class="line">    print(entry.dll)</span><br><span class="line">    <span class="keyword">for</span> function <span class="keyword">in</span> entry.imports:</span><br><span class="line">        print(<span class="string">&#x27;\t&#x27;</span>+function.name)</span><br></pre></td></tr></table></figure>
@@ -2606,7 +2661,7 @@
 <p>$Url = “{9}…{26}”-f’ellE’…’s1’</p>
 </blockquote>
 <h4 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h4><p>这是实际应用最常见的混淆方式，编码后的代码只能反映很少一部分原本代码的信息</p>
-<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><img src="/2019/10/08/Powershell-Scripts-Detection/overview.png" class="" title="overview.png">
 
 <h3 id="Deobfuscation-phase"><a href="#Deobfuscation-phase" class="headerlink" title="Deobfuscation phase"></a>Deobfuscation phase</h3><p>这一过程中使用到了基于子树的方法来利用powershell的特征</p>
 <p>将AST的子树作为混淆的最小单位，对这些子树施行复原最终构建去混淆的脚本，去混淆的脚本之后会用在训练和检测中</p>
@@ -2629,7 +2684,7 @@
 <p>recoverable pieces在AST中相关的子树为recoverable subtress</p>
 <p>只要能找到这些片段，就可以直接用嵌入的恢复算法恢复出原本的代码片段</p>
 <p>然而在实际应用中，recoverable和脚本的其他部分并没有明显的界限尤其是代码呗多次混淆的情况下。为了解决这一问题论文中提出了基于AST子树定位可恢复代码片段，并重建原代码的方法</p>
-<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3>
+<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3><img src="/2019/10/08/Powershell-Scripts-Detection/subtree-workflow.png" class="" title="subtree-workflow.png">
 
 <p>总体上来说分五步骤</p>
 <ol>
@@ -2650,9 +2705,9 @@
 <li>AssignmentStatementAst节点的第二个子树</li>
 </ul>
 <p>这两种类型的子树为可疑的子树，下图红色为Pipeline类型蓝色为AssignmentStatementAst类型</p>
+<img src="/2019/10/08/Powershell-Scripts-Detection/pipeline.png" class="" title="pipeline.png">
 
-
-
+<img src="/2019/10/08/Powershell-Scripts-Detection/assignment.png" class="" title="assignment.png">
 
 <p>这样可以显著的减少需要检测的类型</p>
 <p>基于这种思想，将AST以广度优先搜索，并将可以节点按照顺序压栈待处理</p>
@@ -2679,13 +2734,13 @@
 <p>由于遍历顺序是自底向上的，总会有一个高层次的子树是recoverable的且包含了当前这个子树。</p>
 <h3 id="AST-Update"><a href="#AST-Update" class="headerlink" title="AST Update"></a>AST Update</h3><p>上一步结束后需要将AST中的混淆部分进行替换，这里主要有两个步骤，首先替换recoveable subtrees为recovered subtrees；另外就是代码片段中改变的部分也需要更新。</p>
 <p>实现时存储需要更新的子树根节点，从下向上传递。</p>
-<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> 
+<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> <img src="/2019/10/08/Powershell-Scripts-Detection/f7.png" class="" title="f7.png">
 
 <p>在重新构建代码后，我们可以得到一个和原本代码具有相同语义的代码，但是语法上两者仍有差别，这些差异主要由混淆过程导致。</p>
 <p>混淆过程中为了方便解释器理解代码引入了token，例如<code>(&quot;DownloadFile&quot;).invoke($url)</code>中<code>invoke</code>告诉解释器<code>DownloadFile</code>应该被当作一个成员函数而<code>$url</code>是其参数</p>
 <p>同时混淆过程中还会引入一些额外的括号，因此在Post processing过程中这些语法层面上的内容会被修正</p>
 <h2 id="Sematic-Aware-Powershell-Attack-Detection"><a href="#Sematic-Aware-Powershell-Attack-Detection" class="headerlink" title="Sematic-Aware Powershell Attack Detection"></a>Sematic-Aware Powershell Attack Detection</h2><p>系统总体工作流程如下：</p>
-
+<img src="/2019/10/08/Powershell-Scripts-Detection/sad-workflow.png" class="" title="sad-workflow.png">
 
 <p>语义分析上的攻击检测对多态变量名具有更好的效果，同时系统的鲁棒性比较好</p>
 <p>二进制程序分析中经常使用各种图、控制流图、依赖图等而不是API集合来表现语义特征，这是由于API集合只包含低层次的语义，比较容易误判</p>
@@ -2697,7 +2752,7 @@
 <li>删除武关子夫</li>
 <li>检查别名</li>
 </ul>
-<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4>
+<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4><img src="/2019/10/08/Powershell-Scripts-Detection/ooa.png" class="" title="ooa.png">
 
 <p>提取OOA rules的方法需要两个步骤：首先使用FP-growth算法生成频率模式，之后选择计算符合要求的模式即分数大于设置的阈值的模式。特别的support标识恶意的可能性，而confidence标识正常的可能性</p>
 <p>$$ support(I,Obj) = \frac{count(I \cup {Obj},DB)}{|DB|}$$</p>
@@ -2715,7 +2770,7 @@
 <a id="more"></a>
 
 <h2 id="Bar"><a href="#Bar" class="headerlink" title="Bar"></a>Bar</h2><p>首先看一下库中的样式组成</p>
-
+<img src="/2020/02/04/Python%E7%BB%88%E7%AB%AF%E8%BF%9B%E5%BA%A6%E6%9D%A1/category.jpg" class="" title="category.jpg">
 
 <p>总体而言有这三种类型</p>
 <ul>
@@ -2729,7 +2784,7 @@
 
 
 <p>运行时效果如图</p>
-
+<img src="/2020/02/04/Python%E7%BB%88%E7%AB%AF%E8%BF%9B%E5%BA%A6%E6%9D%A1/example.gif" class="" title="example.gif">
 
 
 
@@ -2749,6 +2804,49 @@
 ]]></content>
       <tags>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROP进阶</title>
+    <url>/2020/11/06/ROP%E8%BF%9B%E9%98%B6/</url>
+    <content><![CDATA[<p>ROP本身原理还是比较好理解的，简单的ROP做了一些题之后就比较熟练了，更难的ROP还是要一点一点学一下原理；</p>
+<p>记一下各种类型的ROP原理；</p>
+<a id="more"></a>
+
+<h2 id="ret2text"><a href="#ret2text" class="headerlink" title="ret2text"></a>ret2text</h2><p>最基本的ROP，溢出返回地址之后跳到text节，这种情况一般只有在NX没有开启时才可能</p>
+<h2 id="ret2syscall"><a href="#ret2syscall" class="headerlink" title="ret2syscall"></a>ret2syscall</h2><p>在栈不可执行被开启后，如果程序中存在关键的系统调用，如<code>system</code>、<code>execve</code>等，就可以返回到这里；</p>
+<p>覆盖了返回地址之后填成相应的函数，调用<code>system</code>等等</p>
+<h2 id="ret2shellcode"><a href="#ret2shellcode" class="headerlink" title="ret2shellcode"></a>ret2shellcode</h2><p>有时候可能可以在内存中写入可控的shellcode，但是在开启了NX后栈是不可执行的；</p>
+<p>因此shellcode就需要写如到如bss段这样的区域，并且可能还需要通过mprotect修改bss段的写权限和执行权限</p>
+<h2 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h2><p>在程序本身没有引入我们需要的函数，如<code>system</code>、<code>execve</code>等时，我们可以采用这样的方法。</p>
+<p>使用ret2libc需要首先知道libc在内存中的加载基地址，一般需要通过write、puts、printf这样的函数首先输出程序中某个函数在内存中的地址，根据这个地址计算出libc在内存中的基地址。</p>
+<p>之后用基地址加上相应想要调用函数在libc中的偏移就可以跳到libc中某个特定函数处了。</p>
+<h2 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h2><p>上面的一些rop都是比较基本的类型，原理都很清楚了，平时也用的比较多，从这个开始就属于比较难一些，用到了一些奇奇怪怪得机制的rop。</p>
+<p>在64位的程序中，函数调用时传参的顺序是优先经过寄存器的，前六个参数分别是放在rdi, rsi, rdx, rcx, r8, r9</p>
+<p>但是在程序中不一定都会存在<code>pop rdi; ret;</code>这样的gadget，想要同时控制这些寄存器的值就可以用到ret2csu</p>
+<p>这里最主要用到的一个函数就是<code>__libc_csu_init</code></p>
+<p>这个函数是libc在初始化时用到的，因此一般程序都会调用到</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:0000000000400540 __libc_csu_init proc near               </span><br><span class="line">.text:0000000000400540 ; __unwind &#123;</span><br><span class="line">.text:0000000000400540                 push    r15</span><br><span class="line">.text:0000000000400542                 push    r14</span><br><span class="line">.text:0000000000400544                 mov     r15d, edi</span><br><span class="line">.text:0000000000400547                 push    r13</span><br><span class="line">.text:0000000000400549                 push    r12</span><br><span class="line">.text:000000000040054B                 lea     r12, __frame_dummy_init_array_entry</span><br><span class="line">.text:0000000000400552                 push    rbp</span><br><span class="line">.text:0000000000400553                 lea     rbp, __do_global_dtors_aux_fini_array_entry</span><br><span class="line">.text:000000000040055A                 push    rbx</span><br><span class="line">.text:000000000040055B                 mov     r14, rsi</span><br><span class="line">.text:000000000040055E                 mov     r13, rdx</span><br><span class="line">.text:0000000000400561                 sub     rbp, r12</span><br><span class="line">.text:0000000000400564                 sub     rsp, 8</span><br><span class="line">.text:0000000000400568                 sar     rbp, 3</span><br><span class="line">.text:000000000040056C                 call    _init_proc</span><br><span class="line">.text:0000000000400571                 test    rbp, rbp</span><br><span class="line">.text:0000000000400574                 jz      short loc_400596</span><br><span class="line">.text:0000000000400576                 xor     ebx, ebx</span><br><span class="line">.text:0000000000400578                 nop     dword ptr [rax+rax+00000000h]</span><br><span class="line">.text:0000000000400580</span><br><span class="line">.text:0000000000400580 loc_400580:                             </span><br><span class="line">.text:0000000000400580                 mov     rdx, r13</span><br><span class="line">.text:0000000000400583                 mov     rsi, r14</span><br><span class="line">.text:0000000000400586                 mov     edi, r15d</span><br><span class="line">.text:0000000000400589                 call    qword ptr [r12+rbx*8]</span><br><span class="line">.text:000000000040058D                 add     rbx, 1</span><br><span class="line">.text:0000000000400591                 cmp     rbx, rbp</span><br><span class="line">.text:0000000000400594                 jnz     short loc_400580</span><br><span class="line">.text:0000000000400596</span><br><span class="line">.text:0000000000400596 loc_400596:                             </span><br><span class="line">.text:0000000000400596                 add     rsp, 8</span><br><span class="line">.text:000000000040059A                 pop     rbx</span><br><span class="line">.text:000000000040059B                 pop     rbp</span><br><span class="line">.text:000000000040059C                 pop     r12</span><br><span class="line">.text:000000000040059E                 pop     r13</span><br><span class="line">.text:00000000004005A0                 pop     r14</span><br><span class="line">.text:00000000004005A2                 pop     r15</span><br><span class="line">.text:00000000004005A4                 retn</span><br><span class="line">.text:00000000004005A4 ; &#125; &#x2F;&#x2F; starts at 400540</span><br><span class="line">.text:00000000004005A4 __libc_csu_init endp</span><br></pre></td></tr></table></figure>
+
+<p>不同的版本可能存在一些差异，这是一道题目中的例子</p>
+<p>这个函数存在这些特点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:000000000040059A                 pop     rbx</span><br><span class="line">.text:000000000040059B                 pop     rbp</span><br><span class="line">.text:000000000040059C                 pop     r12</span><br><span class="line">.text:000000000040059E                 pop     r13</span><br><span class="line">.text:00000000004005A0                 pop     r14</span><br><span class="line">.text:00000000004005A2                 pop     r15</span><br><span class="line">.text:00000000004005A4                 retn</span><br></pre></td></tr></table></figure>
+
+<p>最后一部分又连续的一段pop，这里我可以通过控制栈上的数据，之后调用这里的gadget，使得<code>rbx</code>、<code>rbp</code>、<code>r12</code>、<code>r13</code>、<code>r14</code>、<code>r15</code>几个寄存器都可以被我们控制</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:0000000000400580                 mov     rdx, r13</span><br><span class="line">.text:0000000000400583                 mov     rsi, r14</span><br><span class="line">.text:0000000000400586                 mov     edi, r15d</span><br><span class="line">.text:0000000000400589                 call    qword ptr [r12+rbx*8]</span><br></pre></td></tr></table></figure>
+
+<p>这一段代码可以让我们控制rdx、rsi、edi，其中edi这里其实高32位为全0，所以其实也可以控制rdi，但是只能设置其中低32位的值，这三个寄存器是64位程序传参时的前三个参数的位置</p>
+<p>最后的那个call，我们也可以通过前面的一串pop，来控制rbx和r12的值，使得call到我们想去的地方</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:000000000040058D                 add     rbx, 1</span><br><span class="line">.text:0000000000400591                 cmp     rbx, rbp</span><br><span class="line">.text:0000000000400594                 jnz     short loc_400580</span><br></pre></td></tr></table></figure>
+
+<p>在上面的一串代码执行结束后来到下面这样一个判断，这里可以设置rbx和rbp的值为<code>rbx+1=rbp</code></p>
+<p>这样在这一块前面的call执行结束后就不会跳回去，可以继续执行后面的程序</p>
+]]></content>
+      <categories>
+        <category>pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
       </tags>
   </entry>
   <entry>
@@ -3553,7 +3651,129 @@
         <category>PWN</category>
       </categories>
       <tags>
+        <tag>pwn</tag>
         <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>heap-overflow</title>
+    <url>/2020/09/26/heap-overflow/</url>
+    <content><![CDATA[<p>学习堆利用中关于溢出部分的技巧</p>
+<a id="more"></a>
+
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
+<p>漏洞利用的思路一般是：</p>
+<ol>
+<li>寻找堆分配函数</li>
+<li>寻找危险函数</li>
+<li>确定填充长度</li>
+</ol>
+<h3 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h3><p>堆分配函数一般是malloc、calloc、realloc等；</p>
+<p>其中calloc在分配内存区域之后会将其置0；</p>
+<p>realloc函数则和另外两个有些不同，具有两个参数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
+
+<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
+<ul>
+<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
+</li>
+<li><p>如果申请 size &gt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<ul>
+<li>如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果申请 size &lt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<ul>
+<li>如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
+</li>
+</ul>
+<h3 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h3><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
+<p>包括：</p>
+<ul>
+<li>gets、scanf、vscanf</li>
+<li>sprintf</li>
+<li>strcpy、strcat、bcopy</li>
+</ul>
+<p>等</p>
+<h3 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h3><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
+<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
+<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
+<h3 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h3><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
+<p>off-by-one漏洞的利用思路：</p>
+<ol>
+<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
+<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
+<li>unlink进行处理；</li>
+<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
+</ol>
+</li>
+</ol>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>以几道CTF来练一下手</p>
+<h3 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h3><p>首先检查程序的安全机制</p>
+<p><img src="heap-overflow/image-20200926194107247.png"></p>
+<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
+<p>运行一下程序，功能是一个图书管理的程序</p>
+<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
+<p>反编译得到main函数的伪代码</p>
+<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
+<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
+<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
+<p>我们暂且将其称为<code>new_read</code></p>
+<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
+<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
+<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
+<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
+<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
+<p>设置author name为一个32字节长的内容</p>
+<p>之后创建一个book之后，调用第四个方法print</p>
+<p>就会出现这样的效果</p>
+<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
+<p>看到除了author name之外还出现了一些其他的字符串</p>
+<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
+<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
+<p>存储的位置是在off_202010这个地方的指向的位置</p>
+<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
+<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
+<p>利用的思路：</p>
+<ol>
+<li>使author name长度为32</li>
+<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
+<li>调用print泄漏第一个book结构的地址</li>
+<li>创建第二个book</li>
+<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
+<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
+</ol>
+<p>首先读到地址</p>
+<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
+<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
+<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
+<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
+<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
+<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
+<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
+<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
+<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
+<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+      </categories>
+      <tags>
+        <tag>hack</tag>
         <tag>pwn</tag>
       </tags>
   </entry>
@@ -3903,6 +4123,140 @@
       </tags>
   </entry>
   <entry>
+    <title>macOS上的qemu</title>
+    <url>/2020/10/30/macOS%E4%B8%8A%E7%9A%84qemu/</url>
+    <content><![CDATA[<p>主要是想用qemu的系统模式来调试路由器里的二进制程序，如果用linux虚拟机再加一层qemu有点套娃，而且没办法用mac里的IDA连接过去调试。</p>
+<p>这里记录一下配置各种环境的坑；</p>
+<a id="more"></a>
+
+<h2 id="buildroot编译gdb和gdbserver"><a href="#buildroot编译gdb和gdbserver" class="headerlink" title="buildroot编译gdb和gdbserver"></a>buildroot编译gdb和gdbserver</h2><p>buildroot本身是可以编译出一套固件，同时还可以配置好host机的调试环境以及交叉编译的环境；</p>
+<p>配置buildroot的博客还是有不少的，但是质量感人；</p>
+<h3 id="配置buildroot"><a href="#配置buildroot" class="headerlink" title="配置buildroot"></a>配置buildroot</h3><p>首先下载buildroot，官网<a href="https://buildroot.org/">buildroot.org</a></p>
+<p>下载下来之后解压，之后准备编译，依赖的话需要一个<code>libncurse-dev</code>，其他的包一般应该都有装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>进入一个选择界面</p>
+<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201106151300225.png" alt="image-20201106151300225"></p>
+<p>首先简单介绍一下交叉编译时的几个选项</p>
+<ul>
+<li><code>host</code></li>
+<li><code>target</code></li>
+<li></li>
+</ul>
+<p>在buildroot编译时可能遇到的问题：</p>
+<h3 id="报错137"><a href="#报错137" class="headerlink" title="报错137"></a>报错137</h3><p>Error 137，这个错误出现的原因是因为swap空间不足</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user@~: su</span><br><span class="line">root@/home/user: dd <span class="keyword">if</span>=/dev/zero of=/home/swap bs=1024 count=2048000</span><br><span class="line">root@/home/user: mkswap /home/swap</span><br><span class="line">root@/home/user: swapon /home/swap</span><br></pre></td></tr></table></figure>
+
+<p>这样新增一个swap分区之后再编译时就不会出现这个报错了</p>
+<p>如果要检查一下swap分区是否加载了进去</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">free -m</span><br></pre></td></tr></table></figure>
+
+<p>可以看到目前的内存和swap分区使用情况</p>
+<h2 id="gdb连接到gdbserver时报错"><a href="#gdb连接到gdbserver时报错" class="headerlink" title="gdb连接到gdbserver时报错"></a>gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Ignoring packet error, continuing...</span><br><span class="line">warning: unrecognized item &quot;timeout&quot; in &quot;qSupported&quot; response</span><br><span class="line">Ignoring packet error, continuing...</span><br><span class="line">Remote replied unexpectedly to &#39;vMustReplyEmpty&#39;: timeout</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
+]]></content>
+      <tags>
+        <tag>pwn</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mips汇编</title>
+    <url>/2020/10/08/mips%E6%B1%87%E7%BC%96/</url>
+    <content><![CDATA[<p>路由器中一般用到的架构是arm或者是mips</p>
+<p>mips的汇编语法和平时常见的x86、amd64都有些差异</p>
+<p>并且mips中存在一些机制上的不同；</p>
+<p>因此在分析时还是需要专门大概学一下；</p>
+<a id="more"></a>
+
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>MIPS中一共有32个通用寄存器，寄存器以$开头</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号</th>
+<th>寄存器名</th>
+<th>寄存器用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>zero</td>
+<td>永远为0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>$at</td>
+<td>汇编保留寄存器</td>
+</tr>
+<tr>
+<td>2-3</td>
+<td>$v0-$v1</td>
+<td>存储表达式或函数的返回值</td>
+</tr>
+<tr>
+<td>4-7</td>
+<td>$a0-$a3</td>
+<td>存储子函数的前4个参数，在调用过程释放</td>
+</tr>
+<tr>
+<td>8-15</td>
+<td>$t0-$t7</td>
+<td>临时变量</td>
+</tr>
+<tr>
+<td>16-23</td>
+<td>$s0-$s7</td>
+<td>Callee 保存的变量</td>
+</tr>
+<tr>
+<td>24-25</td>
+<td>$t8-$t9</td>
+<td>临时变量</td>
+</tr>
+<tr>
+<td>26-27</td>
+<td>$k0-$k1</td>
+<td>用于interrupt/trap handler</td>
+</tr>
+<tr>
+<td>28</td>
+<td>$gp</td>
+<td>Global pointer 指向64k大小的静态数据块</td>
+</tr>
+<tr>
+<td>29</td>
+<td>$sp</td>
+<td>Stack Pointer 指向栈顶</td>
+</tr>
+<tr>
+<td>30</td>
+<td>$s8/$fp</td>
+<td>Frame Pointer 类似与pc里的bp，指向栈底</td>
+</tr>
+<tr>
+<td>31</td>
+<td>$ra</td>
+<td>return address</td>
+</tr>
+</tbody></table>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p>指令读法和Intel读法一样，目标操作数在左边</p>
+<p>最常规的栈溢出中，一般shellcode会保存在栈中，在执行shellcode前的一部分代码最终目的是跳转到栈上受我们控制的位置；</p>
+<p>以使用ROP为例，在跳转回到栈上之前需要一些gadget，可能比较关注的有：</p>
+<ol>
+<li>从可控的寄存器赋值到<code>$ra, $t9, $v0</code></li>
+<li>跳转到寄存器<code>jr $ra; nop;</code>或<code>jr $v0; nop;</code>或<code>jr $t9; nop;</code></li>
+</ol>
+<h2 id="MIPS特性"><a href="#MIPS特性" class="headerlink" title="MIPS特性"></a>MIPS特性</h2><h3 id="Jmp"><a href="#Jmp" class="headerlink" title="Jmp"></a>Jmp</h3><p>MIPS 中的<code>jr</code>即jump register指令并不是所有的寄存器都允许跳转的，只有<code>ra,t9,v0</code>三个寄存器是可以跳的。</p>
+<h3 id="Delay-Slot"><a href="#Delay-Slot" class="headerlink" title="Delay Slot"></a>Delay Slot</h3><p>另外就是MIPS在设计时的Delay Slot延迟槽机制，在跳转指令后面的一条指令实际上也是会执行的，因此如果不想造成其他的影响最好选择jr指令后是nop指令的gadget；</p>
+<h3 id="Instruction-Cache"><a href="#Instruction-Cache" class="headerlink" title="Instruction Cache"></a>Instruction Cache</h3><p>Mips中为了提高执行的效率会将指令cache到内存中，这样如果我们利用栈溢出这样的漏洞的时候是没有办法马上就执行我们溢出写在栈上的指令的，需要首先进行一个sleep，让内存将栈上的指令装载进cache</p>
+]]></content>
+  </entry>
+  <entry>
     <title>mysql操作</title>
     <url>/2020/05/18/mysql%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<p>Mysql的操作方式以及SQL语法的一些内容</p>
@@ -4097,173 +4451,173 @@
 <li>ping_common.h</li>
 </ul>
 <p>程序的main函数位于ping.c，从这里开始分析</p>
-<h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3>
+<h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3><img src="/2019/05/21/ping/48.png" class="" title="success">
 <p>Main函数非常的长，前面设置了许多属性，还有很多if判断语句用于判断设置的参数</p>
 <p>除了定义的内容，可以看到设置了capabilities以及locale</p>
 <p>之后下面建立了用于ping程序的icmp的socket<br>在这下面判断socket是否建立成功，并且获取到errno</p>
 <p>这下面可以看到一个while循环，不停的调用getopt获取命令行参数</p>
 <p>下面使用switch语句对相应的参数进行设置</p>
-
+<img src="/2019/05/21/ping/0.png" class="" title="success">
 
 <p>在最下面的default中调用了usage函数，其中内容如下：</p>
-
+<img src="/2019/05/21/ping/1.png" class="" title="success">
 
 <p>在switch语句之后，是对参数有效性进行检查，对于有问题的部分调用usage给用户</p>
-
+<img src="/2019/05/21/ping/2.png" class="" title="success">
 <p>下面的一个while循环比较重要，类似我们课上例子的ping程序的主函数部分</p>
-
+<img src="/2019/05/21/ping/3.png" class="" title="success">
 <p>这里可以看到，如果argv是ip地址则，hostname=target，否则（即是域名）调用gethostbyname函数获取实际的ip地址</p>
 <p>这下面是一些检测</p>
-
+<img src="/2019/05/21/ping/4.png" class="" title="success">
 
 <p>这里最初初始化时是全0，所以第一次调用时一定会执行，查看内容可以看到</p>
+<img src="/2019/05/21/ping/5.png" class="" title="success">
 
 
-
-
+<img src="/2019/05/21/ping/6.png" class="" title="success">
 <p>比较核心的地方在这个connect，根据报错的信息可以知道这里的目的是首先尝试创建一个socket并connect到目标主机，如果是广播地址就报错，或向用户确认是否要ping广播地址</p>
 <p>这里的一部分判断本机地址是否是0.0.0.0</p>
-
+<img src="/2019/05/21/ping/7.png" class="" title="success">
 
 <p>这个检测目标地址是否为0，如果是0.0.0.0则将目标地址设置为本机的地址，变成ping 127.0.0.1</p>
 <p>下面是检测icmp_sock是否建立成功</p>
-
+<img src="/2019/05/21/ping/8.png" class="" title="success">
 
 <p>如果出错则退出</p>
 <p>这个地方我们往上看可以看到之前也检测过一次icmp_sock是否小于0，但那时的解决方式是重试了一次，这里出错则直接退出。上面的判断：</p>
-
+<img src="/2019/05/21/ping/9.png" class="" title="success">
 
 <p>下面device是加了-i参数选择出口网卡interface时的内容，之后对msg作了一些设置</p>
+<img src="/2019/05/21/ping/10.png" class="" title="success">
 
 
-
-
+<img src="/2019/05/21/ping/11.png" class="" title="success">
 
 <p>这里针对ping广播地址的情况进行一些判断</p>
 <p>interval太小则会直接退出，这个值是两个包间间隔的时间长短</p>
 <p>pmtudisc这个值是根据ping –M参数后的内容设置的，在ping广播的情况下-M后的值必须是do，不能是don’t和want</p>
-
+<img src="/2019/05/21/ping/12.png" class="" title="success">
 
 <p>这里对using_ping_socket是否为0的两种情况</p>
 <p>可以看到之前一次创建socket如果失败，则会将using_ping_socket的值设置为1</p>
 <p>因此using_ping_socket的情况是创建socket失败一次的情况下对socket设置了几个option</p>
-
+<img src="/2019/05/21/ping/13.png" class="" title="success">
 
 <p>这里是针对参数-R时记录路由设置参数</p>
-
+<img src="/2019/05/21/ping/14.png" class="" title="success">
 <p>这里对-T设置参数，-T作用是设置timestamp</p>
-
+<img src="/2019/05/21/ping/15.png" class="" title="success">
 <p>这个地方的作用是设置没有设置-R –T时的参数<br>可以查看设置这个options 的地方</p>
+<img src="/2019/05/21/ping/16.png" class="" title="success">
 
-
-
+<img src="/2019/05/21/ping/17.png" class="" title="success">
 
 <p>这里根据注释可以得知作用是粗略估计数据包的长度</p>
 <p>之后用sock_setbufs设置socket的buf大小</p>
 <p>再下面检测了一些参数以及数据包长度；</p>
 <p>整个程序的主要功能在最下面的嵌套中，从main函数的底部看起</p>
-
+<img src="/2019/05/21/ping/18.png" class="" title="success">
 <p>可以看到底部printf打印了运行ping时常常看到的信息</p>
 <p>之后调用了setup函数以及main_loop<br>Setup和main_loop函数定义在ping_common.c中</p>
 <p>Setup函数的定义：</p>
-
+<img src="/2019/05/21/ping/19.png" class="" title="success">
 
 <p>根据注释可以得知，这个函数的作用是设置并检查参数</p>
 <p>跳过前面一部分检测的内容</p>
-
+<img src="/2019/05/21/ping/20.png" class="" title="success">
 
 <p>这里设置了SNDTIMEO来防止当网卡接口很慢或停止时永久阻塞，将小于1000的时间间隔统一设置为了1000</p>
-
+<img src="/2019/05/21/ping/21.png" class="" title="success">
 
 <p>设置RCVTIMEO优化避免冗余轮询</p>
-
+<img src="/2019/05/21/ping/22.png" class="" title="success">
 <p>设置ident这个值用来标识主机，使用的是进程的pid的后16位</p>
-
+<img src="/2019/05/21/ping/23.png" class="" title="success">
 <p>下面三句注册了三个信号，绑定了对应的函数</p>
 <p>之后是设置信号集set初始化并清空，之后改变信号屏蔽字</p>
-
+<img src="/2019/05/21/ping/24.png" class="" title="success">
 
 <p>deadline是设置的-w参数后面的值，即超时时间</p>
 <p>itimerval是一个定时器</p>
 <hr>
 <h3 id="main-loop"><a href="#main-loop" class="headerlink" title="main_loop"></a>main_loop</h3><p>下面看main_loop的定义</p>
-
+<img src="/2019/05/21/ping/25.png" class="" title="success">
 <p>整个函数的核心内容是这个for循环，for循环前面判断退出条件</p>
 <p>在这下面是一个比较重要的部分</p>
-
+<img src="/2019/05/21/ping/26.png" class="" title="success">
 <p>在一个循环中调用pinger函数</p>
 <p>这个pinger函数是真正用于发送icmp包的地方</p>
 <p>这里先放着继续向下看</p>
-
+<img src="/2019/05/21/ping/27.png" class="" title="success">
 <p>折叠了if后的内容后可以看到下面又进入了一个for循环</p>
 <p>这里的for循环的作用是接受icmp的回显包</p>
 <p>上图中可以看到调用parse_reply，这个函数是用来解析处理回显包的</p>
 <p>其中内容主要是设置了recev的相关内容以及调用函数recvmsg</p>
-
+<img src="/2019/05/21/ping/28.png" class="" title="success">
 <p>前面学习socket时了解到recvmsg是用于接受消息队列中消息的函数，这里的作用就是从socket中读取一个msg</p>
 <hr>
 <h3 id="pinger"><a href="#pinger" class="headerlink" title="pinger"></a>pinger</h3><p>在pinger函数前面有一段注释：</p>
-
+<img src="/2019/05/21/ping/29.png" class="" title="success">
 <p>可以看到，pinger函数的主要作用是compose 并transmit ICMP的回显包</p>
 <p>下面就参考着注释分析一下pinger函数的内部</p>
-
+<img src="/2019/05/21/ping/30.png" class="" title="success">
 <p>首先判断是否到达了退出条件，如果达到则返回1000</p>
-
+<img src="/2019/05/21/ping/31.png" class="" title="success">
 <p>这个条件主要目的是设置tokens和cur_time</p>
 <p>这里再往下直到pinger函数结束都是resend这个部分</p>
-
+<img src="/2019/05/21/ping/32.png" class="" title="success">
 <p>resend这里首先就调用了send_probe函数，之后对其返回值进行判断，根据不同返回值调用不同的部分，最终如果前面出错则调用一些处理，返回。</p>
 <p>因此我们可以判断出这一部分中实际的发送函数是send_probe,正常返回0，其他情况出错<br>下面进入这个函数</p>
-<h3 id="send-probe"><a href="#send-probe" class="headerlink" title="send_probe"></a>send_probe</h3>
+<h3 id="send-probe"><a href="#send-probe" class="headerlink" title="send_probe"></a>send_probe</h3><img src="/2019/05/21/ping/33.png" class="" title="success">
 
 <p>最主要的是send_to和那个sendmsg</p>
 <p>如果使用的是cmsg，则设置数据包并调用sendmsg发送数据</p>
 <p>否则直接使用send_to向socket发送数据<br>最后判断返回值是否与len相等，相等则返回0，否则返回cc即send的返回值</p>
 <p>为了进一步了解这个len的值是如何得到的，我们进入build_niquery和build_echo两个函数看看</p>
-
+<img src="/2019/05/21/ping/34.png" class="" title="success">
 <p>可以看出这个build_niquery函数是构造了一个请求包，并用cc这个值记录它的实际大小<br>这个ni_hdr数据结构内部：</p>
-
+<img src="/2019/05/21/ping/35.png" class="" title="success">
 <p>得知这一部分是处理icmp6数据包的内容</p>
 <p>这个结构体的大小也应该是发送的请求icmp6的数据包大小</p>
-
+<img src="/2019/05/21/ping/36.png" class="" title="success">
 <p>这个是创建了一个回显包</p>
 <p>计算并最终返回回显包的长度</p>
 <p>对于pinger的分析到此结束</p>
 <hr>
-<h3 id="parse-reply"><a href="#parse-reply" class="headerlink" title="parse_reply"></a>parse_reply</h3>
+<h3 id="parse-reply"><a href="#parse-reply" class="headerlink" title="parse_reply"></a>parse_reply</h3><img src="/2019/05/21/ping/37.png" class="" title="success">
 <p>首先看到注释</p>
 <p>这个函数的作用是分析获取到的icmp包，判断是否属于自己，是的话则将其打印</p>
 <p>这个判断的原因是ICMP的接口会受到所有的回显包，有可能同一台主机上有多个用户在使用ping程序</p>
-
+<img src="/2019/05/21/ping/38.png" class="" title="success">
 <p>这里的内容是检查ip头部</p>
 <p>这里主要是设置了一些属性，判断的地方只有ip包的长度，如果数据包长度过短则退出</p>
 <p>下面检测icmp部分</p>
-
+<img src="/2019/05/21/ping/39.png" class="" title="success">
 <p>可以看到，调用了一个in_cksum函数</p>
 <p>看名字即可看出这个函数是用来求校验和的</p>
 <hr>
-<h3 id="in-cksum"><a href="#in-cksum" class="headerlink" title="in_cksum"></a>in_cksum</h3>
+<h3 id="in-cksum"><a href="#in-cksum" class="headerlink" title="in_cksum"></a>in_cksum</h3><img src="/2019/05/21/ping/40.png" class="" title="success">
 <p>查看注释，不难理解算法</p>
 <p>使用了一个32位的累加器，将16位的字加上去，最终将高16位和低16位相加</p>
 <p>最终结果需要取反</p>
 <p>Icmp的校验和是icmp报文中所有16位字段的补码的总和的16位补码</p>
-
+<img src="/2019/05/21/ping/41.png" class="" title="success">
 
 <p>下面这里是当得到的报文不是icmp_echoreply类型时进入</p>
 <p>出现这种情况，有可能是icmp包本身类型不对，也有可能是原本的icmp包在传输中出错<br>下面的一个大括号用来处理</p>
-
+<img src="/2019/05/21/ping/42.png" class="" title="success">
 <p>长度出错</p>
-
+<img src="/2019/05/21/ping/43.png" class="" title="success">
 <p>类型出错，或这个包并不是发给我们的，即收到了别人的回显包</p>
-
+<img src="/2019/05/21/ping/44.png" class="" title="success">
 <p>输出icmp包的序列号以及来源的地址</p>
 <p>如果csfailed，即在求校验和时出错则输出bad checksum</p>
-
+<img src="/2019/05/21/ping/45.png" class="" title="success">
 <p>看到default这里的注释是Must Not，原因是icmp包类型与上面的几个都不同，则一定是错误</p>
-
+<img src="/2019/05/21/ping/46.png" class="" title="success">
 
 <p>下面这里是正常时继续运行的内容，输出了受到包的时间，以及来自的主机ip<br>最终下面作了两个检测，正常退出</p>
-
+<img src="/2019/05/21/ping/47.png" class="" title="success">
 
 <p>到此整个ping程序中比较重要的部分就分析完毕了</p>
 ]]></content>
@@ -4405,13 +4759,13 @@
 
 <p>在匹配时可以将属性放在中括号中，也可以像操作数组一样选择特定序号的节点</p>
 <h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="豆瓣电影top250"><a href="#豆瓣电影top250" class="headerlink" title="豆瓣电影top250"></a>豆瓣电影top250</h3><p>第一个例子，爬去豆瓣电影的排名前250</p>
-
+<img src="/2019/05/22/scrapy/startproject.png" class="" title="startproject">
 
 <p>创建完成后可以看到整个文件的目录结构如图</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">. </span><br><span class="line">├── douban</span><br><span class="line">│   ├── __init__.py </span><br><span class="line">│   ├── items.py</span><br><span class="line">│   ├── middlewares.py</span><br><span class="line">│   ├── pipelines.py</span><br><span class="line">│   ├── __pycache__ </span><br><span class="line">│   ├── settings.py</span><br><span class="line">│   └── spiders</span><br><span class="line">│       ├── __init__.py</span><br><span class="line">│       └── __pycache__</span><br><span class="line">└── scrapy.cfg</span><br></pre></td></tr></table></figure>
 
 <p>用浏览器找到前250的网站，每一页是10个，一共25页</p>
-
+<img src="/2019/05/22/scrapy/0.png" class="" title="success">
 
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">em</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span>1<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://movie.douban.com/subject/1292052/&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">img</span> <span class="attr">alt</span>=<span class="string">&quot;肖申克的救赎&quot;</span> <span class="attr">src</span>=<span class="string">&quot;https://img3.doubanio.com/view/photo/s_ratio_poster/public/p480747492.jpg&quot;</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;info&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;hd&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://movie.douban.com/subject/1292052/&quot;</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span>肖申克的救赎<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span><span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>The Shawshank Redemption<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;other&quot;</span>&gt;</span><span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>月黑高飞(港)  /  刺激1995(台)<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;playable&quot;</span>&gt;</span>[可播放]<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bd&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">                            导演: 弗兰克·德拉邦特 Frank Darabont<span class="symbol">&amp;nbsp;</span><span class="symbol">&amp;nbsp;</span><span class="symbol">&amp;nbsp;</span>主演: 蒂姆·罗宾斯 Tim Robbins /...<span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">                            1994<span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>美国<span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>犯罪 剧情</span><br><span class="line">                        <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                        </span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;star&quot;</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;rating5-t&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;rating_num&quot;</span> <span class="attr">property</span>=<span class="string">&quot;v:average&quot;</span>&gt;</span>9.6<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">property</span>=<span class="string">&quot;v:best&quot;</span> <span class="attr">content</span>=<span class="string">&quot;10.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span>&gt;</span>1429179人评价<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                            <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;quote&quot;</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;inq&quot;</span>&gt;</span>希望让人自由。<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -4425,11 +4779,11 @@
 </ul>
 <p>例如：1、肖申克的救赎、9.6、希望让人自由、 1429179</p>
 <p>下面编辑Items.py</p>
-
+<img src="/2019/05/22/scrapy/1.png" class="" title="success">
 
 <p>这个文件就是用于设置爬虫项目中的Item对象结构的</p>
 <p>下面先创建一个爬虫</p>
-
+<img src="/2019/05/22/scrapy/2.png" class="" title="success">
 
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MovieSpider</span>(<span class="params">scrapy.Spider</span>):</span>    name = <span class="string">&#x27;movie&#x27;</span></span><br><span class="line">    allowed_domains = [<span class="string">&#x27;https://movie.douban.com/top250&#x27;</span>]</span><br><span class="line">    start_urls = [<span class="string">&#x27;http://https://movie.douban.com/top250/&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
 
@@ -4445,7 +4799,7 @@
 <p><code>scarpy crawl movie -o output.csv</code></p>
 <p>如果对获得的数据需要作进一步处理，则可以在pipelines.py中进一步修改process_item函数</p>
 <p>这样会将结果保存在这个csv文件中</p>
-
+<img src="/2019/05/22/scrapy/3.png" class="" width="3">
 
 <p>结果如图</p>
 ]]></content>
@@ -4464,7 +4818,7 @@
 <!--more--->
 
 <h2 id="百度搜索热榜"><a href="#百度搜索热榜" class="headerlink" title="百度搜索热榜"></a>百度搜索热榜</h2><p>在浏览器中打开top.baidu.com</p>
-
+<img src="/2019/05/21/simple-sipder/baidu.png" class="" title="baidu">
 
 <p>目标为左侧的实时热点以及七日关注<br>打开开发者工具，查看该标签</p>
 <p>看到榜单使用无序列表布置的，因此爬取的内容为class=”list”的ul中的项</p>
@@ -4598,6 +4952,52 @@
 <p>不过很难记，就想要直接配置成vim的快捷键</p>
 <p>在<code>~/.tmux.conf</code>加入这些内容：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">set-window-option -g mode-keys vi</span><br><span class="line"><span class="built_in">bind</span> h select-pane -L</span><br><span class="line"><span class="built_in">bind</span> j select-pane -D</span><br><span class="line"><span class="built_in">bind</span> k select-pane -U</span><br><span class="line"><span class="built_in">bind</span> l select-pane -R</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>tun和tap</title>
+    <url>/2020/10/17/tun%E5%92%8Ctap/</url>
+    <content><![CDATA[<p>在使用qemu的系统模式来模拟嵌入式设备的固件时，一般需要专门为虚拟机来配置网络，这使用到的功能就是Linux中比较基本的虚拟网络设备相关的功能，即tun和tap</p>
+<a id="more"></a>
+
+
+
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>tun和tap相当于是linux上创建出来的虚拟网络设备，使用软件的方式模拟出来实现硬件的功能，在创建虚拟机的时候，一般VMM会自动创建出新的虚拟网卡，就是利用了这样的功能。</p>
+<p>tun是工作在第三层的网络层设备，而tap是工作在第二层的链路层设备</p>
+<p>tun表示虚拟的是点对点设备，tap虚拟的是以太网设备</p>
+<p>在创建了tap或tun之后，在<code>/dev/net/</code>目录下的<code>tun</code>文件就会处于激活状态，这时就可以通过读写这个设备，实现内核空间和用户空间的数据交互；这中交互方式也是linux的一种设计思想（万物皆文件）</p>
+<p>创建tun/tap可以使用tunctl或者ip tuntap这两种方式</p>
+<h2 id="tunctl"><a href="#tunctl" class="headerlink" title="tunctl"></a>tunctl</h2><p>tunctl不是系统自带的，首先需要安装相关的包</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt-get install uml-utilities</span><br></pre></td></tr></table></figure>
+
+<p>创建的虚拟网卡设备上的操作，不会影响到物理设备，也可以说通过这种方式实现了一种隔离，因此VPS、云服务等等一般都是用这些来实现的；</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tunctl -t tap0 -u `whoami`</span><br></pre></td></tr></table></figure>
+
+<p>创建设备，并将其分配给了当前的用户</p>
+<p>为这个设备分配IP地址并启动</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ifconfig tap0 192.168.0.1/24 up</span><br></pre></td></tr></table></figure>
+
+<p>如果要删除这个设备，同样可以使用<code>tunctl</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tunctl -d tap0</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ip-tuntap"><a href="#ip-tuntap" class="headerlink" title="ip tuntap"></a>ip tuntap</h2><p>ip tuntap可以创建tap设备，也可以创建tun设备</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip tuntap add dev tap0 mod tap</span><br><span class="line">ip tuntap add dev tun0 mod tun</span><br></pre></td></tr></table></figure>
+
+<p>两者差异只在于后面的mod指定设备类型</p>
+<p>需要删除设备时使用</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip tuntap del dev tap0 mod tap</span><br><span class="line">ip tuntap del dev tun0 mod tun</span><br></pre></td></tr></table></figure>
+
+<p>在需要指定设备的ip地址时，同样可以使用ifconfig</p>
+<p>或者可以使用ip命令中的address</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip address add dev tap0 192.168.2.1/24</span><br></pre></td></tr></table></figure>
+
+
 
 ]]></content>
       <tags>
@@ -4817,11 +5217,11 @@
 <p><code>word2vec.Word2Vec.load(filename)</code></p>
 <p>以上两个方法可以将训练的模型保存为文件，或是直接从文件读取模型</p>
 <h3 id="实际例子"><a href="#实际例子" class="headerlink" title="实际例子"></a>实际例子</h3><p>首先需要在网上获取到中文语料库，数据来源是搜狐的新闻</p>
-
+<img src="/2019/05/28/word2vec/1.png" class="" width="1">
 
 <p>这里一共有1990个文件，编号从10到1999，每个文件中为一段新闻</p>
 <p>例如10.txt：</p>
-
+<img src="/2019/05/28/word2vec/2.png" class="" width="2">
 
 <p>对于获取到的语料库首先应该用jieba进行分词，将每个词用空格隔开</p>
 <p>关于<a href="http://river-li.me/">jieba</a>分词的用法和分词的理论模型可以点击链接查看；</p>
@@ -4830,26 +5230,26 @@
 
 <p>这里将所有的文本文件进行分词后写入到<code>result_dict.txt</code>文件中，并且要在每个词后面写入一个空格</p>
 <p>运行完毕后效果如图</p>
-
+<img src="/2019/05/28/word2vec/3.png" class="" width="3">
 
 <p>之后使用gensim库中的word2vec来训练生成词向量</p>
 <p>为了了解生成词向量时的进度，导入logging这个库进行</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> word2vec</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line">logging.basicConfig(format=<span class="string">&#x27;%(asctime)s:%(levelname)s:%(message)s&#x27;</span>,level=logging.INFO)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sentences = word2vec.Text8Corpus(<span class="string">&#x27;./result_dict,txt&#x27;</span>)</span><br><span class="line">model = word2vec.Word2Vec(sentences,size=<span class="number">200</span>)</span><br><span class="line"><span class="comment">#size是神经网络中隐藏层中神经元的个数</span></span><br><span class="line"><span class="comment">#model.save(&#x27;word.model&#x27;)</span></span><br></pre></td></tr></table></figure>
 
 <p>训练的过程如下</p>
-
+<img src="/2019/05/28/word2vec/4.png" class="" width="4">
 
 <p>完成</p>
 <p>整个训练过程可以看作是一个三层的神经网络的训练过程，有一个隐藏层，其神经元个数就是生成Word2Vec对象时的参数size大小</p>
 <p>下面测试几个自带的方法；</p>
 <p>查看与”北京”这个词意思最接近的词：</p>
-
+<img src="/2019/05/28/word2vec/5.png" class="" width="5">
 
 <p>可以发现有的是地名有的是职位；</p>
 <p>这是由于这个模型的基本思想就是，意思相近的词出现在相似语境下的概率更大；</p>
 <p>因此与北京出现的位置相近，或经常与它同时出现的词就被认为是他的同义词了。</p>
 <p>比较两个词的词向量距离：</p>
-
+<img src="/2019/05/28/word2vec/6.png" class="" width="6">
 
 <p>可以看到本报和记者的距离比本报和警察的距离近很多</p>
 <p>这是由于前者经常同时出现，被判定为含义接近的缘故</p>
@@ -4931,7 +5331,7 @@
 <p>黑色的表笔永远都在Common的那个口</p>
 <p>红色的表笔根据要测的内容区分，电流是单独的口，而其他都在一起</p>
 <p>看一下万用表的图片</p>
-
+<img src="/2020/01/06/%E4%B8%87%E7%94%A8%E8%A1%A8%E7%94%A8%E6%B3%95/0.jpg" class="" title="0.jpg">
 
 <h2 id="二极管档-蜂鸣档"><a href="#二极管档-蜂鸣档" class="headerlink" title="二极管档/蜂鸣档"></a>二极管档/蜂鸣档</h2><p>在调到二极管档位的时候，直接短接红黑表笔，万用表会响；</p>
 <p>实验中用到的万用表二极管档和蜂鸣档是在一起的，也有一些万用表这两个是分开的档位；</p>
@@ -4972,7 +5372,7 @@
 <p>安装好lutris之后直接在官网搜索想玩的游戏点install就可以了</p>
 <p>有一个需要注意的点，如果使用了向我之前那样安装驱动的方法,那么在需要显卡运行程序时必须要有primusrun启动的</p>
 <p>在安装好守望先锋这样的游戏之后需要在System Options里设置</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/lutris_20190702004159.png" class="" title="lutris_20190702004159.png">
 
 <p>同时，要发挥出显卡的性能，还需要安装DXVK</p>
 <p>但是DXVK支持的GPU一般都有一点久，最新的nvidia GPU有可能不支持，可以在lutris的github里的wiki看一看自己的GPU是否支持</p>
@@ -4983,7 +5383,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">setup-dxvk</span><br></pre></td></tr></table></figure>
 
 <p>来安装，之后在lutris里对游戏设置相应的dxvk版本即可</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/lutris_20190702004621.png" class="" title="lutris_20190702004621.png">
 
 <p>注意在安装时选择的winee的版本，最好按照官方的推荐，不然大概率运行不了</p>
 <p>utris_20190702005257.pngwine的版本管理也可以直接在lutris中完成</p>
@@ -4992,10 +5392,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
 
 <p>来查看GPU的状态，如果成功在显卡跑起来会有相应的进程的</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/terminal_20190702005130.png" class="" title="terminal_20190702005130.png">
 
 <p>最后放一张运行lutris里库的游戏图</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/lutris_20190702005257.png" class="" title="lutris_20190702005257.png">
 
 <p>没错，我又开始下载APEX来玩了</p>
 <p>这么多游戏可以玩，还要windows有啥用</p>
@@ -5004,6 +5404,129 @@
       <tags>
         <tag>linux</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>软件安全实验指导</title>
+    <url>/2020/11/11/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C%E6%8C%87%E5%AF%BC/</url>
+    <content><![CDATA[<p>本科生软件安全第五、六次实验环境准备</p>
+<a id="more"></a>
+
+
+
+<h2 id="漏洞利用与防护机制"><a href="#漏洞利用与防护机制" class="headerlink" title="漏洞利用与防护机制"></a>漏洞利用与防护机制</h2><p>这次实验中主要目标是做栈溢出相关的漏洞利用实验，了解操作系统的相应防护机制以及对应的绕过方法；</p>
+<h3 id="0x0-实验环境准备"><a href="#0x0-实验环境准备" class="headerlink" title="0x0 实验环境准备"></a>0x0 实验环境准备</h3><p>需要一台windows xp的虚拟机，以及一台Linux系统的虚拟机</p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>软件</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>XP</td>
+<td>bof-server</td>
+<td>实验一目标程序</td>
+</tr>
+<tr>
+<td>XP</td>
+<td>Easy File Sharing Web Server 7.2</td>
+<td>实验二目标程序</td>
+</tr>
+<tr>
+<td>XP</td>
+<td>Immunity Debugger</td>
+<td>调试工具</td>
+</tr>
+<tr>
+<td>XP</td>
+<td>mona.py</td>
+<td>用于搜索gadget</td>
+</tr>
+<tr>
+<td>XP</td>
+<td>PESecurity</td>
+<td>用于检查PE文件开启的安全机制</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>Python</td>
+<td>用于编写Shellcode</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>gdb</td>
+<td>调试进程</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>gdb插件: peda/gef/pwndbg任一</td>
+<td>为了看的更方便(选装)</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>metasploit</td>
+<td>自动化漏洞利用的框架</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>pwntools</td>
+<td>用于编写shellcode</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>LibcSearcher</td>
+<td>一个用来查找Libc版本的库</td>
+</tr>
+<tr>
+<td>实体机</td>
+<td>IDA/Ghidra</td>
+<td>反编译工具，用于判断二进制程序的漏洞点</td>
+</tr>
+</tbody></table>
+<p>XP中需要用到的工具可以在之后发在群里的实验课工具中找到；</p>
+<p>或者可以在杨博士的<a href="http://github.com/eastmountyxz/Security-Software-Based">Github</a>下载</p>
+<p>Linux不对发行版作要求，任一发行版均可，实验室的电脑安装了Kali Linux，但是其中也没有安装好Pwntools，如果准备用自己的笔记本电脑，上面有其他发行版的linux 也可以使用；</p>
+<h4 id="安装pwntools"><a href="#安装pwntools" class="headerlink" title="安装pwntools"></a>安装pwntools</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install python-pip</span><br><span class="line">pip install pwntools</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="安装LibcSearcher"><a href="#安装LibcSearcher" class="headerlink" title="安装LibcSearcher"></a>安装LibcSearcher</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install git</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/lieanu/LibcSearcher.git</span><br><span class="line"><span class="built_in">cd</span> LibcSearcher</span><br><span class="line">python setup.py develop</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="安装metasploit"><a href="#安装metasploit" class="headerlink" title="安装metasploit"></a>安装metasploit</h4><p>ubuntu等</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-x64-installer.run </span><br><span class="line">chmod +x metasploit-latest-linux-x64-installer.run </span><br><span class="line">sudo ./metasploit-latest-linux-x64-installer.run </span><br></pre></td></tr></table></figure>
+
+<p>Kali Linux安装完后本身就有metasploit</p>
+<h3 id="0x1-前置知识"><a href="#0x1-前置知识" class="headerlink" title="0x1 前置知识"></a>0x1 前置知识</h3><p>栈溢出相关知识：<a href="https://zhuanlan.zhihu.com/p/128593736">https://zhuanlan.zhihu.com/p/128593736</a></p>
+<p>明白栈溢出基本原理即可</p>
+<p>Python基础: <a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017063413904832">https://www.liaoxuefeng.com/wiki/1016959663602400/1017063413904832</a></p>
+<p>👆<strong>只需要读一下这个链接中Python基础、函数、模块三节</strong></p>
+<p>metasploit基础: <a href="https://www.jianshu.com/p/f82386b8a9ac">https://www.jianshu.com/p/f82386b8a9ac</a></p>
+<h2 id="Read-More"><a href="#Read-More" class="headerlink" title="Read More"></a>Read More</h2><p>为学有余力的同学提供的一些资料</p>
+<p>相关书籍：</p>
+<ul>
+<li>《0day安全:软件漏洞分析技术》</li>
+<li>《程序员的自我修养》</li>
+<li>《Metasploit渗透测试魔鬼训练营》</li>
+</ul>
+<p>资料：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/7133863623e6">Pwn入门学习资料</a></li>
+<li><a href="https://www.offensive-security.com/metasploit-unleashed/introduction/">Metasploit Unleashed</a></li>
+<li><a href="https://ctf-wiki.github.io/ctf-wiki/pwn/readme-zh/">CTF Wiki</a></li>
+</ul>
+<p>一些pwn题目：</p>
+<ul>
+<li><a href="http://www.pwnable.kr/">Pwnable</a></li>
+<li><a href="https://buuoj.cn/">Buuoj</a></li>
+</ul>
+<p>渗透测试：</p>
+<ul>
+<li><a href="https://www.hackthebox.eu/">hackthebox</a></li>
+</ul>
+]]></content>
   </entry>
   <entry>
     <title>邮件分类</title>
@@ -5058,23 +5581,23 @@
 <p>某一个词出现则为1，没有出现标记为0</p>
 <p>每一个词相当于一个特征，用上面同样的原理写出分类器</p>
 <p>首先生成词典部分</p>
-
+<img src="/2019/06/03/%E9%82%AE%E4%BB%B6%E5%88%86%E7%B1%BB/1.png" class="" width="1">
 
 <p>这个函数的返回值是一个列表，是训练集中出现的所有词构成的一个词典</p>
 <p>之后是训练分类器的部分</p>
-
+<img src="/2019/06/03/%E9%82%AE%E4%BB%B6%E5%88%86%E7%B1%BB/2.png" class="" width="2">
 
 <p>主要功能就是分别计算垃圾邮件和普通邮件的先验概率</p>
 <p>每一封邮件用一个向量标识，最终对这些向量纵向求和</p>
 <p>得到的向量长度为词典长度，每一个值范围在0-5000之间</p>
 <p>(这是因为每一类总的邮件数为5000，若每一封垃圾邮件都有这个词，值为5000)</p>
 <p>最后验证分类器的效果</p>
-
+<img src="/2019/06/03/%E9%82%AE%E4%BB%B6%E5%88%86%E7%B1%BB/3.png" class="" width="3">
 
 <p>这部分代码是使用了垃圾邮件的测试集进行验证</p>
 <p>如果分类正确会输出Right，否则输出Wrong</p>
 <p>最后输出错误率</p>
-
+<img src="/2019/06/03/%E9%82%AE%E4%BB%B6%E5%88%86%E7%B1%BB/4.png" class="" width="4">
 
 <p>使用30封垃圾邮件进行验证，得到的结果中错误率为20%</p>
 <p>效果比较一般</p>
@@ -5118,14 +5641,14 @@
 <hr>
 <p>之后用<code>xinput</code>来看一下能不能找到触摸板</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">xinput list</span><br></pre></td></tr></table></figure>
-
+<img src="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/1.png" class="" title="1.png">
 
 <p>在这个图里还显示了键盘的设备,还有连的一个微软的无线鼠标</p>
 <p>从上往下第二个就是触摸板</p>
 <p>找到触摸板的话就说明可以用了</p>
 <p>之后来看一下参数</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">xinput list-props <span class="string">&quot;ELAN1010:00 04F3:3012 Touchpad&quot;</span></span><br></pre></td></tr></table></figure>
-
+<img src="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/2.png" class="" title="2.png">
 
 <p>这里面就是触摸板的参数了</p>
 <p>主要就是需要关注一下下面的<code>Device Node</code></p>
@@ -5223,7 +5746,7 @@
 <li>compname 压缩类型</li>
 </ul>
 <p>返回的这些结果可以作为对象的属性获取，也可以像访问列表一样获取</p>
-
+<img src="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/1.png" class="" width="1">
 
 
 
@@ -5244,7 +5767,7 @@
 <p>由于音乐文件有两个声道，将其转换到np的数组后进行转置</p>
 <p>两项数据分别对应两个声道</p>
 <p>绘制的结果如图</p>
-
+<img src="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/2.png" class="" width="2">
 
 <h3 id="LibROSA"><a href="#LibROSA" class="headerlink" title="LibROSA"></a>LibROSA</h3><p>LibROSA是一个用于音乐分析的库</p>
 <p>整个库下面又分成很多个模块,下面用到哪个说哪个</p>
@@ -5253,13 +5776,13 @@
 <p>返回的两个结果中y是采样的数据，sr是采样频率</p>
 <p>这个函数默认的采样频率是22050，如果要使用文件原本的频率需要增加参数</p>
 <p><code>librosa.load(filename,sr=None)</code></p>
-
+<img src="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/3.png" class="" width="3">
 
 <h4 id="librosa-beat"><a href="#librosa-beat" class="headerlink" title="librosa.beat"></a>librosa.beat</h4><p>这个模块是librosa中用于分析节拍的模块</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y,sr = librosa.load(<span class="string">&#x27;music.wav&#x27;</span>)</span><br><span class="line"><span class="comment">#结果中y是数据，sr是采样频率</span></span><br><span class="line">tempo,beat_frames = librosa.beat.beat_track(y=y,sr=sr)</span><br><span class="line"><span class="comment"># tempo是每分钟的节拍数</span></span><br><span class="line"><span class="comment"># beat_frames 是节拍发生的帧</span></span><br><span class="line">beat_times = librosa.frames_to_time(beat_frames,sr=sr)</span><br></pre></td></tr></table></figure>
 
 <p>最后会得到一个数组，相当于是每一个节拍发生的时间戳信息，单位是秒</p>
-
+<img src="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/4.png" class="" width="4">
 
 
 
@@ -5268,7 +5791,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y,sr = librosa.load(<span class="string">&#x27;music.wav&#x27;</span>)</span><br><span class="line">hop = <span class="number">512</span></span><br><span class="line">mfcc = librosa.feature.mfcc(y=y,sr=sr,hop_length=hop,n_mfcc=<span class="number">13</span>)</span><br></pre></td></tr></table></figure>
 
 <p>计算得到的mfcc值</p>
-
+<img src="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/5.png" class="" width="5">
 
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">chroma_cq = librosa.feature.chroma_cqt(y=y,sr=sr)</span><br></pre></td></tr></table></figure>
 
@@ -5277,7 +5800,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_harmonic,y_percussive = librosa.effects.hpss(y)</span><br></pre></td></tr></table></figure>
 
 <p>得到的chroma值</p>
-
+<img src="/2019/06/05/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/6.png" class="" width="6">
 ]]></content>
       <categories>
         <category>信息内容安全</category>
@@ -5285,6 +5808,470 @@
       <tags>
         <tag>python</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>机器学习在二进制分析中的应用</title>
+    <url>/2020/10/02/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9C%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<p>软件安全与分析的课程展示要做一个综述性的工作，这边大概记了一下看到了的论文的内容和大概的思路，因为我们组平时看论文看得少，应该是方法问题，实际看了的论文良莠不齐，好的会写的多一些，太水的就基本略过；</p>
+<p>整篇博客大概有30多篇论文的概述，有一些可能讲的更细一些；</p>
+<a id="more"></a>
+
+
+
+<p>传统的漏洞挖掘主要可以分为静态漏洞挖掘和动态漏洞挖掘；</p>
+<p><img src="image-20201002091951056.png" alt="image-20201002091951056"></p>
+<p>静态漏洞挖掘是对源代码和二进制层面进行分析；</p>
+<p>动态的漏洞挖掘方法主要是模糊测试和符号执行两种方法；</p>
+<p>这些方法本身都存在一定自身的缺陷，一般只适用于一种情况，而在其他情况可能会效果比较差。例如符号执行主要存在路径爆炸和约束求解时资源消耗过大的问题，而fuzzing则需要考虑路径覆盖率，以及种子的生成变异算法方面的问题。</p>
+<p>另外由于近年来机器学习尤其是深度学习的火热，各种方向都可以与ai结合，或许就能做出效果不错的系统；</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>源代码静态漏洞检测的方式主要有两类，其中基于模式的又可以分为三类：</p>
+<ol>
+<li>Code similarity-based approaches</li>
+<li>Pattern-based approaches<ol>
+<li>rule-based</li>
+<li>machine learning-based</li>
+<li>deep learning-based</li>
+</ol>
+</li>
+</ol>
+<h2 id="VulDeePecker"><a href="#VulDeePecker" class="headerlink" title="VulDeePecker"></a>VulDeePecker</h2><p>2018 NDSS</p>
+<h3 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h3><p>贡献了第一个漏洞检测深度学习数据集；</p>
+<p>第一个基于深度学习的细粒度的(slice)源代码漏洞检测系统；</p>
+<h3 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h3><p>从程序源码中提取出函数调用和api<br>api被分成forward和backward两类，forward类的api是需要用到外部输入的函数<br>backward是不需要用到外部输入的函数</p>
+<p>根据函数调用的每一个参数生成一系列program slice<br>slice也分成两类，forward slice是会受到存在问题函数参数影响的slice<br>backward slice是可以影响的存在问题代码上下文的slice</p>
+<p>将这些参数相关的行生成code gadget<br>将code gadget转换为vector<br>这个过程将用户输入的变量，函数名称全部抹去，但是保留危险函数的名称<br>转换为变量是使用到word2vec</p>
+<h3 id="神经网络结构"><a href="#神经网络结构" class="headerlink" title="神经网络结构"></a>神经网络结构</h3><p>双向lstm<br>dense降维<br> <!--softmax防止过拟合--></p>
+<p>softmax映射到（0，1）区间</p>
+<h2 id="A-Comparative-Study-of-Deep-Learning-Based-Vulnerability-Detection-System"><a href="#A-Comparative-Study-of-Deep-Learning-Based-Vulnerability-Detection-System" class="headerlink" title="A Comparative Study of Deep Learning-Based Vulnerability Detection System"></a>A Comparative Study of Deep Learning-Based Vulnerability Detection System</h2><p>2019 IEEE Access；引用了VulDeePecker；</p>
+<p>同一个团队做的内容；</p>
+<p>VulDeePecker使用到了BLSTM，这篇文章提出一个疑问就是，为什么使用双向LSTM，其他的神经网络结构是否会效果更好；</p>
+<h3 id="贡献-1"><a href="#贡献-1" class="headerlink" title="贡献"></a>贡献</h3><ol>
+<li>收集了两个数据集，包含了126种漏洞；而vuldeepecker中的数据集只包含了2种漏洞；两个数据集一个包含额68353个包含了数据依赖和控制流依赖的code gadget，另一个包含了98262个只包含数据依赖的code gadget；数据集公开在了github</li>
+<li>评估了数据集中各种不同因素对神经网络效果的影响<ol>
+<li>控制流依赖可以提高F1 score</li>
+<li>imbanlanced data对数据集没有明显影响</li>
+<li>BRNN比RNN效果好，这两个都比CNN效果好</li>
+</ol>
+</li>
+<li>基于开源工具Joern实现了深度学习的漏洞检测系统，用来与基于商业工具checkmarx做对比；</li>
+</ol>
+<h3 id="预处理-1"><a href="#预处理-1" class="headerlink" title="预处理"></a>预处理</h3><p>主要和之前的vuldeepecker是类似的，有一些差异在于，没有用到之前使用的商业工具checkmarx，而是用到了joern</p>
+<p>首先用joern生成了一个Program Dependence Graph；</p>
+<p>主要流程就是PDG-&gt;Code slice-&gt;Code gadget-&gt;vector</p>
+<p>这个PDG是根据行号生成的，每一行相关的前后行绘制成图</p>
+<p><img src="image-20201002111556654.png" alt="image-20201002111556654"></p>
+<p>例如图中6-&gt;8存在一个关联，看到源代码第6行和第8行的内容;</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> temp[<span class="number">50</span>];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,temp);</span><br></pre></td></tr></table></figure>
+
+<p>这两句都是和temp这个变量相关的，因此在PDG中存在一个连线；</p>
+<p>这个PDG图中存在两种类型的依赖：</p>
+<ol>
+<li>data dependency</li>
+<li>data dependency and control dependency</li>
+</ol>
+<p>第一种是program slice只与前面的数据相关</p>
+<p>第二种类型还涉及到backward slice中控制相关的部分代码</p>
+<h3 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h3><p>论文比较了6种神经网络的效果：</p>
+<ol>
+<li>Multi-Layer Perception</li>
+<li>Convolutional Neural Network</li>
+<li>LSTM</li>
+<li>Gated Recurrent Unit</li>
+<li>BLSTM</li>
+<li>BGRU</li>
+</ol>
+<p>几种网络比较效果如下</p>
+<p><img src="image-20201002114612711.png" alt="image-20201002114612711"></p>
+<p>这可以得到的结论是，双向RNN效果比单向好，另外CNN和MLP不适合这种应用场景</p>
+<h2 id="Project-Achilles"><a href="#Project-Achilles" class="headerlink" title="Project Achilles"></a>Project Achilles</h2><p>Project Achilles: A Prototype Tool for Static Method-Level Vulnerability Detection of Java Source Code Using a Recurrent Neural Network</p>
+<p>2019 ASEW</p>
+<p>好水</p>
+<p>对JAVA源码进行检测，在44495个测试用例上进行测试，24小时内对29种不同的CWE漏洞进行检测，可以得到90%以上的准确率</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>这篇文章想解决的是</p>
+<p><em>Can some form of machine learning be used to statically analyze source code to accurately detect security vulnerabilities?</em></p>
+<p>主要原因是一般机器学习的方法会有很高的false postive率，这使得相关的系统在检测出存在漏洞的问题之后，仍然需要花费大量的人力用于漏洞的验证</p>
+<p>考虑到神经网络在NLP领域比较成功，自然会想到将其应用到漏洞检测中，将源码用NLP的方法进行处理</p>
+<p>但是NLP处理语言时，语言每一个单词都是有特定含义的，并且也存在前后的一套规则语法；但是这在处理源代码时是未必能行得通的，程序猿给变量命名可未必会遵循什么语法；</p>
+<p>因此能够继承逻辑，表现程序内在的联系是一个比较重要的问题</p>
+<h3 id="贡献-2"><a href="#贡献-2" class="headerlink" title="贡献"></a>贡献</h3><ol>
+<li>设计实现了一款开源的原型工具用于检测java源代码的安全漏洞</li>
+<li>使用LSTM分类漏洞类型</li>
+<li>初步验证了LSTM准确验证、报告JAVA源码安全风险的能力</li>
+</ol>
+<h3 id="预处理-2"><a href="#预处理-2" class="headerlink" title="预处理"></a>预处理</h3><p>将源码tokenized into列表</p>
+<p><img src="image-20201002151148072.png" alt="image-20201002151148072"></p>
+<p>整体系统的结构</p>
+<p><img src="image-20201002151204030.png" alt="image-20201002151204030"></p>
+<p>有一点不同的是他们训练的LSTM神经单元是按照漏洞的类型训练的，不同类型的漏洞分别训练了一个LSTM网络</p>
+<h2 id="Recognizing-Functions-in-Binaries-with-Neural-Networks"><a href="#Recognizing-Functions-in-Binaries-with-Neural-Networks" class="headerlink" title="Recognizing Functions in Binaries with Neural Networks"></a>Recognizing Functions in Binaries with Neural Networks</h2><p>UCB，2015年USENIX</p>
+<p>这时候机器学习正经历文艺复兴，作者团队提出了将深度学习用在Binary analysis中，比原本的state-of-the-art machine-learning-based model效果要好；</p>
+<p>主要做的工作是对二进制函数的边界进行识别；</p>
+<p>并且相比原先的机器学习的模型，训练速度、检测速度都增长很多</p>
+<p>机器学习的好处</p>
+<ol>
+<li>可以直接从原始数据中学习，不需要经过太多的处理</li>
+<li>神经网络是end-to-end的</li>
+</ol>
+<p>解决方案：</p>
+<ol>
+<li>训练了一个RNN，接受几个字节的二进制作为输入，对函数边界进行预测</li>
+<li>不需要进行任何预处理，例如反汇编、归一化等等</li>
+<li>使用ByteWeight中给出的数据集进行验证，比他们学的更快80hours：587hours；验证更快43mins：2weeks</li>
+</ol>
+<p><img src="image-20201002153737753.png" alt="image-20201002153737753"></p>
+<p>这篇文章的神经网络是BRNN，可能这时候还没有BLSTM或者BGRU</p>
+<p>他们给出了几种神经网络的比较，说</p>
+<p>LSTM、GRU比RNN强，但是还是没有BRNN效果好</p>
+<h2 id="The-Coming-Era-of-AlphaHacking？"><a href="#The-Coming-Era-of-AlphaHacking？" class="headerlink" title="The Coming Era of AlphaHacking？"></a>The Coming Era of AlphaHacking？</h2><p>The Coming Era of AlphaHacking?</p>
+<p>A Survey of Automatic Software Vulnerability Detection, Exploitation and Patching Techniques</p>
+<p>2018 IEEE DSC</p>
+<p>中科院计算所和北大的论文；</p>
+<p>这篇文章是一篇综述，我们主要关注还是Machine Learning相关的部分；</p>
+<h3 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h3><p>漏洞挖掘被分成了三种类型；</p>
+<ol>
+<li>static<ol>
+<li>graph-based（CFG、DFG、PDG）</li>
+<li>static analysis with data modeling</li>
+</ol>
+</li>
+<li>dynamic<ol>
+<li>fuzzing</li>
+<li>dynamic taint analysis</li>
+</ol>
+</li>
+<li>mixed</li>
+</ol>
+<p>自动化漏洞挖掘：</p>
+<ol>
+<li>patche-based exploits generation</li>
+<li>Control flow hijacking exploit generation</li>
+<li>Data-oriented exploits generation</li>
+</ol>
+<p>自动化补丁：</p>
+<ol>
+<li>The Automatic Patching Process<ol>
+<li>Fault-locating</li>
+<li>Patch-generating</li>
+<li>Function-verifing</li>
+</ol>
+</li>
+<li>Runtime state-based repair<ol>
+<li>monitor</li>
+<li>rollback</li>
+</ol>
+</li>
+<li>Detect-based Repair<ol>
+<li>Input Filter</li>
+<li>Search-based Repair</li>
+<li>Statistical Debugging Metrics</li>
+<li>Standard Semantic</li>
+</ol>
+</li>
+</ol>
+<p>机器学习相关：</p>
+<ol>
+<li>Vulnerability Detection and Exploitation</li>
+<li>Vulnerability Patching</li>
+<li>Open Challenges</li>
+</ol>
+<p>重点还是看机器学习相关的</p>
+<h4 id="漏洞检测利用"><a href="#漏洞检测利用" class="headerlink" title="漏洞检测利用"></a>漏洞检测利用</h4><p>Vccfinder，这篇文章提出利用含有meta-data和code metrics的repository来识别潜在的漏洞；他们从66个C/C++ github项目中提取了170860次commit，并将其中存在漏洞的commit和CVE ID进行了一个映射；之后利用SVM从这些数据中训练了一些特征用来检测漏洞。</p>
+<p>对vulnerability exploitation来说，语义信息是很关键的，SemFuzz通过收集CVE公布的漏洞相关信息和Linux的git log自动化生成POC，这其中CVE可以提供版本信息、漏洞类型、漏洞函数；Linux 的 git log可以提供patch的信息。SemFUzz可以说是基于语义的fuzz技术，用NLP来提取分析漏洞相关文本的语义信息，而不是直接从代码中来提取信息。通过这种方式，生成了一个触发vulnerable functions的call sequence，之后用seed mutation作为fuzzing的输入知道漏洞被触发；这篇文章的作者收集了过去5年112个CVE曝光的Linux Kernel的漏洞，最终检测出了16%，甚至还有之前没有曝光的0day</p>
+<h4 id="漏洞补丁相关"><a href="#漏洞补丁相关" class="headerlink" title="漏洞补丁相关"></a>漏洞补丁相关</h4><p>这方面主要有两种策略：</p>
+<ol>
+<li>generate-and-validate</li>
+<li>semantic-driven</li>
+</ol>
+<p>ELIXIR也很奇怪，描述的没太看明白和ML有啥关系</p>
+<p>【？描述很奇怪】Deepfix是一个基于语义和深度学习的程序补丁系统，它通过不停的调用训练神经网络修补漏洞；作者建立了两类数据集，包括正确的和错误的程序，之后使用GRU来检测6971个错误的程序来验证方法的有效性。</p>
+<h4 id="ML存在的问题"><a href="#ML存在的问题" class="headerlink" title="ML存在的问题"></a>ML存在的问题</h4><ol>
+<li>深层语义的理解；深层的语义信息对软件安全是很重要的内容，AI对这些理解的越多，效果就会越好</li>
+<li>基于二进制的机器学习；现有的一些机器学习在安全中的应用大多数拥有源代码，面向二进制的虽然有，但是一般很少是直接用作Exploitation的，还需要更多的探索；</li>
+<li>开源数据集；缺少像ImageNet这样在CV领域十分广泛、数据量大的数据集，另外这方面的工作也确实工作量很大。</li>
+</ol>
+<h2 id="从自动化到智能化：软件漏洞挖掘技术进展"><a href="#从自动化到智能化：软件漏洞挖掘技术进展" class="headerlink" title="从自动化到智能化：软件漏洞挖掘技术进展"></a>从自动化到智能化：软件漏洞挖掘技术进展</h2><p>清华大学学报上的文章，把整个软件漏洞挖掘相关的内容都讲了不少；</p>
+<p>这里还是着重看其中机器学习相关的内容</p>
+<h3 id="二进制函数识别"><a href="#二进制函数识别" class="headerlink" title="二进制函数识别"></a>二进制函数识别</h3><p>函数识别是二进制分析的基础，ByteWeight使用加权前缀树学习函数的签名，并通过签名匹配二进制片段的方式识别函数；树的每一个节点与二进制的字节或指令相对应，从根节点到某个既定节点的路径代表了可能的字节序或指令序列。值集分析和增量控制流恢复算法实现对函数边界的识别，最终效果比IDA、BAP等工具准确率高很多。</p>
+<h3 id="函数相似性检测"><a href="#函数相似性检测" class="headerlink" title="函数相似性检测"></a>函数相似性检测</h3><p>Gemini把函数控制流图CFG扩展为ACFG，之后用struct2vec转换为向量，之后用Siamese网络训练，实现相似函数距离近的效果，最终通过计算向量间的距离判断函数的相似性；</p>
+<h3 id="测试输入生成"><a href="#测试输入生成" class="headerlink" title="测试输入生成"></a>测试输入生成</h3><p>Learn&amp;fuzz将fuzz中高结构化样本生成问题转换为NLP文本生成问题，使用Char-RN实现了对PDF中obj语法的学习</p>
+<p>Neufuzz使用CNN学习连续可微的neural program，用来近似模拟程序中的实际逻辑，之后通过对学习好的neural program求梯度指导测试输入生成</p>
+<p>Deep reinforcement fuzzing，利用马尔可夫模型把fuzzing转换成了强化学习的模型，利用Q-Learning算法优化了奖励函数</p>
+<p>Faster fuzzing利用GAN增强模糊测试技术，能够不依赖大量的数据样本进行测试；</p>
+<h2 id="Deep-API-Learning"><a href="#Deep-API-Learning" class="headerlink" title="Deep API Learning"></a>Deep API Learning</h2><p>2016 ACM SIGSOFT</p>
+<p>emmm,这篇文章和安全没啥关系，讲的内容是利用NLP的方法从很多代码中学习，自动生成API用法的示例；</p>
+<p>实现的效果是输入一个想要效果的描述，会对应出相关的API接口</p>
+<p><img src="image-20201002201339819.png" alt="image-20201002201339819"></p>
+<p>大概就是这样的效果</p>
+<p>这可以说明NLP的方法是可以从源代码学到类似语义这样的内容的；</p>
+<p>就给后面安全相关的源代码层面的工作提供了一些启发。</p>
+<h2 id="Deep-Code-Search"><a href="#Deep-Code-Search" class="headerlink" title="Deep  Code Search"></a>Deep  Code Search</h2><p>这个也和上面Deep API Learning类似，并不是出于安全目的提出的，这个的目的是制作一种code snippets搜索的工具，输入代码的语义含义，自动返回一段表示这种特定含义的代码；</p>
+<p><img src="image-20201002202354672.png" alt="image-20201002202354672"></p>
+<h2 id="Towards-a-Software-Vulnerability-Prediction-Model-using-Traceable-Code-Patterns-and-Software-Metrics"><a href="#Towards-a-Software-Vulnerability-Prediction-Model-using-Traceable-Code-Patterns-and-Software-Metrics" class="headerlink" title="Towards a Software Vulnerability Prediction Model using Traceable Code Patterns and Software Metrics"></a>Towards a Software Vulnerability Prediction Model using Traceable Code Patterns and Software Metrics</h2><p>这篇文章的目的是利用traceable pattern降低vulnerability prediction framework中的false negative率；和软件工程相关性比较高，没有仔细看；</p>
+<h2 id="Automated-software-vulnerability-detection-with-machine-learning"><a href="#Automated-software-vulnerability-detection-with-machine-learning" class="headerlink" title="Automated software vulnerability detection with machine learning"></a>Automated software vulnerability detection with machine learning</h2><p>arXiv的一个预印本，质量感觉比较一般；</p>
+<p>对C、C++程序使用deep neural network进行检测，文中使用了两种方式进行对比，一种直接使用源代码，另一种则使用程序在编译时的中间表示IR作为输入；两者比较后结论是使用源代码的效果好（怀疑这里是因为他们使用中间表达处理的方式不好）</p>
+<p>另外在后面进一步做预处理的时候这篇论文也是直接粗暴的使用word2vec进行处理的，最后还用了CNN，很奇怪；</p>
+<p>感觉水平一般，效果不好也是预料之中</p>
+<h2 id="DeepFix"><a href="#DeepFix" class="headerlink" title="DeepFix"></a>DeepFix</h2><p>DeepFix: Fixing Common C Language Errors by Deep Learning</p>
+<p>2017年发在AAAI上</p>
+<p>文章作出的系统是用于修复程序的常见编程错误；起的作用类似于编译器在编译时进行语法检查这样的作用，但是可以直接进行补丁；</p>
+<p>最终测试的效果是在学生为93个系统编程的6971个错误中，完整修补了27%的漏洞，部分修复了19%的漏洞；</p>
+<h3 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h3><p>这个系统的核心是一个多层的序列-&gt;序列的神经网络，并且带有attention机制</p>
+<h2 id="SemFuzz-Semantics-based-Automatic-Generation-of-Proof-of-Concept-Exploits"><a href="#SemFuzz-Semantics-based-Automatic-Generation-of-Proof-of-Concept-Exploits" class="headerlink" title="SemFuzz: Semantics-based Automatic Generation of Proof-of-Concept Exploits"></a>SemFuzz: Semantics-based Automatic Generation of Proof-of-Concept Exploits</h2><p>2017年CCS</p>
+<p>这篇文章很不错，很有意思，提出了的是一种基于语义的fuzzer；</p>
+<p>核心做的事情是收集CVE披露漏洞时的文本信息，以及linux内核在打补丁时的git log这些信息，经过NLP处理后自动化生成一条触发漏洞的POC（一系列的call）。</p>
+<h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><p><img src="image-20201006131233767.png" alt="image-20201006131233767"></p>
+<p>总体的流程大概就是图中这样；这篇文章做的工作感觉非常实用，对一些进行了纰漏，但是没有提供POC、EXP的漏洞在复现时效果还挺好的。</p>
+<h2 id="Not-All-Bytes-are-equal"><a href="#Not-All-Bytes-are-equal" class="headerlink" title="Not All Bytes are equal"></a>Not All Bytes are equal</h2><p>Not all bytes are equal: Neural byte sieve for fuzzing</p>
+<p>这是预印本，还没有发的内容；</p>
+<p>主要做的内容就是在fuzzing中引入了RNN，RNN做的功能是一个否决器，对来自于Fuzzing变异的种子进行判定，如果认为这个变异是比较好的就可以通过，如果这个变异的打分不高就将其否决</p>
+<p><img src="image-20201006132318366.png" alt="image-20201006132318366"></p>
+<h2 id="alpha-Diff"><a href="#alpha-Diff" class="headerlink" title="$\alpha Diff$"></a>$\alpha Diff$</h2><p>这篇之前看过了，主要就是二进制bindiff中引入了神经网络来提取特征；</p>
+<p>可以去翻博客看全文的论文笔记</p>
+<h2 id="NeuEx"><a href="#NeuEx" class="headerlink" title="NeuEx"></a>NeuEx</h2><p>Neuro-Symbolic Execution: Augmenting Symbolic Execution with Neural Constraints</p>
+<p>2019NDSS</p>
+<p>这篇文章是将神经网络应用在符号执行，辅助符号执行来约束求解；</p>
+<p><img src="image-20201006132619979.png" alt="image-20201006132619979"></p>
+<p>对于符号执行来说，这一段代码在第四行开始会出现路径爆炸的问题；</p>
+<p>另外在12行这里有可能不知道<code>fabs</code>这个函数具体应该怎么模拟；</p>
+<p>由于符号执行不是实际执行程序，而是将程序进行模拟；</p>
+<p>因此这篇文章做的工作就是对这样的程序中这种符号执行难以解决的地方应用神经网络；</p>
+<p>神经网络可以说是将输入和输出建立一个映射关系，那对于这一块符号执行难以处理的地方，就用一个神经网络来代替，将这块代码当作一个黑盒，神经网络学习到这一块代码的特征之后，符号执行约束求解就变简单了。转化成了原本好求的符号约束求解，以及一个神经网络的约束求解；</p>
+]]></content>
+      <categories>
+        <category>Paper</category>
+      </categories>
+      <tags>
+        <tag>paper</tag>
+        <tag>machine learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>邮件安全</title>
+    <url>/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/</url>
+    <content><![CDATA[<p>参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；</p>
+<p>做的三道题目内容分别是：</p>
+<ol>
+<li>从5000封邮件中识别100封左右的伪造发件人的邮件；</li>
+<li>将24000封邮件进行分类（例如垃圾邮件、攻击邮件、钓鱼邮件等）</li>
+<li>从80w封邮件中识别出其中安全威胁最高的一些邮件（即最有可能是用来攻击的）</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h2><p>在一开始的资格赛里面查阅资料了解到spf，dkim,dmarc三个字段，这三个字段都是SMTP协议用于邮件的发件人检测的；</p>
+<p>所以一开始的想法就是匹配这三个字段，如果有一个不为pass就认为是伪造的，判断方法是直接读文件后对整个文本判断，结果发现判分为零</p>
+<p>之后仔细分析了提交的答案，发现有一些邮件是因为文本里面存在换行的情况，dkim被分成了dk、im等；另外有一些邮件只有spf字段，dkim、dmarc两个协议的覆盖率不是特别高。</p>
+<p>之后找到了两篇usenix的论文，主要从论文出发，设置了一些判定规则。</p>
+<blockquote>
+<p>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</p>
+<p>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</p>
+</blockquote>
+<p>首先是判断From字段和smtp.mail字段，两个字段是否相同，如果不同，则认为存在伪造的可能性；</p>
+<p>之后是考虑From字段的里面是不是存在使用‘)’、‘；’等符号绕过的可能，所以这里通过正则.+@.+@.+..+选取出所有的from里面包含绕过行为的字段，但是其实同时会输出，一个From字段中包含两个邮箱的情况，也包括邮件显示名为邮箱本身的情况，那么这里就进行了一个优化，将from字段中的所有邮箱通过r’([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+)’进行提取后对比是否相同，如果不同则认为是发件人伪造。</p>
+<p>人工筛选出误判的邮箱From: “hs_electroincs_li@163[.]com” &lt;13482059363@163[.]com&gt;  ，这个也很好理解，就和发件人显示自己姓名一样，但是electroincs拼错了，就很像钓鱼什么的。</p>
+<p>之后还发现了一种特殊情况，存在一个文件中出现两行From字段的情况，再将这几个选出来，一共88个。</p>
+<p>最终得到结果的<a href="./source/challenge_1.py">代码</a></p>
+<h2 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h2><h3 id="问题描述基本分析"><a href="#问题描述基本分析" class="headerlink" title="问题描述基本分析"></a>问题描述基本分析</h3><p>要求：对24000封邮件进行分类</p>
+<p>由于不知道需要分成几类，首先还是要对邮件整体的内容有一个大致的了解；</p>
+<p>大概看了一下之后我们对邮件分了这样一些类：</p>
+<ol>
+<li>中文色情（卖片、网站）</li>
+<li>赌博网站</li>
+<li>英文色情（约会、交友）</li>
+<li>开发票、报账</li>
+<li>学术相关垃圾邮件（代写论文、会议、期刊call for paper）</li>
+<li>商业相关的垃圾邮件（公司广告、讲座、培训）</li>
+<li>警告类邮件（邮箱升级、备案、快递、附件过期、邮箱空间不足）</li>
+<li>其他广告（降价、淘宝红包、双十一）</li>
+<li>其他（奇奇怪怪的邮件，没有内容的、只有附件的、没有主题没有内容等等）</li>
+</ol>
+<p>但是根据题目的描述，以及直觉上从出题者意图来看，出题人应该希望的分类是根据邮件的威胁程度、包括内容等等，如果可能是攻击、钓鱼类的邮件直接就把它过滤掉，而单纯的垃圾邮件就放到用户的垃圾信箱。</p>
+<p>于是实际上还需要对邮件做一个安全性的检测，判别出可能是攻击类的邮件，例如APT、钓鱼等等。</p>
+<p>根据判分的规则</p>
+<p><img src="https://s1.ax1x.com/2020/10/08/005TI0.png" alt="005TI0.png"></p>
+<p>其实可以发现，如果我们提交一个全1的分类，那么得到的分数是<br>$$<br>Score = \frac{len(Longest_Type)}{24000}\dot{}100<br>$$<br>在这样尝试之后得分20.0001；</p>
+<p>之后又提交了一个一项为1，其他全为2的结果，为19.9991</p>
+<p>因此我们可以推测出，每一个类型的邮件数量大概应该都是在整体邮件的$\frac{1}{5}$之内，即每一类不超过4800封</p>
+<h3 id="思路一-x"><a href="#思路一-x" class="headerlink" title="思路一(x)"></a>思路一(x)</h3><p>分类问题首先想到的思路是聚类，或是神经网络。</p>
+<p>把文本标题、内容转换成词向量，之后再比较词向量之间的距离；</p>
+<p>结果由于邮件实在太多了，内容全部拼在一起再学习的话在线上处理的速度实在是有点慢，就没有继续考虑这样的方法了（不过感觉应该还是可行的）</p>
+<h3 id="思路二-x"><a href="#思路二-x" class="headerlink" title="思路二(x)"></a>思路二(x)</h3><p>思路二就是使用关键词进行匹配，比赛开始的前两天都是使用的这种方法解题的，对每类邮件比较有特征的词进行匹配；</p>
+<p>最初是直接对邮件的内容进行匹配，将字典里的每一个词都对每一封邮件进行匹配，这种方法的效率也不是很高，分数也上不去，花了很多的时间对邮件进行标注，结果效果还不是很好。</p>
+<p>这样的主要问题是由于，发票、色情邮件这样的内容都做了一些文本的对抗处理，各种插入字符、同音字同音词转换等等，简单的匹配关键词总是会有漏网之鱼，效率就很低。</p>
+<p>后面产生了一个想法，首先人工标注一个小集合的邮件，将这样小集合的邮件内容进行拼接、去除特殊符号、分词、去除停用词，得到一个特征字典。</p>
+<p>使用这个字典再继续匹配邮件，对新加入集合的邮件进行同样的处理，进一步丰富字典，这样就可以学习到新加入集合的邮件中的特征词。</p>
+<p>这部分工作做了一些，感觉效果应该是有的，但是同样存在一个问题，就是在匹配到词语之后将邮件加入特征词集合前的判定标准问题，判定的太严格会导致匹配不出来，判定的太松又会导致特征集合中混入其他类型邮件，在迭代的过程中逐渐变味儿。</p>
+<p>这部分的工作应该是可以后面继续做的，继续开展的主要关键在于编写一个效果比较好的判别器，在邮件被加入到特征集合之前先进行判定。</p>
+<h3 id="思路三-o"><a href="#思路三-o" class="headerlink" title="思路三(o)"></a>思路三(o)</h3><p>因为前面的两个思路都不是特别好，后面又仔细阅读了一下题目，从出题者的角度出发揣摩出题人的意图。</p>
+<p>其实可以发现，上面两个思路都只用到了数据集中的<code>subject</code>和<code>content</code>两个字段，但其实题目给出了很多的信息，这些信息应该是有意义的才对，于是就对这些看似作用不大的字段进行分析。</p>
+<p>发现效果最好的是xmailer、htmltag和url三个字段；</p>
+<p>xmailer字段相同的几乎全部都是同一类的邮件，一个简单的xmailer就可以直接匹配出三四千封的色情邮件；</p>
+<p>htmltag这个字段主要是比较了一下字体的颜色、网页的格式等等，一般广告邮件会是用到比较多的标签，而有一些垃圾邮件用到了同样颜色的字体，一般正常邮件很少会有人这样做，这些都可以作为特征，匹配出来的效果也很好；</p>
+<p>另外url字段是从邮件中提取出来的邮箱、网址、电话、QQ等信息，这个字段感觉很强大，即使是使用①这样的符号表示的电话、QQ，即使中间出现了奇奇怪怪的符号，在url中的还是完整正确的电话。官方数据集收集来后预处理应该做了比较多的事情，所以可以直接拿来匹配。</p>
+<p>在使用xmailer、url、htmltag匹配完成后，仍然存在一些没有被正确分类的邮件，由于时间关系，这部分的邮件就直接使用之前手动写过的关键词进行匹配了，实际上再仔细分析一下其他字段的特征也是可以正确分类的。</p>
+<p>在检测可能存在攻击行为的邮件时，使用的方法和第一题检测伪造发件人以及第三题检测钓鱼、APT的方法类似，在此不赘述。</p>
+<h3 id="hint及改进"><a href="#hint及改进" class="headerlink" title="hint及改进"></a>hint及改进</h3><p>官方后面提供了hint，在有了提示之后可以确定分为了五类邮件，因此对之前的细粒度分类作了一些合并，得到了最终结果。</p>
+<p>题目最终提交的<a href="'./source/challenge2.py'">代码</a></p>
+<h2 id="第三题"><a href="#第三题" class="headerlink" title="第三题"></a>第三题</h2><h3 id="问题描述基本分析-1"><a href="#问题描述基本分析-1" class="headerlink" title="问题描述基本分析"></a>问题描述基本分析</h3><blockquote>
+<p>在真实的企业网络环境中，一些攻击者总能想方设法绕过邮件检测引擎，使攻击邮件抵达员工的收件箱，最终达到窃取用户登录凭证等目的。与此同时，企业网络安全管理团队的精力十分有限，不可能实现对企业的全部邮件进行逐一审查。</p>
+<p>如果你是一家企业的邮件安全负责人，能否基于数据分析，利用长达三个月的企业邮件服务器日志摘要信息，设计检测模型，输出一批威胁程度较高的邮件，以便于后续的人工审查。请注意：检测模型不允许使用第三方威胁情报，检测系统必须能够离线运行。</p>
+</blockquote>
+<p>从赛题说明中，我们可以提取出几个关键词：邮件、窃取用户凭证、威胁程度、离线运行，最终目的是从邮件通信日志中筛选出钓鱼邮件（窃取用户登录凭证）。</p>
+<p>主办方给了威胁邮件的大致数量范围，邮件通信日志与第一题真实的邮件格式不同，每一封邮件都是json格式的数据，只保留了8个字段，而且做了匿名化处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">* rcpt：收信人邮箱地址   ---&gt;  [salt+hash]@[salt+hash替换掉敏感域名，其它保留].[真实TLD]</span><br><span class="line">* sender：发件人邮箱地址    ---&gt;  同上</span><br><span class="line">* ip：企业邮箱用户登录ip   ---&gt;  经过映射处理，不是真实的ip地址，但保留子网关系</span><br><span class="line">* fromname：发信人名称  ---&gt;  对于白名单关键词（比如admin，hr，管理员，经理等）进行保留。除了白名单的其它部分salt+hash</span><br><span class="line">* url：直接从邮件正文、subject、附件、fromname中提取出来的url   ---&gt; [真实协议]:&#x2F;&#x2F;hash+salt替换掉敏感域名.真实TLD&#x2F;真实参数 </span><br><span class="line">* @timestamp：时间戳 </span><br><span class="line">* region：企业邮箱用户登录ip所在地区</span><br><span class="line">* authuser：收信时False，发信时True，注意企业邮箱域内互发的话是只有一条发信记录</span><br><span class="line">* tag：邮件编号，提交答案需要用到</span><br></pre></td></tr></table></figure>
+
+<p>这道题目与前面第二题类似，通过评分标准可以得到一些场外信息<br>$$<br>F1 = \frac{tp}{tp+\frac{1}{2}(fn+fp)}<br>$$<br>我们将所有的邮件都提交之后，根据反馈的<code>F1</code>值就可以计算出目标集合中真实的威胁邮件数量。<br>$$<br>0.0308697283 = \frac{x}{x+\frac{1}{2}(0+80w-x)}<br>$$<br>可以计算出$x$的值大约是12000左右，在主办方给出的范围之内；</p>
+<h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><p>关键在于匹配出钓鱼邮件、APT攻击邮件的特征，我们参考了一些网上的资料，结合课题组之前分析过的样本特征，分别使用到了下面的一些特征：</p>
+<h4 id="短链接"><a href="#短链接" class="headerlink" title="短链接"></a>短链接</h4><p>短链接就是将较长的网址，通过特定的算法转换为简短的网址字符串。用户无法通过短链接地址直接看出点击这个短链接地址后究竟会打开什么样的网站。<br>常见的有：<code>t.cn</code>、  <code>bit.ly</code>、 <code>bit.do</code>、  <code>u.to</code>、 <code>url.cn</code></p>
+<h4 id="十六进制IP地址混淆"><a href="#十六进制IP地址混淆" class="headerlink" title="十六进制IP地址混淆"></a>十六进制IP地址混淆</h4><p>一些钓鱼邮件中为了不让人轻易的看出IP地址，会对URL进行混淆，将IP地址使用其他的形式来表示，目标是逃避对IP地址的过滤检测</p>
+<p>从技术上讲，IP地址可以用多种格式表示，因此可以在URL中使用，如下所示：</p>
+<ul>
+<li><strong>https[:]//216.58.199.78</strong><br>  点分十进制IP地址，此示例使用Google.com的IP</li>
+<li><strong>https[:]//0330.0072.0307.0116</strong><br>  八进制IP地址，将每个十进制数字转换为八进制</li>
+<li><strong>https[:]//0xD83AC74E</strong><br>  十六进制IP地址，将每个十进制数字转换为十六进制</li>
+<li><strong>https[:]//3627730766</strong><br>  整数或DWORD IP地址，将十六进制IP转换为整数</li>
+</ul>
+<p>而这些链接在访问时，最终浏览器会自动将其他格式转换为十进制的格式，访问到的仍然是正确的网站</p>
+<h4 id="邮件钓鱼测试工具固有特征"><a href="#邮件钓鱼测试工具固有特征" class="headerlink" title="邮件钓鱼测试工具固有特征"></a>邮件钓鱼测试工具固有特征</h4><p>我们参考了一款使用Python编写的自动生成钓鱼邮件的工具<code>PhEmail</code>，通过阅读这款工具的源码以及手册，发现会在发送钓鱼邮件时自动在URL后面添加<code>index.php?email=</code>这样的字样，这个工具的常见使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-e 收件人邮箱列表（列表内邮箱必须为同一域名）</span><br><span class="line">-f 发件人邮箱地址（伪造的邮箱不能与收件人邮箱在同一域名下）</span><br><span class="line">-r 收件人回复邮件时的接收邮箱，可采用临时邮箱</span><br><span class="line">-s 伪造的邮件主题</span><br><span class="line">-b 伪造的邮件内容文件，采用html编码，模板中采用href&#x3D;”&#123;0&#125;”来代替url地址</span><br><span class="line">-w 钓鱼网站url地址，发送后会自动添加index.php?email&#x3D;等内容</span><br></pre></td></tr></table></figure>
+
+<p>指定了<code>-w</code>参数后会自动添加email地址并进行编码，通过php文件来识别email并保存记录，之后php文件又会进行重定位到其他网站。</p>
+<h4 id="冒充身份"><a href="#冒充身份" class="headerlink" title="冒充身份"></a>冒充身份</h4><p>对于企业用户来说，很多的钓鱼邮件会冒充系统管理员、客服等身份，以邮箱升级、邮箱停用等理由诱骗企业用户登录钓鱼网站，并进而骗取企业员工的帐号、密码、姓名、职务等信息。</p>
+<p>钓鱼邮件经常伪装的发件人身份有以下几个主要类型：</p>
+<ul>
+<li>冒充系统管理员，以系统升级、身份验证等为由，通过钓鱼网站等方式骗取企业员工的内网帐号密码或邮箱帐号密码。</li>
+<li>冒充特定组织，如协会、机构、会议组织者或政府主管部门等身份发送邮件，骗取帐号密码或钱财。</li>
+<li>冒充客户或冒充自己，即攻击者会冒充企业客户或合作方对企业实施诈骗，或者是攻击者冒充某企业员工对该企业的客户或合作方实施诈骗。当然也有可能 是冒充某个企业的管理者对企业员工实施诈骗。</li>
+</ul>
+<p>从题目给出的fromname（发信人名称）中获得的常见名称有：admin、support、安全、service、管理员等。</p>
+<h4 id="同形异义词攻击"><a href="#同形异义词攻击" class="headerlink" title="同形异义词攻击"></a>同形异义词攻击</h4><p>同形异义字是利用IDN中一些非拉丁字符语种的字母与拉丁字符非常相似，字面看很难区分的特性，找到对应的字符来实现钓鱼攻击。例如<code>16?.com(U+10D5)、16?.com (U+1012)、16?.com (U+0499)</code> 都在一定程度上和163.com有相似性，基于一些开放的https证书服务这些域名还能取得相应的证书，进一步增加钓鱼成功的可能性。</p>
+<p>而题目给出的样本中好像对这类的邮件进行了转码，实际上变成了其他的形式；</p>
+<p>Punycode是RFC 3492标准设计的编码系统，用于把Unicode转换为可用的DNS系统的编码，比如16?.com就会被转成<strong>xn–16-8tc.com</strong>，这在一定程度上可以防止IDN欺骗。</p>
+<h4 id="URL跳转"><a href="#URL跳转" class="headerlink" title="URL跳转"></a>URL跳转</h4><p>使用URL跳转可以突破钓鱼软件检测系统。这类钓鱼软件检测系统在检测是否是钓鱼网站或者恶意系统的时候，检测的是URL，而并非网站的内容。比如，从qq邮箱打开一个URL的时候，会弹出一个网页提示。但并不是所以的网站都会提示，一些知名网站是不可能做钓鱼网站的，所以邮箱就不会拦截，也就是说，当邮箱碰到不认识的网站的时候才会进行提示。<br> 这样攻击者就可以利用URLt跳转来躲过恶意检测。比如：<strong><a href="http://www[.]baidu[.]com/page?url=http://www[.]evil[.]com">http://www[.]baidu[.]com/page?url=http://www[.]evil[.]com</a></strong></p>
+<p>这部分类似于第一道题目中检测多个<code>@+域名</code>的方法，利用正则表达式进行判断检测。</p>
+<h4 id="最终算法"><a href="#最终算法" class="headerlink" title="最终算法"></a>最终算法</h4><p>经过几次测试，发现有的方法效果并不是那么好(例如短链接等)，有的检测方法虽然可以提高总体检测出的邮件比例，但是<code>fp</code>误判很高，导致总体的<code>F1</code>下降，因此最终我们提交了这个版本的<a href="./source/challenge_1.py">代码</a>。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<ol>
+<li><a href="https://www.anquanke.com/post/id/218889">邮件伪造组合拳</a></li>
+<li>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</li>
+<li>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</li>
+<li><a href="https://www.4hou.com/posts/A9oz">微软：最新钓鱼技术2019总结</a></li>
+<li><a href="https://fl4g.cn/2018/08/15/PhEmail-%E9%82%AE%E4%BB%B6%E9%92%93%E9%B1%BC%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/">PhEmail-邮件钓鱼测试工具实际使用踩过的坑</a></li>
+<li><a href="https://www.anquanke.com/post/id/85416">2016中国企业邮件安全性研究报告</a></li>
+<li><a href="https://github.com/Dionach/PhEmail">PhEmail</a></li>
+<li><a href="https://xz.aliyun.com/t/6303">基于URL跳转与XSS组合利用的钓鱼分析（以QQ空间某恶意链接为例）</a></li>
+<li><a href="https://blog.lyle.ac.cn/2018/12/08/idnfuzz/">IDN Spoof漏洞自动化挖掘</a></li>
+<li><a href="http://zt.360.cn/1101061855.php?dtid=1101062514&did=491163339">2017中国企业邮箱安全性 研究报告</a></li>
+<li><a href="https://blog.csdn.net/Eastmount/article/details/108728139">[译] APT分析报告：02.钓鱼邮件网址混淆URL逃避检测</a></li>
+</ol>
+</blockquote>
+<h2 id="其他知识"><a href="#其他知识" class="headerlink" title="其他知识"></a>其他知识</h2><h3 id="邮件的各个字段"><a href="#邮件的各个字段" class="headerlink" title="邮件的各个字段"></a>邮件的各个字段</h3><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x-mailer</td>
+<td>发送邮件用到的客户端</td>
+</tr>
+<tr>
+<td>from</td>
+<td>显示给用户看到的发件人</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>近几年的顶级会议中出现过相关的文章，2020年的USENIX和2018年USENIX分别有一篇相关的论文，其中20年关注的是如何绕过，18年关注的是如何检测；</p>
+<blockquote>
+<p>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</p>
+<p>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</p>
+</blockquote>
+<h3 id="伪造发件人"><a href="#伪造发件人" class="headerlink" title="伪造发件人"></a>伪造发件人</h3><p>SMTP协议本身在设计时是没有考虑很多安全方面的问题（身份识别）的</p>
+<p>其中包含<code>Mail From</code>, <code>From</code>等字段</p>
+<blockquote>
+<p>Mail From: The first represents the user who <em>transmitted</em> the message, and is usually not displayed to the recipient. </p>
+<p>From: The second represents the user who <em>composed</em> the message, and is visible to the recipient.</p>
+</blockquote>
+<p>除了这两个字段，SMTP协议还有诸如*<code>Hello</code>, <code>Sender</code>, <code>Resent-From</code>*等字段，都是用来标示发信的用户的；</p>
+<p>为了对抗邮件发件人伪造的攻击，后续又在SMTP协议中增加了很多认证的方式，包括SPF、DKIM、DMARC、BIMI、ARC等；前三种认证方案应用的比较广，而后两个目前还没有被广泛应用；</p>
+<h4 id="Sender-Policy-Framework-SPF"><a href="#Sender-Policy-Framework-SPF" class="headerlink" title="Sender Policy Framework (SPF)"></a>Sender Policy Framework (SPF)</h4><p>假设邮件服务器收到了一封邮件，来自主机的 IP 是<code>173.194.72.103</code>，并且声称发件人为<code>email@example.com</code>。为了确认发件人不是伪造的，邮件服务器会去查询<code>example.com</code>的 SPF 记录。如果该域的 SPF 记录设置允许 IP 为<code>173.194.72.103</code>的主机发送邮件，则服务器就认为这封邮件是合法的；如果不允许，则通常会退信，或将其标记为垃圾/仿冒邮件。</p>
+<p>每一条SPF的记录会包含多种类型</p>
+<ul>
+<li>all</li>
+<li>ip4</li>
+<li>ip6</li>
+<li>a</li>
+<li>mx</li>
+<li>ptr</li>
+<li>exsits</li>
+<li>include</li>
+</ul>
+<p>每一种会存在这样几种类型的结果</p>
+<table>
+<thead>
+<tr>
+<th>结果</th>
+<th>处理方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pass</td>
+<td>查到记录合法，接收邮件</td>
+</tr>
+<tr>
+<td>Fail</td>
+<td>查到记录非法，退信</td>
+</tr>
+<tr>
+<td>Neutral</td>
+<td>查询记录没有查到是否合法</td>
+</tr>
+<tr>
+<td>None</td>
+<td>没有查询到服务器存在SPF记录</td>
+</tr>
+</tbody></table>
+<h3 id="伪造邮件的特点"><a href="#伪造邮件的特点" class="headerlink" title="伪造邮件的特点"></a>伪造邮件的特点</h3><p>伪造邮件一般伪造的是From这个字段，在用户收到邮件时，一般也是这个字段显示在页面中</p>
+<p>即看到的发件人；</p>
+<h4 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h4><p>有一些邮件伪造发件人可能是想要钓鱼，用户点击链接跳转后输入用户名密码，导致用户名密码被窃取</p>
+<p>这样的特征是**<em>邮件内容中的链接和实际跳转的链接不一致**</em></p>
+<h4 id="Message-ID"><a href="#Message-ID" class="headerlink" title="Message-ID"></a>Message-ID</h4><p>正常来说这个字段是发送方添加的；</p>
+<p>但是伪造邮件有时候会添加多个Received字段，导致这里Message-ID这个字段是中转的服务器添加的。</p>
+<h2 id="A-Large-Scale-Analysis-of-Email-Sender-Sproofing-Attacks"><a href="#A-Large-Scale-Analysis-of-Email-Sender-Sproofing-Attacks" class="headerlink" title="A Large Scale Analysis of Email Sender Sproofing Attacks"></a>A Large Scale Analysis of Email Sender Sproofing Attacks</h2><p>weak link authentications chains</p>
+<p>这是清华的团队发在2021USENIX上的一篇论文，提前给我们分享了一些做的东西</p>
+<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>14种sproofing攻击方式，9种是新的</p>
+<p>对30种流行邮件商23种邮件客户端进行测量，都是存在安全脆弱点的</p>
+<h3 id="background"><a href="#background" class="headerlink" title="background"></a>background</h3><p>存在三种验证协议</p>
+<ul>
+<li>SPF</li>
+<li>DKIM</li>
+<li>DMARC</li>
+</ul>
+<p>邮件传输中存在四种角色</p>
+<p>Sender、Receiver、Forwarders、UI renders</p>
+<p>这就导致，有些厂商对发送时的验证很严格，但是因此对收时就比较松</p>
+<h3 id="Attacks"><a href="#Attacks" class="headerlink" title="Attacks"></a>Attacks</h3><ol>
+<li>shared MTA attack</li>
+<li>Direct MTA attack</li>
+<li>Forward MTA attack</li>
+</ol>
+<p>receiving verification</p>
+<p>退信时会发一个mail from为空的邮件</p>
+<p>通过这个机制，将mail from置为空可以绕过</p>
+<p>多个from字段的</p>
+<p>一个from多个address的</p>
+<p><code>：“（\</code>这样的特殊字符绕过from，使前端显示正常</p>
+<p>from字段utf编码，在验证时由于编码没有进行检测，但是显示时就可能直接显示出来</p>
+<p>Forwarding Verification</p>
+<p>转发邮件时增加dkim这样的签名，使收到的客户端增强信任度</p>
+<p>IDN域名</p>
+<p>通过unicode控制从右到左显示的字符，最后被渲染成的样子是被伪造的样子</p>
+<h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h3><p><a href="https://github.com/mo-xiaoxi/EmailSproofingTestTool">https://github.com/mo-xiaoxi/EmailSproofingTestTool</a></p>
+<p><a href="https://chrome.google.com/website/detail/nosproofing/ehidaopjcnapdglbbbjgeoagpophfjnp">https://chrome.google.com/website/detail/nosproofing/ehidaopjcnapdglbbbjgeoagpophfjnp</a></p>
+]]></content>
   </entry>
   <entry>
     <title>[buuctf]-pwn1</title>
@@ -5865,863 +6852,6 @@
       <tags>
         <tag>hack</tag>
         <tag>CTF</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>heap-overflow</title>
-    <url>/2020/09/26/heap-overflow/</url>
-    <content><![CDATA[<p>学习堆利用中关于溢出部分的技巧</p>
-<a id="more"></a>
-
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
-<p>漏洞利用的思路一般是：</p>
-<ol>
-<li>寻找堆分配函数</li>
-<li>寻找危险函数</li>
-<li>确定填充长度</li>
-</ol>
-<h3 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h3><p>堆分配函数一般是malloc、calloc、realloc等；</p>
-<p>其中calloc在分配内存区域之后会将其置0；</p>
-<p>realloc函数则和另外两个有些不同，具有两个参数</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
-
-<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
-<ul>
-<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
-</li>
-<li><p>如果申请 size &gt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<ul>
-<li>如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>如果申请 size &lt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<ul>
-<li>如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
-</li>
-</ul>
-<h3 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h3><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
-<p>包括：</p>
-<ul>
-<li>gets、scanf、vscanf</li>
-<li>sprintf</li>
-<li>strcpy、strcat、bcopy</li>
-</ul>
-<p>等</p>
-<h3 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h3><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
-<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
-<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
-<h3 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h3><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
-<p>off-by-one漏洞的利用思路：</p>
-<ol>
-<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
-<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
-<li>unlink进行处理；</li>
-<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
-</ol>
-</li>
-</ol>
-<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>以几道CTF来练一下手</p>
-<h3 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h3><p>首先检查程序的安全机制</p>
-<p><img src="heap-overflow/image-20200926194107247.png"></p>
-<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
-<p>运行一下程序，功能是一个图书管理的程序</p>
-<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
-<p>反编译得到main函数的伪代码</p>
-<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
-<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
-<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
-<p>我们暂且将其称为<code>new_read</code></p>
-<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
-<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
-<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
-<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
-<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
-<p>设置author name为一个32字节长的内容</p>
-<p>之后创建一个book之后，调用第四个方法print</p>
-<p>就会出现这样的效果</p>
-<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
-<p>看到除了author name之外还出现了一些其他的字符串</p>
-<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
-<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
-<p>存储的位置是在off_202010这个地方的指向的位置</p>
-<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
-<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
-<p>利用的思路：</p>
-<ol>
-<li>使author name长度为32</li>
-<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
-<li>调用print泄漏第一个book结构的地址</li>
-<li>创建第二个book</li>
-<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
-<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
-</ol>
-<p>首先读到地址</p>
-<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
-<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
-<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
-<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
-<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
-<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
-<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
-<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
-<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
-<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>hack</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>分布式系统经典论文</title>
-    <url>/2020/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%BB%8F%E5%85%B8%E8%AE%BA%E6%96%87/</url>
-    <content><![CDATA[<p>研一上学期的高级操作系统课每周都要求读论文，虽然讲的内容是分布式相关的，但是万一哪天用得到呢；干脆每周整理一下论文的笔记得了；</p>
-<a id="more"></a>
-
-<h2 id="Time"><a href="#Time" class="headerlink" title="Time"></a>Time</h2><p>论文题目都比较长，实际上是</p>
-]]></content>
-      <categories>
-        <category>Paper</category>
-      </categories>
-      <tags>
-        <tag>paper</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>机器学习在二进制分析中的应用</title>
-    <url>/2020/10/02/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9C%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[<p>软件安全与分析的课程展示要做一个综述性的工作，这边大概记了一下看到了的论文的内容和大概的思路，因为我们组平时看论文看得少，应该是方法问题，实际看了的论文良莠不齐，好的会写的多一些，太水的就基本略过；</p>
-<p>整篇博客大概有30多篇论文的概述，有一些可能讲的更细一些；</p>
-<a id="more"></a>
-
-
-
-<p>传统的漏洞挖掘主要可以分为静态漏洞挖掘和动态漏洞挖掘；</p>
-<p><img src="image-20201002091951056.png" alt="image-20201002091951056"></p>
-<p>静态漏洞挖掘是对源代码和二进制层面进行分析；</p>
-<p>动态的漏洞挖掘方法主要是模糊测试和符号执行两种方法；</p>
-<p>这些方法本身都存在一定自身的缺陷，一般只适用于一种情况，而在其他情况可能会效果比较差。例如符号执行主要存在路径爆炸和约束求解时资源消耗过大的问题，而fuzzing则需要考虑路径覆盖率，以及种子的生成变异算法方面的问题。</p>
-<p>另外由于近年来机器学习尤其是深度学习的火热，各种方向都可以与ai结合，或许就能做出效果不错的系统；</p>
-<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>源代码静态漏洞检测的方式主要有两类，其中基于模式的又可以分为三类：</p>
-<ol>
-<li>Code similarity-based approaches</li>
-<li>Pattern-based approaches<ol>
-<li>rule-based</li>
-<li>machine learning-based</li>
-<li>deep learning-based</li>
-</ol>
-</li>
-</ol>
-<h2 id="VulDeePecker"><a href="#VulDeePecker" class="headerlink" title="VulDeePecker"></a>VulDeePecker</h2><p>2018 NDSS</p>
-<h3 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h3><p>贡献了第一个漏洞检测深度学习数据集；</p>
-<p>第一个基于深度学习的细粒度的(slice)源代码漏洞检测系统；</p>
-<h3 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h3><p>从程序源码中提取出函数调用和api<br>api被分成forward和backward两类，forward类的api是需要用到外部输入的函数<br>backward是不需要用到外部输入的函数</p>
-<p>根据函数调用的每一个参数生成一系列program slice<br>slice也分成两类，forward slice是会受到存在问题函数参数影响的slice<br>backward slice是可以影响的存在问题代码上下文的slice</p>
-<p>将这些参数相关的行生成code gadget<br>将code gadget转换为vector<br>这个过程将用户输入的变量，函数名称全部抹去，但是保留危险函数的名称<br>转换为变量是使用到word2vec</p>
-<h3 id="神经网络结构"><a href="#神经网络结构" class="headerlink" title="神经网络结构"></a>神经网络结构</h3><p>双向lstm<br>dense降维<br> <!--softmax防止过拟合--></p>
-<p>softmax映射到（0，1）区间</p>
-<h2 id="A-Comparative-Study-of-Deep-Learning-Based-Vulnerability-Detection-System"><a href="#A-Comparative-Study-of-Deep-Learning-Based-Vulnerability-Detection-System" class="headerlink" title="A Comparative Study of Deep Learning-Based Vulnerability Detection System"></a>A Comparative Study of Deep Learning-Based Vulnerability Detection System</h2><p>2019 IEEE Access；引用了VulDeePecker；</p>
-<p>同一个团队做的内容；</p>
-<p>VulDeePecker使用到了BLSTM，这篇文章提出一个疑问就是，为什么使用双向LSTM，其他的神经网络结构是否会效果更好；</p>
-<h3 id="贡献-1"><a href="#贡献-1" class="headerlink" title="贡献"></a>贡献</h3><ol>
-<li>收集了两个数据集，包含了126种漏洞；而vuldeepecker中的数据集只包含了2种漏洞；两个数据集一个包含额68353个包含了数据依赖和控制流依赖的code gadget，另一个包含了98262个只包含数据依赖的code gadget；数据集公开在了github</li>
-<li>评估了数据集中各种不同因素对神经网络效果的影响<ol>
-<li>控制流依赖可以提高F1 score</li>
-<li>imbanlanced data对数据集没有明显影响</li>
-<li>BRNN比RNN效果好，这两个都比CNN效果好</li>
-</ol>
-</li>
-<li>基于开源工具Joern实现了深度学习的漏洞检测系统，用来与基于商业工具checkmarx做对比；</li>
-</ol>
-<h3 id="预处理-1"><a href="#预处理-1" class="headerlink" title="预处理"></a>预处理</h3><p>主要和之前的vuldeepecker是类似的，有一些差异在于，没有用到之前使用的商业工具checkmarx，而是用到了joern</p>
-<p>首先用joern生成了一个Program Dependence Graph；</p>
-<p>主要流程就是PDG-&gt;Code slice-&gt;Code gadget-&gt;vector</p>
-<p>这个PDG是根据行号生成的，每一行相关的前后行绘制成图</p>
-<p><img src="image-20201002111556654.png" alt="image-20201002111556654"></p>
-<p>例如图中6-&gt;8存在一个关联，看到源代码第6行和第8行的内容;</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> temp[<span class="number">50</span>];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,temp);</span><br></pre></td></tr></table></figure>
-
-<p>这两句都是和temp这个变量相关的，因此在PDG中存在一个连线；</p>
-<p>这个PDG图中存在两种类型的依赖：</p>
-<ol>
-<li>data dependency</li>
-<li>data dependency and control dependency</li>
-</ol>
-<p>第一种是program slice只与前面的数据相关</p>
-<p>第二种类型还涉及到backward slice中控制相关的部分代码</p>
-<h3 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h3><p>论文比较了6种神经网络的效果：</p>
-<ol>
-<li>Multi-Layer Perception</li>
-<li>Convolutional Neural Network</li>
-<li>LSTM</li>
-<li>Gated Recurrent Unit</li>
-<li>BLSTM</li>
-<li>BGRU</li>
-</ol>
-<p>几种网络比较效果如下</p>
-<p><img src="image-20201002114612711.png" alt="image-20201002114612711"></p>
-<p>这可以得到的结论是，双向RNN效果比单向好，另外CNN和MLP不适合这种应用场景</p>
-<h2 id="Project-Achilles"><a href="#Project-Achilles" class="headerlink" title="Project Achilles"></a>Project Achilles</h2><p>Project Achilles: A Prototype Tool for Static Method-Level Vulnerability Detection of Java Source Code Using a Recurrent Neural Network</p>
-<p>2019 ASEW</p>
-<p>好水</p>
-<p>对JAVA源码进行检测，在44495个测试用例上进行测试，24小时内对29种不同的CWE漏洞进行检测，可以得到90%以上的准确率</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>这篇文章想解决的是</p>
-<p><em>Can some form of machine learning be used to statically analyze source code to accurately detect security vulnerabilities?</em></p>
-<p>主要原因是一般机器学习的方法会有很高的false postive率，这使得相关的系统在检测出存在漏洞的问题之后，仍然需要花费大量的人力用于漏洞的验证</p>
-<p>考虑到神经网络在NLP领域比较成功，自然会想到将其应用到漏洞检测中，将源码用NLP的方法进行处理</p>
-<p>但是NLP处理语言时，语言每一个单词都是有特定含义的，并且也存在前后的一套规则语法；但是这在处理源代码时是未必能行得通的，程序猿给变量命名可未必会遵循什么语法；</p>
-<p>因此能够继承逻辑，表现程序内在的联系是一个比较重要的问题</p>
-<h3 id="贡献-2"><a href="#贡献-2" class="headerlink" title="贡献"></a>贡献</h3><ol>
-<li>设计实现了一款开源的原型工具用于检测java源代码的安全漏洞</li>
-<li>使用LSTM分类漏洞类型</li>
-<li>初步验证了LSTM准确验证、报告JAVA源码安全风险的能力</li>
-</ol>
-<h3 id="预处理-2"><a href="#预处理-2" class="headerlink" title="预处理"></a>预处理</h3><p>将源码tokenized into列表</p>
-<p><img src="image-20201002151148072.png" alt="image-20201002151148072"></p>
-<p>整体系统的结构</p>
-<p><img src="image-20201002151204030.png" alt="image-20201002151204030"></p>
-<p>有一点不同的是他们训练的LSTM神经单元是按照漏洞的类型训练的，不同类型的漏洞分别训练了一个LSTM网络</p>
-<h2 id="Recognizing-Functions-in-Binaries-with-Neural-Networks"><a href="#Recognizing-Functions-in-Binaries-with-Neural-Networks" class="headerlink" title="Recognizing Functions in Binaries with Neural Networks"></a>Recognizing Functions in Binaries with Neural Networks</h2><p>UCB，2015年USENIX</p>
-<p>这时候机器学习正经历文艺复兴，作者团队提出了将深度学习用在Binary analysis中，比原本的state-of-the-art machine-learning-based model效果要好；</p>
-<p>主要做的工作是对二进制函数的边界进行识别；</p>
-<p>并且相比原先的机器学习的模型，训练速度、检测速度都增长很多</p>
-<p>机器学习的好处</p>
-<ol>
-<li>可以直接从原始数据中学习，不需要经过太多的处理</li>
-<li>神经网络是end-to-end的</li>
-</ol>
-<p>解决方案：</p>
-<ol>
-<li>训练了一个RNN，接受几个字节的二进制作为输入，对函数边界进行预测</li>
-<li>不需要进行任何预处理，例如反汇编、归一化等等</li>
-<li>使用ByteWeight中给出的数据集进行验证，比他们学的更快80hours：587hours；验证更快43mins：2weeks</li>
-</ol>
-<p><img src="image-20201002153737753.png" alt="image-20201002153737753"></p>
-<p>这篇文章的神经网络是BRNN，可能这时候还没有BLSTM或者BGRU</p>
-<p>他们给出了几种神经网络的比较，说</p>
-<p>LSTM、GRU比RNN强，但是还是没有BRNN效果好</p>
-<h2 id="The-Coming-Era-of-AlphaHacking？"><a href="#The-Coming-Era-of-AlphaHacking？" class="headerlink" title="The Coming Era of AlphaHacking？"></a>The Coming Era of AlphaHacking？</h2><p>The Coming Era of AlphaHacking?</p>
-<p>A Survey of Automatic Software Vulnerability Detection, Exploitation and Patching Techniques</p>
-<p>2018 IEEE DSC</p>
-<p>中科院计算所和北大的论文；</p>
-<p>这篇文章是一篇综述，我们主要关注还是Machine Learning相关的部分；</p>
-<h3 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h3><p>漏洞挖掘被分成了三种类型；</p>
-<ol>
-<li>static<ol>
-<li>graph-based（CFG、DFG、PDG）</li>
-<li>static analysis with data modeling</li>
-</ol>
-</li>
-<li>dynamic<ol>
-<li>fuzzing</li>
-<li>dynamic taint analysis</li>
-</ol>
-</li>
-<li>mixed</li>
-</ol>
-<p>自动化漏洞挖掘：</p>
-<ol>
-<li>patche-based exploits generation</li>
-<li>Control flow hijacking exploit generation</li>
-<li>Data-oriented exploits generation</li>
-</ol>
-<p>自动化补丁：</p>
-<ol>
-<li>The Automatic Patching Process<ol>
-<li>Fault-locating</li>
-<li>Patch-generating</li>
-<li>Function-verifing</li>
-</ol>
-</li>
-<li>Runtime state-based repair<ol>
-<li>monitor</li>
-<li>rollback</li>
-</ol>
-</li>
-<li>Detect-based Repair<ol>
-<li>Input Filter</li>
-<li>Search-based Repair</li>
-<li>Statistical Debugging Metrics</li>
-<li>Standard Semantic</li>
-</ol>
-</li>
-</ol>
-<p>机器学习相关：</p>
-<ol>
-<li>Vulnerability Detection and Exploitation</li>
-<li>Vulnerability Patching</li>
-<li>Open Challenges</li>
-</ol>
-<p>重点还是看机器学习相关的</p>
-<h4 id="漏洞检测利用"><a href="#漏洞检测利用" class="headerlink" title="漏洞检测利用"></a>漏洞检测利用</h4><p>Vccfinder，这篇文章提出利用含有meta-data和code metrics的repository来识别潜在的漏洞；他们从66个C/C++ github项目中提取了170860次commit，并将其中存在漏洞的commit和CVE ID进行了一个映射；之后利用SVM从这些数据中训练了一些特征用来检测漏洞。</p>
-<p>对vulnerability exploitation来说，语义信息是很关键的，SemFuzz通过收集CVE公布的漏洞相关信息和Linux的git log自动化生成POC，这其中CVE可以提供版本信息、漏洞类型、漏洞函数；Linux 的 git log可以提供patch的信息。SemFUzz可以说是基于语义的fuzz技术，用NLP来提取分析漏洞相关文本的语义信息，而不是直接从代码中来提取信息。通过这种方式，生成了一个触发vulnerable functions的call sequence，之后用seed mutation作为fuzzing的输入知道漏洞被触发；这篇文章的作者收集了过去5年112个CVE曝光的Linux Kernel的漏洞，最终检测出了16%，甚至还有之前没有曝光的0day</p>
-<h4 id="漏洞补丁相关"><a href="#漏洞补丁相关" class="headerlink" title="漏洞补丁相关"></a>漏洞补丁相关</h4><p>这方面主要有两种策略：</p>
-<ol>
-<li>generate-and-validate</li>
-<li>semantic-driven</li>
-</ol>
-<p>ELIXIR也很奇怪，描述的没太看明白和ML有啥关系</p>
-<p>【？描述很奇怪】Deepfix是一个基于语义和深度学习的程序补丁系统，它通过不停的调用训练神经网络修补漏洞；作者建立了两类数据集，包括正确的和错误的程序，之后使用GRU来检测6971个错误的程序来验证方法的有效性。</p>
-<h4 id="ML存在的问题"><a href="#ML存在的问题" class="headerlink" title="ML存在的问题"></a>ML存在的问题</h4><ol>
-<li>深层语义的理解；深层的语义信息对软件安全是很重要的内容，AI对这些理解的越多，效果就会越好</li>
-<li>基于二进制的机器学习；现有的一些机器学习在安全中的应用大多数拥有源代码，面向二进制的虽然有，但是一般很少是直接用作Exploitation的，还需要更多的探索；</li>
-<li>开源数据集；缺少像ImageNet这样在CV领域十分广泛、数据量大的数据集，另外这方面的工作也确实工作量很大。</li>
-</ol>
-<h2 id="从自动化到智能化：软件漏洞挖掘技术进展"><a href="#从自动化到智能化：软件漏洞挖掘技术进展" class="headerlink" title="从自动化到智能化：软件漏洞挖掘技术进展"></a>从自动化到智能化：软件漏洞挖掘技术进展</h2><p>清华大学学报上的文章，把整个软件漏洞挖掘相关的内容都讲了不少；</p>
-<p>这里还是着重看其中机器学习相关的内容</p>
-<h3 id="二进制函数识别"><a href="#二进制函数识别" class="headerlink" title="二进制函数识别"></a>二进制函数识别</h3><p>函数识别是二进制分析的基础，ByteWeight使用加权前缀树学习函数的签名，并通过签名匹配二进制片段的方式识别函数；树的每一个节点与二进制的字节或指令相对应，从根节点到某个既定节点的路径代表了可能的字节序或指令序列。值集分析和增量控制流恢复算法实现对函数边界的识别，最终效果比IDA、BAP等工具准确率高很多。</p>
-<h3 id="函数相似性检测"><a href="#函数相似性检测" class="headerlink" title="函数相似性检测"></a>函数相似性检测</h3><p>Gemini把函数控制流图CFG扩展为ACFG，之后用struct2vec转换为向量，之后用Siamese网络训练，实现相似函数距离近的效果，最终通过计算向量间的距离判断函数的相似性；</p>
-<h3 id="测试输入生成"><a href="#测试输入生成" class="headerlink" title="测试输入生成"></a>测试输入生成</h3><p>Learn&amp;fuzz将fuzz中高结构化样本生成问题转换为NLP文本生成问题，使用Char-RN实现了对PDF中obj语法的学习</p>
-<p>Neufuzz使用CNN学习连续可微的neural program，用来近似模拟程序中的实际逻辑，之后通过对学习好的neural program求梯度指导测试输入生成</p>
-<p>Deep reinforcement fuzzing，利用马尔可夫模型把fuzzing转换成了强化学习的模型，利用Q-Learning算法优化了奖励函数</p>
-<p>Faster fuzzing利用GAN增强模糊测试技术，能够不依赖大量的数据样本进行测试；</p>
-<h2 id="Deep-API-Learning"><a href="#Deep-API-Learning" class="headerlink" title="Deep API Learning"></a>Deep API Learning</h2><p>2016 ACM SIGSOFT</p>
-<p>emmm,这篇文章和安全没啥关系，讲的内容是利用NLP的方法从很多代码中学习，自动生成API用法的示例；</p>
-<p>实现的效果是输入一个想要效果的描述，会对应出相关的API接口</p>
-<p><img src="image-20201002201339819.png" alt="image-20201002201339819"></p>
-<p>大概就是这样的效果</p>
-<p>这可以说明NLP的方法是可以从源代码学到类似语义这样的内容的；</p>
-<p>就给后面安全相关的源代码层面的工作提供了一些启发。</p>
-<h2 id="Deep-Code-Search"><a href="#Deep-Code-Search" class="headerlink" title="Deep  Code Search"></a>Deep  Code Search</h2><p>这个也和上面Deep API Learning类似，并不是出于安全目的提出的，这个的目的是制作一种code snippets搜索的工具，输入代码的语义含义，自动返回一段表示这种特定含义的代码；</p>
-<p><img src="image-20201002202354672.png" alt="image-20201002202354672"></p>
-<h2 id="Towards-a-Software-Vulnerability-Prediction-Model-using-Traceable-Code-Patterns-and-Software-Metrics"><a href="#Towards-a-Software-Vulnerability-Prediction-Model-using-Traceable-Code-Patterns-and-Software-Metrics" class="headerlink" title="Towards a Software Vulnerability Prediction Model using Traceable Code Patterns and Software Metrics"></a>Towards a Software Vulnerability Prediction Model using Traceable Code Patterns and Software Metrics</h2><p>这篇文章的目的是利用traceable pattern降低vulnerability prediction framework中的false negative率；和软件工程相关性比较高，没有仔细看；</p>
-<h2 id="Automated-software-vulnerability-detection-with-machine-learning"><a href="#Automated-software-vulnerability-detection-with-machine-learning" class="headerlink" title="Automated software vulnerability detection with machine learning"></a>Automated software vulnerability detection with machine learning</h2><p>arXiv的一个预印本，质量感觉比较一般；</p>
-<p>对C、C++程序使用deep neural network进行检测，文中使用了两种方式进行对比，一种直接使用源代码，另一种则使用程序在编译时的中间表示IR作为输入；两者比较后结论是使用源代码的效果好（怀疑这里是因为他们使用中间表达处理的方式不好）</p>
-<p>另外在后面进一步做预处理的时候这篇论文也是直接粗暴的使用word2vec进行处理的，最后还用了CNN，很奇怪；</p>
-<p>感觉水平一般，效果不好也是预料之中</p>
-<h2 id="DeepFix"><a href="#DeepFix" class="headerlink" title="DeepFix"></a>DeepFix</h2><p>DeepFix: Fixing Common C Language Errors by Deep Learning</p>
-<p>2017年发在AAAI上</p>
-<p>文章作出的系统是用于修复程序的常见编程错误；起的作用类似于编译器在编译时进行语法检查这样的作用，但是可以直接进行补丁；</p>
-<p>最终测试的效果是在学生为93个系统编程的6971个错误中，完整修补了27%的漏洞，部分修复了19%的漏洞；</p>
-<h3 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h3><p>这个系统的核心是一个多层的序列-&gt;序列的神经网络，并且带有attention机制</p>
-<h2 id="SemFuzz-Semantics-based-Automatic-Generation-of-Proof-of-Concept-Exploits"><a href="#SemFuzz-Semantics-based-Automatic-Generation-of-Proof-of-Concept-Exploits" class="headerlink" title="SemFuzz: Semantics-based Automatic Generation of Proof-of-Concept Exploits"></a>SemFuzz: Semantics-based Automatic Generation of Proof-of-Concept Exploits</h2><p>2017年CCS</p>
-<p>这篇文章很不错，很有意思，提出了的是一种基于语义的fuzzer；</p>
-<p>核心做的事情是收集CVE披露漏洞时的文本信息，以及linux内核在打补丁时的git log这些信息，经过NLP处理后自动化生成一条触发漏洞的POC（一系列的call）。</p>
-<h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><p><img src="image-20201006131233767.png" alt="image-20201006131233767"></p>
-<p>总体的流程大概就是图中这样；这篇文章做的工作感觉非常实用，对一些进行了纰漏，但是没有提供POC、EXP的漏洞在复现时效果还挺好的。</p>
-<h2 id="Not-All-Bytes-are-equal"><a href="#Not-All-Bytes-are-equal" class="headerlink" title="Not All Bytes are equal"></a>Not All Bytes are equal</h2><p>Not all bytes are equal: Neural byte sieve for fuzzing</p>
-<p>这是预印本，还没有发的内容；</p>
-<p>主要做的内容就是在fuzzing中引入了RNN，RNN做的功能是一个否决器，对来自于Fuzzing变异的种子进行判定，如果认为这个变异是比较好的就可以通过，如果这个变异的打分不高就将其否决</p>
-<p><img src="image-20201006132318366.png" alt="image-20201006132318366"></p>
-<h2 id="alpha-Diff"><a href="#alpha-Diff" class="headerlink" title="$\alpha Diff$"></a>$\alpha Diff$</h2><p>这篇之前看过了，主要就是二进制bindiff中引入了神经网络来提取特征；</p>
-<p>可以去翻博客看全文的论文笔记</p>
-<h2 id="NeuEx"><a href="#NeuEx" class="headerlink" title="NeuEx"></a>NeuEx</h2><p>Neuro-Symbolic Execution: Augmenting Symbolic Execution with Neural Constraints</p>
-<p>2019NDSS</p>
-<p>这篇文章是将神经网络应用在符号执行，辅助符号执行来约束求解；</p>
-<p><img src="image-20201006132619979.png" alt="image-20201006132619979"></p>
-<p>对于符号执行来说，这一段代码在第四行开始会出现路径爆炸的问题；</p>
-<p>另外在12行这里有可能不知道<code>fabs</code>这个函数具体应该怎么模拟；</p>
-<p>由于符号执行不是实际执行程序，而是将程序进行模拟；</p>
-<p>因此这篇文章做的工作就是对这样的程序中这种符号执行难以解决的地方应用神经网络；</p>
-<p>神经网络可以说是将输入和输出建立一个映射关系，那对于这一块符号执行难以处理的地方，就用一个神经网络来代替，将这块代码当作一个黑盒，神经网络学习到这一块代码的特征之后，符号执行约束求解就变简单了。转化成了原本好求的符号约束求解，以及一个神经网络的约束求解；</p>
-]]></content>
-      <categories>
-        <category>Paper</category>
-      </categories>
-      <tags>
-        <tag>paper</tag>
-        <tag>machine learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Chunk-Extend</title>
-    <url>/2020/09/30/Chunk-Extend/</url>
-    <content><![CDATA[<p>chunk extend在对堆进行扩展时可能会出现overlapping的情况</p>
-<p>即不同的堆块之间造成重叠；</p>
-<p>利用需要以下条件：</p>
-<ul>
-<li>程序中存在基于堆的漏洞</li>
-<li>漏洞可以控制chunk header中的数据</li>
-</ul>
-<p>类似的还有一种利用方式是chunk shrink</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>由于在ptmalloc中对堆的各种操作是很频繁的，因此其中的很多操作直接是以宏的形式实现的；</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize(p) (chunksize_nomask(p) &amp; ~(SIZE_BITS))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize_nomask(p) ((p)-&gt;mchunk_size)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> next_chunk(p) ((mchunkptr) (((char *)(p))+chunksize(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_chunk(p) ((mchunkptr)((char *)(p) - prev_size(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse(p) ((((mchunkptr) (((char *)(p))+chunksize(p))) -&gt; mchunk_size) &amp; PREV_INUSE)</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>hack</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mips汇编</title>
-    <url>/2020/10/08/mips%E6%B1%87%E7%BC%96/</url>
-    <content><![CDATA[<p>路由器中一般用到的架构是arm或者是mips</p>
-<p>mips的汇编语法和平时常见的x86、amd64都有些差异</p>
-<p>并且mips中存在一些机制上的不同；</p>
-<p>因此在分析时还是需要专门大概学一下；</p>
-<a id="more"></a>
-
-<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>MIPS中一共有32个通用寄存器，寄存器以$开头</p>
-<table>
-<thead>
-<tr>
-<th>寄存器编号</th>
-<th>寄存器名</th>
-<th>寄存器用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0</td>
-<td>zero</td>
-<td>永远为0</td>
-</tr>
-<tr>
-<td>1</td>
-<td>$at</td>
-<td>汇编保留寄存器</td>
-</tr>
-<tr>
-<td>2-3</td>
-<td>$v0-$v1</td>
-<td>存储表达式或函数的返回值</td>
-</tr>
-<tr>
-<td>4-7</td>
-<td>$a0-$a3</td>
-<td>存储子函数的前4个参数，在调用过程释放</td>
-</tr>
-<tr>
-<td>8-15</td>
-<td>$t0-$t7</td>
-<td>临时变量</td>
-</tr>
-<tr>
-<td>16-23</td>
-<td>$s0-$s7</td>
-<td>Callee 保存的变量</td>
-</tr>
-<tr>
-<td>24-25</td>
-<td>$t8-$t9</td>
-<td>临时变量</td>
-</tr>
-<tr>
-<td>26-27</td>
-<td>$k0-$k1</td>
-<td>用于interrupt/trap handler</td>
-</tr>
-<tr>
-<td>28</td>
-<td>$gp</td>
-<td>Global pointer 指向64k大小的静态数据块</td>
-</tr>
-<tr>
-<td>29</td>
-<td>$sp</td>
-<td>Stack Pointer 指向栈顶</td>
-</tr>
-<tr>
-<td>30</td>
-<td>$s8/$fp</td>
-<td>Frame Pointer 类似与pc里的bp，指向栈底</td>
-</tr>
-<tr>
-<td>31</td>
-<td>$ra</td>
-<td>return address</td>
-</tr>
-</tbody></table>
-<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p>指令读法和Intel读法一样，目标操作数在左边</p>
-<p>最常规的栈溢出中，一般shellcode会保存在栈中，在执行shellcode前的一部分代码最终目的是跳转到栈上受我们控制的位置；</p>
-<p>以使用ROP为例，在跳转回到栈上之前需要一些gadget，可能比较关注的有：</p>
-<ol>
-<li>从可控的寄存器赋值到<code>$ra, $t9, $v0</code></li>
-<li>跳转到寄存器<code>jr $ra; nop;</code>或<code>jr $v0; nop;</code>或<code>jr $t9; nop;</code></li>
-</ol>
-<h2 id="MIPS特性"><a href="#MIPS特性" class="headerlink" title="MIPS特性"></a>MIPS特性</h2><p>MIPS 中的<code>jr</code>即jump register指令并不是所有的寄存器都允许跳转的，只有<code>ra,t9,v0</code>三个寄存器是可以跳的。</p>
-<p>另外就是MIPS在设计时的Delay Slot延迟槽机制，在跳转指令后面的一条指令实际上也是会执行的，因此如果不想造成其他的影响最好选择jr指令后是nop指令的gadget；</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>tun和tap</title>
-    <url>/2020/10/17/tun%E5%92%8Ctap/</url>
-    <content><![CDATA[<p>在使用qemu的系统模式来模拟嵌入式设备的固件时，一般需要专门为虚拟机来配置网络，这使用到的功能就是Linux中比较基本的虚拟网络设备相关的功能，即tun和tap</p>
-<a id="more"></a>
-
-
-
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>tun和tap相当于是linux上创建出来的虚拟网络设备，使用软件的方式模拟出来实现硬件的功能，在创建虚拟机的时候，一般VMM会自动创建出新的虚拟网卡，就是利用了这样的功能。</p>
-<p>tun是工作在第三层的网络层设备，而tap是工作在第二层的链路层设备</p>
-<p>tun表示虚拟的是点对点设备，tap虚拟的是以太网设备</p>
-<p>在创建了tap或tun之后，在<code>/dev/net/</code>目录下的<code>tun</code>文件就会处于激活状态，这时就可以通过读写这个设备，实现内核空间和用户空间的数据交互；这中交互方式也是linux的一种设计思想（万物皆文件）</p>
-<p>创建tun/tap可以使用tunctl或者ip tuntap这两种方式</p>
-<h2 id="tunctl"><a href="#tunctl" class="headerlink" title="tunctl"></a>tunctl</h2><p>tunctl不是系统自带的，首先需要安装相关的包</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt-get install uml-utilities</span><br></pre></td></tr></table></figure>
-
-<p>创建的虚拟网卡设备上的操作，不会影响到物理设备，也可以说通过这种方式实现了一种隔离，因此VPS、云服务等等一般都是用这些来实现的；</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tunctl -t tap0 -u `whoami`</span><br></pre></td></tr></table></figure>
-
-<p>创建设备，并将其分配给了当前的用户</p>
-<p>为这个设备分配IP地址并启动</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ifconfig tap0 192.168.0.1/24 up</span><br></pre></td></tr></table></figure>
-
-<p>如果要删除这个设备，同样可以使用<code>tunctl</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tunctl -d tap0</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ip-tuntap"><a href="#ip-tuntap" class="headerlink" title="ip tuntap"></a>ip tuntap</h2><p>ip tuntap可以创建tap设备，也可以创建tun设备</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip tuntap add dev tap0 mod tap</span><br><span class="line">ip tuntap add dev tun0 mod tun</span><br></pre></td></tr></table></figure>
-
-<p>两者差异只在于后面的mod指定设备类型</p>
-<p>需要删除设备时使用</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip tuntap del dev tap0 mod tap</span><br><span class="line">ip tuntap del dev tun0 mod tun</span><br></pre></td></tr></table></figure>
-
-<p>在需要指定设备的ip地址时，同样可以使用ifconfig</p>
-<p>或者可以使用ip命令中的address</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip address add dev tap0 192.168.2.1/24</span><br></pre></td></tr></table></figure>
-
-
-
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>邮件安全</title>
-    <url>/2020/10/11/%E9%82%AE%E4%BB%B6%E5%AE%89%E5%85%A8/</url>
-    <content><![CDATA[<p>参加邮件安全的数据分析比赛，这篇主要记一下期间学到的一些内容；</p>
-<p>做的三道题目内容分别是：</p>
-<ol>
-<li>从5000封邮件中识别100封左右的伪造发件人的邮件；</li>
-<li>将24000封邮件进行分类（例如垃圾邮件、攻击邮件、钓鱼邮件等）</li>
-<li>从80w封邮件中识别出其中安全威胁最高的一些邮件（即最有可能是用来攻击的）</li>
-</ol>
-<a id="more"></a>
-
-<h2 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h2><p>在一开始的资格赛里面查阅资料了解到spf，dkim,dmarc三个字段，这三个字段都是SMTP协议用于邮件的发件人检测的；</p>
-<p>所以一开始的想法就是匹配这三个字段，如果有一个不为pass就认为是伪造的，判断方法是直接读文件后对整个文本判断，结果发现判分为零</p>
-<p>之后仔细分析了提交的答案，发现有一些邮件是因为文本里面存在换行的情况，dkim被分成了dk、im等；另外有一些邮件只有spf字段，dkim、dmarc两个协议的覆盖率不是特别高。</p>
-<p>之后找到了两篇usenix的论文，主要从论文出发，设置了一些判定规则。</p>
-<blockquote>
-<p>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</p>
-<p>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</p>
-</blockquote>
-<p>首先是判断From字段和smtp.mail字段，两个字段是否相同，如果不同，则认为存在伪造的可能性；</p>
-<p>之后是考虑From字段的里面是不是存在使用‘)’、‘；’等符号绕过的可能，所以这里通过正则.+@.+@.+..+选取出所有的from里面包含绕过行为的字段，但是其实同时会输出，一个From字段中包含两个邮箱的情况，也包括邮件显示名为邮箱本身的情况，那么这里就进行了一个优化，将from字段中的所有邮箱通过r’([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+)’进行提取后对比是否相同，如果不同则认为是发件人伪造。</p>
-<p>人工筛选出误判的邮箱From: “hs_electroincs_li@163[.]com” &lt;13482059363@163[.]com&gt;  ，这个也很好理解，就和发件人显示自己姓名一样，但是electroincs拼错了，就很像钓鱼什么的。</p>
-<p>之后还发现了一种特殊情况，存在一个文件中出现两行From字段的情况，再将这几个选出来，一共88个。</p>
-<p>最终得到结果的<a href="./source/challenge_1.py">代码</a></p>
-<h2 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h2><h3 id="问题描述基本分析"><a href="#问题描述基本分析" class="headerlink" title="问题描述基本分析"></a>问题描述基本分析</h3><p>要求：对24000封邮件进行分类</p>
-<p>由于不知道需要分成几类，首先还是要对邮件整体的内容有一个大致的了解；</p>
-<p>大概看了一下之后我们对邮件分了这样一些类：</p>
-<ol>
-<li>中文色情（卖片、网站）</li>
-<li>赌博网站</li>
-<li>英文色情（约会、交友）</li>
-<li>开发票、报账</li>
-<li>学术相关垃圾邮件（代写论文、会议、期刊call for paper）</li>
-<li>商业相关的垃圾邮件（公司广告、讲座、培训）</li>
-<li>警告类邮件（邮箱升级、备案、快递、附件过期、邮箱空间不足）</li>
-<li>其他广告（降价、淘宝红包、双十一）</li>
-<li>其他（奇奇怪怪的邮件，没有内容的、只有附件的、没有主题没有内容等等）</li>
-</ol>
-<p>但是根据题目的描述，以及直觉上从出题者意图来看，出题人应该希望的分类是根据邮件的威胁程度、包括内容等等，如果可能是攻击、钓鱼类的邮件直接就把它过滤掉，而单纯的垃圾邮件就放到用户的垃圾信箱。</p>
-<p>于是实际上还需要对邮件做一个安全性的检测，判别出可能是攻击类的邮件，例如APT、钓鱼等等。</p>
-<p>根据判分的规则</p>
-<p><img src="https://s1.ax1x.com/2020/10/08/005TI0.png" alt="005TI0.png"></p>
-<p>其实可以发现，如果我们提交一个全1的分类，那么得到的分数是<br>$$<br>Score = \frac{len(Longest_Type)}{24000}\dot{}100<br>$$<br>在这样尝试之后得分20.0001；</p>
-<p>之后又提交了一个一项为1，其他全为2的结果，为19.9991</p>
-<p>因此我们可以推测出，每一个类型的邮件数量大概应该都是在整体邮件的$\frac{1}{5}$之内，即每一类不超过4800封</p>
-<h3 id="思路一-x"><a href="#思路一-x" class="headerlink" title="思路一(x)"></a>思路一(x)</h3><p>分类问题首先想到的思路是聚类，或是神经网络。</p>
-<p>把文本标题、内容转换成词向量，之后再比较词向量之间的距离；</p>
-<p>结果由于邮件实在太多了，内容全部拼在一起再学习的话在线上处理的速度实在是有点慢，就没有继续考虑这样的方法了（不过感觉应该还是可行的）</p>
-<h3 id="思路二-x"><a href="#思路二-x" class="headerlink" title="思路二(x)"></a>思路二(x)</h3><p>思路二就是使用关键词进行匹配，比赛开始的前两天都是使用的这种方法解题的，对每类邮件比较有特征的词进行匹配；</p>
-<p>最初是直接对邮件的内容进行匹配，将字典里的每一个词都对每一封邮件进行匹配，这种方法的效率也不是很高，分数也上不去，花了很多的时间对邮件进行标注，结果效果还不是很好。</p>
-<p>这样的主要问题是由于，发票、色情邮件这样的内容都做了一些文本的对抗处理，各种插入字符、同音字同音词转换等等，简单的匹配关键词总是会有漏网之鱼，效率就很低。</p>
-<p>后面产生了一个想法，首先人工标注一个小集合的邮件，将这样小集合的邮件内容进行拼接、去除特殊符号、分词、去除停用词，得到一个特征字典。</p>
-<p>使用这个字典再继续匹配邮件，对新加入集合的邮件进行同样的处理，进一步丰富字典，这样就可以学习到新加入集合的邮件中的特征词。</p>
-<p>这部分工作做了一些，感觉效果应该是有的，但是同样存在一个问题，就是在匹配到词语之后将邮件加入特征词集合前的判定标准问题，判定的太严格会导致匹配不出来，判定的太松又会导致特征集合中混入其他类型邮件，在迭代的过程中逐渐变味儿。</p>
-<p>这部分的工作应该是可以后面继续做的，继续开展的主要关键在于编写一个效果比较好的判别器，在邮件被加入到特征集合之前先进行判定。</p>
-<h3 id="思路三-o"><a href="#思路三-o" class="headerlink" title="思路三(o)"></a>思路三(o)</h3><p>因为前面的两个思路都不是特别好，后面又仔细阅读了一下题目，从出题者的角度出发揣摩出题人的意图。</p>
-<p>其实可以发现，上面两个思路都只用到了数据集中的<code>subject</code>和<code>content</code>两个字段，但其实题目给出了很多的信息，这些信息应该是有意义的才对，于是就对这些看似作用不大的字段进行分析。</p>
-<p>发现效果最好的是xmailer、htmltag和url三个字段；</p>
-<p>xmailer字段相同的几乎全部都是同一类的邮件，一个简单的xmailer就可以直接匹配出三四千封的色情邮件；</p>
-<p>htmltag这个字段主要是比较了一下字体的颜色、网页的格式等等，一般广告邮件会是用到比较多的标签，而有一些垃圾邮件用到了同样颜色的字体，一般正常邮件很少会有人这样做，这些都可以作为特征，匹配出来的效果也很好；</p>
-<p>另外url字段是从邮件中提取出来的邮箱、网址、电话、QQ等信息，这个字段感觉很强大，即使是使用①这样的符号表示的电话、QQ，即使中间出现了奇奇怪怪的符号，在url中的还是完整正确的电话。官方数据集收集来后预处理应该做了比较多的事情，所以可以直接拿来匹配。</p>
-<p>在使用xmailer、url、htmltag匹配完成后，仍然存在一些没有被正确分类的邮件，由于时间关系，这部分的邮件就直接使用之前手动写过的关键词进行匹配了，实际上再仔细分析一下其他字段的特征也是可以正确分类的。</p>
-<p>在检测可能存在攻击行为的邮件时，使用的方法和第一题检测伪造发件人以及第三题检测钓鱼、APT的方法类似，在此不赘述。</p>
-<h3 id="hint及改进"><a href="#hint及改进" class="headerlink" title="hint及改进"></a>hint及改进</h3><p>官方后面提供了hint，在有了提示之后可以确定分为了五类邮件，因此对之前的细粒度分类作了一些合并，得到了最终结果。</p>
-<p>题目最终提交的<a href="'./source/challenge2.py'">代码</a></p>
-<h2 id="第三题"><a href="#第三题" class="headerlink" title="第三题"></a>第三题</h2><h3 id="问题描述基本分析-1"><a href="#问题描述基本分析-1" class="headerlink" title="问题描述基本分析"></a>问题描述基本分析</h3><blockquote>
-<p>在真实的企业网络环境中，一些攻击者总能想方设法绕过邮件检测引擎，使攻击邮件抵达员工的收件箱，最终达到窃取用户登录凭证等目的。与此同时，企业网络安全管理团队的精力十分有限，不可能实现对企业的全部邮件进行逐一审查。</p>
-<p>如果你是一家企业的邮件安全负责人，能否基于数据分析，利用长达三个月的企业邮件服务器日志摘要信息，设计检测模型，输出一批威胁程度较高的邮件，以便于后续的人工审查。请注意：检测模型不允许使用第三方威胁情报，检测系统必须能够离线运行。</p>
-</blockquote>
-<p>从赛题说明中，我们可以提取出几个关键词：邮件、窃取用户凭证、威胁程度、离线运行，最终目的是从邮件通信日志中筛选出钓鱼邮件（窃取用户登录凭证）。</p>
-<p>主办方给了威胁邮件的大致数量范围，邮件通信日志与第一题真实的邮件格式不同，每一封邮件都是json格式的数据，只保留了8个字段，而且做了匿名化处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">* rcpt：收信人邮箱地址   ---&gt;  [salt+hash]@[salt+hash替换掉敏感域名，其它保留].[真实TLD]</span><br><span class="line">* sender：发件人邮箱地址    ---&gt;  同上</span><br><span class="line">* ip：企业邮箱用户登录ip   ---&gt;  经过映射处理，不是真实的ip地址，但保留子网关系</span><br><span class="line">* fromname：发信人名称  ---&gt;  对于白名单关键词（比如admin，hr，管理员，经理等）进行保留。除了白名单的其它部分salt+hash</span><br><span class="line">* url：直接从邮件正文、subject、附件、fromname中提取出来的url   ---&gt; [真实协议]:&#x2F;&#x2F;hash+salt替换掉敏感域名.真实TLD&#x2F;真实参数 </span><br><span class="line">* @timestamp：时间戳 </span><br><span class="line">* region：企业邮箱用户登录ip所在地区</span><br><span class="line">* authuser：收信时False，发信时True，注意企业邮箱域内互发的话是只有一条发信记录</span><br><span class="line">* tag：邮件编号，提交答案需要用到</span><br></pre></td></tr></table></figure>
-
-<p>这道题目与前面第二题类似，通过评分标准可以得到一些场外信息<br>$$<br>F1 = \frac{tp}{tp+\frac{1}{2}(fn+fp)}<br>$$<br>我们将所有的邮件都提交之后，根据反馈的<code>F1</code>值就可以计算出目标集合中真实的威胁邮件数量。<br>$$<br>0.0308697283 = \frac{x}{x+\frac{1}{2}(0+80w-x)}<br>$$<br>可以计算出$x$的值大约是12000左右，在主办方给出的范围之内；</p>
-<h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><p>关键在于匹配出钓鱼邮件、APT攻击邮件的特征，我们参考了一些网上的资料，结合课题组之前分析过的样本特征，分别使用到了下面的一些特征：</p>
-<h4 id="短链接"><a href="#短链接" class="headerlink" title="短链接"></a>短链接</h4><p>短链接就是将较长的网址，通过特定的算法转换为简短的网址字符串。用户无法通过短链接地址直接看出点击这个短链接地址后究竟会打开什么样的网站。<br>常见的有：<code>t.cn</code>、  <code>bit.ly</code>、 <code>bit.do</code>、  <code>u.to</code>、 <code>url.cn</code></p>
-<h4 id="十六进制IP地址混淆"><a href="#十六进制IP地址混淆" class="headerlink" title="十六进制IP地址混淆"></a>十六进制IP地址混淆</h4><p>一些钓鱼邮件中为了不让人轻易的看出IP地址，会对URL进行混淆，将IP地址使用其他的形式来表示，目标是逃避对IP地址的过滤检测</p>
-<p>从技术上讲，IP地址可以用多种格式表示，因此可以在URL中使用，如下所示：</p>
-<ul>
-<li><strong>https[:]//216.58.199.78</strong><br>  点分十进制IP地址，此示例使用Google.com的IP</li>
-<li><strong>https[:]//0330.0072.0307.0116</strong><br>  八进制IP地址，将每个十进制数字转换为八进制</li>
-<li><strong>https[:]//0xD83AC74E</strong><br>  十六进制IP地址，将每个十进制数字转换为十六进制</li>
-<li><strong>https[:]//3627730766</strong><br>  整数或DWORD IP地址，将十六进制IP转换为整数</li>
-</ul>
-<p>而这些链接在访问时，最终浏览器会自动将其他格式转换为十进制的格式，访问到的仍然是正确的网站</p>
-<h4 id="邮件钓鱼测试工具固有特征"><a href="#邮件钓鱼测试工具固有特征" class="headerlink" title="邮件钓鱼测试工具固有特征"></a>邮件钓鱼测试工具固有特征</h4><p>我们参考了一款使用Python编写的自动生成钓鱼邮件的工具<code>PhEmail</code>，通过阅读这款工具的源码以及手册，发现会在发送钓鱼邮件时自动在URL后面添加<code>index.php?email=</code>这样的字样，这个工具的常见使用方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-e 收件人邮箱列表（列表内邮箱必须为同一域名）</span><br><span class="line">-f 发件人邮箱地址（伪造的邮箱不能与收件人邮箱在同一域名下）</span><br><span class="line">-r 收件人回复邮件时的接收邮箱，可采用临时邮箱</span><br><span class="line">-s 伪造的邮件主题</span><br><span class="line">-b 伪造的邮件内容文件，采用html编码，模板中采用href&#x3D;”&#123;0&#125;”来代替url地址</span><br><span class="line">-w 钓鱼网站url地址，发送后会自动添加index.php?email&#x3D;等内容</span><br></pre></td></tr></table></figure>
-
-<p>指定了<code>-w</code>参数后会自动添加email地址并进行编码，通过php文件来识别email并保存记录，之后php文件又会进行重定位到其他网站。</p>
-<h4 id="冒充身份"><a href="#冒充身份" class="headerlink" title="冒充身份"></a>冒充身份</h4><p>对于企业用户来说，很多的钓鱼邮件会冒充系统管理员、客服等身份，以邮箱升级、邮箱停用等理由诱骗企业用户登录钓鱼网站，并进而骗取企业员工的帐号、密码、姓名、职务等信息。</p>
-<p>钓鱼邮件经常伪装的发件人身份有以下几个主要类型：</p>
-<ul>
-<li>冒充系统管理员，以系统升级、身份验证等为由，通过钓鱼网站等方式骗取企业员工的内网帐号密码或邮箱帐号密码。</li>
-<li>冒充特定组织，如协会、机构、会议组织者或政府主管部门等身份发送邮件，骗取帐号密码或钱财。</li>
-<li>冒充客户或冒充自己，即攻击者会冒充企业客户或合作方对企业实施诈骗，或者是攻击者冒充某企业员工对该企业的客户或合作方实施诈骗。当然也有可能 是冒充某个企业的管理者对企业员工实施诈骗。</li>
-</ul>
-<p>从题目给出的fromname（发信人名称）中获得的常见名称有：admin、support、安全、service、管理员等。</p>
-<h4 id="同形异义词攻击"><a href="#同形异义词攻击" class="headerlink" title="同形异义词攻击"></a>同形异义词攻击</h4><p>同形异义字是利用IDN中一些非拉丁字符语种的字母与拉丁字符非常相似，字面看很难区分的特性，找到对应的字符来实现钓鱼攻击。例如<code>16?.com(U+10D5)、16?.com (U+1012)、16?.com (U+0499)</code> 都在一定程度上和163.com有相似性，基于一些开放的https证书服务这些域名还能取得相应的证书，进一步增加钓鱼成功的可能性。</p>
-<p>而题目给出的样本中好像对这类的邮件进行了转码，实际上变成了其他的形式；</p>
-<p>Punycode是RFC 3492标准设计的编码系统，用于把Unicode转换为可用的DNS系统的编码，比如16?.com就会被转成<strong>xn–16-8tc.com</strong>，这在一定程度上可以防止IDN欺骗。</p>
-<h4 id="URL跳转"><a href="#URL跳转" class="headerlink" title="URL跳转"></a>URL跳转</h4><p>使用URL跳转可以突破钓鱼软件检测系统。这类钓鱼软件检测系统在检测是否是钓鱼网站或者恶意系统的时候，检测的是URL，而并非网站的内容。比如，从qq邮箱打开一个URL的时候，会弹出一个网页提示。但并不是所以的网站都会提示，一些知名网站是不可能做钓鱼网站的，所以邮箱就不会拦截，也就是说，当邮箱碰到不认识的网站的时候才会进行提示。<br> 这样攻击者就可以利用URLt跳转来躲过恶意检测。比如：<strong><a href="http://www[.]baidu[.]com/page?url=http://www[.]evil[.]com">http://www[.]baidu[.]com/page?url=http://www[.]evil[.]com</a></strong></p>
-<p>这部分类似于第一道题目中检测多个<code>@+域名</code>的方法，利用正则表达式进行判断检测。</p>
-<h4 id="最终算法"><a href="#最终算法" class="headerlink" title="最终算法"></a>最终算法</h4><p>经过几次测试，发现有的方法效果并不是那么好(例如短链接等)，有的检测方法虽然可以提高总体检测出的邮件比例，但是<code>fp</code>误判很高，导致总体的<code>F1</code>下降，因此最终我们提交了这个版本的<a href="./source/challenge_1.py">代码</a>。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
-<ol>
-<li><a href="https://www.anquanke.com/post/id/218889">邮件伪造组合拳</a></li>
-<li>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</li>
-<li>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</li>
-<li><a href="https://www.4hou.com/posts/A9oz">微软：最新钓鱼技术2019总结</a></li>
-<li><a href="https://fl4g.cn/2018/08/15/PhEmail-%E9%82%AE%E4%BB%B6%E9%92%93%E9%B1%BC%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/">PhEmail-邮件钓鱼测试工具实际使用踩过的坑</a></li>
-<li><a href="https://www.anquanke.com/post/id/85416">2016中国企业邮件安全性研究报告</a></li>
-<li><a href="https://github.com/Dionach/PhEmail">PhEmail</a></li>
-<li><a href="https://xz.aliyun.com/t/6303">基于URL跳转与XSS组合利用的钓鱼分析（以QQ空间某恶意链接为例）</a></li>
-<li><a href="https://blog.lyle.ac.cn/2018/12/08/idnfuzz/">IDN Spoof漏洞自动化挖掘</a></li>
-<li><a href="http://zt.360.cn/1101061855.php?dtid=1101062514&did=491163339">2017中国企业邮箱安全性 研究报告</a></li>
-<li><a href="https://blog.csdn.net/Eastmount/article/details/108728139">[译] APT分析报告：02.钓鱼邮件网址混淆URL逃避检测</a></li>
-</ol>
-</blockquote>
-<h2 id="其他知识"><a href="#其他知识" class="headerlink" title="其他知识"></a>其他知识</h2><h3 id="邮件的各个字段"><a href="#邮件的各个字段" class="headerlink" title="邮件的各个字段"></a>邮件的各个字段</h3><table>
-<thead>
-<tr>
-<th>字段</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>x-mailer</td>
-<td>发送邮件用到的客户端</td>
-</tr>
-<tr>
-<td>from</td>
-<td>显示给用户看到的发件人</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>近几年的顶级会议中出现过相关的文章，2020年的USENIX和2018年USENIX分别有一篇相关的论文，其中20年关注的是如何绕过，18年关注的是如何检测；</p>
-<blockquote>
-<p>[2018 USENIX] End-to-End Measurements of Email Spoofing Attacks</p>
-<p>[2020 USENIX] Composition Kills: A Case Study of Email Sender Authentication</p>
-</blockquote>
-<h3 id="伪造发件人"><a href="#伪造发件人" class="headerlink" title="伪造发件人"></a>伪造发件人</h3><p>SMTP协议本身在设计时是没有考虑很多安全方面的问题（身份识别）的</p>
-<p>其中包含<code>Mail From</code>, <code>From</code>等字段</p>
-<blockquote>
-<p>Mail From: The first represents the user who <em>transmitted</em> the message, and is usually not displayed to the recipient. </p>
-<p>From: The second represents the user who <em>composed</em> the message, and is visible to the recipient.</p>
-</blockquote>
-<p>除了这两个字段，SMTP协议还有诸如*<code>Hello</code>, <code>Sender</code>, <code>Resent-From</code>*等字段，都是用来标示发信的用户的；</p>
-<p>为了对抗邮件发件人伪造的攻击，后续又在SMTP协议中增加了很多认证的方式，包括SPF、DKIM、DMARC、BIMI、ARC等；前三种认证方案应用的比较广，而后两个目前还没有被广泛应用；</p>
-<h4 id="Sender-Policy-Framework-SPF"><a href="#Sender-Policy-Framework-SPF" class="headerlink" title="Sender Policy Framework (SPF)"></a>Sender Policy Framework (SPF)</h4><p>假设邮件服务器收到了一封邮件，来自主机的 IP 是<code>173.194.72.103</code>，并且声称发件人为<code>email@example.com</code>。为了确认发件人不是伪造的，邮件服务器会去查询<code>example.com</code>的 SPF 记录。如果该域的 SPF 记录设置允许 IP 为<code>173.194.72.103</code>的主机发送邮件，则服务器就认为这封邮件是合法的；如果不允许，则通常会退信，或将其标记为垃圾/仿冒邮件。</p>
-<p>每一条SPF的记录会包含多种类型</p>
-<ul>
-<li>all</li>
-<li>ip4</li>
-<li>ip6</li>
-<li>a</li>
-<li>mx</li>
-<li>ptr</li>
-<li>exsits</li>
-<li>include</li>
-</ul>
-<p>每一种会存在这样几种类型的结果</p>
-<table>
-<thead>
-<tr>
-<th>结果</th>
-<th>处理方法</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Pass</td>
-<td>查到记录合法，接收邮件</td>
-</tr>
-<tr>
-<td>Fail</td>
-<td>查到记录非法，退信</td>
-</tr>
-<tr>
-<td>Neutral</td>
-<td>查询记录没有查到是否合法</td>
-</tr>
-<tr>
-<td>None</td>
-<td>没有查询到服务器存在SPF记录</td>
-</tr>
-</tbody></table>
-<h3 id="伪造邮件的特点"><a href="#伪造邮件的特点" class="headerlink" title="伪造邮件的特点"></a>伪造邮件的特点</h3><p>伪造邮件一般伪造的是From这个字段，在用户收到邮件时，一般也是这个字段显示在页面中</p>
-<p>即看到的发件人；</p>
-<h4 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h4><p>有一些邮件伪造发件人可能是想要钓鱼，用户点击链接跳转后输入用户名密码，导致用户名密码被窃取</p>
-<p>这样的特征是**<em>邮件内容中的链接和实际跳转的链接不一致**</em></p>
-<h4 id="Message-ID"><a href="#Message-ID" class="headerlink" title="Message-ID"></a>Message-ID</h4><p>正常来说这个字段是发送方添加的；</p>
-<p>但是伪造邮件有时候会添加多个Received字段，导致这里Message-ID这个字段是中转的服务器添加的。</p>
-<h2 id="A-Large-Scale-Analysis-of-Email-Sender-Sproofing-Attacks"><a href="#A-Large-Scale-Analysis-of-Email-Sender-Sproofing-Attacks" class="headerlink" title="A Large Scale Analysis of Email Sender Sproofing Attacks"></a>A Large Scale Analysis of Email Sender Sproofing Attacks</h2><p>weak link authentications chains</p>
-<p>这是清华的团队发在2021USENIX上的一篇论文，提前给我们分享了一些做的东西</p>
-<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>14种sproofing攻击方式，9种是新的</p>
-<p>对30种流行邮件商23种邮件客户端进行测量，都是存在安全脆弱点的</p>
-<h3 id="background"><a href="#background" class="headerlink" title="background"></a>background</h3><p>存在三种验证协议</p>
-<ul>
-<li>SPF</li>
-<li>DKIM</li>
-<li>DMARC</li>
-</ul>
-<p>邮件传输中存在四种角色</p>
-<p>Sender、Receiver、Forwarders、UI renders</p>
-<p>这就导致，有些厂商对发送时的验证很严格，但是因此对收时就比较松</p>
-<h3 id="Attacks"><a href="#Attacks" class="headerlink" title="Attacks"></a>Attacks</h3><ol>
-<li>shared MTA attack</li>
-<li>Direct MTA attack</li>
-<li>Forward MTA attack</li>
-</ol>
-<p>receiving verification</p>
-<p>退信时会发一个mail from为空的邮件</p>
-<p>通过这个机制，将mail from置为空可以绕过</p>
-<p>多个from字段的</p>
-<p>一个from多个address的</p>
-<p><code>：“（\</code>这样的特殊字符绕过from，使前端显示正常</p>
-<p>from字段utf编码，在验证时由于编码没有进行检测，但是显示时就可能直接显示出来</p>
-<p>Forwarding Verification</p>
-<p>转发邮件时增加dkim这样的签名，使收到的客户端增强信任度</p>
-<p>IDN域名</p>
-<p>通过unicode控制从右到左显示的字符，最后被渲染成的样子是被伪造的样子</p>
-<h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h3><p><a href="https://github.com/mo-xiaoxi/EmailSproofingTestTool">https://github.com/mo-xiaoxi/EmailSproofingTestTool</a></p>
-<p><a href="https://chrome.google.com/website/detail/nosproofing/ehidaopjcnapdglbbbjgeoagpophfjnp">https://chrome.google.com/website/detail/nosproofing/ehidaopjcnapdglbbbjgeoagpophfjnp</a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>macOS上的qemu</title>
-    <url>/2020/10/30/macOS%E4%B8%8A%E7%9A%84qemu/</url>
-    <content><![CDATA[<p>主要是想用qemu的系统模式来调试路由器里的二进制程序，如果用linux虚拟机再加一层qemu有点套娃，而且没办法用mac里的IDA连接过去调试。</p>
-<p>这里记录一下配置各种环境的坑；</p>
-<h2 id="buildroot编译gdb和gdbserver"><a href="#buildroot编译gdb和gdbserver" class="headerlink" title="buildroot编译gdb和gdbserver"></a>buildroot编译gdb和gdbserver</h2><p>buildroot本身是可以编译出一套固件，同时还可以配置好host机的调试环境以及交叉编译的环境；</p>
-<p>配置buildroot的博客还是有不少的，但是质量感人；</p>
-<h3 id="配置buildroot"><a href="#配置buildroot" class="headerlink" title="配置buildroot"></a>配置buildroot</h3><p>首先下载buildroot，官网<a href="https://buildroot.org/">buildroot.org</a></p>
-<p>下载下来之后解压，之后准备编译，依赖的话需要一个<code>libncurse-dev</code>，其他的包一般应该都有装</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
-
-<p>进入一个选择界面</p>
-<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201106151300225.png" alt="image-20201106151300225"></p>
-<p>首先简单介绍一下交叉编译时的几个选项</p>
-<ul>
-<li><code>host</code></li>
-<li><code>target</code></li>
-<li></li>
-</ul>
-<p>在buildroot编译时可能遇到的问题：</p>
-<h3 id="报错137"><a href="#报错137" class="headerlink" title="报错137"></a>报错137</h3><p>Error 137，这个错误出现的原因是因为swap空间不足</p>
-<p>解决方法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user@~: su</span><br><span class="line">root@/home/user: dd <span class="keyword">if</span>=/dev/zero of=/home/swap bs=1024 count=2048000</span><br><span class="line">root@/home/user: mkswap /home/swap</span><br><span class="line">root@/home/user: swapon /home/swap</span><br></pre></td></tr></table></figure>
-
-<p>这样新增一个swap分区之后再编译时就不会出现这个报错了</p>
-<p>如果要检查一下swap分区是否加载了进去</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">free -m</span><br></pre></td></tr></table></figure>
-
-<p>可以看到目前的内存和swap分区使用情况</p>
-<h2 id="gdb连接到gdbserver时报错"><a href="#gdb连接到gdbserver时报错" class="headerlink" title="gdb连接到gdbserver时报错"></a>gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Ignoring packet error, continuing...</span><br><span class="line">warning: unrecognized item &quot;timeout&quot; in &quot;qSupported&quot; response</span><br><span class="line">Ignoring packet error, continuing...</span><br><span class="line">Remote replied unexpectedly to &#39;vMustReplyEmpty&#39;: timeout</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>IDA反编译出错</title>
-    <url>/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/</url>
-    <content><![CDATA[<h2 id="报错Decompile-Error"><a href="#报错Decompile-Error" class="headerlink" title="报错Decompile Error"></a>报错Decompile Error</h2><p>提示为某一个地址analysis failed</p>
-<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111005929.png" alt="image-20201106111005929"></p>
-<p>找到这个对应的地址，发现是一个<code>call scanf</code></p>
-<p>可能是这个<code>scanf</code>的参数解析出现了错误</p>
-<p>在scanf上按Y重新定义</p>
-<p>写上正确的定义</p>
-<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111142655.png" alt="image-20201106111142655"></p>
-<p>之后就可以反编译了</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>ROP进阶</title>
-    <url>/2020/11/06/ROP%E8%BF%9B%E9%98%B6/</url>
-    <content><![CDATA[<p>ROP本身原理还是比较好理解的，简单的ROP做了一些题之后就比较熟练了，更难的ROP还是要一点一点学一下原理；</p>
-<p>记一下各种类型的ROP原理；</p>
-<a id="more"></a>
-
-<h2 id="ret2text"><a href="#ret2text" class="headerlink" title="ret2text"></a>ret2text</h2><p>最基本的ROP，溢出返回地址之后跳到text节，这种情况一般只有在NX没有开启时才可能</p>
-<h2 id="ret2syscall"><a href="#ret2syscall" class="headerlink" title="ret2syscall"></a>ret2syscall</h2><p>在栈不可执行被开启后，如果程序中存在关键的系统调用，如<code>system</code>、<code>execve</code>等，就可以返回到这里；</p>
-<p>覆盖了返回地址之后填成相应的函数，调用<code>system</code>等等</p>
-<h2 id="ret2shellcode"><a href="#ret2shellcode" class="headerlink" title="ret2shellcode"></a>ret2shellcode</h2><p>有时候可能可以在内存中写入可控的shellcode，但是在开启了NX后栈是不可执行的；</p>
-<p>因此shellcode就需要写如到如bss段这样的区域，并且可能还需要通过mprotect修改bss段的写权限和执行权限</p>
-<h2 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h2><p>在程序本身没有引入我们需要的函数，如<code>system</code>、<code>execve</code>等时，我们可以采用这样的方法。</p>
-<p>使用ret2libc需要首先知道libc在内存中的加载基地址，一般需要通过write、puts、printf这样的函数首先输出程序中某个函数在内存中的地址，根据这个地址计算出libc在内存中的基地址。</p>
-<p>之后用基地址加上相应想要调用函数在libc中的偏移就可以跳到libc中某个特定函数处了。</p>
-<h2 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h2><p>上面的一些rop都是比较基本的类型，原理都很清楚了，平时也用的比较多，从这个开始就属于比较难一些，用到了一些奇奇怪怪得机制的rop。</p>
-<p>在64位的程序中，函数调用时传参的顺序是优先经过寄存器的，前六个参数分别是放在rdi, rsi, rdx, rcx, r8, r9</p>
-<p>但是在程序中不一定都会存在<code>pop rdi; ret;</code>这样的gadget，想要同时控制这些寄存器的值就可以用到ret2csu</p>
-<p>这里最主要用到的一个函数就是<code>__libc_csu_init</code></p>
-<p>这个函数是libc在初始化时用到的，因此一般程序都会调用到</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:0000000000400540 __libc_csu_init proc near               </span><br><span class="line">.text:0000000000400540 ; __unwind &#123;</span><br><span class="line">.text:0000000000400540                 push    r15</span><br><span class="line">.text:0000000000400542                 push    r14</span><br><span class="line">.text:0000000000400544                 mov     r15d, edi</span><br><span class="line">.text:0000000000400547                 push    r13</span><br><span class="line">.text:0000000000400549                 push    r12</span><br><span class="line">.text:000000000040054B                 lea     r12, __frame_dummy_init_array_entry</span><br><span class="line">.text:0000000000400552                 push    rbp</span><br><span class="line">.text:0000000000400553                 lea     rbp, __do_global_dtors_aux_fini_array_entry</span><br><span class="line">.text:000000000040055A                 push    rbx</span><br><span class="line">.text:000000000040055B                 mov     r14, rsi</span><br><span class="line">.text:000000000040055E                 mov     r13, rdx</span><br><span class="line">.text:0000000000400561                 sub     rbp, r12</span><br><span class="line">.text:0000000000400564                 sub     rsp, 8</span><br><span class="line">.text:0000000000400568                 sar     rbp, 3</span><br><span class="line">.text:000000000040056C                 call    _init_proc</span><br><span class="line">.text:0000000000400571                 test    rbp, rbp</span><br><span class="line">.text:0000000000400574                 jz      short loc_400596</span><br><span class="line">.text:0000000000400576                 xor     ebx, ebx</span><br><span class="line">.text:0000000000400578                 nop     dword ptr [rax+rax+00000000h]</span><br><span class="line">.text:0000000000400580</span><br><span class="line">.text:0000000000400580 loc_400580:                             </span><br><span class="line">.text:0000000000400580                 mov     rdx, r13</span><br><span class="line">.text:0000000000400583                 mov     rsi, r14</span><br><span class="line">.text:0000000000400586                 mov     edi, r15d</span><br><span class="line">.text:0000000000400589                 call    qword ptr [r12+rbx*8]</span><br><span class="line">.text:000000000040058D                 add     rbx, 1</span><br><span class="line">.text:0000000000400591                 cmp     rbx, rbp</span><br><span class="line">.text:0000000000400594                 jnz     short loc_400580</span><br><span class="line">.text:0000000000400596</span><br><span class="line">.text:0000000000400596 loc_400596:                             </span><br><span class="line">.text:0000000000400596                 add     rsp, 8</span><br><span class="line">.text:000000000040059A                 pop     rbx</span><br><span class="line">.text:000000000040059B                 pop     rbp</span><br><span class="line">.text:000000000040059C                 pop     r12</span><br><span class="line">.text:000000000040059E                 pop     r13</span><br><span class="line">.text:00000000004005A0                 pop     r14</span><br><span class="line">.text:00000000004005A2                 pop     r15</span><br><span class="line">.text:00000000004005A4                 retn</span><br><span class="line">.text:00000000004005A4 ; &#125; &#x2F;&#x2F; starts at 400540</span><br><span class="line">.text:00000000004005A4 __libc_csu_init endp</span><br></pre></td></tr></table></figure>
-
-<p>不同的版本可能存在一些差异，这是一道题目中的例子</p>
-<p>这个函数存在这些特点：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:000000000040059A                 pop     rbx</span><br><span class="line">.text:000000000040059B                 pop     rbp</span><br><span class="line">.text:000000000040059C                 pop     r12</span><br><span class="line">.text:000000000040059E                 pop     r13</span><br><span class="line">.text:00000000004005A0                 pop     r14</span><br><span class="line">.text:00000000004005A2                 pop     r15</span><br><span class="line">.text:00000000004005A4                 retn</span><br></pre></td></tr></table></figure>
-
-<p>最后一部分又连续的一段pop，这里我可以通过控制栈上的数据，之后调用这里的gadget，使得<code>rbx</code>、<code>rbp</code>、<code>r12</code>、<code>r13</code>、<code>r14</code>、<code>r15</code>几个寄存器都可以被我们控制</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:0000000000400580                 mov     rdx, r13</span><br><span class="line">.text:0000000000400583                 mov     rsi, r14</span><br><span class="line">.text:0000000000400586                 mov     edi, r15d</span><br><span class="line">.text:0000000000400589                 call    qword ptr [r12+rbx*8]</span><br></pre></td></tr></table></figure>
-
-<p>这一段代码可以让我们控制rdx、rsi、edi，其中edi这里其实高32位为全0，所以其实也可以控制rdi，但是只能设置其中低32位的值，这三个寄存器是64位程序传参时的前三个参数的位置</p>
-<p>最后的那个call，我们也可以通过前面的一串pop，来控制rbx和r12的值，使得call到我们想去的地方</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.text:000000000040058D                 add     rbx, 1</span><br><span class="line">.text:0000000000400591                 cmp     rbx, rbp</span><br><span class="line">.text:0000000000400594                 jnz     short loc_400580</span><br></pre></td></tr></table></figure>
-
-<p>在上面的一串代码执行结束后来到下面这样一个判断，这里可以设置rbx和rbp的值为<code>rbx+1=rbp</code></p>
-<p>这样在这一块前面的call执行结束后就不会跳回去，可以继续执行后面的程序</p>
-]]></content>
-      <categories>
-        <category>pwn</category>
-      </categories>
-      <tags>
         <tag>pwn</tag>
       </tags>
   </entry>

@@ -27,12 +27,26 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe7第七道CrackMe 作者aLoNg3x 程序运行状态  和上一次的长得有点像，点击About说目的类似，是要隐藏那个Register键   这一次直接就可以点，也没有什么其他特别的地方了 有一点比较在意，他说CANNOT patch the .exe 这一句不知道什么意思 逆向分析首先还是搜索字符串   这次找到这样的内容 定位过去之后Great附近倒是一下子没看出什么 拖到De">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304204903573.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304205042352.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304205317952.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304205703535.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304205746750.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304205850666.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304220225327.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304220310483.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304220409030.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304220628711.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304220813850.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304222147224.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304222235191.png">
 <meta property="article:published_time" content="2020-03-04T14:26:36.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.482Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/03/04/CrackMe-Day7/image-20200304204903573.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/03/04/CrackMe-Day7/">
 
@@ -256,30 +270,30 @@
       
         <h1 id="CrackMe7"><a href="#CrackMe7" class="headerlink" title="CrackMe7"></a>CrackMe7</h1><p>第七道CrackMe</p>
 <p>作者aLoNg3x</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><img src="/2020/03/04/CrackMe-Day7/image-20200304204903573.png" class="">
 
 <p>和上一次的长得有点像，点击About说目的类似，是要隐藏那个Register键</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205042352.png" class="">
 
 <p>这一次直接就可以点，也没有什么其他特别的地方了</p>
 <p>有一点比较在意，他说<code>CANNOT patch the .exe</code></p>
 <p>这一句不知道什么意思</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是搜索字符串</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205317952.png" class="">
 
 <p>这次找到这样的内容</p>
 <p>定位过去之后Great附近倒是一下子没看出什么</p>
 <p>拖到<code>DeDeDark</code>看了一下控件和事件</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205703535.png" class="">
 
 <p>发现这一次几个事件都是Click相关的，但是一共3个按键怎么4个事件呢</p>
 <p>另外还有一个比较奇怪的事情，上面找到的那个Great居然是在CancellaClick中</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205746750.png" class="">
 
 <p>控件这边也能看到这个Again</p>
 <p>于是去看一下具体的窗口信息</p>
 <p>果然，找到了这么一个隐藏的窗体</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205850666.png" class="">
 
 <p>但是它是不可见的</p>
 <p>那么这次有可能就是这样的流程：</p>
@@ -287,28 +301,28 @@
 <p>或许这里面还需要点击Cancel那个按键</p>
 <p>那么我们分析一下Register的事件函数</p>
 <h3 id="RegisterzClick"><a href="#RegisterzClick" class="headerlink" title="RegisterzClick"></a>RegisterzClick</h3><p>首先运行，找到第一个跳转，这个跳转判断的是输入的code长度方面的内容</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220225327.png" class="">
 
 <p>这个跳转不用改，下面这个jle是判断Code是否为负数的</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220310483.png" class="">
 
 <p>也不用修改</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220409030.png" class="">
 
 <p>那么就只剩下中间这个je了，修改为jne</p>
 <p>之后运行发现按键变了</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220628711.png" class="">
 
 <p>Register消失，出现了again</p>
 <h2 id="AgainClick"><a href="#AgainClick" class="headerlink" title="AgainClick"></a>AgainClick</h2><p>最初一个条件跳转，和上面一样，是判断长度是否有效的</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220813850.png" class="">
 
 <p>中间一个jle，也是直接正常执行</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304222147224.png" class="">
 
 <p>下面那个je改掉，改成jne</p>
 <p>继续执行</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304222235191.png" class="">
 
 <p>按钮消失了</p>
 <p>感觉目前已经有些直觉一样的哪个跳转要过去，哪个跳转需要修改了；</p>

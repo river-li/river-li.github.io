@@ -27,11 +27,27 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="拿到的第三台机器的权限，还是一个active的，虽然也是个easy">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/nmap.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/gobuster.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/music.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/ona.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/exploitdb.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/foothold.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/pass.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/jimmy.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/jimmy.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/apache.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/ssh-key.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/rockyou.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/joanna.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/sudo.png">
+<meta property="og:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/root.png">
 <meta property="article:published_time" content="2020-01-14T12:25:55.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.507Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/nmap.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/01/14/HTB-OpenAdmin/">
 
@@ -257,62 +273,62 @@
 <a id="more"></a>
 
 <h2 id="foothold"><a href="#foothold" class="headerlink" title="foothold"></a>foothold</h2><p>首先进行nmap扫描</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/nmap.png" class="" title="nmap.png">
 
 <p>发现开启了80端口和22端口</p>
 <p>下面对80端口的目录进行扫描</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/gobuster.png" class="" title="gobuster.png">
 
 <p>发现了两个目录，<code>/artwork</code>和<code>/music</code></p>
 <p>两个目录分别访问了一下，在<code>/artwork</code>没有什么发现，但是在<code>/music</code>发现存在一个登录的位置</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/music.png" class="" title="music.png">
 
 <p>进去发现是一个叫做ona的东西，仔细看一下发现是<code>opennetadmin</code></p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/ona.png" class="" title="ona.png">
 
 <p>于是更新了一下<code>exploitdb</code>,搜索一下有没有相关的漏洞</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/exploitdb.png" class="" title="exploitdb.png">
 
 <p>运行，获取到<code>www-data</code>权限</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/foothold.png" class="" title="foothold.png">
 
 
 
 <h2 id="Jimmy"><a href="#Jimmy" class="headerlink" title="Jimmy"></a>Jimmy</h2><p>获得到<code>www-data</code>权限后，在当前的目录下查看文件，找到了一个配置文件中包含密码</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/pass.png" class="" title="pass.png">
 
 <p>之后<code>ls /home</code> 发现存在两个用户，分别是<code>jimmy</code>和<code>joanna</code></p>
 <p>用这个文件的密码尝试登录，发现是<code>jimmy</code>的密码</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/jimmy.png" class="" title="jimmy.png">
 
 
 
 <h2 id="joanna"><a href="#joanna" class="headerlink" title="joanna"></a>joanna</h2><p>获取到<code>jimmy</code>的权限后，在根目录没有发现<code>user.txt</code>，因此可能在<code>joanna</code>的目录中</p>
 <p>继续查看文件，在<code>/var/www/internal</code>中发现了一个<code>php</code>文件</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/jimmy.png" class="" title="jimmy.png">
 
 <p>根据名字推测可能是开放了只有内网才可以访问的端口，在<code>apache</code>的配置文件目录那里找到了一个配置文件</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/apache.png" class="" title="apache.png">
 
 <p>文件提示开放的端口是52846</p>
 <p>结合上面看到的<code>main.php</code>使用<code>jimmy</code>的权限发起请求，得到了<code>joanna</code>的<code>ssh-key</code></p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/ssh-key.png" class="" title="ssh-key.png">
 
 <p>这个key经过了加密，使用ssh2john转换之后再用john进行爆破，这里字典用的是<code>rockyou.txt</code></p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/rockyou.png" class="" title="rockyou.png">
 
 <p>这里得到了<code>joanna</code>的<code>passphrase</code></p>
 <p>使用这个key连接，得到joanna的权限</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/joanna.png" class="" title="joanna.png">
 
 
 
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>获取到joanna的权限后上传了一个<code>lse.sh</code></p>
 <p>扫描之后发现存在sudo不需要密码的问题</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/sudo.png" class="" title="sudo.png">
 
 <p>最后结合gtfobins中nano的条目绕过，获得root权限</p>
-
+<img src="/2020/01/14/HTB-OpenAdmin/root.png" class="" title="root.png">
     </div>
 
     

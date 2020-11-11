@@ -27,10 +27,18 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="Semantic-Aware Attack Detection for PowerShell ScriptsAbstract近年来PowerShell脚本在APT、勒索软件、钓鱼邮件等攻击中出现的频率越来越高，然而PowerShell脚本的语言从设计时就是动态的并能够以不同级别组建脚本，基于state-of-the-art的静态分析PowerShell攻击检测天然的易受攻击混淆。 文中为了解决该问">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/overview.png">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/subtree-workflow.png">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/pipeline.png">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/assignment.png">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/f7.png">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/sad-workflow.png">
+<meta property="og:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/ooa.png">
 <meta property="article:published_time" content="2019-10-08T07:16:06.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.399Z">
 <meta property="article:author" content="River Li">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/overview.png">
 
 <link rel="canonical" href="https://river-li.xyz/2019/10/08/Powershell-Scripts-Detection/">
 
@@ -297,7 +305,7 @@
 <p>$Url = “{9}…{26}”-f’ellE’…’s1’</p>
 </blockquote>
 <h4 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h4><p>这是实际应用最常见的混淆方式，编码后的代码只能反映很少一部分原本代码的信息</p>
-<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><img src="/2019/10/08/Powershell-Scripts-Detection/overview.png" class="" title="overview.png">
 
 <h3 id="Deobfuscation-phase"><a href="#Deobfuscation-phase" class="headerlink" title="Deobfuscation phase"></a>Deobfuscation phase</h3><p>这一过程中使用到了基于子树的方法来利用powershell的特征</p>
 <p>将AST的子树作为混淆的最小单位，对这些子树施行复原最终构建去混淆的脚本，去混淆的脚本之后会用在训练和检测中</p>
@@ -320,7 +328,7 @@
 <p>recoverable pieces在AST中相关的子树为recoverable subtress</p>
 <p>只要能找到这些片段，就可以直接用嵌入的恢复算法恢复出原本的代码片段</p>
 <p>然而在实际应用中，recoverable和脚本的其他部分并没有明显的界限尤其是代码呗多次混淆的情况下。为了解决这一问题论文中提出了基于AST子树定位可恢复代码片段，并重建原代码的方法</p>
-<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3>
+<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3><img src="/2019/10/08/Powershell-Scripts-Detection/subtree-workflow.png" class="" title="subtree-workflow.png">
 
 <p>总体上来说分五步骤</p>
 <ol>
@@ -341,9 +349,9 @@
 <li>AssignmentStatementAst节点的第二个子树</li>
 </ul>
 <p>这两种类型的子树为可疑的子树，下图红色为Pipeline类型蓝色为AssignmentStatementAst类型</p>
+<img src="/2019/10/08/Powershell-Scripts-Detection/pipeline.png" class="" title="pipeline.png">
 
-
-
+<img src="/2019/10/08/Powershell-Scripts-Detection/assignment.png" class="" title="assignment.png">
 
 <p>这样可以显著的减少需要检测的类型</p>
 <p>基于这种思想，将AST以广度优先搜索，并将可以节点按照顺序压栈待处理</p>
@@ -370,13 +378,13 @@
 <p>由于遍历顺序是自底向上的，总会有一个高层次的子树是recoverable的且包含了当前这个子树。</p>
 <h3 id="AST-Update"><a href="#AST-Update" class="headerlink" title="AST Update"></a>AST Update</h3><p>上一步结束后需要将AST中的混淆部分进行替换，这里主要有两个步骤，首先替换recoveable subtrees为recovered subtrees；另外就是代码片段中改变的部分也需要更新。</p>
 <p>实现时存储需要更新的子树根节点，从下向上传递。</p>
-<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> 
+<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> <img src="/2019/10/08/Powershell-Scripts-Detection/f7.png" class="" title="f7.png">
 
 <p>在重新构建代码后，我们可以得到一个和原本代码具有相同语义的代码，但是语法上两者仍有差别，这些差异主要由混淆过程导致。</p>
 <p>混淆过程中为了方便解释器理解代码引入了token，例如<code>(&quot;DownloadFile&quot;).invoke($url)</code>中<code>invoke</code>告诉解释器<code>DownloadFile</code>应该被当作一个成员函数而<code>$url</code>是其参数</p>
 <p>同时混淆过程中还会引入一些额外的括号，因此在Post processing过程中这些语法层面上的内容会被修正</p>
 <h2 id="Sematic-Aware-Powershell-Attack-Detection"><a href="#Sematic-Aware-Powershell-Attack-Detection" class="headerlink" title="Sematic-Aware Powershell Attack Detection"></a>Sematic-Aware Powershell Attack Detection</h2><p>系统总体工作流程如下：</p>
-
+<img src="/2019/10/08/Powershell-Scripts-Detection/sad-workflow.png" class="" title="sad-workflow.png">
 
 <p>语义分析上的攻击检测对多态变量名具有更好的效果，同时系统的鲁棒性比较好</p>
 <p>二进制程序分析中经常使用各种图、控制流图、依赖图等而不是API集合来表现语义特征，这是由于API集合只包含低层次的语义，比较容易误判</p>
@@ -388,7 +396,7 @@
 <li>删除武关子夫</li>
 <li>检查别名</li>
 </ul>
-<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4>
+<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4><img src="/2019/10/08/Powershell-Scripts-Detection/ooa.png" class="" title="ooa.png">
 
 <p>提取OOA rules的方法需要两个步骤：首先使用FP-growth算法生成频率模式，之后选择计算符合要求的模式即分数大于设置的阈值的模式。特别的support标识恶意的可能性，而confidence标识正常的可能性</p>
 <p>$$ support(I,Obj) = \frac{count(I \cup {Obj},DB)}{|DB|}$$</p>

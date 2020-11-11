@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 15:00:18" itemprop="dateModified" datetime="2020-11-04T15:00:18+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:39:48" itemprop="dateModified" datetime="2020-11-11T09:39:48+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -253,38 +253,14 @@
           <h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
 <p>作者attackiko</p>
 <p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
-<p><a href="./image-20200309172308082.png"></a></p>
-<p>输入错误后获得一个弹窗</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309172335715.png" class="">
-
-
-
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309172453445.png" class="">
-
-<p>用Exeinfo看了一下</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309181655765.png" class="">
-
-<p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309181743824.png" class="">
-
-<p>得，居然是DOS的程序</p>
-<p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
-<p>具体动态分析时网上建议的环境是<code>win95+TRW2000</code></p>
-<p>这还要专门装虚拟机就有点麻烦了，毕竟16位的程序一般也很少见了，这年头32位的程序都要逐渐被淘汰了，不过如果不能动态跑起来，至少看一下别人的WP达到能看懂的程度吧。</p>
-<h2 id="WP学习"><a href="#WP学习" class="headerlink" title="WP学习"></a>WP学习</h2><p>首先还是根据错误字符串定位程序的关键代码入口</p>
-<p>逆向的代码里看到有很多浮点运算相关的汇编指令，平常用的不是很多</p>
-<p>大致流程看别人的write up梳理的很清楚</p>
-<ol>
-<li>获取所有字符求和记为<code>ldsum</code>，长度记为<code>len</code></li>
-<li>计算<code>cos(ldsum(sqrt(ldsum*d1)+ln(ldsum/2))+sin(len)*cos(len*ldsum))</code></li>
-<li>将结果作为科学计数法保存为字符串，记录E前面的17位为一个长度17的字符串记为S17</li>
-<li>通过17位中的8位进行一个简单的加减法，得到一个新的9位记为S9</li>
-<li>上面9位的结果S9所有字符ASC求和+len和<code>9*S17[4]+4*S17[5]+20</code>比较是否相等</li>
-</ol>
-<p>看到的一个教程贴，这里先mark一下吧，这道题看上去挺复杂的，之后进一步学习可以再对着学一下<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-906688-1-1.html">https://www.52pojie.cn/thread-906688-1-1.html</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/09/CrackMe-Day12/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -360,24 +336,24 @@
           <h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308174224014.png" class="">
 
 <p>虽然能输入，但是没有找到有回车之类的按键</p>
 <p>推测是不是实时检测的，如果对了就自动成功</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><img src="/2020/03/08/CrackMe-Day11/image-20200308175443437.png" class="">
 
 <p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
 <p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308182243874.png" class="">
 
 <p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
 <p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308194754661.png" class="">
 
 <p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
 <p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
 <p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308194631026.png" class="">
 
 
 
@@ -386,26 +362,26 @@
 <p><code>dword ptr ss:[ebp-0x34]</code></p>
 <p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
 <p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308195525622.png" class="">
 
 
 
 <p>看一下循环中调用了哪些API</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308204138395.png" class="">
 
 <p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
 <p>获得str、之后转换为ASCII码</p>
 <p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
 <p>准备反编译看一下，找来了VB Decompiler</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222148547.png" class="">
 
 <p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
 <p>还有4个时间器的函数</p>
 <p>其中有一个click的函数和其他的不太一样</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222738802.png" class="">
 
 <p>对比一下</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222753112.png" class="">
 
 <p>发现多了长度减一，这个应该是退格键</p>
 <p>检查一下时间器的代码，发现四个时间器代码都差不多</p>
@@ -509,49 +485,49 @@
           <h1 id="CrackMe10"><a href="#CrackMe10" class="headerlink" title="CrackMe10"></a>CrackMe10</h1><p>第十道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>运行，窗口和第八题长得一样，只有一个序列号，但是难度是difficult</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307121620307.png" class="">
 
 <p>略慌，输入之后弹窗也和之前一样</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307121646873.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查找字符串</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185556507.png" class="">
 
 <p>在Right上方找到关键跳转</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185540489.png" class="">
 
 <p>修改为jne试试看</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185636538.png" class="">
 
 <p>直接爆破成功了。。</p>
 <p>不过看题目描述难度比较高，还是进一步看一下吧</p>
 <h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>在搜索字符串的时候应该就注意到了，有一个奇怪的字符串</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307190912877.png" class="">
 
 <p>这个字符串是最后关键跳转上面的一个call，再观察发现这上面不远有一个向上的jump</p>
 <p>并且这个jump跳转之前还有一个<code>__vbaVarForNext</code>，虽然没写过VBA的程序，但是根据调用的API名字我们可以推测这是个循环</p>
 <p>对输入的字符串进行处理，每一个字符进行一定转换之后要求得到这个奇怪的东西，最后不同就跳转</p>
 <p>那么下面就是需要看一下都做了啥</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307192423989.png" class="">
 
 <p>首先这里这个<code>__vbaLenVar</code>对字符串的长度进行获取，结果保存在了ecx中</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307192800985.png" class="">
 
 <p>这里得到具体的字符，之后调用<code>rtcAnsiValueBstr</code>这个函数，将字符转化为了ASCII吗</p>
 <p>紧跟着下面是一个<code>add ax,0xA</code> 对得到的结果加了10;</p>
 <p>下面这个<code>jo</code>之前还真没见过，是如果溢出就跳转</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193051810.png" class="">
 
 <p>之后再调用了这个函数，将ASCII转换回字符</p>
 <p>那么就可以编写一个简单的程序了</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">&#123;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">string</span> target = <span class="string">&quot;kXy^rO|*yXo*m\\kMuOn*+&quot;</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> length = target.size( %&#125;;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;length;i++ %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#123;</span></span></span><br><span class="line"><span class="function"><span class="params">    target[i]=target[i]<span class="number">-0xA</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">cout</span>&lt;&lt;target&lt;&lt;<span class="built_in">endl</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">&#125;</span></span></span><br></pre></td></tr></table></figure>
 
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193821555.png" class="">
 
 <p>得到这个字符串，输入试一下</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193914328.png" class="">
 
 <p>成功</p>
 
@@ -630,25 +606,25 @@
           <h1 id="CrackMe9"><a href="#CrackMe9" class="headerlink" title="CrackMe9"></a>CrackMe9</h1><p>第九道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>和上一道似乎比较类似，也是那种很基础的题目</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151447083.png" class="">
 
 <p>只是多了个name</p>
 <p>而且这个OK键和之前那个比较难的不一样，是只要name和key有东西就可以点击的</p>
 <p>输入错误后提示如下</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151537651.png" class="">
 
 
 
 <p>根据前面那个题目来看，这个难度应该也不大，直接分析</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>搜索字符串</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151647628.png" class="">
 
 <p>跟过去道right那里</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151750407.png" class="">
 
 <p>上面不远有一个je</p>
 <p>在这里下断点，尝试改成jne</p>
-
+<img src="/2020/03/06/CrackMe-Day9/image-20200306151905901.png" class="">
 
 <p>好吧，破解完成</p>
 
@@ -726,43 +702,43 @@
       
           <h1 id="CrackMe8"><a href="#CrackMe8" class="headerlink" title="CrackMe8"></a>CrackMe8</h1><p>第八道CrackMe</p>
 <p>作者Andrnalin</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><img src="/2020/03/05/CrackMe-Day8/image-20200305155740267.png" class="">
 
 <p>窗口这次直接是一个key的输入，和一个ok键</p>
 <p>随便输入东西，之后弹了这么个框</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305155812379.png" class="">
 
 <p>由于之前遇到过这样的问题，可能是类型错误之类的</p>
 <p>输入一次纯数字看看</p>
 <p>弹窗一样</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>由于这次只有一个key，首先想着会不会用grep就能找到flag，试一试</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160115705.png" class="">
 
 <p>都是一堆奇奇怪怪得内容，唯一有点像的也不对</p>
 <p>那么我们开始逆向</p>
 <p>搜索字符串找到这么些内容</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160213190.png" class="">
 
 <p>发现最后一个是错误的提示，跟进去</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160317833.png" class="">
 
 <p>这个往上看可以找到类似成功后的提示字符串</p>
 <p>在这上面不远有一个疑似关键跳转</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160404338.png" class="">
 
 <p>直接改成jnz</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160443079.png" class="">
 
 <p>emmmm，难度突然变低，这就成功了</p>
 <h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>由于这次太水了，准备破天荒的写个注册机看看</p>
 <p>那么首先还是向上看，看到有一处调用strcmp</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160917848.png" class="">
 
 <p>这时的堆栈有点迷，直接就把字符串写出来了</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160648469.png" class="">
 
 <p>行吧，合着连注册机都不用写了</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160820969.png" class="">
 
       
     </div>
@@ -838,30 +814,30 @@
       
           <h1 id="CrackMe7"><a href="#CrackMe7" class="headerlink" title="CrackMe7"></a>CrackMe7</h1><p>第七道CrackMe</p>
 <p>作者aLoNg3x</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><img src="/2020/03/04/CrackMe-Day7/image-20200304204903573.png" class="">
 
 <p>和上一次的长得有点像，点击About说目的类似，是要隐藏那个Register键</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205042352.png" class="">
 
 <p>这一次直接就可以点，也没有什么其他特别的地方了</p>
 <p>有一点比较在意，他说<code>CANNOT patch the .exe</code></p>
 <p>这一句不知道什么意思</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是搜索字符串</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205317952.png" class="">
 
 <p>这次找到这样的内容</p>
 <p>定位过去之后Great附近倒是一下子没看出什么</p>
 <p>拖到<code>DeDeDark</code>看了一下控件和事件</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205703535.png" class="">
 
 <p>发现这一次几个事件都是Click相关的，但是一共3个按键怎么4个事件呢</p>
 <p>另外还有一个比较奇怪的事情，上面找到的那个Great居然是在CancellaClick中</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205746750.png" class="">
 
 <p>控件这边也能看到这个Again</p>
 <p>于是去看一下具体的窗口信息</p>
 <p>果然，找到了这么一个隐藏的窗体</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304205850666.png" class="">
 
 <p>但是它是不可见的</p>
 <p>那么这次有可能就是这样的流程：</p>
@@ -869,28 +845,28 @@
 <p>或许这里面还需要点击Cancel那个按键</p>
 <p>那么我们分析一下Register的事件函数</p>
 <h3 id="RegisterzClick"><a href="#RegisterzClick" class="headerlink" title="RegisterzClick"></a>RegisterzClick</h3><p>首先运行，找到第一个跳转，这个跳转判断的是输入的code长度方面的内容</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220225327.png" class="">
 
 <p>这个跳转不用改，下面这个jle是判断Code是否为负数的</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220310483.png" class="">
 
 <p>也不用修改</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220409030.png" class="">
 
 <p>那么就只剩下中间这个je了，修改为jne</p>
 <p>之后运行发现按键变了</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220628711.png" class="">
 
 <p>Register消失，出现了again</p>
 <h2 id="AgainClick"><a href="#AgainClick" class="headerlink" title="AgainClick"></a>AgainClick</h2><p>最初一个条件跳转，和上面一样，是判断长度是否有效的</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304220813850.png" class="">
 
 <p>中间一个jle，也是直接正常执行</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304222147224.png" class="">
 
 <p>下面那个je改掉，改成jne</p>
 <p>继续执行</p>
-
+<img src="/2020/03/04/CrackMe-Day7/image-20200304222235191.png" class="">
 
 <p>按钮消失了</p>
 <p>感觉目前已经有些直觉一样的哪个跳转要过去，哪个跳转需要修改了；</p>
@@ -947,7 +923,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 15:11:03" itemprop="dateModified" datetime="2020-11-04T15:11:03+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:39:35" itemprop="dateModified" datetime="2020-11-11T09:39:35+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -973,84 +949,14 @@
           <h1 id="CrackMe6"><a href="#CrackMe6" class="headerlink" title="CrackMe6"></a>CrackMe6</h1><p> 第六道CrackMe</p>
 <p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
 <p>作者aLoNg3x</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先窗口一共有两个输入，三个按钮</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303135204271.png" class="">
-
-<p>初始状态下OK是点不了的，点击help会陆续弹框以下内容：</p>
-<ol>
-<li><img src="/2020/03/03/CrackMe-Day6/image-20200303135256166.png" class=""></li>
-<li><img src="/2020/03/03/CrackMe-Day6/image-20200303135310112.png" class="">
-
-</li>
-</ol>
-<p>3和4内容不重要，意思就是如果你需要帮助可以给我发邮件，并留下了邮箱</p>
-<p>提示也给了，我们首先要做的应该就是想办法让程序的逻辑正常，让OK键能够正常按下</p>
-<p>下面开始逆向</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查看字符串</p>
-<p>可以看到Delphi这样的字眼，另外看程序入口点的特征也和前面的程序比较相似</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303135632360.png" class="">
-
-
-
-<p>那么我们还是用上次用过的那个<code>DeDeDark</code>来看一下程序各个控件和事件函数</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303135947440.png" class="">
-
-<p>看到控件和我们看到的也差不太多，就这么几个，除了一个Pannello，不过应该是存放图片的一个Panel吧</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303140052956.png" class="">
-
-<p>事件栏里面可以看到这些事件，三个按钮点击的事件，以及两个输入变化的事件</p>
-<p>另外下面还有五个不知道是啥玩意的事件</p>
-<p>在窗体这里还可以看到每个组件的属性</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303141831901.png" class="">
-
-<p>看到这里OK这个Button的有一个<code>Enabled</code>属性设置为了<code>False</code></p>
-<p>上面说到程序的最终效果是点击确定后隐藏了这两个button</p>
-<p>那么大概的正常流程可能是：修改name、code使得符合要求-&gt;OK键可用-&gt;点击OK-&gt;两个按键隐藏</p>
-<p>那么首先去看一下<code>NomeChange</code>和<code>CodiceChange</code>这两个函数</p>
-<h3 id="NomeChange"><a href="#NomeChange" class="headerlink" title="NomeChange"></a>NomeChange</h3><p>这个函数每次在更改了用户名这个字段时都会触发</p>
-<p>里面有两个跳转比较可疑</p>
-<p>一是函数开始一小段后的这个</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303142737744.png" class="">
-
-<p>这里看到一个cmp紧跟着一个jnz</p>
-<p>下面jnz没有触发的话就将dl置为1，很像是enable</p>
-<p>另一处是下面临近函数结束的一个判断</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303142852210.png" class="">
-
-<p>这个je，也是下面将dl置为了1</p>
-<p>分别修改一下测试</p>
-<p>发现两个jmp都有效果，但是实际上有效果的是<code>mov dl,0x1</code>下面紧跟着的那个call</p>
-<p>那个call对窗口状态进行了刷新的操作，但是这里如果将上面的jnz修改为了jz</p>
-<p>那么下面这个jmp还是会正常下来，触发<code>xor edx,edx</code>以及下面的那个<code>call</code></p>
-<p>这样ok键就又不能用了</p>
-<p>所以我们选择将下面的je修改为jne</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303143359957.png" class="">
-
-<h3 id="CodiceChange"><a href="#CodiceChange" class="headerlink" title="CodiceChange"></a>CodiceChange</h3><p>上面我们修改name字段使得ok键可以点击了</p>
-<p>但是在修改Codice字段时可能又触发了状态的刷新，导致又无法点击了</p>
-<p>进来后发现代码类似呀，也是有两个关键跳转</p>
-<p>我们还是修改下面的那个</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303143659088.png" class="">
-
-<p>之后再怎么修改name和code都可以保持ok键常亮了</p>
-<p>但是这时点击OK还没有预想中的效果，现在就需要具体看一下OK键触发的函数了</p>
-<h3 id="OkClick"><a href="#OkClick" class="headerlink" title="OkClick"></a>OkClick</h3><p>这段代码不是很长，同样也是可以看到两个条件转移</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303144004184.png" class="">
-
-<p>下面的那个je，和之前的类似，如果没有跳转的话会刷新ok键的状态，我们还是先修改了它</p>
-<p>至于上面那个jnz的跳转，发现和前面两个函数的jnz功能不同，调用了另外的函数，将它修改为jz</p>
-<p>运行发现OK键消失了</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303144224298.png" class="">
-
-<p>但是这个Cancella还没去掉呀，咋回事</p>
-<p>那看来有可能在点击Canella这个事件中</p>
-<h3 id="CancellaClick"><a href="#CancellaClick" class="headerlink" title="CancellaClick"></a>CancellaClick</h3><p>整个函数只有一个关键跳转</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303145025917.png" class="">
-
-<p>直接改成jne，搞定</p>
-<img src="/2020/03/03/CrackMe-Day6/image-20200303145135478.png" class="">
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/03/CrackMe-Day6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1100,7 +1006,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 14:59:34" itemprop="dateModified" datetime="2020-11-04T14:59:34+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:39:56" itemprop="dateModified" datetime="2020-11-11T09:39:56+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1125,50 +1031,14 @@
       
           <h1 id="CrackMe4"><a href="#CrackMe4" class="headerlink" title="CrackMe4"></a>CrackMe4</h1><p>第四道CrackMe</p>
 <p>作者ajj</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这道题很奇妙，作者同时附带了一个txt，里面写道这个程序是给朋友的一个挑战</p>
-<p>这个CrackMe 没有确定键</p>
-<p><a href="./image-20200228130932213.png"></a></p>
-<p>使用delphi写的，不过没有确定键，由于没接触过这类程序，还是略没有头绪</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>程序一开始部分的代码很短，只有这么一些，实际最终运行起来的是图中断点的那个call</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228205140589.png" class="">
-
-<p>跟进去看一看</p>
-<p>单步运行到图中这个位置之后就是一个死循环</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228205452132.png" class="">
-
-<p>在这个je这里不停的循环，这时候程序的窗口已经出现了，在不停通过<code>call CKme.00440D38</code>这个指令循环刷新窗口的状态</p>
-<p>跑起来，输入内容之后再暂停，发现暂停在了库中，查看这时的堆栈</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228205724774.png" class="">
-
-<p>是调用了<code>WaitMessage</code>之后在等待，我们转到图中的那个地址<code>0xc</code></p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228205913591.png" class="">
-
-<p>这里下个断点吧，再运行一下，结果又跑回上面那个循环了</p>
-<p>直接硬看没看出什么头绪，还是看一下字符串，能不能找到注册成功的字符串</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228210735421.png" class="">
-
-<p>看到这么一条</p>
-<p>跟随过去，向上查看找到了一个疑似关键跳转</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228210850901.png" class="">
-
-<p><code>nop</code>这个<code>jnz</code></p>
-<p>继续运行，成功了</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228211017033.png" class="">
-
-<p>什么用户名都没输入就ok了</p>
-<p>说实话对这个程序前面的逻辑还是不太清楚</p>
-<p>重新看一下代码</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228211942816.png" class="">
-
-<p>在上面那个关键跳转的上面一段，这块的汇编代码看起来很像是一个函数调用前期的处理</p>
-<p>这实际上是点击了那个panel之后跳转到的代码，也就是说这个程序看上去没有一个确定键，实际上确定键就是那个放图片的panel</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228212807703.png" class="">
-
-<p>实际上似乎是判断字符长度之类的，总共循环了13次的一个循环，最后一个判断</p>
-<img src="/2020/02/28/CrackMe-Day4/image-20200228212750603.png" class="">
-
-<p>  具体要分析算法就需要接着看那个循环里call的几个函数的具体内容了</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/28/CrackMe-Day4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1244,40 +1114,40 @@
           <h1 id="CrackMe3"><a href="#CrackMe3" class="headerlink" title="CrackMe3"></a>CrackMe3</h1><p>第三道CrackMe</p>
 <p>作者AfkayAs</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>启动之后首先有一个动画一样的弹窗</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164603230.png" class="">
 
 <p>之后进入这个界面</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164459599.png" class="">
 
 <p>输入一些字符后点击ok</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164843248.png" class="">
 
 <p>这个弹窗点击确定之后整个程序就会退出</p>
 <p>好像是类型不对导致的，输入序列号全都是数字，正常弹窗</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227173927161.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>拖到OD发现提示代码被压缩</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164944748.png" class="">
 
 <p>也就是说程序可能是带壳的</p>
 <p>于是用Exeinfo打开</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227165226364.png" class="">
 
 <p>提示说没有加壳，那好吧，应该是只有压缩，就直接开干</p>
 <p>我先是一步一步执行看了看，但是没看出啥东西，所以决定还是看看运行错误的堆栈调用</p>
 <p>随便输入序列码，弹窗后在OD暂停程序，菜单栏那里的K查看堆栈的调用</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174113261.png" class="">
 
 <p>看到最下面那个调用是源程序调的，在上面右键，显示调用</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174208155.png" class="">
 
 <p>看到这部分的代码就比较正常，向上看一下有可能存在关键跳转的地方</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174300388.png" class="">
 
 <p>这边有一个je，修改为jne试试看</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174501527.png" class="">
 
 <p>这部分是成功了</p>
 <p>但是题目其实还有一部分要求，就是<code>Kill The Nag</code></p>
@@ -1289,23 +1159,23 @@
 <p>程序执行开始时，先<code>push</code>了一个值，之后<code>call</code>主函数</p>
 <p>由于没有见过VB的程序，我也专门去看了看《使用OllyDbg从零开始Cracking》中的相应章节，里面讲到了一个4C法</p>
 <p>VB的程序都是以push、call开始的</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227211656911.png" class="">
 
 <p>首先在数据窗口跟随第一条指令压栈的值，这个地方就是VB程序的头部</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227215439473.png" class="">
 
 <p>这个头部起始位置加上4C，0x406820</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227221514963.png" class="">
 
 <p>这个位置指向一个区域，跟随过去</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227221701486.png" class="">
 
 <p>这边的代码以50h为单位有两块</p>
 <p>每一块的第24h位置是一个标志位，其中为0的表示这段会被首先执行，之后才是1标志的这段</p>
 <p>这个表示的是程序执行的顺序</p>
 <p>我们将这两个标志位颠倒一下，这样程序启动的主窗口就会先出来了</p>
 <p>重新启动，nga窗口已经消失了</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227222022718.png" class="">
 
 
 
@@ -1394,47 +1264,47 @@
           <h1 id="CrackMe2"><a href="#CrackMe2" class="headerlink" title="CrackMe2"></a>CrackMe2</h1><p>第二道CrackMe</p>
 <p>作者Afkayas</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先在xp下正常运行一下看看</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226154851799.png" class="">
 
 <p>是一个非常标准的输入名称和序列号的这样一个窗口</p>
 <p>随便输入一些之后点击ok</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226154951571.png" class="">
 
 <p>得到了这样一个弹窗</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是用OD打开，对MessageBox下API断点</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155146563.png" class="">
 
 <p>运行，结果居然没断下来</p>
 <p>那看来这个弹窗就不是单纯的直接用MessageBox实现的了</p>
 <p>干脆直接勾选其他所有的弹窗API，重新运行</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155402844.png" class="">
 
 <p>首先是直接在这里断住，但是这时需要填序列号的那个弹窗都还没出现，放过</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155511156.png" class="">
 
 <p>之后出现序列号窗口，修改一下里面的字符串之后，运行</p>
 <p>断在了这里的GetWindowTextA，但是发现这里是一个库里，并不是原本的程序内存</p>
 <p>这里往下一直单步步过，直到离开这个库</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160209239.png" class="">
 
 <p>走到图中位置可以看到栈中存在我们输入的序列号</p>
 <p>这个call下方可以看到一个<code>vbaStrCmp</code></p>
 <p>那这不就好说了，运行到这一步时看到堆栈的两个参数</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160354346.png" class="">
 
 <p>因此那个字符串应该就是序列号了吧</p>
 <p>重新运行一遍</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160707195.png" class="">
 
 <p>哎，难度略低呀，破解成功</p>
 <p>但是这实际上只得到一对序列号，序列号是根据Name来生成的</p>
 <p>所以再进一步看一下</p>
 <p>在上面那个<code>StrCmp</code>执行完之后，再单步运行一段时间可以看到这样的一个jmp</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226161102668.png" class="">
 
 <p>把je修改成jne</p>
 <p>这样就得到了一个随意输入都能成功的程序了</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226161252111.png" class="">
 
 
       

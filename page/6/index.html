@@ -302,13 +302,13 @@
 <p>其实也可以使用john来爆破key，首先使用ssh2john将其转换为john可以爆破的内容，之后直接用john和字典就可以</p>
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>首先做的事情就是查看david的目录下有没有比较有用的内容</p>
 <p>发现david的目录下的结构</p>
-
+<img src="/2019/12/03/HTB-Traverxec/david.jpg" class="" title="david.jpg">
 
 <p>这个<code>bin</code>目录下的server-status.sh比较有趣</p>
-
+<img src="/2019/12/03/HTB-Traverxec/server-stats.jpg" class="" title="server-stats.jpg">
 
 <p>运行这个脚本可以看到</p>
-
+<img src="/2019/12/03/HTB-Traverxec/run.jpg" class="" title="run.jpg">
 
 <p>发现最后一行是使用了<code>sudo</code>运行<code>journalctl</code>这个程序</p>
 <p>但是却没有需要输入david的密码，因此如果可以获得这个程序本身的权限就可以得到root的权限了</p>
@@ -317,9 +317,9 @@
 
 <p>这样也不需要输入密码，最后也是进入了<code>sudo</code>权限的<code>less</code>中</p>
 <p>在<code>less</code>中可以类似<code>vim</code>那样使用<code>!</code>来执行外部的程序</p>
+<img src="/2019/12/03/HTB-Traverxec/root1.jpg" class="" title="root1.jpg">
 
-
-
+<img src="/2019/12/03/HTB-Traverxec/root2.jpg" class="" title="root2.jpg">
 
 <p>done!</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下这个靶机中学到的新知识</p>
@@ -476,7 +476,7 @@
 <h4 id="Vigenere-Cipher"><a href="#Vigenere-Cipher" class="headerlink" title="Vigenere Cipher"></a>Vigenere Cipher</h4><p>维吉尼亚密码</p>
 <p>虽然也是一个置换密码，但是移动的位数是一个随key的每个字符变化的数；</p>
 <p>一般变化方式是通过字母变换的表格，如图所示</p>
-
+<img src="/2019/11/29/Cryptography/0.png" class="" title="0.png">
 
 
 
@@ -612,7 +612,7 @@
 <p>$Url = “{9}…{26}”-f’ellE’…’s1’</p>
 </blockquote>
 <h4 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h4><p>这是实际应用最常见的混淆方式，编码后的代码只能反映很少一部分原本代码的信息</p>
-<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><img src="/2019/10/08/Powershell-Scripts-Detection/overview.png" class="" title="overview.png">
 
 <h3 id="Deobfuscation-phase"><a href="#Deobfuscation-phase" class="headerlink" title="Deobfuscation phase"></a>Deobfuscation phase</h3><p>这一过程中使用到了基于子树的方法来利用powershell的特征</p>
 <p>将AST的子树作为混淆的最小单位，对这些子树施行复原最终构建去混淆的脚本，去混淆的脚本之后会用在训练和检测中</p>
@@ -635,7 +635,7 @@
 <p>recoverable pieces在AST中相关的子树为recoverable subtress</p>
 <p>只要能找到这些片段，就可以直接用嵌入的恢复算法恢复出原本的代码片段</p>
 <p>然而在实际应用中，recoverable和脚本的其他部分并没有明显的界限尤其是代码呗多次混淆的情况下。为了解决这一问题论文中提出了基于AST子树定位可恢复代码片段，并重建原代码的方法</p>
-<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3>
+<h3 id="Subtree-based-Deobfuscation-Approach-Overview"><a href="#Subtree-based-Deobfuscation-Approach-Overview" class="headerlink" title="Subtree-based Deobfuscation Approach Overview"></a>Subtree-based Deobfuscation Approach Overview</h3><img src="/2019/10/08/Powershell-Scripts-Detection/subtree-workflow.png" class="" title="subtree-workflow.png">
 
 <p>总体上来说分五步骤</p>
 <ol>
@@ -656,9 +656,9 @@
 <li>AssignmentStatementAst节点的第二个子树</li>
 </ul>
 <p>这两种类型的子树为可疑的子树，下图红色为Pipeline类型蓝色为AssignmentStatementAst类型</p>
+<img src="/2019/10/08/Powershell-Scripts-Detection/pipeline.png" class="" title="pipeline.png">
 
-
-
+<img src="/2019/10/08/Powershell-Scripts-Detection/assignment.png" class="" title="assignment.png">
 
 <p>这样可以显著的减少需要检测的类型</p>
 <p>基于这种思想，将AST以广度优先搜索，并将可以节点按照顺序压栈待处理</p>
@@ -685,13 +685,13 @@
 <p>由于遍历顺序是自底向上的，总会有一个高层次的子树是recoverable的且包含了当前这个子树。</p>
 <h3 id="AST-Update"><a href="#AST-Update" class="headerlink" title="AST Update"></a>AST Update</h3><p>上一步结束后需要将AST中的混淆部分进行替换，这里主要有两个步骤，首先替换recoveable subtrees为recovered subtrees；另外就是代码片段中改变的部分也需要更新。</p>
 <p>实现时存储需要更新的子树根节点，从下向上传递。</p>
-<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> 
+<h3 id="POST-processing"><a href="#POST-processing" class="headerlink" title="POST processing"></a>POST processing</h3> <img src="/2019/10/08/Powershell-Scripts-Detection/f7.png" class="" title="f7.png">
 
 <p>在重新构建代码后，我们可以得到一个和原本代码具有相同语义的代码，但是语法上两者仍有差别，这些差异主要由混淆过程导致。</p>
 <p>混淆过程中为了方便解释器理解代码引入了token，例如<code>(&quot;DownloadFile&quot;).invoke($url)</code>中<code>invoke</code>告诉解释器<code>DownloadFile</code>应该被当作一个成员函数而<code>$url</code>是其参数</p>
 <p>同时混淆过程中还会引入一些额外的括号，因此在Post processing过程中这些语法层面上的内容会被修正</p>
 <h2 id="Sematic-Aware-Powershell-Attack-Detection"><a href="#Sematic-Aware-Powershell-Attack-Detection" class="headerlink" title="Sematic-Aware Powershell Attack Detection"></a>Sematic-Aware Powershell Attack Detection</h2><p>系统总体工作流程如下：</p>
-
+<img src="/2019/10/08/Powershell-Scripts-Detection/sad-workflow.png" class="" title="sad-workflow.png">
 
 <p>语义分析上的攻击检测对多态变量名具有更好的效果，同时系统的鲁棒性比较好</p>
 <p>二进制程序分析中经常使用各种图、控制流图、依赖图等而不是API集合来表现语义特征，这是由于API集合只包含低层次的语义，比较容易误判</p>
@@ -703,7 +703,7 @@
 <li>删除武关子夫</li>
 <li>检查别名</li>
 </ul>
-<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4>
+<h4 id="OOA"><a href="#OOA" class="headerlink" title="OOA"></a>OOA</h4><img src="/2019/10/08/Powershell-Scripts-Detection/ooa.png" class="" title="ooa.png">
 
 <p>提取OOA rules的方法需要两个步骤：首先使用FP-growth算法生成频率模式，之后选择计算符合要求的模式即分数大于设置的阈值的模式。特别的support标识恶意的可能性，而confidence标识正常的可能性</p>
 <p>$$ support(I,Obj) = \frac{count(I \cup {Obj},DB)}{|DB|}$$</p>
@@ -1193,7 +1193,7 @@
 
 
 <h2 id="Basic-Static-Malware-Analysis"><a href="#Basic-Static-Malware-Analysis" class="headerlink" title="Basic Static Malware Analysis"></a>Basic Static Malware Analysis</h2><p>PE文件的格式如图</p>
-
+<img src="/2019/07/11/Malware-Data-Science-1/1.png" class="" title="1.png">
 
 <p>之前都学过，就不怎么说了</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line">pe = pefile.PE(<span class="string">&quot;ircbot.exe&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> entry <span class="keyword">in</span> pe.DIRECTORY_ENTRY_IMPORT:</span><br><span class="line">    print(entry.dll)</span><br><span class="line">    <span class="keyword">for</span> function <span class="keyword">in</span> entry.imports:</span><br><span class="line">        print(<span class="string">&#x27;\t&#x27;</span>+function.name)</span><br></pre></td></tr></table></figure>

@@ -27,11 +27,14 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="对于学计算机的人来说,Macbook最大的吸引力主要有两点  好用的触摸板手势 正统Unix  Unix就不说了,用起来肯定是比Windows舒服的 触摸板手势这一点主要倒是能够在Coding的时候不用频繁离开键盘去拿鼠标 类似的道理ThinkPad的小红点也有不少人喜欢 不过显然还是干不过MacBook的手势,毕竟确实很方便 考研复习中又想摸鱼了,就把Linux的触摸板搞了一下 今天就要在Lin">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/1.png">
+<meta property="og:image" content="https://river-li.xyz/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/2.png">
 <meta property="article:published_time" content="2019-07-06T10:55:23.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.502Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/1.png">
 
 <link rel="canonical" href="https://river-li.xyz/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/">
 
@@ -265,14 +268,14 @@
 <hr>
 <p>之后用<code>xinput</code>来看一下能不能找到触摸板</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xinput list</span><br></pre></td></tr></table></figure>
-
+<img src="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/1.png" class="" title="1.png">
 
 <p>在这个图里还显示了键盘的设备,还有连的一个微软的无线鼠标</p>
 <p>从上往下第二个就是触摸板</p>
 <p>找到触摸板的话就说明可以用了</p>
 <p>之后来看一下参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xinput list-props <span class="string">&quot;ELAN1010:00 04F3:3012 Touchpad&quot;</span></span><br></pre></td></tr></table></figure>
-
+<img src="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/2.png" class="" title="2.png">
 
 <p>这里面就是触摸板的参数了</p>
 <p>主要就是需要关注一下下面的<code>Device Node</code></p>

@@ -27,12 +27,28 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe3第三道CrackMe 作者AfkayAs 程序运行状态启动之后首先有一个动画一样的弹窗   之后进入这个界面   输入一些字符后点击ok   这个弹窗点击确定之后整个程序就会退出 好像是类型不对导致的，输入序列号全都是数字，正常弹窗     逆向分析拖到OD发现提示代码被压缩   也就是说程序可能是带壳的 于是用Exeinfo打开   提示说没有加壳，那好吧，应该是只有压缩，就直接">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227164603230.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227164459599.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227164843248.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227173927161.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227164944748.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227165226364.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227174113261.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227174208155.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227174300388.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227174501527.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227211656911.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227215439473.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227221514963.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227221701486.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227222022718.png">
 <meta property="article:published_time" content="2020-02-27T16:19:01.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.484Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/02/28/CrackMe-Day3/image-20200227164603230.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/02/28/CrackMe-Day3/">
 
@@ -257,40 +273,40 @@
         <h1 id="CrackMe3"><a href="#CrackMe3" class="headerlink" title="CrackMe3"></a>CrackMe3</h1><p>第三道CrackMe</p>
 <p>作者AfkayAs</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>启动之后首先有一个动画一样的弹窗</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164603230.png" class="">
 
 <p>之后进入这个界面</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164459599.png" class="">
 
 <p>输入一些字符后点击ok</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164843248.png" class="">
 
 <p>这个弹窗点击确定之后整个程序就会退出</p>
 <p>好像是类型不对导致的，输入序列号全都是数字，正常弹窗</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227173927161.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>拖到OD发现提示代码被压缩</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227164944748.png" class="">
 
 <p>也就是说程序可能是带壳的</p>
 <p>于是用Exeinfo打开</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227165226364.png" class="">
 
 <p>提示说没有加壳，那好吧，应该是只有压缩，就直接开干</p>
 <p>我先是一步一步执行看了看，但是没看出啥东西，所以决定还是看看运行错误的堆栈调用</p>
 <p>随便输入序列码，弹窗后在OD暂停程序，菜单栏那里的K查看堆栈的调用</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174113261.png" class="">
 
 <p>看到最下面那个调用是源程序调的，在上面右键，显示调用</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174208155.png" class="">
 
 <p>看到这部分的代码就比较正常，向上看一下有可能存在关键跳转的地方</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174300388.png" class="">
 
 <p>这边有一个je，修改为jne试试看</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227174501527.png" class="">
 
 <p>这部分是成功了</p>
 <p>但是题目其实还有一部分要求，就是<code>Kill The Nag</code></p>
@@ -302,23 +318,23 @@
 <p>程序执行开始时，先<code>push</code>了一个值，之后<code>call</code>主函数</p>
 <p>由于没有见过VB的程序，我也专门去看了看《使用OllyDbg从零开始Cracking》中的相应章节，里面讲到了一个4C法</p>
 <p>VB的程序都是以push、call开始的</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227211656911.png" class="">
 
 <p>首先在数据窗口跟随第一条指令压栈的值，这个地方就是VB程序的头部</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227215439473.png" class="">
 
 <p>这个头部起始位置加上4C，0x406820</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227221514963.png" class="">
 
 <p>这个位置指向一个区域，跟随过去</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227221701486.png" class="">
 
 <p>这边的代码以50h为单位有两块</p>
 <p>每一块的第24h位置是一个标志位，其中为0的表示这段会被首先执行，之后才是1标志的这段</p>
 <p>这个表示的是程序执行的顺序</p>
 <p>我们将这两个标志位颠倒一下，这样程序启动的主窗口就会先出来了</p>
 <p>重新启动，nga窗口已经消失了</p>
-
+<img src="/2020/02/28/CrackMe-Day3/image-20200227222022718.png" class="">
 
 
 

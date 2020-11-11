@@ -27,12 +27,23 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe2第二道CrackMe 作者Afkayas 程序运行状态首先在xp下正常运行一下看看   是一个非常标准的输入名称和序列号的这样一个窗口 随便输入一些之后点击ok   得到了这样一个弹窗 逆向分析首先还是用OD打开，对MessageBox下API断点   运行，结果居然没断下来 那看来这个弹窗就不是单纯的直接用MessageBox实现的了 干脆直接勾选其他所有的弹窗API，重新运行">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226154851799.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226154951571.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226155146563.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226155402844.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226155511156.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226160209239.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226160354346.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226160707195.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226161102668.png">
+<meta property="og:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226161252111.png">
 <meta property="article:published_time" content="2020-02-26T11:18:44.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.376Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/02/26/CrackMe-Day2/image-20200226154851799.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/02/26/CrackMe-Day2/">
 
@@ -257,47 +268,47 @@
         <h1 id="CrackMe2"><a href="#CrackMe2" class="headerlink" title="CrackMe2"></a>CrackMe2</h1><p>第二道CrackMe</p>
 <p>作者Afkayas</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>首先在xp下正常运行一下看看</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226154851799.png" class="">
 
 <p>是一个非常标准的输入名称和序列号的这样一个窗口</p>
 <p>随便输入一些之后点击ok</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226154951571.png" class="">
 
 <p>得到了这样一个弹窗</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先还是用OD打开，对MessageBox下API断点</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155146563.png" class="">
 
 <p>运行，结果居然没断下来</p>
 <p>那看来这个弹窗就不是单纯的直接用MessageBox实现的了</p>
 <p>干脆直接勾选其他所有的弹窗API，重新运行</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155402844.png" class="">
 
 <p>首先是直接在这里断住，但是这时需要填序列号的那个弹窗都还没出现，放过</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226155511156.png" class="">
 
 <p>之后出现序列号窗口，修改一下里面的字符串之后，运行</p>
 <p>断在了这里的GetWindowTextA，但是发现这里是一个库里，并不是原本的程序内存</p>
 <p>这里往下一直单步步过，直到离开这个库</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160209239.png" class="">
 
 <p>走到图中位置可以看到栈中存在我们输入的序列号</p>
 <p>这个call下方可以看到一个<code>vbaStrCmp</code></p>
 <p>那这不就好说了，运行到这一步时看到堆栈的两个参数</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160354346.png" class="">
 
 <p>因此那个字符串应该就是序列号了吧</p>
 <p>重新运行一遍</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226160707195.png" class="">
 
 <p>哎，难度略低呀，破解成功</p>
 <p>但是这实际上只得到一对序列号，序列号是根据Name来生成的</p>
 <p>所以再进一步看一下</p>
 <p>在上面那个<code>StrCmp</code>执行完之后，再单步运行一段时间可以看到这样的一个jmp</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226161102668.png" class="">
 
 <p>把je修改成jne</p>
 <p>这样就得到了一个随意输入都能成功的程序了</p>
-
+<img src="/2020/02/26/CrackMe-Day2/image-20200226161252111.png" class="">
 
 
     </div>

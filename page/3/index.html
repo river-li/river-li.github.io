@@ -254,91 +254,91 @@
 <p>作者Cabeca</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这个程序和以前的不太一样</p>
 <p>有三个输入</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134159796.png" class="">
 
 <p>随便输入之后有这么一个弹窗</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134230752.png" class="">
 
 <p>感觉好像是没有满足什么条件</p>
 <p>还是直接分析看看吧</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>拖到OD里面</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134403696.png" class="">
 
 <p>定位字符串，到成功的那里</p>
 <p>这附近正好有一个跳转到这下面的 jump</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134510757.png" class="">
 
 <p>这个应该就是关键跳转了</p>
 <p>但是还是先要看一下上面提示的那个语句是因为没有满足什么条件</p>
 <p>这一块一共有四个je都是跳转到这句的</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134644759.png" class="">
 
 <p>三个输入全空会直接在第一个地方跳转</p>
 <p>输入了用户名之后没有输入序列号，在第四个跳转那边变成了True</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135017120.png" class="">
 
 <p>三个输入条都有内容之后运行</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135154506.png" class="">
 
 <p>会在那个jnz跳转，但这次提示的内容不太一样</p>
 <p>那既然跳转到了这里，我们就修改一下上面发现的那个关键跳</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135344222.png" class="">
 
 <p>之后直接运行</p>
 <p>发现还是提示失败，再单步运行一下，发现关键跳转在这里</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135528024.png" class="">
 
 <p>修改一下这一处</p>
 <p>还有再往下一点的这里</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135843211.png" class="">
 
 <p>提示成功</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135905579.png" class="">
 
 <p>那么爆破完成，之后分析算法的部分</p>
 <h3 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h3><p>要写注册机主要还是要看懂代码</p>
 <p>首先用查壳软件看一下编写的语言</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318141313431.png" class="">
 
 <p>那就用<code>DeDeDark</code>看一下对应的代码</p>
 <p>发现我们上面修改的关键跳转就是位于button的事件响应函数中</p>
 <p>而且Delphi的反编译功能也不是很好，就直接在OD里看吧</p>
 <p>看我们修改的那个跳转后面的具体条件</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318142533645.png" class="">
 
 <p>第一处看到上面是<code>cmp dword ptr ds:[0x42f714],0x0</code>这个值不为0就继续执行</p>
 <p>我们一共修改了两处关键跳转，正好可以对应两次序列号的比较，推测每次关键跳转上面可能就是对比一个序列号是否正确；</p>
 <p>下面我们改动的第一处条件跳转上面没有看到条件</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318144503444.png" class="">
 
 <p>反而是一个call函数，地址<code>0x004838D0</code></p>
 <p>再往上看一些，这附近一共有三个挨着的call函数</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318190912192.png" class="">
 
 <p>正好可以对应一个计算真码、一个计算假码、最后一个比较</p>
 <p>单步运行我们可以发现第三个是比较的call，其中传递的参数edx就是我们放着的假码</p>
 <p>在<code>0x42d48f</code>处的mov指令将真码放到eax中，看到堆栈可以发现除了我们自己输入的之外多了一串数字</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191334509.png" class="">
 
 <p>运行到第三个call时查看寄存器发现正好是一个我们自己输入的和一个第一个call计算出来的</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191457684.png" class="">
 
 <p>之后在第一个关键跳jnz处为真，我们重新运行一次，这次输入的serial1为“1270734”</p>
 <p>看看这里是否还会跳转</p>
 <p>这一次运行过来时堆栈中的四个值</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191912453.png" class="">
 
 <p>并且在关键跳转处写着跳转未实现</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191946746.png" class="">
 
 <p>那么下面的三个call就是同理比较serial2了</p>
 <p>如果想写注册机，那么就要具体分析这两个计算真码的关键函数了</p>
 <h4 id="Serial1"><a href="#Serial1" class="headerlink" title="Serial1"></a>Serial1</h4><p>第一个序列号的真码计算函数很简单</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318192127539.png" class="">
 
 <p>只有这么一小段，但是里面嵌套了一个call</p>
 <p>在运行到这个call的时候，eax指向的一片空间存储着name和serial等</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318192502089.png" class="">
 
 
 
@@ -346,18 +346,18 @@
 <p>实际上又是一个子函数在计算（禁止套娃）</p>
 <p>看了半天没什么发现，就去看了看WP，WP有个大佬说序列号的值不是这里算出来的，原本就是有的</p>
 <p>跟到<code>42f714</code>看到里面有一个值</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318194842861.png" class="">
 
 <p>这边的两个值转换成十进制就是序列号，这个值一开始就存在了</p>
 <p>查找这个地址的参考，发现有一个跳转表</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195001584.png" class="">
 
 <p>事件函数中还有一个Edit1KeyPress</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195046534.png" class="">
 
 <p>这个看来是边输入边触发的</p>
 <p>每次输入name的一个字符都会运行一遍</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195238673.png" class="">
 
 <p>之后根据<code>ds:[edx*4+0x42CEC0]</code>的值跳到对应分支，向<code>ds:[0x42f714]</code>和<code>ds:[0x42f718]</code>两个地方加上特定的值</p>
 <p>所以注册机就需要写一个大的跳转表，这有点麻烦了，主要是这么多情况抄数据比较慢</p>
@@ -573,7 +573,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 14:59:47" itemprop="dateModified" datetime="2020-11-04T14:59:47+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:39:53" itemprop="dateModified" datetime="2020-11-11T09:39:53+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -598,62 +598,14 @@
       
           <h1 id="CrackMe19"><a href="#CrackMe19" class="headerlink" title="CrackMe19"></a>CrackMe19</h1><p>第十九道CrackMe</p>
 <p>作者Brad Soblesky</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>相比昨天那个一开始的界面变成了两个输入</p>
-<p><a href="./image-20200316125839211.png"></a></p>
-<p>其中用户名必须至少5个字符</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316125911940.png" class="">
-
-<p>输入错误后弹窗和原来一样</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316125933258.png" class="">
-
-
-
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>首先看字符串</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316130007375.png" class="">
-
-<p>定位过去之后上面不远就可以看到一个关键跳转</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316130432713.png" class="">
-
-<p>将jnz修改为jz</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316130357174.png" class="">
-
-<p>破解成功</p>
-<h3 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h3><p>下面具体看一下代码</p>
-<p>我们从上面那个关键跳转看起，看一下触发关键跳转的条件到底是什么</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316130613790.png" class="">
-
-<p>最下面是关键跳转，看到这边call了两个程序的函数</p>
-<p>上面是一个循环的结构，应该是对字符串中的每个字符进行循环</p>
-<p>这个循环本身并不难，仔细对照着指令运行一遍就可以明白含义</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316144707709.png" class="">
-
-<p>其中<code>[local.8]</code>保存着当前循环控制变量<code>i</code></p>
-<p> <code>[local.7]</code>保存着<code>name</code>的长度 </p>
-<p><code>[local.4]</code>是最终的结果<code>s</code></p>
-<p>循环结束之后再调用cstring中的format</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316145005210.png" class="">
-
-<p>将这个结果转换为字符串</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316145220716.png" class="">
-
-<p>当运行到这个位置时，ecx中存放的是我们输入的序列号</p>
-<p>eax中是经过运算的到的正确的序列号</p>
-<p>调用这个call之后对两者进行比较，判断是否正确</p>
-<p>直接写了一个注册机，结果发现不对</p>
-<p>原来程序开始是有赋初值的</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316165456311.png" class="">
-
-<p>这里对<code>[local.4]</code>赋值为<code>0x81276345</code></p>
-<p>注册机</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line">  <span class="keyword">int</span> s = <span class="number">0x81276345</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">cin</span>&gt;&gt;name;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;name.size();i++)</span><br><span class="line">  &#123;</span><br><span class="line">    s+=name[i];</span><br><span class="line">    s=s^(i&lt;&lt;<span class="number">8</span>);</span><br><span class="line">    s*=(i+<span class="number">1</span>)*(~(name.size()*i));</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Key: %lu\n&quot;</span>,s);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行测试一下</p>
-<img src="/2020/03/16/CrackMe-Day19/image-20200316170146919.png" class="">
-
-<img src="/2020/03/16/CrackMe-Day19/image-20200316170158815.png" class="">
-
-<p>正确，已通过</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/16/CrackMe-Day19/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -729,32 +681,32 @@
           <h1 id="CrackMe18"><a href="#CrackMe18" class="headerlink" title="CrackMe18"></a>CrackMe18</h1><p>第十八道CrackMe</p>
 <p>作者Brad Soblesky</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后还是朴实无华的窗口</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315154922619.png" class="">
 
 <p>只有一个输入条</p>
 <p>输入错误之后是一个弹窗</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155040292.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先搜索字符串</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155122459.png" class="">
 
 <p>定位到Correct</p>
 <p>在上方有一个很明显的关键跳转</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155200246.png" class="">
 
 <p>修改为jz</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155230001.png" class="">
 
 <p>爆破成功</p>
 <p>那么之后还是看一下真正的序列号</p>
 <p>注意到上面有一个strcmp，在这个call上下断点再跑一次</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155349676.png" class="">
 
 <p>String1是我们自己输入的字符串，那么真正的序列号就一目了然了</p>
 <p><code>&lt;BrD-SoB&gt;</code></p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155509143.png" class="">
 
 <p>最近感觉对爆破都已经比较熟练了，之后的题目都以获取序列码/注册机为最终目标吧</p>
 
@@ -807,7 +759,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 15:00:05" itemprop="dateModified" datetime="2020-11-04T15:00:05+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:39:51" itemprop="dateModified" datetime="2020-11-11T09:39:51+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -832,28 +784,14 @@
       
           <h1 id="CrackMe17"><a href="#CrackMe17" class="headerlink" title="CrackMe17"></a>CrackMe17</h1><p>第十七道CrackMe</p>
 <p>作者bjanes</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>样子、效果都和前两天的程序一模一样</p>
-<p><a href="./image-20200314234515009.png"></a></p>
-<p>甚至我顺手试了一下前一次的序列号直接就过了</p>
-<img src="/2020/03/14/CrackMe-Day17/image-20200314234557219.png" class="">
-
-<p>emmmmm</p>
-<p>逆向看一下差在哪里吧</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先看一下字符串</p>
-<img src="/2020/03/14/CrackMe-Day17/image-20200314234849351.png" class="">
-
-<p>印象里前面的程序应该是没有这么多内容的，而且看到还多了SMARTCHECK</p>
-<p>定位到了Good job那里</p>
-<img src="/2020/03/14/CrackMe-Day17/image-20200314235044822.png" class="">
-
-<p>发现上面存在一个跳到失败的跳转</p>
-<p>直接改成jnz</p>
-<p>就。。过了？</p>
-<img src="/2020/03/14/CrackMe-Day17/image-20200314235128472.png" class="">
-
-<p>似乎改了算法方面的机制之后反而导致程序最后关键跳转更明显了</p>
-<p>算法上的分析明天再仔细研究</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/14/CrackMe-Day17/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -903,7 +841,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 15:08:24" itemprop="dateModified" datetime="2020-11-04T15:08:24+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:39:44" itemprop="dateModified" datetime="2020-11-11T09:39:44+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -928,94 +866,14 @@
       
           <h1 id="CrackMe16"><a href="#CrackMe16" class="headerlink" title="CrackMe16"></a>CrackMe16</h1><p>第十六道CrackMe</p>
 <p>作者bjanes</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开就是一个窗口，只能输入一个序列号</p>
-<p><a href="./CrackMe-Day16/image-20200313175926310.png"></a></p>
-<p>输入错误的码之后一个小弹窗</p>
-
-
-
-
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先搜索字符串</p>
-
-
-<p>定位到成功的那里</p>
-<p>看了一下代码感觉和Day 14的几乎一样</p>
-
-
-<p>首先试一下改上次两个地方</p>
-
-
-<p>直接成功了</p>
-<p>两次的题目具体差异这也感受不到，还是看一下具体的序列号怎么弄吧</p>
-<h2 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h2><p>用VB Decompiler看一下相关的代码</p>
-
-
-<p>我专门对比了一下，好像变得复杂了一些</p>
-<p>从上往下看一下发现，如果希望能成功，要满足<code>var_18&gt;var_ret_1</code></p>
-<p>其余的几个GOTO条件要么是循环内往上跳的，要么是向错误的地方的</p>
-<p>好像这个代码没有正确反编译，还是需要动态调试看</p>
-<p>首先看我们改的第一个jnz上面的条件</p>
-
-
-<p>这里取了长度，和9进行比较</p>
-<p><code>setne cl</code>含义是取当前ZF的值，取反后放在CL中</p>
-<p><code>neg ecx</code>对ecx求补，结果保存在ecx中</p>
-<p>上面的几条指令结果使得长度不为9就会跳转到失败的地方，长度为9则跳转</p>
-<p>第二个修改的jg上面条件</p>
-
-
-<p>看到这里其实是一个循环，循环会跳到mov处，判断循环条件，满足则用jg跳转到成功的代码处，不满足循环条件就继续循环</p>
-<p>在循环中单步执行，到这么一个call处</p>
-
-
-<p>（上面的API都不是有实际作用的API）</p>
-<p>这个应该是调用了VB的Mid函数，查看这时的堆栈</p>
-
-
-<p>那么应该就是<code>Mid(&quot;123456789&quot;,1)</code></p>
-<p>结果取到的字符串中第一位</p>
-
-
-<p>之后调用API转换为ASCII值</p>
-
-
-<p>31也确实是“1”的ASCII</p>
-
-
-<p>在这下面是两个比较</p>
-
-
-<p>看到比较的内容是<code>ax</code>和<code>0x30</code>和<code>0x39</code></p>
-<p>也就是比较是否是数字</p>
-<p>向下到了一个<code>jnz</code></p>
-
-
-<p>看到比较的bx也是前面设置的，如果序列号不是数字这里就会跳转到失败了</p>
-<p>再向下运行，这边ax中是循环次数</p>
-
-
-<p>这边到这里的call将<code>ax xor 2</code>的结果转换为字符串</p>
-
-
-<p>下面则是将循环的字符先转换为ASCII码，之后将ASCII码的值当作16进制的数字，再转换为字符串</p>
-<p>例如这里“1”-&gt;”31”-&gt;”49”</p>
-
-
-<p>在这之后将结果转换为浮点存到st0</p>
-
-
-<p>之后<code>fsub qwird ptr ss:[ebp-0xC8]</code>这个指令将<code>st0</code>减去了48</p>
-<p>之后存在了<code>[ebp-0xC8]</code>处</p>
-<p>下面一块的代码是对其实际的序列码进行运算的部分，最后<code>vbaVarTstNe</code>比较这两个码是否相等</p>
-
-
-
-
-<p>最后注册机实际上就是1到9依次和2异或后取结果右侧的一个字符连接起来的到的</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">code = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">  code = code + str(i^<span class="number">2</span>)[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/13/CrackMe-Day16/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1091,67 +949,67 @@
           <h1 id="CrackMe15"><a href="#CrackMe15" class="headerlink" title="CrackMe15"></a>CrackMe15</h1><p>第十五道CrackMe</p>
 <p>作者blaster99</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后首先弹了这么一个窗</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203102755.png" class="">
 
 <p>也不知道上面写的是什么语</p>
 <p>用ocr识别再翻译一下看看</p>
 <p>好吧，居然是德语</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203245757.png" class="">
 
 <p>那么意思就是要删除这个NAG窗口或者获取正确的密码</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203328363.png" class="">
 
 <p>点击确定之后窗口变成这样的</p>
 <p>输入注册码之后注册</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203358227.png" class="">
 
 <p>给了一个错误的弹窗</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>这个程序说了自己是VB写的，那么首先查看一下反编译的代码</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203520142.png" class="">
 
 <p>控件相关有这些内容，主要需要看<code>Form_Load</code>以及<code>Command1_Click</code></p>
 <h3 id="去NAG"><a href="#去NAG" class="headerlink" title="去NAG"></a>去NAG</h3><p><code>Form_Load</code>可以看到函数一开始就有一个MessageBox的调用</p>
 <p>这就是我们想去掉的那个NAG窗口，在OD里把这句Nop掉</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203603325.png" class="">
 
 <p>对照着汇编代码，我首先尝试NOP掉这个字符串下面的CALL</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203850822.png" class="">
 
 <p>结果这个窗口还是出现了，只是失去了中间的内容</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203919107.png" class="">
 
 <p>再往下一些有一个call，<code>rtcMsgBox</code></p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204002238.png" class="">
 
 <p>这次把这一句nop掉</p>
 <p>结果程序直接退出了，仔细想想也是，毕竟弹窗之后只有点确定才能去到CrackMe</p>
 <p>如果点了取消，那CrackMe就退出了</p>
 <p>所以我们现在应该找到确定点击后的窗口位置</p>
 <p>跟踪调试发现，在这个MsgBox下面存在</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204438821.png" class="">
 
 <p>这样的代码，MsgBox返回1或0，存在eax中，这里再根据结果决定是否跳转</p>
 <p>所以我们希望去掉NAG窗口，即直接从点击确定后的地方开始运行</p>
 <p>那么需要改两处地方，一是nop掉msgbox的call；二是修改这个<code>test ax,ax</code>下面的<code>jnz</code>为无条件的<code>jmp</code></p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204746681.png" class="">
 
 <p>运行发现，没有NAG窗口了</p>
 <h3 id="Passwd"><a href="#Passwd" class="headerlink" title="Passwd"></a>Passwd</h3><p>至于破解序列号，我们就还是看一下字符串先</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204842749.png" class="">
 
 <p>定位到成功的字符串处，可以很轻松的发现这个关键跳转</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205033918.png" class="">
 
 <p>修改为jnz，再运行</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205049932.png" class="">
 
 <p>成功</p>
 <p>想要知道确切的序列号条件，那么我们可以看一下前面<code>command1_click</code>的代码</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205224555.png" class="">
 
 <p>里面比较的条件很简单粗暴，就是一个字符串</p>
 <p>输入之后就成功</p>
-
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205256842.png" class="">
 
       
     </div>
@@ -1335,7 +1193,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 14:56:33" itemprop="dateModified" datetime="2020-11-04T14:56:33+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:40:26" itemprop="dateModified" datetime="2020-11-11T09:40:26+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1360,45 +1218,14 @@
       
           <h1 id="CrackMe14"><a href="#CrackMe14" class="headerlink" title="CrackMe14"></a>CrackMe14</h1><p>第十四道CrackMe</p>
 <p>作者bjanes</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后有一个输入和两个按钮</p>
-<p><a href="./image-20200311151820729.png"></a></p>
-<p>随便输入之后check，弹出一个窗口</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311151843986.png" class="">
-
-<p>窗口上的about也是可以点击的</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311151950949.png" class="">
-
-<p>这里说是为了提升RCE能力，这里的RCE是我理解的哪个RCE吗？。。。</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>这个题目目测比较简单，常规的操作估计就能直接搞定，也不用太分析啥了</p>
-<p>搜索字符串</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311152121773.png" class="">
-
-<p>跟到骚凹瑞那里</p>
-<p>找了一番却没有判断出哪个是关键跳转，本来还以为是个特别简单的题</p>
-<p>那就稍微看一下反编译的代码</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311153324934.png" class="">
-
-<p>发现这块代码略有点奇怪哎，咋没找到直接跳转到正确的那句那里呢，倒是有一个弹出错误窗口之后又跳过正确代码的goto</p>
-<p>在OD中对应在这个位置</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311153440538.png" class="">
-
-<p>这个nop掉之后会变成连续弹两个窗口</p>
-<p>下面这里写着跳转来自403787</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311153554647.png" class="">
-
-<p>那过去看一下，是一个jg指令</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311153618336.png" class="">
-
-<p>尝试修改为jle，结果程序直接错误了，那还得再看看有哪里可以直接跳过来</p>
-<p>继续向上看到存在一个jnz</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311181802744.png" class="">
-
-<p>虽然不是跳转到程序成功的地方，但是是跳转到程序失败的位置</p>
-<p>首先将其修改为jz</p>
-<p>再把之前的那个jg改成jle</p>
-<p>这样再运行就直接成功了</p>
-<img src="/2020/03/11/CrackMe-Day14/image-20200311181828316.png" class="">
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/11/CrackMe-Day14/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1448,7 +1275,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-04 14:59:20" itemprop="dateModified" datetime="2020-11-04T14:59:20+08:00">2020-11-04</time>
+                <time title="修改时间：2020-11-11 09:40:05" itemprop="dateModified" datetime="2020-11-11T09:40:05+08:00">2020-11-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1473,139 +1300,14 @@
       
           <h1 id="CrackMe13"><a href="#CrackMe13" class="headerlink" title="CrackMe13"></a>CrackMe13</h1><p>第十三道CrackMe</p>
 <p>作者badboy</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序运行一打开有一个选择条，可以选择1.0和2.0</p>
-<p><a href="./image-20200310150353885.png"></a></p>
-<p>点击1.0之后窗口变成这样，只有一个序列号可以输入</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310150502948.png" class="">
-
-<p>输入错误的码之后点击Try，输入框的字会变成Try Again</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310150801434.png" class="">
-
-<p>切换到2.0之后窗口多了一个Name的条</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310151045125.png" class="">
-
-<p>输入错误之后点击Try</p>
-<p>同样会在Serial提示一个Try Again</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310151156449.png" class="">
-
-<p>但是Name必须有至少5个字母</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>搜索字符串居然什么也没搜到</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310151818635.png" class="">
-
-<p>那只好从头好好看一下了</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310152130006.png" class="">
-
-<p>根据这个结构，push+call，上面是一堆jump判断是VB的程序</p>
-<p>那我们可以用VB Decompiler来看一下相关控件的信息</p>
-<p>看到最初选择题目的那个combobox</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310153758873.png" class="">
-
-<p>可以看一下点击这个combo box的事件函数</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310153939547.png" class="">
-
-<p>看到这段代码前面首先将本来出现的选项都隐藏</p>
-<p>中间有一个大的IF ELSE判断</p>
-<p>根据选择的选项设置相应的控件的显示</p>
-<p>去前面控件那里再看一下Frame和Commander是和哪些对应的</p>
-<p>看到Command4的点击事件</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310155732811.png" class="">
-
-<p>以及Command2的点击事件</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310155846152.png" class="">
-
-<p>我们可以判断出分别对应了1.0和2.0的检测函数</p>
-<p>仔细阅读 一下这两块代码</p>
-<h3 id="1-0"><a href="#1-0" class="headerlink" title="1.0"></a>1.0</h3><p>1.0的版本只需要输入一个序列号，对应的是Commander4的事件</p>
-<p>我们看到if条件语句那里最关键的一个条件就是</p>
-<p><code>Me.Text3.Text==Me.Label3.Caption</code></p>
-<p>可以判断出<code>Text3.Text</code>就是我们输入的序列号，那么需要做的就是看一下<code>Label3.Caption</code>具体值是多少了</p>
-<p>看一下2.0的代码，发现其中有一句</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310191747466.png" class="">
-
-<p>对<code>Label3.Caption</code>进行了赋值</p>
-<p>在<code>Combo1_Click</code>函数中也存在对这个变量的赋值</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310192156461.png" class="">
-
-<p>这边等于的这个变量相关的值就在上面</p>
-<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var_15C = ((Day(Now) * Day(<span class="number">23</span>)) + (Month(Now) * Month(<span class="number">2</span>)))</span><br><span class="line">var_1CC = (var_15C + (Year(Now) * Year(<span class="number">3</span>)))</span><br><span class="line">var_1D0 = <span class="built_in">CStr</span>((((<span class="built_in">CLng</span>(var_1CC) + <span class="built_in">CLng</span>(var_1CC)) + <span class="built_in">CLng</span>((Day(<span class="number">14</span>) * Year(<span class="number">2020</span>)))) + <span class="built_in">CLng</span>((Day(<span class="number">14</span>) * Year(<span class="number">2020</span>)))))</span><br></pre></td></tr></table></figure>
-
-<p>这个的结果和日期还是有关系的</p>
-<p>本来以为VB的时间函数返回值就是日期，结果还是有点小不同</p>
-<p>写了一个Python的脚本来计算这一问的答案</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line">now = time.localtime()</span><br><span class="line">var_15c = now.tm_mday * <span class="number">22</span> + now.tm_moon*<span class="number">1</span></span><br><span class="line">var_1cc = now.tm_year * <span class="number">1900</span> + var_15c</span><br><span class="line">var_1d0 = str(var_1cc*<span class="number">2</span> + <span class="number">13</span>*<span class="number">1905</span>)</span><br><span class="line"></span><br><span class="line">print(var_1d0)</span><br></pre></td></tr></table></figure>
-
-<p>计算结果”7725976”</p>
-<p>填进去试了一下</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310194118225.png" class="">
-
-
-
-<h3 id="2-0"><a href="#2-0" class="headerlink" title="2.0"></a>2.0</h3><p>这一问相比就更加复杂了一些</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310194417710.png" class="">
-
-<p>一开始先对Name长度进行判断，要求至少5个字符</p>
-<p>之后下面第一个比较重要的运算</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310195046894.png" class="">
-
-<p>这个循环从输入的名称的第五位开始循环</p>
-<p><code>(CDbl(Asc(Mid$(name, CLng(pos), 1))) * Val(Mid$(const_str, CLng((var_A8 * 3)), 3))))</code></p>
-<p> 这一步将name[pos]位置的字符ASCII码 和 const_str第<code>var_A8*3</code>位开始连续3位的值 相乘</p>
-<p>结果每一轮加在var_90上</p>
-<p>这下面的几个语句其实很疑惑，不太明白啥意思</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310195737989.png" class="">
-
-<p>在这下面的一块代码</p>
-<img src="/2020/03/10/CrackMe-Day13/image-20200310195903851.png" class="">
-
-<p>这里特别长的那一句</p>
-<p>将name[pos]的字符ASCII和 <code>name[pos-1]</code>处的字符ASCII相乘，结果再乘const_str第<code>var_A8*2</code>处长度为2的字符串值</p>
-<p>最后var_1E0是上面那个循环结果var_90和”-“相与的结果</p>
-<p>这个结果再与下面那个循环的结果相与，得到的结果就是序列码应该填的值</p>
-<p>本来以为&amp;是与运算，结果特别搜了一下VB的&amp;是字符串的连接</p>
-<p>使用Python写了一个注册机</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_serial</span>(<span class="params">name</span>):</span></span><br><span class="line">  const_str = <span class="string">&quot;0110617121214051216101106141404110614140411091211100810101608040610121608100416&quot;</span></span><br><span class="line">  </span><br><span class="line">  var_90 = <span class="number">0</span></span><br><span class="line">  var_A8 = <span class="number">1</span></span><br><span class="line">  <span class="keyword">for</span> pos <span class="keyword">in</span> range(<span class="number">3</span>,len(name)):</span><br><span class="line">    var_90 = var_90+ord(name[pos])*int(const_str[var_A8*<span class="number">3</span><span class="number">-1</span>:var_A8*<span class="number">3</span>+<span class="number">2</span>])</span><br><span class="line">    var_A8 = var_A8+<span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> var_A8&gt;<span class="number">39</span>:</span><br><span class="line">      Var_A8=<span class="number">0</span></span><br><span class="line">    </span><br><span class="line">  var_A8 = <span class="number">1</span></span><br><span class="line">  var_178 = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> pos <span class="keyword">in</span> range(<span class="number">3</span>,len(name)):</span><br><span class="line">    var_178 = var_178 + ord(name[pos<span class="number">-1</span>])*ord(name[pos])*int(const_str[var_A8*<span class="number">2</span><span class="number">-1</span>:var_A8*<span class="number">2</span>+<span class="number">1</span>])</span><br><span class="line">    var_A8 = var_A8+<span class="number">1</span></span><br><span class="line">    </span><br><span class="line">  print(str(var_90)+<span class="string">&#x27;-&#x27;</span>+str(var_178))</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/03/10/CrackMe-Day13/image-20200310205602983.png" class="">
-
-<p>关于边界条件这里由于对VB不熟悉还是费了很大劲，不过最后好歹还是做出来了</p>
-<h2 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h2><p>程序还可以爆破，虽然在OD里没有直接定位到关键跳转，要定位估计也要费点功夫了；</p>
-<p>不过还可以在二进制层面下手，用VB Decompiler就可以直接看到每个控件程序那里的汇编代码，直接把里面的关键跳转改了就可以</p>
-<p>具体操作就不细说了，但是可以记一下程序各个跳转的二进制</p>
-<table>
-<thead>
-<tr>
-<th>指令</th>
-<th>含义</th>
-<th>二进制</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Branch</td>
-<td>无条件跳转</td>
-<td>1E</td>
-</tr>
-<tr>
-<td>BranchT</td>
-<td>为真则跳转</td>
-<td>1D</td>
-</tr>
-<tr>
-<td>BranchF</td>
-<td>为假则跳转</td>
-<td>1C</td>
-</tr>
-<tr>
-<td>EqStr</td>
-<td>比较字符串相等</td>
-<td>FB30</td>
-</tr>
-<tr>
-<td>NeStr</td>
-<td>比较字符串不等</td>
-<td>FB3D</td>
-</tr>
-</tbody></table>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/10/CrackMe-Day13/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

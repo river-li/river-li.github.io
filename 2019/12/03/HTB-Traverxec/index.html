@@ -27,11 +27,17 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="HackTheBox 上面的一台简单的机器，这是自己第一台拿到权限的active机器，很兴奋 Happy Hacking   www-data首先nmap扫描发现开了80和22端口 80端口运行着nostromo服务，并且存在着一个2019年的CVE 直接使用searchsploit搜索就可以找到 1searchsploit nostromo  网上也可以搜相关的EXP 1234567HOST&#x3D;&amp;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2019/12/03/HTB-Traverxec/david.jpg">
+<meta property="og:image" content="https://river-li.xyz/2019/12/03/HTB-Traverxec/server-stats.jpg">
+<meta property="og:image" content="https://river-li.xyz/2019/12/03/HTB-Traverxec/run.jpg">
+<meta property="og:image" content="https://river-li.xyz/2019/12/03/HTB-Traverxec/root1.jpg">
+<meta property="og:image" content="https://river-li.xyz/2019/12/03/HTB-Traverxec/root2.jpg">
 <meta property="article:published_time" content="2019-12-03T11:26:15.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.490Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2019/12/03/HTB-Traverxec/david.jpg">
 
 <link rel="canonical" href="https://river-li.xyz/2019/12/03/HTB-Traverxec/">
 
@@ -305,13 +311,13 @@
 <p>其实也可以使用john来爆破key，首先使用ssh2john将其转换为john可以爆破的内容，之后直接用john和字典就可以</p>
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>首先做的事情就是查看david的目录下有没有比较有用的内容</p>
 <p>发现david的目录下的结构</p>
-
+<img src="/2019/12/03/HTB-Traverxec/david.jpg" class="" title="david.jpg">
 
 <p>这个<code>bin</code>目录下的server-status.sh比较有趣</p>
-
+<img src="/2019/12/03/HTB-Traverxec/server-stats.jpg" class="" title="server-stats.jpg">
 
 <p>运行这个脚本可以看到</p>
-
+<img src="/2019/12/03/HTB-Traverxec/run.jpg" class="" title="run.jpg">
 
 <p>发现最后一行是使用了<code>sudo</code>运行<code>journalctl</code>这个程序</p>
 <p>但是却没有需要输入david的密码，因此如果可以获得这个程序本身的权限就可以得到root的权限了</p>
@@ -320,9 +326,9 @@
 
 <p>这样也不需要输入密码，最后也是进入了<code>sudo</code>权限的<code>less</code>中</p>
 <p>在<code>less</code>中可以类似<code>vim</code>那样使用<code>!</code>来执行外部的程序</p>
+<img src="/2019/12/03/HTB-Traverxec/root1.jpg" class="" title="root1.jpg">
 
-
-
+<img src="/2019/12/03/HTB-Traverxec/root2.jpg" class="" title="root2.jpg">
 
 <p>done!</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下这个靶机中学到的新知识</p>

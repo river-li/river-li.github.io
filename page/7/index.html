@@ -339,14 +339,14 @@
 <hr>
 <p>之后用<code>xinput</code>来看一下能不能找到触摸板</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xinput list</span><br></pre></td></tr></table></figure>
-
+<img src="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/1.png" class="" title="1.png">
 
 <p>在这个图里还显示了键盘的设备,还有连的一个微软的无线鼠标</p>
 <p>从上往下第二个就是触摸板</p>
 <p>找到触摸板的话就说明可以用了</p>
 <p>之后来看一下参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xinput list-props <span class="string">&quot;ELAN1010:00 04F3:3012 Touchpad&quot;</span></span><br></pre></td></tr></table></figure>
-
+<img src="/2019/07/06/%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AAMac%E4%B8%80%E6%A0%B7%E7%9A%84%E8%A7%A6%E6%91%B8%E6%9D%BF/2.png" class="" title="2.png">
 
 <p>这里面就是触摸板的参数了</p>
 <p>主要就是需要关注一下下面的<code>Device Node</code></p>
@@ -463,7 +463,7 @@
 <p>安装好lutris之后直接在官网搜索想玩的游戏点install就可以了</p>
 <p>有一个需要注意的点，如果使用了向我之前那样安装驱动的方法,那么在需要显卡运行程序时必须要有primusrun启动的</p>
 <p>在安装好守望先锋这样的游戏之后需要在System Options里设置</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/lutris_20190702004159.png" class="" title="lutris_20190702004159.png">
 
 <p>同时，要发挥出显卡的性能，还需要安装DXVK</p>
 <p>但是DXVK支持的GPU一般都有一点久，最新的nvidia GPU有可能不支持，可以在lutris的github里的wiki看一看自己的GPU是否支持</p>
@@ -474,7 +474,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setup-dxvk</span><br></pre></td></tr></table></figure>
 
 <p>来安装，之后在lutris里对游戏设置相应的dxvk版本即可</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/lutris_20190702004621.png" class="" title="lutris_20190702004621.png">
 
 <p>注意在安装时选择的winee的版本，最好按照官方的推荐，不然大概率运行不了</p>
 <p>utris_20190702005257.pngwine的版本管理也可以直接在lutris中完成</p>
@@ -483,10 +483,10 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
 
 <p>来查看GPU的状态，如果成功在显卡跑起来会有相应的进程的</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/terminal_20190702005130.png" class="" title="terminal_20190702005130.png">
 
 <p>最后放一张运行lutris里库的游戏图</p>
-
+<img src="/2019/07/01/%E6%88%91%E7%BB%88%E4%BA%8E%E5%9C%A8Linux%E7%8E%A9%E4%B8%8A%E4%BA%86Overwatch/lutris_20190702005257.png" class="" title="lutris_20190702005257.png">
 
 <p>没错，我又开始下载APEX来玩了</p>
 <p>这么多游戏可以玩，还要windows有啥用</p>

@@ -27,12 +27,20 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe18第十八道CrackMe 作者Brad Soblesky 程序运行状态打开之后还是朴实无华的窗口   只有一个输入条 输入错误之后是一个弹窗     逆向分析首先搜索字符串   定位到Correct 在上方有一个很明显的关键跳转   修改为jz   爆破成功 那么之后还是看一下真正的序列号 注意到上面有一个strcmp，在这个call上下断点再跑一次   String1是我们自己输">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315154922619.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315155040292.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315155122459.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315155200246.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315155230001.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315155349676.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315155509143.png">
 <meta property="article:published_time" content="2020-03-15T07:56:06.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.512Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/03/15/CrackMe-Day18/image-20200315154922619.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/03/15/CrackMe-Day18/">
 
@@ -257,32 +265,32 @@
         <h1 id="CrackMe18"><a href="#CrackMe18" class="headerlink" title="CrackMe18"></a>CrackMe18</h1><p>第十八道CrackMe</p>
 <p>作者Brad Soblesky</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后还是朴实无华的窗口</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315154922619.png" class="">
 
 <p>只有一个输入条</p>
 <p>输入错误之后是一个弹窗</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155040292.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先搜索字符串</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155122459.png" class="">
 
 <p>定位到Correct</p>
 <p>在上方有一个很明显的关键跳转</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155200246.png" class="">
 
 <p>修改为jz</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155230001.png" class="">
 
 <p>爆破成功</p>
 <p>那么之后还是看一下真正的序列号</p>
 <p>注意到上面有一个strcmp，在这个call上下断点再跑一次</p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155349676.png" class="">
 
 <p>String1是我们自己输入的字符串，那么真正的序列号就一目了然了</p>
 <p><code>&lt;BrD-SoB&gt;</code></p>
-
+<img src="/2020/03/15/CrackMe-Day18/image-20200315155509143.png" class="">
 
 <p>最近感觉对爆破都已经比较熟练了，之后的题目都以获取序列码/注册机为最终目标吧</p>
 

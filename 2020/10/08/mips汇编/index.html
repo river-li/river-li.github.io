@@ -28,7 +28,7 @@
 <meta property="og:description" content="路由器中一般用到的架构是arm或者是mips mips的汇编语法和平时常见的x86、amd64都有些差异 并且mips中存在一些机制上的不同； 因此在分析时还是需要专门大概学一下；">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-08T09:02:49.000Z">
-<meta property="article:modified_time" content="2020-10-08T11:26:53.404Z">
+<meta property="article:modified_time" content="2020-11-11T01:42:44.713Z">
 <meta property="article:author" content="River Li">
 <meta name="twitter:card" content="summary">
 
@@ -221,10 +221,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-10-08 17:02:49 / 修改时间：19:26:53" itemprop="dateCreated datePublished" datetime="2020-10-08T17:02:49+08:00">2020-10-08</time>
+              <time title="创建时间：2020-10-08 17:02:49" itemprop="dateCreated datePublished" datetime="2020-10-08T17:02:49+08:00">2020-10-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-11 09:42:44" itemprop="dateModified" datetime="2020-11-11T09:42:44+08:00">2020-11-11</time>
+              </span>
 
           
 
@@ -320,8 +326,9 @@
 <li>从可控的寄存器赋值到<code>$ra, $t9, $v0</code></li>
 <li>跳转到寄存器<code>jr $ra; nop;</code>或<code>jr $v0; nop;</code>或<code>jr $t9; nop;</code></li>
 </ol>
-<h2 id="MIPS特性"><a href="#MIPS特性" class="headerlink" title="MIPS特性"></a>MIPS特性</h2><p>MIPS 中的<code>jr</code>即jump register指令并不是所有的寄存器都允许跳转的，只有<code>ra,t9,v0</code>三个寄存器是可以跳的。</p>
-<p>另外就是MIPS在设计时的Delay Slot延迟槽机制，在跳转指令后面的一条指令实际上也是会执行的，因此如果不想造成其他的影响最好选择jr指令后是nop指令的gadget；</p>
+<h2 id="MIPS特性"><a href="#MIPS特性" class="headerlink" title="MIPS特性"></a>MIPS特性</h2><h3 id="Jmp"><a href="#Jmp" class="headerlink" title="Jmp"></a>Jmp</h3><p>MIPS 中的<code>jr</code>即jump register指令并不是所有的寄存器都允许跳转的，只有<code>ra,t9,v0</code>三个寄存器是可以跳的。</p>
+<h3 id="Delay-Slot"><a href="#Delay-Slot" class="headerlink" title="Delay Slot"></a>Delay Slot</h3><p>另外就是MIPS在设计时的Delay Slot延迟槽机制，在跳转指令后面的一条指令实际上也是会执行的，因此如果不想造成其他的影响最好选择jr指令后是nop指令的gadget；</p>
+<h3 id="Instruction-Cache"><a href="#Instruction-Cache" class="headerlink" title="Instruction Cache"></a>Instruction Cache</h3><p>Mips中为了提高执行的效率会将指令cache到内存中，这样如果我们利用栈溢出这样的漏洞的时候是没有办法马上就执行我们溢出写在栈上的指令的，需要首先进行一个sleep，让内存将栈上的指令装载进cache</p>
 
     </div>
 
@@ -402,7 +409,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MIPS%E7%89%B9%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">MIPS特性</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MIPS%E7%89%B9%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">MIPS特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jmp"><span class="nav-number">3.1.</span> <span class="nav-text">Jmp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delay-Slot"><span class="nav-number">3.2.</span> <span class="nav-text">Delay Slot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Instruction-Cache"><span class="nav-number">3.3.</span> <span class="nav-text">Instruction Cache</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

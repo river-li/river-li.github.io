@@ -27,12 +27,23 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe11第十一道CrackMe 作者Andrenalin 程序运行状态这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样   虽然能输入，但是没有找到有回车之类的按键 推测是不是实时检测的，如果对了就自动成功 逆向分析  这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西 由于从字符串上没找到很有价值的东西，所以考虑从API来下断点   我们之前分析过前面的">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308174224014.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308175443437.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308182243874.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308194754661.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308194631026.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308195525622.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308204138395.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308222148547.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308222738802.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308222753112.png">
 <meta property="article:published_time" content="2020-03-08T15:53:11.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.476Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/03/08/CrackMe-Day11/image-20200308174224014.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/03/08/CrackMe-Day11/">
 
@@ -257,24 +268,24 @@
         <h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这次的窗口和之前的都不太一样，像是一个银行输入的那种码一样</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308174224014.png" class="">
 
 <p>虽然能输入，但是没有找到有回车之类的按键</p>
 <p>推测是不是实时检测的，如果对了就自动成功</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><img src="/2020/03/08/CrackMe-Day11/image-20200308175443437.png" class="">
 
 <p>这里面看到的东西都比较奇怪，没找到其他字符串，只有数字和这些看不懂的东西</p>
 <p>由于从字符串上没找到很有价值的东西，所以考虑从API来下断点</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308182243874.png" class="">
 
 <p>我们之前分析过前面的程序，这里可以看到和之前类似的一个循环</p>
 <p>根据，之前的分析，关键的跳转有很大的可能就在这个循环的下面</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308194754661.png" class="">
 
 <p>在这下面正好可以看到一个<code>__vbaVarIstEq</code>这个函数</p>
 <p>紧跟着下面就是一个比较和跳转，尝试修改je为jnz</p>
 <p>修改这个关键跳转之后发现，随便输入一个数字之后就可以算作注册成功</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308194631026.png" class="">
 
 
 
@@ -283,26 +294,26 @@
 <p><code>dword ptr ss:[ebp-0x34]</code></p>
 <p>和<code>dword ptr ss:[ebp-0xB4]</code></p>
 <p>但是发现程序执行的时候就算按了几个键修改内容，这个函数调用的堆栈中压的值还是没变</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308195525622.png" class="">
 
 
 
 <p>看一下循环中调用了哪些API</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308204138395.png" class="">
 
 <p>按顺序可以看到，调用了<code>R8ValFromBstr</code>、<code>AnsiValueBstr</code>、<code>HexBstrFromVar</code></p>
 <p>获得str、之后转换为ASCII码</p>
 <p>这样干看看了一段时间也没有特别多的头绪，主要是中间有一串汇编指令没太见过</p>
 <p>准备反编译看一下，找来了VB Decompiler</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222148547.png" class="">
 
 <p>反编译的内容拖进去看可以看到一共有13个click相关的函数</p>
 <p>还有4个时间器的函数</p>
 <p>其中有一个click的函数和其他的不太一样</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222738802.png" class="">
 
 <p>对比一下</p>
-
+<img src="/2020/03/08/CrackMe-Day11/image-20200308222753112.png" class="">
 
 <p>发现多了长度减一，这个应该是退格键</p>
 <p>检查一下时间器的代码，发现四个时间器代码都差不多</p>

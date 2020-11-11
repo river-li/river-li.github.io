@@ -27,12 +27,23 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe8第八道CrackMe 作者Andrnalin 程序运行状态  窗口这次直接是一个key的输入，和一个ok键 随便输入东西，之后弹了这么个框   由于之前遇到过这样的问题，可能是类型错误之类的 输入一次纯数字看看 弹窗一样 逆向分析由于这次只有一个key，首先想着会不会用grep就能找到flag，试一试   都是一堆奇奇怪怪得内容，唯一有点像的也不对 那么我们开始逆向 搜索字符串找到">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305155740267.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305155812379.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160115705.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160213190.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160317833.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160404338.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160443079.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160917848.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160648469.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305160820969.png">
 <meta property="article:published_time" content="2020-03-05T08:09:49.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.490Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/03/05/CrackMe-Day8/image-20200305155740267.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/03/05/CrackMe-Day8/">
 
@@ -256,43 +267,43 @@
       
         <h1 id="CrackMe8"><a href="#CrackMe8" class="headerlink" title="CrackMe8"></a>CrackMe8</h1><p>第八道CrackMe</p>
 <p>作者Andrnalin</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><img src="/2020/03/05/CrackMe-Day8/image-20200305155740267.png" class="">
 
 <p>窗口这次直接是一个key的输入，和一个ok键</p>
 <p>随便输入东西，之后弹了这么个框</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305155812379.png" class="">
 
 <p>由于之前遇到过这样的问题，可能是类型错误之类的</p>
 <p>输入一次纯数字看看</p>
 <p>弹窗一样</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>由于这次只有一个key，首先想着会不会用grep就能找到flag，试一试</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160115705.png" class="">
 
 <p>都是一堆奇奇怪怪得内容，唯一有点像的也不对</p>
 <p>那么我们开始逆向</p>
 <p>搜索字符串找到这么些内容</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160213190.png" class="">
 
 <p>发现最后一个是错误的提示，跟进去</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160317833.png" class="">
 
 <p>这个往上看可以找到类似成功后的提示字符串</p>
 <p>在这上面不远有一个疑似关键跳转</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160404338.png" class="">
 
 <p>直接改成jnz</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160443079.png" class="">
 
 <p>emmmm，难度突然变低，这就成功了</p>
 <h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>由于这次太水了，准备破天荒的写个注册机看看</p>
 <p>那么首先还是向上看，看到有一处调用strcmp</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160917848.png" class="">
 
 <p>这时的堆栈有点迷，直接就把字符串写出来了</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160648469.png" class="">
 
 <p>行吧，合着连注册机都不用写了</p>
-
+<img src="/2020/03/05/CrackMe-Day8/image-20200305160820969.png" class="">
 
     </div>
 

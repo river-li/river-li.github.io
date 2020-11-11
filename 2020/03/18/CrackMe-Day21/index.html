@@ -27,12 +27,38 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe21第21道CrackMe 作者Cabeca 程序运行状态这个程序和以前的不太一样 有三个输入   随便输入之后有这么一个弹窗   感觉好像是没有满足什么条件 还是直接分析看看吧 逆向分析爆破拖到OD里面   定位字符串，到成功的那里 这附近正好有一个跳转到这下面的 jump   这个应该就是关键跳转了 但是还是先要看一下上面提示的那个语句是因为没有满足什么条件 这一块一共有四个je">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318134159796.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318134230752.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318134403696.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318134510757.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318134644759.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318135017120.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318135154506.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318135344222.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318135528024.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318135843211.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318135905579.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318141313431.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318142533645.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318144503444.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318190912192.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318191334509.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318191457684.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318191912453.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318191946746.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318192127539.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318192502089.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318194842861.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318195001584.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318195046534.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318195238673.png">
 <meta property="article:published_time" content="2020-03-18T12:29:38.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.484Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/03/18/CrackMe-Day21/image-20200318134159796.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/03/18/CrackMe-Day21/">
 
@@ -258,91 +284,91 @@
 <p>作者Cabeca</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>这个程序和以前的不太一样</p>
 <p>有三个输入</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134159796.png" class="">
 
 <p>随便输入之后有这么一个弹窗</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134230752.png" class="">
 
 <p>感觉好像是没有满足什么条件</p>
 <p>还是直接分析看看吧</p>
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>拖到OD里面</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134403696.png" class="">
 
 <p>定位字符串，到成功的那里</p>
 <p>这附近正好有一个跳转到这下面的 jump</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134510757.png" class="">
 
 <p>这个应该就是关键跳转了</p>
 <p>但是还是先要看一下上面提示的那个语句是因为没有满足什么条件</p>
 <p>这一块一共有四个je都是跳转到这句的</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318134644759.png" class="">
 
 <p>三个输入全空会直接在第一个地方跳转</p>
 <p>输入了用户名之后没有输入序列号，在第四个跳转那边变成了True</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135017120.png" class="">
 
 <p>三个输入条都有内容之后运行</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135154506.png" class="">
 
 <p>会在那个jnz跳转，但这次提示的内容不太一样</p>
 <p>那既然跳转到了这里，我们就修改一下上面发现的那个关键跳</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135344222.png" class="">
 
 <p>之后直接运行</p>
 <p>发现还是提示失败，再单步运行一下，发现关键跳转在这里</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135528024.png" class="">
 
 <p>修改一下这一处</p>
 <p>还有再往下一点的这里</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135843211.png" class="">
 
 <p>提示成功</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318135905579.png" class="">
 
 <p>那么爆破完成，之后分析算法的部分</p>
 <h3 id="注册机"><a href="#注册机" class="headerlink" title="注册机"></a>注册机</h3><p>要写注册机主要还是要看懂代码</p>
 <p>首先用查壳软件看一下编写的语言</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318141313431.png" class="">
 
 <p>那就用<code>DeDeDark</code>看一下对应的代码</p>
 <p>发现我们上面修改的关键跳转就是位于button的事件响应函数中</p>
 <p>而且Delphi的反编译功能也不是很好，就直接在OD里看吧</p>
 <p>看我们修改的那个跳转后面的具体条件</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318142533645.png" class="">
 
 <p>第一处看到上面是<code>cmp dword ptr ds:[0x42f714],0x0</code>这个值不为0就继续执行</p>
 <p>我们一共修改了两处关键跳转，正好可以对应两次序列号的比较，推测每次关键跳转上面可能就是对比一个序列号是否正确；</p>
 <p>下面我们改动的第一处条件跳转上面没有看到条件</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318144503444.png" class="">
 
 <p>反而是一个call函数，地址<code>0x004838D0</code></p>
 <p>再往上看一些，这附近一共有三个挨着的call函数</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318190912192.png" class="">
 
 <p>正好可以对应一个计算真码、一个计算假码、最后一个比较</p>
 <p>单步运行我们可以发现第三个是比较的call，其中传递的参数edx就是我们放着的假码</p>
 <p>在<code>0x42d48f</code>处的mov指令将真码放到eax中，看到堆栈可以发现除了我们自己输入的之外多了一串数字</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191334509.png" class="">
 
 <p>运行到第三个call时查看寄存器发现正好是一个我们自己输入的和一个第一个call计算出来的</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191457684.png" class="">
 
 <p>之后在第一个关键跳jnz处为真，我们重新运行一次，这次输入的serial1为“1270734”</p>
 <p>看看这里是否还会跳转</p>
 <p>这一次运行过来时堆栈中的四个值</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191912453.png" class="">
 
 <p>并且在关键跳转处写着跳转未实现</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318191946746.png" class="">
 
 <p>那么下面的三个call就是同理比较serial2了</p>
 <p>如果想写注册机，那么就要具体分析这两个计算真码的关键函数了</p>
 <h4 id="Serial1"><a href="#Serial1" class="headerlink" title="Serial1"></a>Serial1</h4><p>第一个序列号的真码计算函数很简单</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318192127539.png" class="">
 
 <p>只有这么一小段，但是里面嵌套了一个call</p>
 <p>在运行到这个call的时候，eax指向的一片空间存储着name和serial等</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318192502089.png" class="">
 
 
 
@@ -350,18 +376,18 @@
 <p>实际上又是一个子函数在计算（禁止套娃）</p>
 <p>看了半天没什么发现，就去看了看WP，WP有个大佬说序列号的值不是这里算出来的，原本就是有的</p>
 <p>跟到<code>42f714</code>看到里面有一个值</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318194842861.png" class="">
 
 <p>这边的两个值转换成十进制就是序列号，这个值一开始就存在了</p>
 <p>查找这个地址的参考，发现有一个跳转表</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195001584.png" class="">
 
 <p>事件函数中还有一个Edit1KeyPress</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195046534.png" class="">
 
 <p>这个看来是边输入边触发的</p>
 <p>每次输入name的一个字符都会运行一遍</p>
-
+<img src="/2020/03/18/CrackMe-Day21/image-20200318195238673.png" class="">
 
 <p>之后根据<code>ds:[edx*4+0x42CEC0]</code>的值跳到对应分支，向<code>ds:[0x42f714]</code>和<code>ds:[0x42f718]</code>两个地方加上特定的值</p>
 <p>所以注册机就需要写一个大的跳转表，这有点麻烦了，主要是这么多情况抄数据比较慢</p>

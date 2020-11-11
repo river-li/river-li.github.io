@@ -27,12 +27,24 @@
 <meta property="og:site_name" content="River&#39;s blog">
 <meta property="og:description" content="CrackMe10第十道CrackMe 作者Andrenalin 程序运行状态运行，窗口和第八题长得一样，只有一个序列号，但是难度是difficult   略慌，输入之后弹窗也和之前一样     逆向分析首先查找字符串   在Right上方找到关键跳转   修改为jne试试看   直接爆破成功了。。 不过看题目描述难度比较高，还是进一步看一下吧 进一步分析在搜索字符串的时候应该就注意到了，有一个奇">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307121620307.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307121646873.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307185556507.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307185540489.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307185636538.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307190912877.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307192423989.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307192800985.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307193051810.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307193821555.png">
+<meta property="og:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307193914328.png">
 <meta property="article:published_time" content="2020-03-07T11:39:46.000Z">
 <meta property="article:modified_time" content="2020-09-26T06:47:04.399Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="hack">
 <meta property="article:tag" content="re">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/03/07/CrackMe-Day10/image-20200307121620307.png">
 
 <link rel="canonical" href="https://river-li.xyz/2020/03/07/CrackMe-Day10/">
 
@@ -257,49 +269,49 @@
         <h1 id="CrackMe10"><a href="#CrackMe10" class="headerlink" title="CrackMe10"></a>CrackMe10</h1><p>第十道CrackMe</p>
 <p>作者Andrenalin</p>
 <h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>运行，窗口和第八题长得一样，只有一个序列号，但是难度是difficult</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307121620307.png" class="">
 
 <p>略慌，输入之后弹窗也和之前一样</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307121646873.png" class="">
 
 
 
 <h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>首先查找字符串</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185556507.png" class="">
 
 <p>在Right上方找到关键跳转</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185540489.png" class="">
 
 <p>修改为jne试试看</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307185636538.png" class="">
 
 <p>直接爆破成功了。。</p>
 <p>不过看题目描述难度比较高，还是进一步看一下吧</p>
 <h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>在搜索字符串的时候应该就注意到了，有一个奇怪的字符串</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307190912877.png" class="">
 
 <p>这个字符串是最后关键跳转上面的一个call，再观察发现这上面不远有一个向上的jump</p>
 <p>并且这个jump跳转之前还有一个<code>__vbaVarForNext</code>，虽然没写过VBA的程序，但是根据调用的API名字我们可以推测这是个循环</p>
 <p>对输入的字符串进行处理，每一个字符进行一定转换之后要求得到这个奇怪的东西，最后不同就跳转</p>
 <p>那么下面就是需要看一下都做了啥</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307192423989.png" class="">
 
 <p>首先这里这个<code>__vbaLenVar</code>对字符串的长度进行获取，结果保存在了ecx中</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307192800985.png" class="">
 
 <p>这里得到具体的字符，之后调用<code>rtcAnsiValueBstr</code>这个函数，将字符转化为了ASCII吗</p>
 <p>紧跟着下面是一个<code>add ax,0xA</code> 对得到的结果加了10;</p>
 <p>下面这个<code>jo</code>之前还真没见过，是如果溢出就跳转</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193051810.png" class="">
 
 <p>之后再调用了这个函数，将ASCII转换回字符</p>
 <p>那么就可以编写一个简单的程序了</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">&#123;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">string</span> target = <span class="string">&quot;kXy^rO|*yXo*m\\kMuOn*+&quot;</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> length = target.size( %&#125;;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;length;i++ %&#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#123;</span></span></span><br><span class="line"><span class="function"><span class="params">    target[i]=target[i]<span class="number">-0xA</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">  &#125;</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="built_in">cout</span>&lt;&lt;target&lt;&lt;<span class="built_in">endl</span>;</span></span></span><br><span class="line"><span class="function"><span class="params">&#125;</span></span></span><br></pre></td></tr></table></figure>
 
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193821555.png" class="">
 
 <p>得到这个字符串，输入试一下</p>
-
+<img src="/2020/03/07/CrackMe-Day10/image-20200307193914328.png" class="">
 
 <p>成功</p>
 
