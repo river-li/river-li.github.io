@@ -196,6 +196,201 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/10/suid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/10/suid/" class="post-title-link" itemprop="url">suid</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-10 15:18:37" itemprop="dateCreated datePublished" datetime="2019-06-10T15:18:37+08:00">2019-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Some Hacking Tricks on SUID programs.</p>
+<!--more--->
+
+<p>A SUID program is a program that will always run as its owner’s privilege.</p>
+<p>A normal program is the same privilege with its runner, while a SUID program always run as its owner.</p>
+<p>A SUID program is -rw<strong>s</strong>r-xr-x . The forth privilege bit is <code>s</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 4755 file</span><br></pre></td></tr></table></figure>
+
+<p>The above command can turn on the Set-UID bit.</p>
+<p>Every Unix program is running in a specific environment, which consists of  a table of environment variables.</p>
+<p>In C, a program can use <code>getenv()</code> to get the values of environment variables.</p>
+<p>In C, <code>system(const char * cmd)</code> function will first invoke the <code>/bin/sh</code> program, and then let the shell execute <code>cmd</code></p>
+<h4 id="Some-important-variables"><a href="#Some-important-variables" class="headerlink" title="Some important variables"></a>Some important variables</h4><h5 id="PATH"><a href="#PATH" class="headerlink" title="PATH"></a>PATH</h5><p>A hacker can execute following commands to set the current dir as the first item in <code>PATH</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PATH=<span class="string">&quot;.:<span class="variable">$PATH</span>&quot;</span>;</span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="IFS"><a href="#IFS" class="headerlink" title="IFS"></a>IFS</h5><p>IFS determines the characters which would be interpreted as white space.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IFS=<span class="string">&quot;/ \t\n&quot;</span>;</span><br><span class="line"><span class="built_in">export</span> IFS</span><br></pre></td></tr></table></figure>
+
+<p>The above commands would let the ‘/‘ as space, which means any program attempt to use an absolute PATH will be translate into spaces.</p>
+<p><code>system(&quot;/bin/mail root&quot;)</code> —&gt; <code>bin mail root</code></p>
+<p>thus, the hacker can run his own program called <code>bin</code></p>
+<p>However, this bug has been fixed: the invoked new shell process will not inherbit IFS variable.</p>
+<h5 id="LD-LIBRARY-PATH"><a href="#LD-LIBRARY-PATH" class="headerlink" title="LD_LIBRARY_PATH"></a>LD_LIBRARY_PATH</h5><p>In Linux, most program requires dynamic link libraries at run time.</p>
+<p>Dynamic linker/loader: <code>ld.so</code>/<code>ld-linux.so</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldd /bin/ls</span><br></pre></td></tr></table></figure>
+
+<p>That will list all shared libraries that <code>ls</code> needed.</p>
+<p><strong>LD_LIBRARY_PATH</strong> contains a set of directories that <code>ld.so</code> will look for runtime libraries.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setenv LD_LIBRARY_PATH .:<span class="variable">$LD_LIBRARY_PATH</span> </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Never-use-C-shell-for-SUID-scripts"><a href="#Never-use-C-shell-for-SUID-scripts" class="headerlink" title="Never use C-shell for SUID scripts"></a>Never use C-shell for SUID scripts</h3><p>change-pass is a script like this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/csh -b</span></span><br><span class="line"><span class="built_in">set</span> user=<span class="variable">$1</span></span><br><span class="line">passwd <span class="variable">$user</span></span><br></pre></td></tr></table></figure>
+
+<p>This script is useful for root user to help changing other users’ password.</p>
+<p>But for the reason that csh scripts are vulnerable to manipulating environment variables.</p>
+<p>The hacker can run follow instructions:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">env TERM&#x3D;&#39;&#96;cp &#x2F;bin&#x2F;sh &#x2F;tmp&#x2F;sh;chown root &#x2F;tmp&#x2F;sh;</span><br><span class="line">chmod 4755&#x2F;tmp&#x2F;sh&#96;&#39;</span><br><span class="line">change-pass</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Use-Full-PATH"><a href="#Use-Full-PATH" class="headerlink" title="Use Full PATH"></a>Use Full PATH</h3><p>Now,we change the script to this one:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;ksh</span><br><span class="line">user&#x3D;$1</span><br><span class="line">passwd $user</span><br></pre></td></tr></table></figure>
+
+<p>This is also vulnerable, because the program uses relative path names</p>
+<p>The hacker can run following instructions to run his own program:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&#x27;/tmp&#x27;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;cp /bin/sh /tmp/sh;chown root /tmp/sh;chmod 4755/tmp/sh&quot;</span> &gt;/tmp/passwd<span class="string">&quot;</span></span><br><span class="line"><span class="string">./change-pass</span></span><br></pre></td></tr></table></figure>
+
+<p>Then the script runs <code>/tmp/passwd</code> instead of  <code>/usr/bin/passwd</code></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/08/tmux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/08/tmux/" class="post-title-link" itemprop="url">tmux</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-08 19:14:54" itemprop="dateCreated datePublished" datetime="2019-06-08T19:14:54+08:00">2019-06-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>tmux是一个终端分屏的工具<br>在ssh这样的远程访问时也可以使用<br>因此在纯图形化下很实用<br>但是这也是一个十分复杂的工具，快捷键多的让人头皮发麻</p>
+<!--more--->
+
+
+<h2 id="配置默认启动zsh"><a href="#配置默认启动zsh" class="headerlink" title="配置默认启动zsh"></a>配置默认启动zsh</h2><p>在<code>~/.tmux.conf</code>内加入如下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> -g default-shell /bin/zsh</span><br><span class="line"><span class="built_in">set</span> -g default-command /bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>这样启动tmux时会默认启动zsh而不是bash</p>
+<h2 id="配置使用vim快捷键"><a href="#配置使用vim快捷键" class="headerlink" title="配置使用vim快捷键"></a>配置使用vim快捷键</h2><p>tmux的移动很麻烦，我也不知道是不是emacs的移动方式</p>
+<p>不过很难记，就想要直接配置成vim的快捷键</p>
+<p>在<code>~/.tmux.conf</code>加入这些内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set-window-option -g mode-keys vi</span><br><span class="line"><span class="built_in">bind</span> h select-pane -L</span><br><span class="line"><span class="built_in">bind</span> j select-pane -D</span><br><span class="line"><span class="built_in">bind</span> k select-pane -U</span><br><span class="line"><span class="built_in">bind</span> l select-pane -R</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/07/rdesktop/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1288,461 +1483,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/22/scrapy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/22/scrapy/" class="post-title-link" itemprop="url">scrapy</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-22 09:25:21" itemprop="dateCreated datePublished" datetime="2019-05-22T09:25:21+08:00">2019-05-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>scrapy是一个爬虫的框架,比较适合对整个网站进行爬取<br>里面也有很多提前设置好的内容,比如多线程、请求Header等<br>这里记录一下相关的概念以及用法</p>
-<!--more--->
-
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>框架结构</p>
-<ul>
-<li>Scrapy</li>
-<li>Scheduler 调度器</li>
-<li>Downloader 下载器</li>
-<li>Spider 爬虫</li>
-<li>Pipeline 管道，主要负责处理爬虫从网页抽取的实体</li>
-</ul>
-<p>数据类型</p>
-<ul>
-<li>Request类</li>
-<li>Response类</li>
-<li>Item类  spider从页面中提取的信息对象，由pipeline处理</li>
-</ul>
-<p>scrapy运行时直接在命令行里运行，可以像一个可执行文件一样用</p>
-<p>只需要编辑爬虫project中的源码再用scrapy运行即可</p>
-<table>
-<thead>
-<tr>
-<th align="center">命令</th>
-<th align="center">说明</th>
-<th align="center">格式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">startproject</td>
-<td align="center">创建工程</td>
-<td align="center">scrapy startproject &lt;name&gt; [dir]</td>
-</tr>
-<tr>
-<td align="center">genspider</td>
-<td align="center">创建爬虫</td>
-<td align="center">scrapy genspider [options] &lt;name&gt; &lt;domain&gt;</td>
-</tr>
-<tr>
-<td align="center">settings</td>
-<td align="center">获得配置信息</td>
-<td align="center">scrapy settings [options]</td>
-</tr>
-<tr>
-<td align="center">crawl</td>
-<td align="center">运行爬虫</td>
-<td align="center">scrapy crawl &lt;spider&gt;</td>
-</tr>
-<tr>
-<td align="center">list</td>
-<td align="center">列出所有爬虫</td>
-<td align="center">scrapy list</td>
-</tr>
-<tr>
-<td align="center">shell</td>
-<td align="center">启动调试</td>
-<td align="center">scrapy shell [url]</td>
-</tr>
-</tbody></table>
-<h2 id="Xpath"><a href="#Xpath" class="headerlink" title="Xpath"></a>Xpath</h2><p>Xpath可以使用路径表达式在XML中选择节点</p>
-<table>
-<thead>
-<tr>
-<th>表达式</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>nodename</td>
-<td>选取该节点的所有子节点</td>
-</tr>
-<tr>
-<td>/</td>
-<td>从根节点选取</td>
-</tr>
-<tr>
-<td>//</td>
-<td>从匹配选择的当前节点选择文档中的节点，不考虑位置</td>
-</tr>
-<tr>
-<td>.</td>
-<td>选取当前节点</td>
-</tr>
-<tr>
-<td>..</td>
-<td>当前节点的父节点</td>
-</tr>
-<tr>
-<td>@</td>
-<td>选取属性</td>
-</tr>
-</tbody></table>
-<p>如果想要单独用xpath的功能</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.HTML(response.content)</span><br></pre></td></tr></table></figure>
-
-<p>在匹配时可以将属性放在中括号中，也可以像操作数组一样选择特定序号的节点</p>
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="豆瓣电影top250"><a href="#豆瓣电影top250" class="headerlink" title="豆瓣电影top250"></a>豆瓣电影top250</h3><p>第一个例子，爬去豆瓣电影的排名前250</p>
-<img src="/2019/05/22/scrapy/startproject.png" class="" title="startproject">
-
-<p>创建完成后可以看到整个文件的目录结构如图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">. </span><br><span class="line">├── douban</span><br><span class="line">│   ├── __init__.py </span><br><span class="line">│   ├── items.py</span><br><span class="line">│   ├── middlewares.py</span><br><span class="line">│   ├── pipelines.py</span><br><span class="line">│   ├── __pycache__ </span><br><span class="line">│   ├── settings.py</span><br><span class="line">│   └── spiders</span><br><span class="line">│       ├── __init__.py</span><br><span class="line">│       └── __pycache__</span><br><span class="line">└── scrapy.cfg</span><br></pre></td></tr></table></figure>
-
-<p>用浏览器找到前250的网站，每一页是10个，一共25页</p>
-<img src="/2019/05/22/scrapy/0.png" class="" title="success">
-
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;pic&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">em</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span>1<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://movie.douban.com/subject/1292052/&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">img</span> <span class="attr">alt</span>=<span class="string">&quot;肖申克的救赎&quot;</span> <span class="attr">src</span>=<span class="string">&quot;https://img3.doubanio.com/view/photo/s_ratio_poster/public/p480747492.jpg&quot;</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;info&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;hd&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://movie.douban.com/subject/1292052/&quot;</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span>肖申克的救赎<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span><span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>The Shawshank Redemption<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;other&quot;</span>&gt;</span><span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>月黑高飞(港)  /  刺激1995(台)<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;playable&quot;</span>&gt;</span>[可播放]<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bd&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">                            导演: 弗兰克·德拉邦特 Frank Darabont<span class="symbol">&amp;nbsp;</span><span class="symbol">&amp;nbsp;</span><span class="symbol">&amp;nbsp;</span>主演: 蒂姆·罗宾斯 Tim Robbins /...<span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">                            1994<span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>美国<span class="symbol">&amp;nbsp;</span>/<span class="symbol">&amp;nbsp;</span>犯罪 剧情</span><br><span class="line">                        <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                        </span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;star&quot;</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;rating5-t&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;rating_num&quot;</span> <span class="attr">property</span>=<span class="string">&quot;v:average&quot;</span>&gt;</span>9.6<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">property</span>=<span class="string">&quot;v:best&quot;</span> <span class="attr">content</span>=<span class="string">&quot;10.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span>&gt;</span>1429179人评价<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                            <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;quote&quot;</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;inq&quot;</span>&gt;</span>希望让人自由。<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>检查元素可以看到每一个container的结构，在爬去时我们希望获取到</p>
-<ul>
-<li>排名</li>
-<li>标题</li>
-<li>评分</li>
-<li>描述</li>
-<li>评价人数</li>
-</ul>
-<p>例如：1、肖申克的救赎、9.6、希望让人自由、 1429179</p>
-<p>下面编辑Items.py</p>
-<img src="/2019/05/22/scrapy/1.png" class="" title="success">
-
-<p>这个文件就是用于设置爬虫项目中的Item对象结构的</p>
-<p>下面先创建一个爬虫</p>
-<img src="/2019/05/22/scrapy/2.png" class="" title="success">
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MovieSpider</span>(<span class="params">scrapy.Spider</span>):</span>    name = <span class="string">&#x27;movie&#x27;</span></span><br><span class="line">    allowed_domains = [<span class="string">&#x27;https://movie.douban.com/top250&#x27;</span>]</span><br><span class="line">    start_urls = [<span class="string">&#x27;http://https://movie.douban.com/top250/&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>这个movie.py中的parse方法是用于解析获取到的response的</p>
-<p>编辑一下里面的内容</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"><span class="keyword">from</span> douban.items <span class="keyword">import</span> DoubanItem</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MovieSpider</span>(<span class="params">scrapy.Spider</span>):</span></span><br><span class="line">    name = <span class="string">&#x27;movie&#x27;</span></span><br><span class="line">    start_urls = [<span class="string">&#x27;https://movie.douban.com/top250/&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        item = DoubanItem()</span><br><span class="line">        movies = response.xpath(<span class="string">&#x27;//div[@class=&quot;item&quot;]&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        next_url = response.xpath(<span class="string">&#x27;//span[@class=&quot;next&quot;]/a/@href&#x27;</span>).extract()</span><br><span class="line">        <span class="keyword">if</span> next_url:</span><br><span class="line">            next_url = <span class="string">&#x27;https://movie.douban.com/top250&#x27;</span> + next_url[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">yield</span> scrapy.Request(next_url)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> movie <span class="keyword">in</span> movies:</span><br><span class="line">            item[<span class="string">&quot;ranking&quot;</span>] = movie.xpath(<span class="string">&#x27;.//em/text()&#x27;</span>).extract()[<span class="number">0</span>]</span><br><span class="line">            item[<span class="string">&quot;name&quot;</span>] = movie.xpath(<span class="string">&#x27;.//span[@class=&quot;title&quot;]/text()&#x27;</span>).extract()[<span class="number">0</span>]</span><br><span class="line">            item[<span class="string">&quot;score&quot;</span>] = movie.xpath(<span class="string">&#x27;.//div[@class=&quot;star&quot;]/span[@class=&quot;rating_num&quot;]/text()&#x27;</span>).extract()[<span class="number">0</span>]</span><br><span class="line">            item[<span class="string">&quot;description&quot;</span>] = movie.xpath(<span class="string">&#x27;.//p[@class=&quot;quote&quot;]/span[@class=&quot;inq&quot;]/text()&#x27;</span>).extract()[<span class="number">0</span>]</span><br><span class="line">            item[<span class="string">&quot;score_num&quot;</span>] = movie.xpath(<span class="string">&#x27;//div[@class=&quot;star&quot;]//span/text()&#x27;</span>)[<span class="number">3</span>].extract()[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">yield</span> item</span><br></pre></td></tr></table></figure>
-
-<p>上面设置的next_url那一部分主要目的是实现自动翻页</p>
-<p>之后还需要设置一下爬虫的user-agent</p>
-<p>修改setting.py</p>
-<p><code>USER_AGENT = &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0&#39;</code></p>
-<p>运行爬虫</p>
-<p><code>scarpy crawl movie -o output.csv</code></p>
-<p>如果对获得的数据需要作进一步处理，则可以在pipelines.py中进一步修改process_item函数</p>
-<p>这样会将结果保存在这个csv文件中</p>
-<img src="/2019/05/22/scrapy/3.png" class="" width="3">
-
-<p>结果如图</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/21/ping/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/21/ping/" class="post-title-link" itemprop="url">ping</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-21 19:21:00" itemprop="dateCreated datePublished" datetime="2019-05-21T19:21:00+08:00">2019-05-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Ping源码分析"><a href="#Ping源码分析" class="headerlink" title="Ping源码分析"></a>Ping源码分析</h1><p>分析的内容为Linux中ip-utils中的ping<br>为网络程序设计这门课要求的小作业</p>
-<!--more--->
-
-<h3 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h3><p>首先要知道ping的程序在哪个包里<br>在命令行使用<code>man ping</code>查看手册<br>最下面会写着来自于iputils<br>百度找到源码<br>与ping相关的文件主要有:</p>
-<ul>
-<li>ping.c </li>
-<li>ping_common.c</li>
-<li>ping_common.h</li>
-</ul>
-<p>程序的main函数位于ping.c，从这里开始分析</p>
-<h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3><img src="/2019/05/21/ping/48.png" class="" title="success">
-<p>Main函数非常的长，前面设置了许多属性，还有很多if判断语句用于判断设置的参数</p>
-<p>除了定义的内容，可以看到设置了capabilities以及locale</p>
-<p>之后下面建立了用于ping程序的icmp的socket<br>在这下面判断socket是否建立成功，并且获取到errno</p>
-<p>这下面可以看到一个while循环，不停的调用getopt获取命令行参数</p>
-<p>下面使用switch语句对相应的参数进行设置</p>
-<img src="/2019/05/21/ping/0.png" class="" title="success">
-
-<p>在最下面的default中调用了usage函数，其中内容如下：</p>
-<img src="/2019/05/21/ping/1.png" class="" title="success">
-
-<p>在switch语句之后，是对参数有效性进行检查，对于有问题的部分调用usage给用户</p>
-<img src="/2019/05/21/ping/2.png" class="" title="success">
-<p>下面的一个while循环比较重要，类似我们课上例子的ping程序的主函数部分</p>
-<img src="/2019/05/21/ping/3.png" class="" title="success">
-<p>这里可以看到，如果argv是ip地址则，hostname=target，否则（即是域名）调用gethostbyname函数获取实际的ip地址</p>
-<p>这下面是一些检测</p>
-<img src="/2019/05/21/ping/4.png" class="" title="success">
-
-<p>这里最初初始化时是全0，所以第一次调用时一定会执行，查看内容可以看到</p>
-<img src="/2019/05/21/ping/5.png" class="" title="success">
-
-
-<img src="/2019/05/21/ping/6.png" class="" title="success">
-<p>比较核心的地方在这个connect，根据报错的信息可以知道这里的目的是首先尝试创建一个socket并connect到目标主机，如果是广播地址就报错，或向用户确认是否要ping广播地址</p>
-<p>这里的一部分判断本机地址是否是0.0.0.0</p>
-<img src="/2019/05/21/ping/7.png" class="" title="success">
-
-<p>这个检测目标地址是否为0，如果是0.0.0.0则将目标地址设置为本机的地址，变成ping 127.0.0.1</p>
-<p>下面是检测icmp_sock是否建立成功</p>
-<img src="/2019/05/21/ping/8.png" class="" title="success">
-
-<p>如果出错则退出</p>
-<p>这个地方我们往上看可以看到之前也检测过一次icmp_sock是否小于0，但那时的解决方式是重试了一次，这里出错则直接退出。上面的判断：</p>
-<img src="/2019/05/21/ping/9.png" class="" title="success">
-
-<p>下面device是加了-i参数选择出口网卡interface时的内容，之后对msg作了一些设置</p>
-<img src="/2019/05/21/ping/10.png" class="" title="success">
-
-
-<img src="/2019/05/21/ping/11.png" class="" title="success">
-
-<p>这里针对ping广播地址的情况进行一些判断</p>
-<p>interval太小则会直接退出，这个值是两个包间间隔的时间长短</p>
-<p>pmtudisc这个值是根据ping –M参数后的内容设置的，在ping广播的情况下-M后的值必须是do，不能是don’t和want</p>
-<img src="/2019/05/21/ping/12.png" class="" title="success">
-
-<p>这里对using_ping_socket是否为0的两种情况</p>
-<p>可以看到之前一次创建socket如果失败，则会将using_ping_socket的值设置为1</p>
-<p>因此using_ping_socket的情况是创建socket失败一次的情况下对socket设置了几个option</p>
-<img src="/2019/05/21/ping/13.png" class="" title="success">
-
-<p>这里是针对参数-R时记录路由设置参数</p>
-<img src="/2019/05/21/ping/14.png" class="" title="success">
-<p>这里对-T设置参数，-T作用是设置timestamp</p>
-<img src="/2019/05/21/ping/15.png" class="" title="success">
-<p>这个地方的作用是设置没有设置-R –T时的参数<br>可以查看设置这个options 的地方</p>
-<img src="/2019/05/21/ping/16.png" class="" title="success">
-
-<img src="/2019/05/21/ping/17.png" class="" title="success">
-
-<p>这里根据注释可以得知作用是粗略估计数据包的长度</p>
-<p>之后用sock_setbufs设置socket的buf大小</p>
-<p>再下面检测了一些参数以及数据包长度；</p>
-<p>整个程序的主要功能在最下面的嵌套中，从main函数的底部看起</p>
-<img src="/2019/05/21/ping/18.png" class="" title="success">
-<p>可以看到底部printf打印了运行ping时常常看到的信息</p>
-<p>之后调用了setup函数以及main_loop<br>Setup和main_loop函数定义在ping_common.c中</p>
-<p>Setup函数的定义：</p>
-<img src="/2019/05/21/ping/19.png" class="" title="success">
-
-<p>根据注释可以得知，这个函数的作用是设置并检查参数</p>
-<p>跳过前面一部分检测的内容</p>
-<img src="/2019/05/21/ping/20.png" class="" title="success">
-
-<p>这里设置了SNDTIMEO来防止当网卡接口很慢或停止时永久阻塞，将小于1000的时间间隔统一设置为了1000</p>
-<img src="/2019/05/21/ping/21.png" class="" title="success">
-
-<p>设置RCVTIMEO优化避免冗余轮询</p>
-<img src="/2019/05/21/ping/22.png" class="" title="success">
-<p>设置ident这个值用来标识主机，使用的是进程的pid的后16位</p>
-<img src="/2019/05/21/ping/23.png" class="" title="success">
-<p>下面三句注册了三个信号，绑定了对应的函数</p>
-<p>之后是设置信号集set初始化并清空，之后改变信号屏蔽字</p>
-<img src="/2019/05/21/ping/24.png" class="" title="success">
-
-<p>deadline是设置的-w参数后面的值，即超时时间</p>
-<p>itimerval是一个定时器</p>
-<hr>
-<h3 id="main-loop"><a href="#main-loop" class="headerlink" title="main_loop"></a>main_loop</h3><p>下面看main_loop的定义</p>
-<img src="/2019/05/21/ping/25.png" class="" title="success">
-<p>整个函数的核心内容是这个for循环，for循环前面判断退出条件</p>
-<p>在这下面是一个比较重要的部分</p>
-<img src="/2019/05/21/ping/26.png" class="" title="success">
-<p>在一个循环中调用pinger函数</p>
-<p>这个pinger函数是真正用于发送icmp包的地方</p>
-<p>这里先放着继续向下看</p>
-<img src="/2019/05/21/ping/27.png" class="" title="success">
-<p>折叠了if后的内容后可以看到下面又进入了一个for循环</p>
-<p>这里的for循环的作用是接受icmp的回显包</p>
-<p>上图中可以看到调用parse_reply，这个函数是用来解析处理回显包的</p>
-<p>其中内容主要是设置了recev的相关内容以及调用函数recvmsg</p>
-<img src="/2019/05/21/ping/28.png" class="" title="success">
-<p>前面学习socket时了解到recvmsg是用于接受消息队列中消息的函数，这里的作用就是从socket中读取一个msg</p>
-<hr>
-<h3 id="pinger"><a href="#pinger" class="headerlink" title="pinger"></a>pinger</h3><p>在pinger函数前面有一段注释：</p>
-<img src="/2019/05/21/ping/29.png" class="" title="success">
-<p>可以看到，pinger函数的主要作用是compose 并transmit ICMP的回显包</p>
-<p>下面就参考着注释分析一下pinger函数的内部</p>
-<img src="/2019/05/21/ping/30.png" class="" title="success">
-<p>首先判断是否到达了退出条件，如果达到则返回1000</p>
-<img src="/2019/05/21/ping/31.png" class="" title="success">
-<p>这个条件主要目的是设置tokens和cur_time</p>
-<p>这里再往下直到pinger函数结束都是resend这个部分</p>
-<img src="/2019/05/21/ping/32.png" class="" title="success">
-<p>resend这里首先就调用了send_probe函数，之后对其返回值进行判断，根据不同返回值调用不同的部分，最终如果前面出错则调用一些处理，返回。</p>
-<p>因此我们可以判断出这一部分中实际的发送函数是send_probe,正常返回0，其他情况出错<br>下面进入这个函数</p>
-<h3 id="send-probe"><a href="#send-probe" class="headerlink" title="send_probe"></a>send_probe</h3><img src="/2019/05/21/ping/33.png" class="" title="success">
-
-<p>最主要的是send_to和那个sendmsg</p>
-<p>如果使用的是cmsg，则设置数据包并调用sendmsg发送数据</p>
-<p>否则直接使用send_to向socket发送数据<br>最后判断返回值是否与len相等，相等则返回0，否则返回cc即send的返回值</p>
-<p>为了进一步了解这个len的值是如何得到的，我们进入build_niquery和build_echo两个函数看看</p>
-<img src="/2019/05/21/ping/34.png" class="" title="success">
-<p>可以看出这个build_niquery函数是构造了一个请求包，并用cc这个值记录它的实际大小<br>这个ni_hdr数据结构内部：</p>
-<img src="/2019/05/21/ping/35.png" class="" title="success">
-<p>得知这一部分是处理icmp6数据包的内容</p>
-<p>这个结构体的大小也应该是发送的请求icmp6的数据包大小</p>
-<img src="/2019/05/21/ping/36.png" class="" title="success">
-<p>这个是创建了一个回显包</p>
-<p>计算并最终返回回显包的长度</p>
-<p>对于pinger的分析到此结束</p>
-<hr>
-<h3 id="parse-reply"><a href="#parse-reply" class="headerlink" title="parse_reply"></a>parse_reply</h3><img src="/2019/05/21/ping/37.png" class="" title="success">
-<p>首先看到注释</p>
-<p>这个函数的作用是分析获取到的icmp包，判断是否属于自己，是的话则将其打印</p>
-<p>这个判断的原因是ICMP的接口会受到所有的回显包，有可能同一台主机上有多个用户在使用ping程序</p>
-<img src="/2019/05/21/ping/38.png" class="" title="success">
-<p>这里的内容是检查ip头部</p>
-<p>这里主要是设置了一些属性，判断的地方只有ip包的长度，如果数据包长度过短则退出</p>
-<p>下面检测icmp部分</p>
-<img src="/2019/05/21/ping/39.png" class="" title="success">
-<p>可以看到，调用了一个in_cksum函数</p>
-<p>看名字即可看出这个函数是用来求校验和的</p>
-<hr>
-<h3 id="in-cksum"><a href="#in-cksum" class="headerlink" title="in_cksum"></a>in_cksum</h3><img src="/2019/05/21/ping/40.png" class="" title="success">
-<p>查看注释，不难理解算法</p>
-<p>使用了一个32位的累加器，将16位的字加上去，最终将高16位和低16位相加</p>
-<p>最终结果需要取反</p>
-<p>Icmp的校验和是icmp报文中所有16位字段的补码的总和的16位补码</p>
-<img src="/2019/05/21/ping/41.png" class="" title="success">
-
-<p>下面这里是当得到的报文不是icmp_echoreply类型时进入</p>
-<p>出现这种情况，有可能是icmp包本身类型不对，也有可能是原本的icmp包在传输中出错<br>下面的一个大括号用来处理</p>
-<img src="/2019/05/21/ping/42.png" class="" title="success">
-<p>长度出错</p>
-<img src="/2019/05/21/ping/43.png" class="" title="success">
-<p>类型出错，或这个包并不是发给我们的，即收到了别人的回显包</p>
-<img src="/2019/05/21/ping/44.png" class="" title="success">
-<p>输出icmp包的序列号以及来源的地址</p>
-<p>如果csfailed，即在求校验和时出错则输出bad checksum</p>
-<img src="/2019/05/21/ping/45.png" class="" title="success">
-<p>看到default这里的注释是Must Not，原因是icmp包类型与上面的几个都不同，则一定是错误</p>
-<img src="/2019/05/21/ping/46.png" class="" title="success">
-
-<p>下面这里是正常时继续运行的内容，输出了受到包的时间，以及来自的主机ip<br>最终下面作了两个检测，正常退出</p>
-<img src="/2019/05/21/ping/47.png" class="" title="success">
-
-<p>到此整个ping程序中比较重要的部分就分析完毕了</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1814,7 +1554,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">93</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

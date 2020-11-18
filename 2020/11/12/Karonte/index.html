@@ -20,19 +20,21 @@
     var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="WHU 网络空间安全在读">
+  <meta name="description" content="2020年S&amp;P上的一篇文章阅读笔记 KARONTE: Detecting Insecure Multi-binary Interactions in Embedded Firmware 论文看完了，笔记还没整理完:cry: 摘要IoT设备的安全分析主要面临的几个难点包括：  IoT系统上的软件功能多是hardware-dependent，并且在执行时需要复杂的配置，这导致动态分析技术非常">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker">
-<meta property="og:url" content="https://river-li.xyz/2020/02/22/Docker/index.html">
+<meta property="og:title" content="Karonte">
+<meta property="og:url" content="https://river-li.xyz/2020/11/12/Karonte/index.html">
 <meta property="og:site_name" content="River&#39;s blog">
-<meta property="og:description" content="WHU 网络空间安全在读">
+<meta property="og:description" content="2020年S&amp;P上的一篇文章阅读笔记 KARONTE: Detecting Insecure Multi-binary Interactions in Embedded Firmware 论文看完了，笔记还没整理完:cry: 摘要IoT设备的安全分析主要面临的几个难点包括：  IoT系统上的软件功能多是hardware-dependent，并且在执行时需要复杂的配置，这导致动态分析技术非常">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-02-22T14:14:34.000Z">
-<meta property="article:modified_time" content="2020-09-26T06:47:04.653Z">
+<meta property="og:image" content="https://river-li.xyz/2020/11/12/Karonte/Karonte/image-20201113163407553.png">
+<meta property="article:published_time" content="2020-11-12T12:57:57.000Z">
+<meta property="article:modified_time" content="2020-11-17T11:54:48.784Z">
 <meta property="article:author" content="River Li">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/11/12/Karonte/Karonte/image-20201113163407553.png">
 
-<link rel="canonical" href="https://river-li.xyz/2020/02/22/Docker/">
+<link rel="canonical" href="https://river-li.xyz/2020/11/12/Karonte/">
 
 
 <script id="page-configurations">
@@ -45,7 +47,7 @@
   };
 </script>
 
-  <title>Docker | River's blog</title>
+  <title>Karonte | River's blog</title>
   
 
 
@@ -199,7 +201,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/02/22/Docker/">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/11/12/Karonte/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.jpg">
@@ -212,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Docker
+          Karonte
         </h1>
 
         <div class="post-meta">
@@ -222,15 +224,24 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-02-22 22:14:34" itemprop="dateCreated datePublished" datetime="2020-02-22T22:14:34+08:00">2020-02-22</time>
+              <time title="创建时间：2020-11-12 20:57:57" itemprop="dateCreated datePublished" datetime="2020-11-12T20:57:57+08:00">2020-11-12</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+                <time title="修改时间：2020-11-17 19:54:48" itemprop="dateModified" datetime="2020-11-17T19:54:48+08:00">2020-11-17</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+            </span>
 
           
 
@@ -243,7 +254,69 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>2020年S&amp;P上的一篇文章阅读笔记</p>
+<p>KARONTE: Detecting Insecure Multi-binary Interactions in Embedded Firmware</p>
+<p>论文看完了，笔记还没整理完:cry:</p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>IoT设备的安全分析主要面临的几个难点包括：</p>
+<ol>
+<li>IoT系统上的软件功能多是hardware-dependent，并且在执行时需要复杂的配置，这导致动态分析技术非常的艰难；</li>
+<li>很多功能并不是在一个Binary中实现的，大多是多个二进制程序共同实现一个功能，这导致现有的静态分析技术很难跨二进制分析其中传播的数据；</li>
+</ol>
+<p>这篇文章提出了一个用于静态分析固件的工具，KARONTE</p>
+<blockquote>
+<p>a static analysis approach capable of analyzing embedded-device firmware by modeling and tracking multi-binary interactions.</p>
+</blockquote>
+<p>利用静态污点的方法对二进制间的交互、信息传播进行监控并进一步分析；</p>
+<p>作者团队对53个固件样本进行测试，成功检测出了46个0day</p>
+<p>之后对899个各种大小、各种复杂度的样本做了大规模的测试，表明了KARONTE的有效性。</p>
+<a id="more"></a>
+
+
+
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>设想一个例子：</p>
+<p>一个web server程序接受来自用户的16字节输入，之后传给了一个handler binary，这个二进制程序又将输入复制了两次，其中一份传给了另一个handler binary。而这个最后接受输入的二进制程序没有对这个缓冲区长度进行检查；</p>
+<p>这样在使用到针对单个二进制程序的分析工具分析时，就有可能将第三层的二进制文件的问题标为positive，但是实际上前面传过来的程序已经经过了长度检查，就导致假阳性非常的高；而这每一个假阳性的例子都需要安全研究人员花费大量的时间来分析。</p>
+<p>另一方面，如果在使用单个二进制静态分析工具分析时我们只关注接受网络输入的程序，这样就没有办法分析到更加深层、更加复杂的漏洞。</p>
+<p>因此一个跨二进制的静态分析方法是非常必要的。</p>
+<p>为什么不说动态分析的工具呢？现存的动态分析工具有一些是试图通用地对固件进行模拟，但是这样的工作成功率都不是很高，一般在13%-21%；而其他有一些动态分析的工具是尝试直接对某个特定型号的设备进行动态分析，用到了很多动态分析的技巧，包括fuzzing、符号执行、动态污点等等，有的甚至将这些都一起用起来，虽然可能能够达到比较广的测试面，但是就有些显得过于低效了。</p>
+<p>这篇文章提到的Karonte是实现了多个二进制的静态分析，可以追踪固件中多个二进制程序之间传输的数据流，并进一步发现漏洞。这个系统的构建基于了这样的一个假设：二进制程序间通信时是使用到了一个特定集合的<em>Inter-Process Communication（IPC）</em>范式，并且利用这些范式的共性来检测将用户输入引入到固件中的位置，并进一步确定固件之中不同组件的交互。之后这些交互被标为污点来追踪组建间的数据流，最后污点和约束被用于检测程序的安全薄弱点。</p>
+<p>这个系统发现的一些漏洞有的使用之前的静态分析工具也可以发现，但是会有大量的假阳性警报，比较而言Karonte将警告的数量降低到了2:722，也就是Karonte的2个误报，普通的静态工具会有722个误报，大大降低了安全人员分析量。</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><h3 id="固件中的IPC"><a href="#固件中的IPC" class="headerlink" title="固件中的IPC"></a>固件中的IPC</h3><p>检测用户输入是如何在嵌入式设备固件中传播的是一个公认的难题，并且还存在很高的假阳性。作者团队观察到在实践中，程序是通过一个有限集合的<code>communication paradigms</code>，即IPC来实现的。</p>
+<p>一个IPC是通过一个特定的<em>key</em>来定义的，并且这个key是每一个参与的进程都会需要用到的。因为这个key在通信中的很多程序都需要用到，因此一般在开发时是硬编码进程序的;因此在静态分析时可以追踪这个<em>key</em>来判断可能被攻击者控制的输入在程序中的传播方式</p>
+<p>文章将IPC分成了几个类型，下面是每一种类型及对应的data key：</p>
+<ul>
+<li>Files，文件名</li>
+<li>Shared Memory，the backing file name</li>
+<li>Environment Variables，环境变量名</li>
+<li>Sockets，sockets’s endpoint</li>
+<li>Command Line Arguments，被唤起的程序名</li>
+</ul>
+<p>关注的这几个类型都是可以比较大量的传输数据的方式，其他包括信号这样的机制也可以实现进程间的通信，但是问题在于信号无法传输大量的数据，威胁程度就没有那么高。</p>
+<p>在一个智能灯泡中用到了Shared Memory这样的机制，并且是使用了静态的内存共享区域</p>
+<h2 id="Approach-Overview"><a href="#Approach-Overview" class="headerlink" title="Approach Overview"></a>Approach Overview</h2><p>系统主要关注的漏洞是内存破坏型漏洞以及DOS漏洞，但是这个系统也可以比较轻易的进行拓展。Karonte对固件进行分析时主要经过了五个步骤</p>
+<p><img src="Karonte/image-20201113163407553.png" alt="image-20201113163407553"></p>
+<ul>
+<li>Pre-processing</li>
+</ul>
+<p>使用binwalk解压固件</p>
+<ul>
+<li>Border Binary Discovery</li>
+</ul>
+<p>这一步是对固件中解压了的二进制程序进行分析，自动化的将存在对外接口的二进制程序进行检索。这些Border Binary是攻击者控制的输入能够进入固件内存的一个接口；</p>
+<p>对于每一个这样的二进制程序，这个模块会标记程序中可能会由攻击者控制的数据点位置。</p>
+<ul>
+<li>Binary Dependency Graph Recovery</li>
+</ul>
+<p>给定一个border binary集合，karonte会生成一个有向图BDG；BDG是通过反复迭代leveraging一个<em>Communication Paradigm Finder</em>集合模块，来恢复出来的</p>
+<ul>
+<li>Multi-binary Data-flow Analysis</li>
+</ul>
+<p>给定一个BDG中的二进制程序，利用一个静态污点分析引擎来追踪数据是如何在二进制程序间传播的以及这些数据在传播时有哪些约束；之后将这些约束以及数据传播到在BDG中与b程序连接的其他程序</p>
+<ul>
+<li>Insecure Interactions Detection</li>
+</ul>
+<p>最后检测insecure的攻击者可能控制的数据有可能触发的危险操作，并进行报告</p>
+
     </div>
 
     
@@ -258,12 +331,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/08/Swift%E5%9F%BA%E7%A1%80/" rel="prev" title="Swift基础">
-      <i class="fa fa-chevron-left"></i> Swift基础
+    <a href="/2020/11/11/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C%E6%8C%87%E5%AF%BC/" rel="prev" title="软件安全实验指导">
+      <i class="fa fa-chevron-left"></i> 软件安全实验指导
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/02/25/CrackMe-Day1/" rel="next" title="CrackMe-Day1">
-      CrackMe-Day1 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/11/16/FirmAFL/" rel="next" title="FirmAFL">
+      FirmAFL <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -323,6 +396,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">3.</span> <span class="nav-text">Background</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BA%E4%BB%B6%E4%B8%AD%E7%9A%84IPC"><span class="nav-number">3.1.</span> <span class="nav-text">固件中的IPC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Approach-Overview"><span class="nav-number">4.</span> <span class="nav-text">Approach Overview</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -338,7 +412,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">93</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
