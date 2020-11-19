@@ -257,18 +257,7 @@
   <entry>
     <title>Chunk-Extend</title>
     <url>/2020/09/30/Chunk-Extend/</url>
-    <content><![CDATA[<p>chunk extend在对堆进行扩展时可能会出现overlapping的情况</p>
-<p>即不同的堆块之间造成重叠；</p>
-<p>利用需要以下条件：</p>
-<ul>
-<li>程序中存在基于堆的漏洞</li>
-<li>漏洞可以控制chunk header中的数据</li>
-</ul>
-<p>类似的还有一种利用方式是chunk shrink</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>由于在ptmalloc中对堆的各种操作是很频繁的，因此其中的很多操作直接是以宏的形式实现的；</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize(p) (chunksize_nomask(p) &amp; ~(SIZE_BITS))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize_nomask(p) ((p)-&gt;mchunk_size)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> next_chunk(p) ((mchunkptr) (((char *)(p))+chunksize(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_chunk(p) ((mchunkptr)((char *)(p) - prev_size(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse(p) ((((mchunkptr) (((char *)(p))+chunksize(p))) -&gt; mchunk_size) &amp; PREV_INUSE)</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
+    <content><![CDATA[]]></content>
       <categories>
         <category>PWN</category>
       </categories>
@@ -2050,8 +2039,7 @@
 <a id="more"></a>
 
 <h2 id="foothold"><a href="#foothold" class="headerlink" title="foothold"></a>foothold</h2><p>首先进行nmap扫描</p>
-<img src="/2020/01/14/HTB-OpenAdmin/nmap.png" class="" title="nmap.png">
-
+<p><img src="nmap.png"></p>
 <p>发现开启了80端口和22端口</p>
 <p>下面对80端口的目录进行扫描</p>
 <img src="/2020/01/14/HTB-OpenAdmin/gobuster.png" class="" title="gobuster.png">
@@ -2242,8 +2230,7 @@
 <p>其实也可以使用john来爆破key，首先使用ssh2john将其转换为john可以爆破的内容，之后直接用john和字典就可以</p>
 <h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><p>首先做的事情就是查看david的目录下有没有比较有用的内容</p>
 <p>发现david的目录下的结构</p>
-<img src="/2019/12/03/HTB-Traverxec/david.jpg" class="" title="david.jpg">
-
+<p><img src="david.jpg"></p>
 <p>这个<code>bin</code>目录下的server-status.sh比较有趣</p>
 <img src="/2019/12/03/HTB-Traverxec/server-stats.jpg" class="" title="server-stats.jpg">
 
@@ -3830,135 +3817,6 @@
 <p>这应该是运行在32位系统下的效果，mmap分配的匿名空间在b7开头的地址空间；</p>
 <p>而图中测试在64位下，mmap分配的区域在7f开头的内存空间，和加载的so文件比较接近</p>
 ]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>heap-overflow</title>
-    <url>/2020/09/26/heap-overflow/</url>
-    <content><![CDATA[<p>学习堆利用中关于溢出部分的技巧</p>
-<a id="more"></a>
-
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
-<p>漏洞利用的思路一般是：</p>
-<ol>
-<li>寻找堆分配函数</li>
-<li>寻找危险函数</li>
-<li>确定填充长度</li>
-</ol>
-<h3 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h3><p>堆分配函数一般是malloc、calloc、realloc等；</p>
-<p>其中calloc在分配内存区域之后会将其置0；</p>
-<p>realloc函数则和另外两个有些不同，具有两个参数</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
-
-<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
-<ul>
-<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
-</li>
-<li><p>如果申请 size &gt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<ul>
-<li>如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>如果申请 size &lt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<ul>
-<li>如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
-</li>
-</ul>
-<h3 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h3><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
-<p>包括：</p>
-<ul>
-<li>gets、scanf、vscanf</li>
-<li>sprintf</li>
-<li>strcpy、strcat、bcopy</li>
-</ul>
-<p>等</p>
-<h3 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h3><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
-<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
-<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
-<h3 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h3><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
-<p>off-by-one漏洞的利用思路：</p>
-<ol>
-<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
-<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
-<li>unlink进行处理；</li>
-<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
-</ol>
-</li>
-</ol>
-<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>以几道CTF来练一下手</p>
-<h3 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h3><p>首先检查程序的安全机制</p>
-<p><img src="heap-overflow/image-20200926194107247.png"></p>
-<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
-<p>运行一下程序，功能是一个图书管理的程序</p>
-<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
-<p>反编译得到main函数的伪代码</p>
-<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
-<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
-<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
-<p>我们暂且将其称为<code>new_read</code></p>
-<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
-<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
-<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
-<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
-<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
-<p>设置author name为一个32字节长的内容</p>
-<p>之后创建一个book之后，调用第四个方法print</p>
-<p>就会出现这样的效果</p>
-<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
-<p>看到除了author name之外还出现了一些其他的字符串</p>
-<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
-<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
-<p>存储的位置是在off_202010这个地方的指向的位置</p>
-<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
-<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
-<p>利用的思路：</p>
-<ol>
-<li>使author name长度为32</li>
-<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
-<li>调用print泄漏第一个book结构的地址</li>
-<li>创建第二个book</li>
-<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
-<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
-</ol>
-<p>首先读到地址</p>
-<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
-<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
-<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
-<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
-<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
-<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
-<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
-<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
-<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
-<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>hack</tag>
-        <tag>pwn</tag>
-      </tags>
   </entry>
   <entry>
     <title>hexo引用图片</title>
@@ -7088,6 +6946,216 @@
         <tag>hack</tag>
         <tag>CTF</tag>
         <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Stack-Pwn</title>
+    <url>/2020/11/19/Stack-Pwn/</url>
+    <content><![CDATA[<p>学习到的栈相关的内容</p>
+<a id="more"></a>
+
+
+
+<h2 id="栈迁移"><a href="#栈迁移" class="headerlink" title="栈迁移"></a>栈迁移</h2><p>首先，在栈溢出发生时栈的一个基本结构是比较简单的</p>
+<p><img src="image-20201119101751227.png" alt="image-20201119101751227"></p>
+<p>如果我们可以溢出的长度比较有限，只能控制ebp以及return address这两个地方</p>
+<p>那么就可以考虑使用栈迁移这样一个技巧</p>
+<p>核心有两个要求：</p>
+<ol>
+<li>能够在内存可执行区域写入一定长度的代码；</li>
+<li>能够控制ebp以及return address</li>
+</ol>
+<p>执行栈迁移时，控制ebp为我们控制的一个地址，return address则填写一个<code>leave;ret;</code>的gadget地址</p>
+<p>leave指令相当于<code>mov esp,ebp;pop ebp</code></p>
+<p>所以整个gadget相当于执行了<code>mov esp,ebp;pop ebp;ret</code></p>
+<p>这样一个gadget实际上做了什么事情呢？</p>
+<p><img src="image-20201119103212438.png" alt="image-20201119103212438"></p>
+<p>首先<code>mov esp,ebp</code>这个指令清空了子函数的栈，esp和ebp现在都指向old ebp的位置</p>
+<p>之后<code>pop ebp</code>将ebp的值设置为栈中保存地址</p>
+<p>最后要执行<code>ret</code>跳转到栈中保存的返回地址处</p>
+<p>如果我们这里控制old ebp为一个其他段，例如bss段中的地址，ret addr中是这个gadget的地址</p>
+<p>在函数第一次执行到返回这样的一个过程中，我们将ebp成功放到了bss段上，但是其实esp还没有被控制</p>
+<p>接下来执行到ret这个地方时又执行了一遍<code>ret addr</code>这里保存的gadget</p>
+<p>第二次的这个过程就让esp变成了我们填写的old ebp的位置的值</p>
+<p>整个这样一个过程，我们通过控制的这样两个值，让esp指向了我们需要的一个位置</p>
+<p>同时ebp其实也是可以控制其中的值的，但是因为它对我们shellcode的执行并没有影响，所以可以随便设置</p>
+]]></content>
+      <categories>
+        <category>Pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Heap-Pwn</title>
+    <url>/2020/09/19/Heap-Pwn/</url>
+    <content><![CDATA[<h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
+<p>在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。</p>
+<p>需要注意的是，在linux中有这样一个基本的内存管理思想：</p>
+<blockquote>
+<p><strong>只有当真正访问一个地址的时候，系统才会建立虚拟页面与物理页面的映射关系</strong></p>
+</blockquote>
+<h3 id="堆的基本函数"><a href="#堆的基本函数" class="headerlink" title="堆的基本函数"></a>堆的基本函数</h3><h4 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">malloc</span>(<span class="keyword">size_t</span> n);</span><br></pre></td></tr></table></figure>
+
+<p>关于malloc需要注意的是：</p>
+<ol>
+<li>malloc返回的是对应内存块的指针</li>
+<li>当n为0时，返回当前系统允许的堆最小内存块</li>
+<li>当n为负数时，由于大多数系统中<code>size_t</code>是一个无符号数，所以会分配很大一块空间，但是一般情况下都会失败；</li>
+</ol>
+<h4 id="free"><a href="#free" class="headerlink" title="free"></a>free</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">free</span>(<span class="keyword">void</span> *p);</span><br></pre></td></tr></table></figure>
+
+<p>和malloc可以说是一个对应关系，free用于释放内存块</p>
+<ol>
+<li>p为空指针时不进行任何操作；</li>
+<li>p已经被释放后，再次释放会导致乱七八糟的效果(double free)</li>
+<li>如果释放的空间很大，一般会直接还给系统以减小程序占用的空间，除非禁用<code>mallopt</code></li>
+</ol>
+<h3 id="背后的系统调用"><a href="#背后的系统调用" class="headerlink" title="背后的系统调用"></a>背后的系统调用</h3><p>malloc函数和free函数是程序猿编程时调用的程序，但是实际上背后运行的并不是这些东西，而是通过更简单的函数系统调用实现的</p>
+<h4 id="brk"><a href="#brk" class="headerlink" title="brk"></a>brk</h4><p>brk函数实际上执行的操作很简单，就是移动堆的指针，有些类似于移动esp的函数；</p>
+<p>通过移动栈上的esp就可以让栈增大或缩小，同理移动brk用于控制堆的大小。</p>
+<p><img src="./program_virtual_address_memory_space.png" alt="程序内存布局"></p>
+<p>brk函数和start_brk最初指向的地址是一致的，都位于bss段向上一个随机偏移（如果不开启ASLR则是直接在bss段的结尾）</p>
+<p>brk通过移动heap的顶端来实现heap的扩容和回收</p>
+<h4 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h4><p>mmap就是memory map，从名字看也是和内存管理相关的；</p>
+<p>mmap的好处在于可以分配私有匿名的内存空间</p>
+<p>mmap的可以用来在虚拟内存地址空间中分配地址空间，创建和物理内存的映射关系；</p>
+<p>映射关系可以分文件映射和匿名映射两种，文件映射是文件映射进虚拟内存，匿名映射则是一片全0的空间；又可以根据共享方式分为私有映射和共享映射，其中私有映射是这个进程独有的，其他进程无法读写修改，也不会反应到物理内存中；因此总结一下一共存在四种映射。</p>
+<p>这里用一个例子来看一下mmap和对应的munmap函数对进程虚拟内存的影响；在linux中可以查看<code>/proc/pid/maps</code>来看内存的布局</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = <span class="number">-1</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Welcome to private anonymous mapping example::PID:%d\n&quot;</span>, getpid());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Before mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">char</span>* addr = <span class="literal">NULL</span>;</span><br><span class="line">        addr = mmap(<span class="literal">NULL</span>, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (addr == MAP_FAILED)</span><br><span class="line">                errExit(<span class="string">&quot;mmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Unmap mapped region. */</span></span><br><span class="line">        ret = munmap(addr, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>);</span><br><span class="line">        <span class="keyword">if</span>(ret == <span class="number">-1</span>)</span><br><span class="line">                errExit(<span class="string">&quot;munmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After munmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行的程序就是这样简单的调用mmap和munmap，可以趁程序在getchar等待输入的时候查看内存布局</p>
+<p><img src="./image-20200923073653910.png" alt="munmap前后内存区域差异"></p>
+<p>这里面框出来的两个就是munmap执行前后的差别；</p>
+<p>在ctfwiki里面写到运行的结果</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e21000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br><span class="line"></span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e00000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br></pre></td></tr></table></figure>
+
+<p>这应该是运行在32位系统下的效果，mmap分配的匿名空间在b7开头的地址空间；</p>
+<p>而图中测试在64位下，mmap分配的区域在7f开头的内存空间，和加载的so文件比较接近</p>
+<hr>
+<h2 id="堆溢出"><a href="#堆溢出" class="headerlink" title="堆溢出"></a>堆溢出</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
+<p>漏洞利用的思路一般是：</p>
+<ol>
+<li>寻找堆分配函数</li>
+<li>寻找危险函数</li>
+<li>确定填充长度</li>
+</ol>
+<h4 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h4><p>堆分配函数一般是malloc、calloc、realloc等；</p>
+<p>其中calloc在分配内存区域之后会将其置0；</p>
+<p>realloc函数则和另外两个有些不同，具有两个参数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
+
+<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
+<ul>
+<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
+</li>
+<li><p>如果申请 size &gt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<pre><code>- 如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </code></pre>
+</li>
+</ul>
+</li>
+<li><p>如果申请 size &lt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<pre><code>- 如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</code></pre>
+</li>
+</ul>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
+</li>
+</ul>
+<h4 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h4><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
+<p>包括：</p>
+<ul>
+<li>gets、scanf、vscanf</li>
+<li>sprintf</li>
+<li>strcpy、strcat、bcopy</li>
+</ul>
+<p>等</p>
+<h4 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h4><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
+<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
+<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
+<h4 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h4><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
+<p>off-by-one漏洞的利用思路：</p>
+<ol>
+<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
+<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
+<li>unlink进行处理；</li>
+<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
+</ol>
+</li>
+</ol>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>以几道CTF来练一下手</p>
+<h4 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h4><p>首先检查程序的安全机制</p>
+<p><img src="heap-overflow/image-20200926194107247.png"></p>
+<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
+<p>运行一下程序，功能是一个图书管理的程序</p>
+<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
+<p>反编译得到main函数的伪代码</p>
+<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
+<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
+<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
+<p>我们暂且将其称为<code>new_read</code></p>
+<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
+<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
+<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
+<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
+<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
+<p>设置author name为一个32字节长的内容</p>
+<p>之后创建一个book之后，调用第四个方法print</p>
+<p>就会出现这样的效果</p>
+<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
+<p>看到除了author name之外还出现了一些其他的字符串</p>
+<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
+<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
+<p>存储的位置是在off_202010这个地方的指向的位置</p>
+<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
+<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
+<p>利用的思路：</p>
+<ol>
+<li>使author name长度为32</li>
+<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
+<li>调用print泄漏第一个book结构的地址</li>
+<li>创建第二个book</li>
+<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
+<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
+</ol>
+<p>首先读到地址</p>
+<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
+<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
+<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
+<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
+<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
+<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
+<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
+<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
+<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
+<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
+<h2 id="Chunk-Extend"><a href="#Chunk-Extend" class="headerlink" title="Chunk-Extend"></a>Chunk-Extend</h2><p>chunk extend在对堆进行扩展时可能会出现overlapping的情况</p>
+<p>即不同的堆块之间造成重叠；</p>
+<p>利用需要以下条件：</p>
+<ul>
+<li>程序中存在基于堆的漏洞</li>
+<li>漏洞可以控制chunk header中的数据</li>
+</ul>
+<p>类似的还有一种利用方式是chunk shrink</p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>由于在ptmalloc中对堆的各种操作是很频繁的，因此其中的很多操作直接是以宏的形式实现的；</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize(p) (chunksize_nomask(p) &amp; ~(SIZE_BITS))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize_nomask(p) ((p)-&gt;mchunk_size)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> next_chunk(p) ((mchunkptr) (((char *)(p))+chunksize(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_chunk(p) ((mchunkptr)((char *)(p) - prev_size(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse(p) ((((mchunkptr) (((char *)(p))+chunksize(p))) -&gt; mchunk_size) &amp; PREV_INUSE)</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
 </search>

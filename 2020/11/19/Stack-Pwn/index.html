@@ -20,36 +20,24 @@
     var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="学习堆利用中关于溢出部分的技巧">
+  <meta name="description" content="学习到的栈相关的内容">
 <meta property="og:type" content="article">
-<meta property="og:title" content="heap-overflow">
-<meta property="og:url" content="https://river-li.xyz/2020/09/26/heap-overflow/index.html">
+<meta property="og:title" content="Stack-Pwn">
+<meta property="og:url" content="https://river-li.xyz/2020/11/19/Stack-Pwn/index.html">
 <meta property="og:site_name" content="River&#39;s blog">
-<meta property="og:description" content="学习堆利用中关于溢出部分的技巧">
+<meta property="og:description" content="学习到的栈相关的内容">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926194107247.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926202511078.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926195340455.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200927204517434.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200927204730211.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200927213357312.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200928094900882.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200928110059338.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200928110142911.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200929210106951.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200929210131532.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200929211751690.png">
-<meta property="og:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200929212122897.png">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703">
-<meta property="article:published_time" content="2020-09-26T09:03:43.000Z">
-<meta property="article:modified_time" content="2020-09-29T15:44:33.301Z">
+<meta property="og:image" content="https://river-li.xyz/2020/11/19/Stack-Pwn/image-20201119101751227.png">
+<meta property="og:image" content="https://river-li.xyz/2020/11/19/Stack-Pwn/image-20201119103212438.png">
+<meta property="article:published_time" content="2020-11-19T02:02:16.000Z">
+<meta property="article:modified_time" content="2020-11-19T02:50:26.768Z">
 <meta property="article:author" content="River Li">
-<meta property="article:tag" content="hack">
 <meta property="article:tag" content="pwn">
+<meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://river-li.xyz/2020/09/26/heap-overflow/heap-overflow/image-20200926194107247.png">
+<meta name="twitter:image" content="https://river-li.xyz/2020/11/19/Stack-Pwn/image-20201119101751227.png">
 
-<link rel="canonical" href="https://river-li.xyz/2020/09/26/heap-overflow/">
+<link rel="canonical" href="https://river-li.xyz/2020/11/19/Stack-Pwn/">
 
 
 <script id="page-configurations">
@@ -62,7 +50,7 @@
   };
 </script>
 
-  <title>heap-overflow | River's blog</title>
+  <title>Stack-Pwn | River's blog</title>
   
 
 
@@ -216,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/09/26/heap-overflow/">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/11/19/Stack-Pwn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.jpg">
@@ -229,7 +217,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          heap-overflow
+          Stack-Pwn
         </h1>
 
         <div class="post-meta">
@@ -238,23 +226,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-09-26 17:03:43" itemprop="dateCreated datePublished" datetime="2020-09-26T17:03:43+08:00">2020-09-26</time>
+              <time title="创建时间：2020-11-19 10:02:16 / 修改时间：10:50:26" itemprop="dateCreated datePublished" datetime="2020-11-19T10:02:16+08:00">2020-11-19</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-29 23:44:33" itemprop="dateModified" datetime="2020-09-29T23:44:33+08:00">2020-09-29</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
+                  <a href="/categories/Pwn/" itemprop="url" rel="index"><span itemprop="name">Pwn</span></a>
                 </span>
             </span>
 
@@ -269,116 +251,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>学习堆利用中关于溢出部分的技巧</p>
+        <p>学习到的栈相关的内容</p>
 <a id="more"></a>
 
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
-<p>漏洞利用的思路一般是：</p>
-<ol>
-<li>寻找堆分配函数</li>
-<li>寻找危险函数</li>
-<li>确定填充长度</li>
-</ol>
-<h3 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h3><p>堆分配函数一般是malloc、calloc、realloc等；</p>
-<p>其中calloc在分配内存区域之后会将其置0；</p>
-<p>realloc函数则和另外两个有些不同，具有两个参数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
 
-<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
-<ul>
-<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
-</li>
-<li><p>如果申请 size &gt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<ul>
-<li>如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>如果申请 size &lt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<ul>
-<li>如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
-</li>
-</ul>
-<h3 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h3><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
-<p>包括：</p>
-<ul>
-<li>gets、scanf、vscanf</li>
-<li>sprintf</li>
-<li>strcpy、strcat、bcopy</li>
-</ul>
-<p>等</p>
-<h3 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h3><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
-<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
-<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
-<h3 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h3><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
-<p>off-by-one漏洞的利用思路：</p>
+
+<h2 id="栈迁移"><a href="#栈迁移" class="headerlink" title="栈迁移"></a>栈迁移</h2><p>首先，在栈溢出发生时栈的一个基本结构是比较简单的</p>
+<p><img src="image-20201119101751227.png" alt="image-20201119101751227"></p>
+<p>如果我们可以溢出的长度比较有限，只能控制ebp以及return address这两个地方</p>
+<p>那么就可以考虑使用栈迁移这样一个技巧</p>
+<p>核心有两个要求：</p>
 <ol>
-<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
-<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
-<li>unlink进行处理；</li>
-<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
+<li>能够在内存可执行区域写入一定长度的代码；</li>
+<li>能够控制ebp以及return address</li>
 </ol>
-</li>
-</ol>
-<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>以几道CTF来练一下手</p>
-<h3 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h3><p>首先检查程序的安全机制</p>
-<p><img src="heap-overflow/image-20200926194107247.png"></p>
-<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
-<p>运行一下程序，功能是一个图书管理的程序</p>
-<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
-<p>反编译得到main函数的伪代码</p>
-<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
-<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
-<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
-<p>我们暂且将其称为<code>new_read</code></p>
-<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
-<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
-<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
-<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
-<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
-<p>设置author name为一个32字节长的内容</p>
-<p>之后创建一个book之后，调用第四个方法print</p>
-<p>就会出现这样的效果</p>
-<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
-<p>看到除了author name之外还出现了一些其他的字符串</p>
-<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
-<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
-<p>存储的位置是在off_202010这个地方的指向的位置</p>
-<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
-<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
-<p>利用的思路：</p>
-<ol>
-<li>使author name长度为32</li>
-<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
-<li>调用print泄漏第一个book结构的地址</li>
-<li>创建第二个book</li>
-<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
-<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
-</ol>
-<p>首先读到地址</p>
-<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
-<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
-<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
-<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
-<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
-<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
-<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
-<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
-<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
-<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
+<p>执行栈迁移时，控制ebp为我们控制的一个地址，return address则填写一个<code>leave;ret;</code>的gadget地址</p>
+<p>leave指令相当于<code>mov esp,ebp;pop ebp</code></p>
+<p>所以整个gadget相当于执行了<code>mov esp,ebp;pop ebp;ret</code></p>
+<p>这样一个gadget实际上做了什么事情呢？</p>
+<p><img src="image-20201119103212438.png" alt="image-20201119103212438"></p>
+<p>首先<code>mov esp,ebp</code>这个指令清空了子函数的栈，esp和ebp现在都指向old ebp的位置</p>
+<p>之后<code>pop ebp</code>将ebp的值设置为栈中保存地址</p>
+<p>最后要执行<code>ret</code>跳转到栈中保存的返回地址处</p>
+<p>如果我们这里控制old ebp为一个其他段，例如bss段中的地址，ret addr中是这个gadget的地址</p>
+<p>在函数第一次执行到返回这样的一个过程中，我们将ebp成功放到了bss段上，但是其实esp还没有被控制</p>
+<p>接下来执行到ret这个地方时又执行了一遍<code>ret addr</code>这里保存的gadget</p>
+<p>第二次的这个过程就让esp变成了我们填写的old ebp的位置的值</p>
+<p>整个这样一个过程，我们通过控制的这样两个值，让esp指向了我们需要的一个位置</p>
+<p>同时ebp其实也是可以控制其中的值的，但是因为它对我们shellcode的执行并没有影响，所以可以随便设置</p>
 
     </div>
 
@@ -388,8 +288,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hack/" rel="tag"># hack</a>
               <a href="/tags/pwn/" rel="tag"># pwn</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
           </div>
 
         
@@ -398,13 +298,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/09/23/heap-basic/" rel="prev" title="heap-basic">
-      <i class="fa fa-chevron-left"></i> heap-basic
+    <a href="/2020/11/18/Docker/" rel="prev" title="Docker">
+      <i class="fa fa-chevron-left"></i> Docker
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/09/30/Chunk-Extend/" rel="next" title="Chunk-Extend">
-      Chunk-Extend <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -463,7 +360,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E5%A0%86%E5%88%86%E9%85%8D%E5%87%BD%E6%95%B0"><span class="nav-text">寻找堆分配函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0"><span class="nav-text">危险函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E5%A1%AB%E5%85%85%E9%95%BF%E5%BA%A6"><span class="nav-text">确定填充长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA"><span class="nav-text">特殊的堆溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E8%B7%B5"><span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Asis-CTF-2016-b00k"><span class="nav-text">Asis CTF 2016 b00k</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E8%BF%81%E7%A7%BB"><span class="nav-text">栈迁移</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -479,14 +376,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
