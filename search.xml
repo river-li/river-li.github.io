@@ -3768,57 +3768,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>heap-basic</title>
-    <url>/2020/09/23/heap-basic/</url>
-    <content><![CDATA[<p>讲一些学到的linux堆基础</p>
-<a id="more"></a>
-
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
-<p>在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。</p>
-<p>需要注意的是，在linux中有这样一个基本的内存管理思想：</p>
-<blockquote>
-<p><strong>只有当真正访问一个地址的时候，系统才会建立虚拟页面与物理页面的映射关系</strong></p>
-</blockquote>
-<h2 id="堆的基本函数"><a href="#堆的基本函数" class="headerlink" title="堆的基本函数"></a>堆的基本函数</h2><h3 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">malloc</span>(<span class="keyword">size_t</span> n);</span><br></pre></td></tr></table></figure>
-
-<p>关于malloc需要注意的是：</p>
-<ol>
-<li>malloc返回的是对应内存块的指针</li>
-<li>当n为0时，返回当前系统允许的堆最小内存块</li>
-<li>当n为负数时，由于大多数系统中<code>size_t</code>是一个无符号数，所以会分配很大一块空间，但是一般情况下都会失败；</li>
-</ol>
-<h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">free</span>(<span class="keyword">void</span> *p);</span><br></pre></td></tr></table></figure>
-
-<p>和malloc可以说是一个对应关系，free用于释放内存块</p>
-<ol>
-<li>p为空指针时不进行任何操作；</li>
-<li>p已经被释放后，再次释放会导致乱七八糟的效果(double free)</li>
-<li>如果释放的空间很大，一般会直接还给系统以减小程序占用的空间，除非禁用<code>mallopt</code></li>
-</ol>
-<h2 id="背后的系统调用"><a href="#背后的系统调用" class="headerlink" title="背后的系统调用"></a>背后的系统调用</h2><p>malloc函数和free函数是程序猿编程时调用的程序，但是实际上背后运行的并不是这些东西，而是通过更简单的函数系统调用实现的</p>
-<h3 id="brk"><a href="#brk" class="headerlink" title="brk"></a>brk</h3><p>brk函数实际上执行的操作很简单，就是移动堆的指针，有些类似于移动esp的函数；</p>
-<p>通过移动栈上的esp就可以让栈增大或缩小，同理移动brk用于控制堆的大小。</p>
-<p><img src="./program_virtual_address_memory_space.png" alt="程序内存布局"></p>
-<p>brk函数和start_brk最初指向的地址是一致的，都位于bss段向上一个随机偏移（如果不开启ASLR则是直接在bss段的结尾）</p>
-<p>brk通过移动heap的顶端来实现heap的扩容和回收</p>
-<h3 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h3><p>mmap就是memory map，从名字看也是和内存管理相关的；</p>
-<p>mmap的好处在于可以分配私有匿名的内存空间</p>
-<p>mmap的可以用来在虚拟内存地址空间中分配地址空间，创建和物理内存的映射关系；</p>
-<p>映射关系可以分文件映射和匿名映射两种，文件映射是文件映射进虚拟内存，匿名映射则是一片全0的空间；又可以根据共享方式分为私有映射和共享映射，其中私有映射是这个进程独有的，其他进程无法读写修改，也不会反应到物理内存中；因此总结一下一共存在四种映射。</p>
-<p>这里用一个例子来看一下mmap和对应的munmap函数对进程虚拟内存的影响；在linux中可以查看<code>/proc/pid/maps</code>来看内存的布局</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = <span class="number">-1</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Welcome to private anonymous mapping example::PID:%d\n&quot;</span>, getpid());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Before mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">char</span>* addr = <span class="literal">NULL</span>;</span><br><span class="line">        addr = mmap(<span class="literal">NULL</span>, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (addr == MAP_FAILED)</span><br><span class="line">                errExit(<span class="string">&quot;mmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Unmap mapped region. */</span></span><br><span class="line">        ret = munmap(addr, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>);</span><br><span class="line">        <span class="keyword">if</span>(ret == <span class="number">-1</span>)</span><br><span class="line">                errExit(<span class="string">&quot;munmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After munmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行的程序就是这样简单的调用mmap和munmap，可以趁程序在getchar等待输入的时候查看内存布局</p>
-<p><img src="./image-20200923073653910.png" alt="munmap前后内存区域差异"></p>
-<p>这里面框出来的两个就是munmap执行前后的差别；</p>
-<p>在ctfwiki里面写到运行的结果</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e21000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br><span class="line"></span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e00000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br></pre></td></tr></table></figure>
-
-<p>这应该是运行在32位系统下的效果，mmap分配的匿名空间在b7开头的地址空间；</p>
-<p>而图中测试在64位下，mmap分配的区域在7f开头的内存空间，和加载的so文件比较接近</p>
-]]></content>
-  </entry>
-  <entry>
     <title>hexo引用图片</title>
     <url>/2018/12/06/hexo%E5%BC%95%E7%94%A8%E5%9B%BE%E7%89%87/</url>
     <content><![CDATA[<p>之前被忽悠注册了七牛云的CDN，就是为了能加载图片，结果前两天测试域名被收回了，图片暂且加载不出来，这才又去查其他办法，记录一下。</p>

@@ -196,143 +196,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/12/CrackMe-Day15/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/12/CrackMe-Day15/" class="post-title-link" itemprop="url">CrackMe-Day15</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-12 21:41:24" itemprop="dateCreated datePublished" datetime="2020-03-12T21:41:24+08:00">2020-03-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="CrackMe15"><a href="#CrackMe15" class="headerlink" title="CrackMe15"></a>CrackMe15</h1><p>第十五道CrackMe</p>
-<p>作者blaster99</p>
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后首先弹了这么一个窗</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203102755.png" class="">
-
-<p>也不知道上面写的是什么语</p>
-<p>用ocr识别再翻译一下看看</p>
-<p>好吧，居然是德语</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203245757.png" class="">
-
-<p>那么意思就是要删除这个NAG窗口或者获取正确的密码</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203328363.png" class="">
-
-<p>点击确定之后窗口变成这样的</p>
-<p>输入注册码之后注册</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203358227.png" class="">
-
-<p>给了一个错误的弹窗</p>
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>这个程序说了自己是VB写的，那么首先查看一下反编译的代码</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203520142.png" class="">
-
-<p>控件相关有这些内容，主要需要看<code>Form_Load</code>以及<code>Command1_Click</code></p>
-<h3 id="去NAG"><a href="#去NAG" class="headerlink" title="去NAG"></a>去NAG</h3><p><code>Form_Load</code>可以看到函数一开始就有一个MessageBox的调用</p>
-<p>这就是我们想去掉的那个NAG窗口，在OD里把这句Nop掉</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203603325.png" class="">
-
-<p>对照着汇编代码，我首先尝试NOP掉这个字符串下面的CALL</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203850822.png" class="">
-
-<p>结果这个窗口还是出现了，只是失去了中间的内容</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312203919107.png" class="">
-
-<p>再往下一些有一个call，<code>rtcMsgBox</code></p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312204002238.png" class="">
-
-<p>这次把这一句nop掉</p>
-<p>结果程序直接退出了，仔细想想也是，毕竟弹窗之后只有点确定才能去到CrackMe</p>
-<p>如果点了取消，那CrackMe就退出了</p>
-<p>所以我们现在应该找到确定点击后的窗口位置</p>
-<p>跟踪调试发现，在这个MsgBox下面存在</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312204438821.png" class="">
-
-<p>这样的代码，MsgBox返回1或0，存在eax中，这里再根据结果决定是否跳转</p>
-<p>所以我们希望去掉NAG窗口，即直接从点击确定后的地方开始运行</p>
-<p>那么需要改两处地方，一是nop掉msgbox的call；二是修改这个<code>test ax,ax</code>下面的<code>jnz</code>为无条件的<code>jmp</code></p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312204746681.png" class="">
-
-<p>运行发现，没有NAG窗口了</p>
-<h3 id="Passwd"><a href="#Passwd" class="headerlink" title="Passwd"></a>Passwd</h3><p>至于破解序列号，我们就还是看一下字符串先</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312204842749.png" class="">
-
-<p>定位到成功的字符串处，可以很轻松的发现这个关键跳转</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312205033918.png" class="">
-
-<p>修改为jnz，再运行</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312205049932.png" class="">
-
-<p>成功</p>
-<p>想要知道确切的序列号条件，那么我们可以看一下前面<code>command1_click</code>的代码</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312205224555.png" class="">
-
-<p>里面比较的条件很简单粗暴，就是一个字符串</p>
-<p>输入之后就成功</p>
-<img src="/2020/03/12/CrackMe-Day15/image-20200312205256842.png" class="">
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/12/VPS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1322,6 +1185,89 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/03/CrackMe-Day6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/03/CrackMe-Day6/" class="post-title-link" itemprop="url">CrackMe-Day6</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-03 14:52:05" itemprop="dateCreated datePublished" datetime="2020-03-03T14:52:05+08:00">2020-03-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-11 09:39:35" itemprop="dateModified" datetime="2020-11-11T09:39:35+08:00">2020-11-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe6"><a href="#CrackMe6" class="headerlink" title="CrackMe6"></a>CrackMe6</h1><p> 第六道CrackMe</p>
+<p>说是Day6，其实今天已经是第八天了，前面那个Day5实在是太难了，但是也不能一直在那上面耗着，就先继续做新的</p>
+<p>作者aLoNg3x</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/03/CrackMe-Day6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1393,7 +1339,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">93</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

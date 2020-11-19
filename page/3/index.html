@@ -196,90 +196,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/29/sqlite3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/29/sqlite3/" class="post-title-link" itemprop="url">sqlite3</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-29 18:14:25" itemprop="dateCreated datePublished" datetime="2020-03-29T18:14:25+08:00">2020-03-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Sqlite工作主要的流程是</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sqlite3</span><br><span class="line"></span><br><span class="line">conn = sqlite3.connect(<span class="string">&#x27;database.db&#x27;</span>)</span><br><span class="line"><span class="comment"># 创建连接</span></span><br><span class="line">c = conn.cursor()</span><br><span class="line"><span class="comment"># 建立游标</span></span><br><span class="line"></span><br><span class="line">c.excute(<span class="string">&#x27;SQL语句&#x27;</span>)</span><br><span class="line"></span><br><span class="line">conn.commit()</span><br><span class="line"><span class="comment"># 操作只有commit了才会被执行</span></span><br><span class="line">conn.close()</span><br><span class="line"><span class="comment"># 断开连接</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>其中最主要的两个类就是Connection和Cursor</p>
-<p>通过Connection和文件建立连接，Cursor作为一个游标来操作</p>
-<p>这个模块中的其他比较有价值的函数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlite3.complete_statement(sql)</span><br></pre></td></tr></table></figure>
-
-<p>这个函数可以检测输入的sql语句是否是一个完整的sql语句，但是这个方法并不会判断这个语句的语法是否正确，除了是否是用分号结尾的或是引号不闭合这样的情况</p>
-<p>利用这个函数可以构造出一个shell来交互sqlite的文件</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># A minimal SQLite shell for experiments</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sqlite3</span><br><span class="line"></span><br><span class="line">con = sqlite3.connect(<span class="string">&quot;:memory:&quot;</span>)</span><br><span class="line">con.isolation_level = <span class="literal">None</span></span><br><span class="line">cur = con.cursor()</span><br><span class="line"></span><br><span class="line">buffer = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">&quot;Enter your SQL commands to execute in sqlite3.&quot;</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">&quot;Enter a blank line to exit.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    line = raw_input()</span><br><span class="line">    <span class="keyword">if</span> line == <span class="string">&quot;&quot;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    buffer += line</span><br><span class="line">    <span class="keyword">if</span> sqlite3.complete_statement(buffer):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            buffer = buffer.strip()</span><br><span class="line">            cur.execute(buffer)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> buffer.lstrip().upper().startswith(<span class="string">&quot;SELECT&quot;</span>):</span><br><span class="line">                <span class="keyword">print</span> cur.fetchall()</span><br><span class="line">        <span class="keyword">except</span> sqlite3.Error <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">print</span> <span class="string">&quot;An error occurred:&quot;</span>, e.args[<span class="number">0</span>]</span><br><span class="line">        buffer = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">con.close()</span><br></pre></td></tr></table></figure>
-
-<p>以上代码来自Sqlite的手册</p>
-<h2 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h2><h2 id="Cursor"><a href="#Cursor" class="headerlink" title="Cursor"></a>Cursor</h2><h2 id="SQL语法"><a href="#SQL语法" class="headerlink" title="SQL语法"></a>SQL语法</h2><p>库学的差不多了，结果发现sql语法忘的一干二净，查询倒是会，建表啥的是真记不清楚了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE 表名(col1 type1 [not null][primary key], col2 type2 [not null],...)</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/29/Mac%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E6%8F%90%E7%A4%BA%E5%B7%B2%E6%8D%9F%E5%9D%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1193,6 +1109,143 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/03/12/CrackMe-Day15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/CrackMe-Day15/" class="post-title-link" itemprop="url">CrackMe-Day15</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-12 21:41:24" itemprop="dateCreated datePublished" datetime="2020-03-12T21:41:24+08:00">2020-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CrackMe/" itemprop="url" rel="index"><span itemprop="name">CrackMe</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CrackMe15"><a href="#CrackMe15" class="headerlink" title="CrackMe15"></a>CrackMe15</h1><p>第十五道CrackMe</p>
+<p>作者blaster99</p>
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>打开之后首先弹了这么一个窗</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203102755.png" class="">
+
+<p>也不知道上面写的是什么语</p>
+<p>用ocr识别再翻译一下看看</p>
+<p>好吧，居然是德语</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203245757.png" class="">
+
+<p>那么意思就是要删除这个NAG窗口或者获取正确的密码</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203328363.png" class="">
+
+<p>点击确定之后窗口变成这样的</p>
+<p>输入注册码之后注册</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203358227.png" class="">
+
+<p>给了一个错误的弹窗</p>
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>这个程序说了自己是VB写的，那么首先查看一下反编译的代码</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203520142.png" class="">
+
+<p>控件相关有这些内容，主要需要看<code>Form_Load</code>以及<code>Command1_Click</code></p>
+<h3 id="去NAG"><a href="#去NAG" class="headerlink" title="去NAG"></a>去NAG</h3><p><code>Form_Load</code>可以看到函数一开始就有一个MessageBox的调用</p>
+<p>这就是我们想去掉的那个NAG窗口，在OD里把这句Nop掉</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203603325.png" class="">
+
+<p>对照着汇编代码，我首先尝试NOP掉这个字符串下面的CALL</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203850822.png" class="">
+
+<p>结果这个窗口还是出现了，只是失去了中间的内容</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312203919107.png" class="">
+
+<p>再往下一些有一个call，<code>rtcMsgBox</code></p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204002238.png" class="">
+
+<p>这次把这一句nop掉</p>
+<p>结果程序直接退出了，仔细想想也是，毕竟弹窗之后只有点确定才能去到CrackMe</p>
+<p>如果点了取消，那CrackMe就退出了</p>
+<p>所以我们现在应该找到确定点击后的窗口位置</p>
+<p>跟踪调试发现，在这个MsgBox下面存在</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204438821.png" class="">
+
+<p>这样的代码，MsgBox返回1或0，存在eax中，这里再根据结果决定是否跳转</p>
+<p>所以我们希望去掉NAG窗口，即直接从点击确定后的地方开始运行</p>
+<p>那么需要改两处地方，一是nop掉msgbox的call；二是修改这个<code>test ax,ax</code>下面的<code>jnz</code>为无条件的<code>jmp</code></p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204746681.png" class="">
+
+<p>运行发现，没有NAG窗口了</p>
+<h3 id="Passwd"><a href="#Passwd" class="headerlink" title="Passwd"></a>Passwd</h3><p>至于破解序列号，我们就还是看一下字符串先</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312204842749.png" class="">
+
+<p>定位到成功的字符串处，可以很轻松的发现这个关键跳转</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205033918.png" class="">
+
+<p>修改为jnz，再运行</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205049932.png" class="">
+
+<p>成功</p>
+<p>想要知道确切的序列号条件，那么我们可以看一下前面<code>command1_click</code>的代码</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205224555.png" class="">
+
+<p>里面比较的条件很简单粗暴，就是一个字符串</p>
+<p>输入之后就成功</p>
+<img src="/2020/03/12/CrackMe-Day15/image-20200312205256842.png" class="">
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1264,7 +1317,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">93</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
