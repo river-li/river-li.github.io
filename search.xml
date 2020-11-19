@@ -255,18 +255,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Chunk-Extend</title>
-    <url>/2020/09/30/Chunk-Extend/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>hack</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CrackMe-Day1</title>
     <url>/2020/02/25/CrackMe-Day1/</url>
     <content><![CDATA[<p>吾爱破解论坛有160个面向新手的CrackMe，这里为了练手准备慢慢做一下WP，这是第一个程序的WP</p>
@@ -2267,7 +2255,12 @@
   <entry>
     <title>Heap-Pwn</title>
     <url>/2020/09/19/Heap-Pwn/</url>
-    <content><![CDATA[<h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
+    <content><![CDATA[<p>学pwn过程中学到的堆相关知识</p>
+<a id="more"></a>
+
+
+
+<h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
 <p>在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。</p>
 <p>需要注意的是，在linux中有这样一个基本的内存管理思想：</p>
 <blockquote>
@@ -4323,32 +4316,61 @@
       </tags>
   </entry>
   <entry>
-    <title>macOS上的qemu</title>
+    <title>macOS上的IoT调试环境</title>
     <url>/2020/10/30/macOS%E4%B8%8A%E7%9A%84qemu/</url>
     <content><![CDATA[<p>主要是想用qemu的系统模式来调试路由器里的二进制程序，如果用linux虚拟机再加一层qemu有点套娃，而且没办法用mac里的IDA连接过去调试。</p>
 <p>这里记录一下配置各种环境的坑；</p>
 <a id="more"></a>
 
-<h2 id="buildroot编译gdb和gdbserver"><a href="#buildroot编译gdb和gdbserver" class="headerlink" title="buildroot编译gdb和gdbserver"></a>buildroot编译gdb和gdbserver</h2><p>buildroot本身是可以编译出一套固件，同时还可以配置好host机的调试环境以及交叉编译的环境；</p>
+<h2 id="0x01-qemu启动和配置"><a href="#0x01-qemu启动和配置" class="headerlink" title="0x01 qemu启动和配置"></a>0x01 qemu启动和配置</h2><p>启动qemu首先需要有linux的专门的镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget -l 1 -r https://people.debian.org/\~aurel32/qemu/mips</span><br></pre></td></tr></table></figure>
+
+<p>这样会将mips大端需要的组件内容都下载下来；</p>
+<p>在这个页面的Readme中有写出来运行起来需要的指令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">qemu-system-mips -M malta -kernel vmlinux-2.6.32-5-4kc-malta -hda debian    _squeeze_mips_standard.qcow2 -append <span class="string">&quot;root=/dev/sda1 console=tty0&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是其实是给出了两种方式的，这两个的区别是运行起来的内核kernel不同，另外就是文件系统的镜像一个是debian的squeeze一个是wheezy，是两个版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">qemu-system-mips -M malta -kernel vmlinux-3.2.0-4-4kc-malta -hda debian_    wheezy_mips_standard.qcow2 -append <span class="string">&quot;root=/dev/sda1 console=tty0&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>这样子本身启动还会有一些问题，因为没有指定网卡，qemu启动的虚拟机实际上是和主机不互通的</p>
+<p>需要稍微修改一下启动的选项，如果主机是linux的话可以加上</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-net nic -net tap,ifname=tap0,script=no,downscript=no -nographic</span><br></pre></td></tr></table></figure>
+
+<p>在qemu的启动参数中每增加一个<code>-net</code>就会为模拟的机器增加一个虚拟的网卡；</p>
+<p>qemu的虚拟网卡主要有三种模式，nic、tap、user</p>
+<p>tap模式可以看<a href="https://river-li.github.io/2020/10/17/tun%E5%92%8Ctap">这篇文章</a></p>
+<p>在mac上的话由于没用比较好的虚拟tun和tap的工具，所以一般用端口映射来实现网络互联</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-nic user,hostfwd=tcp::2222-:22,hostfwd=tcp::8080-:80,hostfwd=tcp::1234-:1234</span><br></pre></td></tr></table></figure>
+
+<p>这样做一个映射，让1234、80、22端口分别映射到host机的1234、8080、2222端口</p>
+<p>这几个端口都是在调试时可能常用到的，实际上根据情况还可以再增加其他的端口映射</p>
+<p>80端口一般是web服务，22端口用于ssh连接，1234端口则是为了给gdbserver留一个attach的端口</p>
+<p>文件共享方面，如果是linux的话一般可以在host机上开启web服务，把需要的文件放到web目录下让qemu模拟的虚拟机来下载；</p>
+<p>但是mac的话web服务又比较乱，所以可以直接用ssh的scp服务拷过去</p>
+<h2 id="0x02-buildroot编译gdbserver"><a href="#0x02-buildroot编译gdbserver" class="headerlink" title="0x02 buildroot编译gdbserver"></a>0x02 buildroot编译gdbserver</h2><p>buildroot本身是可以编译出一套固件，同时还可以配置好host机的调试环境以及交叉编译的环境；</p>
 <p>配置buildroot的博客还是有不少的，但是质量感人；</p>
 <h3 id="配置buildroot"><a href="#配置buildroot" class="headerlink" title="配置buildroot"></a>配置buildroot</h3><p>首先下载buildroot，官网<a href="https://buildroot.org/">buildroot.org</a></p>
 <p>下载下来之后解压，之后准备编译，依赖的话需要一个<code>libncurse-dev</code>，其他的包一般应该都有装</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
 
 <p>进入一个选择界面</p>
-<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201106151300225.png" alt="image-20201106151300225"></p>
+<p><img src="image-20201106151300225.png" alt="image-20201106151300225"></p>
 <p>首先简单介绍一下交叉编译时的几个选项</p>
+<p>这里一个比较容易理解的场景就是，在一个amd64的设备上要编译一个运行在x86平台上的gdb，这个gdb以后主要是想要用来远程调试一台mips大端设备的程序</p>
 <ul>
-<li><code>host</code></li>
-<li><code>target</code></li>
+<li><code>host</code>，host时编译出来的代码要用在的平台，在这个场景下是x86</li>
+<li><code>build</code>，build是编译时所用到的平台，这个一般不需要写，会自动识别</li>
+<li><code>target</code>，这个选项一般不是很常见，只有gcc、gdb之类的会常出现，这种场景下就是mips大端</li>
 </ul>
 <p>在menuconfig这里选择</p>
-<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201118113150873.png" alt="image-20201118113150873"></p>
+<p><img src="image-20201118113150873.png" alt="image-20201118113150873"></p>
 <p>build option-&gt; libraries</p>
 <p>可以选择编译二进制程序时的链接方式，我们想要编译的gdbserver应该在这里选上static only</p>
 <p>要编译gdb、gdbserver的话需要在前面开启几个选项</p>
 <p>在toolchain这个界面中</p>
-<p><img src="macOS%E4%B8%8A%E7%9A%84qemu/image-20201118113315334.png" alt="image-20201118113315334"></p>
+<p><img src="image-20201118113315334.png" alt="image-20201118113315334"></p>
 <p>需要勾选上</p>
 <ul>
 <li><code>Enable WCHAR support</code></li>
@@ -4357,6 +4379,11 @@
 </ul>
 <p>如果要编译host机针对这个特定架构的gdb就还需要选上<code>Build cross gdb for the host</code></p>
 <p>之后在target里面才可以选择勾选上gdbserver</p>
+<p>除了静态链接的gdbserver，有可能还需要用到交叉编译的环境，可能需要编译一些动态链接库，用来hook程序中一些函数</p>
+<p>在测试之后发现，如果开启了static only得到的交叉编译工具，编译得到的动态链接库实际上是不能用的，所以实际上整个环境需要用buildroot编译两次</p>
+<p>一次用静态链接编译出gdbserver</p>
+<p>一次用动态链接编译出交叉编译环境</p>
+<p>不过gdbserver也可以使用其他人已经<a href="https://github.com/rapid7/embedded-tools">编译好的版本</a></p>
 <hr>
 <p>在buildroot编译时可能遇到的问题：</p>
 <h3 id="报错137"><a href="#报错137" class="headerlink" title="报错137"></a>报错137</h3><p>Error 137，这个错误出现的原因是因为swap空间不足</p>
@@ -4368,12 +4395,28 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">free -m</span><br></pre></td></tr></table></figure>
 
 <p>可以看到目前的内存和swap分区使用情况</p>
-<h2 id="gdb连接到gdbserver时报错"><a href="#gdb连接到gdbserver时报错" class="headerlink" title="gdb连接到gdbserver时报错"></a>gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
+<h3 id="hook关键函数"><a href="#hook关键函数" class="headerlink" title="hook关键函数"></a>hook关键函数</h3><p>在一些例子中，程序可能由于缺少一些硬件上的组件没有办法成功模拟出来</p>
+<p>这时可以尝试hook掉一些容易出问题的函数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">system</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *command)</span></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;HOOK: system(\&quot;%s\&quot;)\n&quot;</span>,command);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1337</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fork</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1337</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例如这个例子hook了<code>system</code>和<code>fork</code>，这样让程序在执行其他命令时就不会创建一大堆进程</p>
+<p>之后编译的话需要用这样的选项编译动态链接库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mips-linux-gnu-gcc -shared -fPIC hook_mips.c -o hook_mips.so</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x03-pwndbg配置和使用"><a href="#0x03-pwndbg配置和使用" class="headerlink" title="0x03 pwndbg配置和使用"></a>0x03 pwndbg配置和使用</h2><p>配置方法在<a href="https://river-li.github.io/2020/11/18/Docker">Docker</a>这里已经写了，这里主要写一下用法</p>
+<p>为什么要用到pwndbg，不用peda和gef呢</p>
+<p>主要是针对mips、arm这样的架构，一般安装的peda、gef附加功能会有一些问题，没有办法用上stack、reg这样的指令，但是pwndbg就没问题</p>
+<p>（咕咕咕，后面补写）</p>
+<h2 id="0x04-gdb连接到gdbserver时报错"><a href="#0x04-gdb连接到gdbserver时报错" class="headerlink" title="0x04 gdb连接到gdbserver时报错"></a>0x04 gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
+<p>试了一些静态的gdbserver传过去之后attach，在remote连接过去的时候都会报这个错</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Ignoring packet error, continuing...</span><br><span class="line">warning: unrecognized item &quot;timeout&quot; in &quot;qSupported&quot; response</span><br><span class="line">Ignoring packet error, continuing...</span><br><span class="line">Remote replied unexpectedly to &#39;vMustReplyEmpty&#39;: timeout</span><br></pre></td></tr></table></figure>
 
-
-
+<p>之后发现是运行起来的kernel和debian的镜像问题</p>
+<p>要启动wheezy，不能用squeeze的内核</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.cnblogs.com/wpcnblog/p/11516234.html">qemu支持的网络模式</a></p>
+<p><a href="https://github.com/gipi/teardown/blob/master/meta/hook.c">常用的hook文件</a></p>
 ]]></content>
       <tags>
         <tag>pwn</tag>

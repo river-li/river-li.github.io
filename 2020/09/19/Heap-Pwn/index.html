@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="堆基本知识堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器； 在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。 需要注意的是，在linux中有这样一个基本的内存管理思想：  只有当真正访问一个地址的时候，系统才会建立虚拟页面与物理页面的映射关系  堆的基本函数malloc1malloc(">
+  <meta name="description" content="学pwn过程中学到的堆相关知识">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Heap-Pwn">
 <meta property="og:url" content="https://river-li.xyz/2020/09/19/Heap-Pwn/index.html">
 <meta property="og:site_name" content="River&#39;s blog">
-<meta property="og:description" content="堆基本知识堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器； 在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。 需要注意的是，在linux中有这样一个基本的内存管理思想：  只有当真正访问一个地址的时候，系统才会建立虚拟页面与物理页面的映射关系  堆的基本函数malloc1malloc(">
+<meta property="og:description" content="学pwn过程中学到的堆相关知识">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://river-li.xyz/2020/09/19/Heap-Pwn/program_virtual_address_memory_space.png">
 <meta property="og:image" content="https://river-li.xyz/2020/09/19/Heap-Pwn/image-20200923073653910.png">
@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://river-li.xyz/2020/09/19/Heap-Pwn/heap-overflow/image-20200929212122897.png">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703">
 <meta property="article:published_time" content="2020-09-19T02:02:56.000Z">
-<meta property="article:modified_time" content="2020-11-19T02:09:15.934Z">
+<meta property="article:modified_time" content="2020-11-19T12:56:38.083Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="linux">
@@ -248,7 +248,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-19 10:09:15" itemprop="dateModified" datetime="2020-11-19T10:09:15+08:00">2020-11-19</time>
+                <time title="修改时间：2020-11-19 20:56:38" itemprop="dateModified" datetime="2020-11-19T20:56:38+08:00">2020-11-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -271,7 +271,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
+        <p>学pwn过程中学到的堆相关知识</p>
+<a id="more"></a>
+
+
+
+<h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
 <p>在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。</p>
 <p>需要注意的是，在linux中有这样一个基本的内存管理思想：</p>
 <blockquote>
@@ -452,8 +457,8 @@
       <i class="fa fa-chevron-left"></i> WHUCTF-WP
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/09/30/Chunk-Extend/" rel="next" title="Chunk-Extend">
-      Chunk-Extend <i class="fa fa-chevron-right"></i>
+    <a href="/2020/10/02/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9C%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" rel="next" title="机器学习在二进制分析中的应用">
+      机器学习在二进制分析中的应用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -529,14 +534,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
