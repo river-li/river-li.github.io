@@ -1801,12 +1801,12 @@
 
 <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>Docker是一个使用cs架构的应用级别的虚拟化服务；</p>
 <p>一个docker的container就是一个简单的进程，增加了一点隔离机制和与docker daemon交互的机制；每一个container与它自己独立私有的文件系统交互，这个文件系统是由Docker image来提供的。Docker image提供了这个进程运行起来需要的所有内容，文件系统、代码、依赖库等等。</p>
-<p><img src="image-20201118152832113.png" alt="image-20201118152832113"></p>
+<p><img src="image-20201120103633202.png" alt="image-20201120103633202"></p>
 <p>Docker核心的就是Cotainer和Image两个概念，以及这两个之间的转化</p>
 <p>把它理解成进程和二进制文件的关系就差不多了</p>
 <h2 id="Get-Started"><a href="#Get-Started" class="headerlink" title="Get Started"></a>Get Started</h2><p>安装Docker略</p>
 <h3 id="0x01-配置源"><a href="#0x01-配置源" class="headerlink" title="0x01 配置源"></a>0x01 配置源</h3><p>安装之后首先要添加源，否则再Pull的时候从官网速度会很慢</p>
-<p><img src="image-20201118162803759.png" alt="image-20201118162803759"></p>
+<p><img src="image-20201120103354473.png" alt="image-20201120103354473"></p>
 <p>在mac的docker配置文件中需要增加这样的一行</p>
 <p>配置好之后在<code>docker info</code>里可以看到</p>
 <p><img src="image-20201118162940953.png" alt="image-20201118162940953"></p>
