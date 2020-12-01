@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"river-li.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2020年USENIX论文 P$^2$IM: Scalable and Hardware-independent Firmware Testing via Automatic Peripheral Interface Modeling">
+<meta property="og:type" content="article">
+<meta property="og:title" content="P2IM">
+<meta property="og:url" content="https://river-li.xyz/2020/12/01/P2IM/index.html">
+<meta property="og:site_name" content="River&#39;s blog">
+<meta property="og:description" content="2020年USENIX论文 P$^2$IM: Scalable and Hardware-independent Firmware Testing via Automatic Peripheral Interface Modeling">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://river-li.xyz/2020/12/01/P2IM/image-20201201165940193.png">
+<meta property="og:image" content="https://river-li.xyz/2020/12/01/P2IM/image-20201201165928158.png">
+<meta property="og:image" content="https://river-li.xyz/2020/12/01/P2IM/image-20201201165905856.png">
+<meta property="og:image" content="https://river-li.xyz/2020/12/01/P2IM/image-20201201165843237.png">
+<meta property="article:published_time" content="2020-12-01T01:39:48.000Z">
+<meta property="article:modified_time" content="2020-12-01T09:00:18.785Z">
+<meta property="article:author" content="River Li">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://river-li.xyz/2020/12/01/P2IM/image-20201201165940193.png">
+
+<link rel="canonical" href="https://river-li.xyz/2020/12/01/P2IM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>P2IM | River's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">River's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ロッガ山の骇客君</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-friends">
+
+    <a href="/friends/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/12/01/P2IM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          P2IM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-01 09:39:48 / 修改时间：17:00:18" itemprop="dateCreated datePublished" datetime="2020-12-01T09:39:48+08:00">2020-12-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2020年USENIX论文</p>
+<p>P$^2$IM: Scalable and Hardware-independent Firmware Testing via Automatic Peripheral Interface Modeling</p>
+<a id="more"></a>
+
+<hr>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>P2IM要解决的是嵌入式固件模拟执行时由于需要用到硬件依赖导致无法正确执行的问题。前面也有提到针对固件的fuzzing主要面临的问题，Firm-AFL虽然很大程度上解决了Fuzzing固件时的效率问题，但是针对兼容性，Firm-AFL并没有做出什么贡献，而是直接利用Firmadyne来进行系统模式的模拟。</p>
+<p>然而事实上，Firmadyne自身针对固件的模拟成功率也不能说是特别高，它只能针对部分品牌的固件如D-Link、TP-Link时成功率比较高，但即使是这样总体的成功率也只有30%左右。</p>
+<p>这篇文章提出了一个软件框架，即P2IM，可以连续执行给定的固件二进制程序，同时引导来自Fuzzer的输入至模拟的程序。实现这一效果的主要思想是抽象出硬件上的各个不同的外围设备，并基于自动生成的模型动态处理MCU需要用到的I/O。测试了70个固件和10个来自真实设备的固件后发现在没有手动干预的情况下可以执行79%的固件，并且还进行了模糊测试，发现了7个漏洞。</p>
+<p><img src="image-20201201165940193.png" alt="image-20201201165940193"></p>
+<p>P2IM全称为Processor-Peripheral Interface Modeling，它将硬件的外围设备视为黑盒，自动化地生成模型，生成的模型需要满足Processor-Peripheral Interface Equivalence，处理器-外围接口等价性，满足了这一性质的模型在固件模拟执行时可以向模拟的MCU提供对应的输入输出，使固件可以正常顺利地执行下去。</p>
+<p>先前存在的工作包括基于真机的AVATAR，以及完全模拟的Firm-AFL等都存在一定的缺陷；AVATAR会将模拟部分无法处理的I/O等操作下发到实际的硬件设备来执行，这会为Fuzzing的效率带来很大的影响；Firm-AFL则是因为基于完全的系统模式模拟，有很多与硬件外围设备相关的操作无法处理，导致固件无法正确执行。</p>
+<p>总结一下，在固件的模糊测试中主要面临的问题主要有：</p>
+<p><strong>硬件依赖</strong>，先前对固件的模糊测试可能需要用到某些硬件设备，这是由于不完全模拟导致的，另外这也导致整个系统的速度都被性能低下的嵌入式硬件设备拖累。</p>
+<p><strong>广泛的外设</strong>，由于硬件依赖性导致性能很差，存在Firm-AFL这样完全基于模拟的工作，但是事实上固件中很多二进制的执行时需要依赖MCU的外围设备，各种硬件厂商、各种产品类型的外设各不相同，这就导致纯粹的模拟执行很难将全部的外设都定制出对应的接口，这不仅容易出错，而且速度不可能赶上大量快速增加的MCU设备。</p>
+<p><strong>多样化的操作系统设计</strong>，除了硬件，软件上也存在一些问题，各类固件是用到的操作系统十分广泛多元，许多MCU甚至没有一个专门的操作系统，而是一个管理硬件和任务调度的系统库，现有的通用模糊测试工具一般都是抽象到与操作系统无关的，面对这样直接运行在底层设备的软件也比较难进行交互。</p>
+<p><strong>不兼容的Fuzzing接口</strong>，从Fuzzing工具的角度来看，二进制程序的输入接口是定义良好且统一的，例如stdio、通过文件输入等等，然而固件中有可能与很多外围设备进行I/O交互，不同的设备、不同的驱动都可能带来不同的接口，这导致Fuzzer对每一种外围设备的接口进行兼容也是一个不小的工程。</p>
+<p>在P2IM中，提出的方法是一种支持fuzzer作为插件的框架，以一种可伸缩的、独立于硬件的方式测试固件。该框架旨在解决MCU强加的模糊化挑战，同时允许fuzzer专注于执行和改进他们自己的工作（即生成输入和查找bug）。我们的框架的目标是弥合模糊器和固件之间巨大的鸿沟，允许现有的模糊器在不了解单片机软硬件设计的情况下对固件进行测试，这也更加方便了Fuzzer本身的升级迭代。</p>
+<p>这篇文章的工作相比之前的方法很新颖，因为它既不需要硬件设备，也不模拟外围设备，而是提供了一种基于固件二进制文件的自动生成建模外围设备的方法。</p>
+<p>这一思想来源于对固件模拟时的观察，固件中的程序其实常常可以在没有真实设备以及没有完全将外围设备模拟出来的情况下执行，分析人员在模拟时经常将其中某些外围设备相关的函数直接hook掉，只要模拟的MCU可以从外围设备的I/O函数接收到正确格式的输入输出，而并不要求这些值一定是正确和真实设备完全相同的，程序往往就可以跑起来。对于给定的固件，P2IM使用通用处理器/ISA仿真器和一个为固件自动构建的模型，用于捕获固件访问的每个外围设备的可接受输入。我们发现这种近似仿真可以全面地运行一个固件（即，覆盖大多数固件代码），因此，足以支持Fuzzing和动态污点等分析。</p>
+<p>MCU与外围设备交互时主要有三种方式：</p>
+<ol>
+<li><p>通过内存映射的寄存器</p>
+</li>
+<li><p>中断</p>
+</li>
+<li><p>DMA直接访问内存</p>
+</li>
+</ol>
+<p>这篇文章主要考虑的工作是前两种类型，因为DMA的自动建模非常困难，其I/O行为与每个外围设备的内部设计有很强的相关性，这篇文章考虑的主要是前两种类型的Processor-Peripheral类型的设备。另外，DMA并不是经常使用的外围设备，在这篇文章测试的固件中只有很少几个用到了DMA。</p>
+<p>其实这个课题组也并非完全没有做DMA相关的工作，他们做了之后另外投了一篇顶会的Paper(妙啊)</p>
+<p><img src="image-20201201165928158.png" alt="image-20201201165928158"></p>
+<p>前面有提到，抽象建模出来的外围设备需要满足处理器-外围设备接口等效性，这个性质具体来说是指：</p>
+<ol>
+<li><p>模拟的是处理器和外围设备的接口，而不是外围设备本身；</p>
+</li>
+<li><p>从固件执行的影响来说，模拟的接口与固件期望的外围设备的接口等效。</p>
+</li>
+</ol>
+<p>P2IM中还定义了一个测试方案，如果在MCU的模拟过程中没有出现因外围设备的I/O错误而崩溃、暂停、跳过操作，则认为通过了这个测试。这一测试主要是用在验证系统的有效性，如果通过了这个测试，则认为系统模拟的外围设备接口方案是有效的。崩溃是当固件尝试从外围设备读写数据时出现致命错误会发生的情况；暂停是固件程序在等待外围设备返回结果时可能会出现的状态；跳过则是在固件一段时间等不到外围设备的返回结果后，可能会简单的跳过这一操作。</p>
+<h2 id="系统设计"><a href="#系统设计" class="headerlink" title="系统设计"></a>系统设计</h2><p>整个系统为外围设备建模的部分，可以分为两个步骤：定义抽象模型，以及模型实例化。</p>
+<p>定义抽象模型的部分，主要是将固件中的外围设备抽象成适用于一个通用的MCU体系结构，抽象模型从固件中获取一些数据，抽象模型还包含一个可定制的中断触发策略。这一模型的抽象定义过程是需要安全研究人员手动定义的，但是在定义完成之后针对整个一类MCU架构是通用的，并且论文的系统提供了一类MCU的抽象模型模版，在其基础上可以比较快速的完成其他MCU的定制迁移。</p>
+<p>第二部分是模型实例化，这部分工作可以依靠P2IM自动化完成，它可以为给定的固件生成实例化的MCU抽象模型。在实例化种，P2IM将抽象模型具体化为固件特定的信息，例如每个外围寄存器在内存中的具体映射位置以及寄存器之间的相互依赖性。由于各个MCU之间的差异很大，因此需要用到这些设备特定信息，没有这些信息，模拟的过程中就不能提供与真实处理器外设接口等价的处理器外围接口。</p>
+<p>除了抽象外围设备，P2IM这一框架还有一个比较重要的功能是为Fuzzer提供模糊测试的接口，这一过程也需要收集一部分模拟器的信息。</p>
+<p>后面的内容就这两部分详细展开来写一下整个系统的设计。</p>
+<p><img src="image-20201201165905856.png" alt="image-20201201165905856"></p>
+<h3 id="定义抽象模型"><a href="#定义抽象模型" class="headerlink" title="定义抽象模型"></a>定义抽象模型</h3><p>处理器外围设备建模的第一步是为MCU体系结构建立一个抽象的模型，这是整个系统中唯一的手动步骤，抽象模型捕获固件访问处理器外围接口时遵循的一般模式和约定。例如，基于ARM Cortex-M的MCU设备的固件通常通过存储器映射的I/O访问不同类型的外围寄存器；一般还会支持一系列外围中断，主要用于执行异步I/O。</p>
+<p>作者团队对ARM Cortex-M定义好了抽象模型，在这一模型中将设备的外围寄存器分为四种类型并提供了每种类型的访问模式和处理策略。这种基于访问模式的寄存器类型标识和基于类型的寄存器访问处理通常适用于Cortex-M上的所有外围设备。因此，模拟器可以执行这些操作，而不需要任何有关特定外围设备的知识或有关外围设备内部设计的知识。</p>
+<p>该模型将外部中断触发抽象为一个特殊的输入通道，并允许定制中断触发策略。抽象模型中还包括基本内存段的位置，例如RAM、flash、映射寄存器区域，对于使用相同MCU架构的设备来说，这些位置保持不变。</p>
+<h4 id="几种寄存器类型、访问模式和处理策略"><a href="#几种寄存器类型、访问模式和处理策略" class="headerlink" title="几种寄存器类型、访问模式和处理策略"></a>几种寄存器类型、访问模式和处理策略</h4><h5 id="控制寄存器CR"><a href="#控制寄存器CR" class="headerlink" title="控制寄存器CR"></a>控制寄存器CR</h5><p><strong>控制寄存器</strong>CR，外围设备的控制寄存器，主要用来控制或配置外围设备。</p>
+<p>CR的<strong>访问模式</strong>是特有的读-修改-写模式，程序首先读取CR，然后修改其中的配置参数，最后再写回寄存器。由于控制寄存器的作用比较特殊，固件中的程序一般只以这种方式访问CR，这样可以保证每次只能以字/寄存器的粒度写入，可以避免无意中更改其他参数。P2IM通过这样的访问模式来定位CR，但是也存在一些特殊情况下会直接写入而不遵循RMW模式。</p>
+<p>CR的<strong>处理策略</strong>，一旦配置好了外围设备，CR的值就会很少改变，因此P2IM将每个CR建模为non-volatile的内存字，在后面访问CR时P2IM建模的接口直接返回先前写入CR的字，如果读取前没有过写入操作，就直接返回0，这被当作是CR的默认值。</p>
+<h5 id="状态寄存器SR"><a href="#状态寄存器SR" class="headerlink" title="状态寄存器SR"></a>状态寄存器SR</h5><p><strong>状态寄存器</strong>SR，一般是一组标志，用于只是外围设备的内部状态，在执行某些操作前，设备会轮询相应的SR标志位，以确保设备准备就绪。这就意味着，如果设置了错误的SR，就有可能会导致固件模拟时崩溃，因此正确处理SR对P2IM和固件的无中断执行至关重要。</p>
+<p>SR的<strong>访问模式</strong>，SR被固件用来检查外围设备状态，如果对一个寄存器的第一次访问是无条件读取，并且读取后在条件中求值，P2IM就会将其归类为SR。但是对于有些SR，如果固件认为外围设备错误时，有可能第一次访问就是写入，这时这个寄存器可能会被系统错误归类，但是之后如果出现了连续轮询，又会重新将其标为SR</p>
+<p>SR的<strong>处理策略</strong>，对SR的处理是基于对标志或寄存器语义的理解，也就是说对SR的处理目的是在每次SR读取时动态推断固件可接受的寄存器值，以便让固件继续执行。这里用到的技术是explorative execution，可以在运行时自动推断可以接受的SR值。另一方面，对于SR的写入操作，则直接被丢弃，因为SR是易失的，固件在对SR执行了写操作后一般不会再进行读取，所以可以直接丢弃。</p>
+<h5 id="数据寄存器DR"><a href="#数据寄存器DR" class="headerlink" title="数据寄存器DR"></a>数据寄存器DR</h5><p><strong>数据寄存器DR</strong>，数据寄存器是数据从外围设备流入固件的主要途径，通常固件通过DR读取的数据来自片外外围设备或远程连接设备，例如，SPI外围设备将其从片外外围设备（例如Zigbee无线电）接收的数据保存在其DR中，然后由固件读取作为输入。数据也会流向相反的方向。固件将输出数据写入DR，然后SPI将其发送到非芯片外围设备。</p>
+<p>DR的<strong>访问模式</strong>，固件仅在通过检查相应的SR来确认外围设备处于就绪状态后才读取DR。根据DR的这种唯一访问模式，如果读取寄存器之前是SR read，并且以SR中的标志为条件，则P2IM将新发现的寄存器归类为DR。有时固件会直接写入DR，而不检查任何SR。P2IM将这种首次写入访问也用作识别DR的访问模式。</p>
+<p>DR的<strong>处理策略</strong>，DR是输入给MCU的主要数据来源，因此是一个理想的Fuzzing接口，P2IM将DR提供给Fuzzing的接口用于测试，每次读DR时，仿真器返回模糊输入的下一个字作为寄存器值。对于其他类型的动态分析，可以将输入源替换为以前记录的输入（用于bug/执行复制）或巧尽心思构建的输入（用于污点分析）。同样的，由于对DR的写入并不影响固件的继续执行，P2IM也会将其丢弃。</p>
+<h5 id="控制-状态寄存器C-amp-SR"><a href="#控制-状态寄存器C-amp-SR" class="headerlink" title="控制-状态寄存器C&amp;SR"></a>控制-状态寄存器C&amp;SR</h5><p><strong>控制-状态寄存器C&amp;SR</strong>，这类寄存器有两个用途，兼具了控制和状态寄存器的工作，这使外围设备的复杂性极大的提高，因此实际上在现代MCU的外围设备中是不常出现的，因为现代MCU具有充足的内存空间来映射外围设备的寄存器，没有必要为了节省这么一点空间开销增大设计外围设备时的开销。</p>
+<p>C&amp;SR的<strong>访问模式</strong>，在外围设备的启动配置阶段，CR部分会利用RMW模式修改，SR位会在之后的操作阶段被访问，因此P2IM会首先将其归类为CR，当观察到其中有一部分被用于状态寄存器时纠正为C&amp;SR。</p>
+<p>C&amp;SR的<strong>处理策略</strong>，对每个C&amp;SR的访问，其实并不会同时对其两个部分进行访问，因为他们是在固件执行的不同阶段用到的，因此实际上的处理方法和前面类似。</p>
+<p>总结来说，虽然这些方法是基于经验的，但是在实际测试中发现效果非常好。</p>
+<h4 id="中断触发"><a href="#中断触发" class="headerlink" title="中断触发"></a>中断触发</h4><p>抽象模型的另一个任务就是定义应该如何处理外围设备触发的中断，本质上中断是固件的一种特殊输入，将某些硬件事件通知固件系统并触发相应的中断服务例程。这些中断服务例程是由固件中的外围驱动程序实现的中断处理程序，在P2IM中并没有模拟外围设备，因此实际上并不会触发这些外围设备中断。</p>
+<p>P2IM将中断建模为基于时序的输入序列，每个输入对应于一个启用的中断，当这样的输入进来时，仿真器生成匹配的中断并将其发送到固件。这一部分也被用在Fuzzing之中，P2IM允许根据不同的模糊化策略（例如，纯随机生成、从特制种子中变异等）定制中断的顺序和时间。</p>
+<p>当前的原型使用了一个简单的中断触发策略：启用的中断以循环的方式以固定的间隔（例如，每执行1000个基本块之后）触发。间隔是使用执行的基本块的数量定义的，而不是绝对时间（例如时钟信号）。这个基于块的基本间隔定义支持为模拟器指定的任意定时来触发中断。</p>
+<h4 id="不可行的外围设备输入和误报"><a href="#不可行的外围设备输入和误报" class="headerlink" title="不可行的外围设备输入和误报"></a>不可行的外围设备输入和误报</h4><p>在上面的抽象模型定义下，P2IM可以触发固件中在实际设备上不会被触发的路径，这时因为可以通过Fuzzing随机的触发中断，模拟不存在的外围设备。但是这样有可能会导致这种输入无法在真实设备上复现，可以认为这是一种误报，对于这种情况P2IM没有进行过多的处理，将对这种情况的剪枝任务丢给了上层的Fuzzer进行抉择。</p>
+<h3 id="模型实例化"><a href="#模型实例化" class="headerlink" title="模型实例化"></a>模型实例化</h3><p>模型实例化是针对前一步定义的抽象模型，自动化生成完整的模型，用于指导模拟执行识别外围设备接口和处理I/O请求。这个过程是全自动的，还用到了exploration execution技术，实例化的过程是与Fuzz的过程交织在一起的，当Fuzz遇到没有完全建模或是没有处理的外围设备时，会暂停Fuzz的过程，让P2IM首先完善外围设备，直到没有其他对外围设备的操作之后再继续Fuzz，这个过程依赖于一个定制的QEMU，它模拟的是Cortex-M的指令集和一个通用的中断控制器。</p>
+<p>实例化模型的过程包含了下面三类推断固件信息的内容：</p>
+<ol>
+<li><p>识别内存映射寄存器、其内存位置以及类型；</p>
+</li>
+<li><p>每种寄存器类型的访问策略；</p>
+</li>
+<li><p>启用的中断和触发策略。</p>
+</li>
+</ol>
+<p><img src="image-20201201165843237.png" alt="image-20201201165843237"></p>
+<h4 id="寄存器识别"><a href="#寄存器识别" class="headerlink" title="寄存器识别"></a>寄存器识别</h4><p>寄存器识别的目标是检测外设暴露的内存映射寄存器，并根据我们的类别和访问模式定义确定它们的类型。这个过程会标识并分类固件在P2IM上运行时访问的所有寄存器，在模型实例化过程中，P2IM会监控固件对为外围寄存器保留的内存段的所有访问，并会将这个段中每个访问的内存字视为内存映射寄存器。</p>
+<p>这样的监控过程是比较容易的，但是确定其类型是比较困难的，具体基于经验的分类方法在前一部分已经详细介绍了。</p>
+<p>除了识别出外围设备寄存器和其类型，P2IM还需要根据其是否属于一个外围设备进行分组，有时在处理SR的访问时需要这种分组信息。</p>
+<h4 id="寄存器访问处理-amp-探索式执行"><a href="#寄存器访问处理-amp-探索式执行" class="headerlink" title="寄存器访问处理&amp;探索式执行"></a>寄存器访问处理&amp;探索式执行</h4><p>这一小节的重点是SR的处理策略，其他几种寄存器的处理方式都比较简单，并且不太会影响到整个MCU的执行过程，但是SR寄存器会影响到整个固件是否能够正确执行下去，需要在执行中动态的给出SR的值。这一过程用到的技术就是exploration execution，即探索式执行，在执行的过程中动态地判断出应该返回什么样的值。</p>
+<p>探索式执行的核心思想是，当固件执行到一个需要靠SR决定路径的点时，P2IM首先暂停执行，对这个生成快照创建多个进程进行探索执行，同时搜索SR的最佳值，找到最佳值后将其返回给固件。</p>
+<p>这一项技术中的核心挑战包括：构造一个可追踪的候选SR值搜索空间；定义SR最佳值；减少探索性执行出现的频率。</p>
+<h5 id="构造搜索空间"><a href="#构造搜索空间" class="headerlink" title="构造搜索空间"></a>构造搜索空间</h5><p>如果将搜索空间定义为SR的所有取值情况，在32位下就会有232个情况，这显然是不可行的，P2IM构造出的搜索空间只包含32+1个候选值：每一位都有一个SR的32种情况，加上一个全0的情况。</p>
+<h5 id="终止探索进程"><a href="#终止探索进程" class="headerlink" title="终止探索进程"></a>终止探索进程</h5><p>探索式执行应该何时停止也是一个问题，如果太早可能还没有执行到对SR至关重要的使用位置；如果太晚则可能会导致探索式执行浪费很多的时间。P2IM种的策略是，当一个工作线程即将返回到下一级被调用方时（即当当前调用堆栈帧被弹出时，SR read发生在该帧中），它将终止该工作线程。其基本原理是，固件通常在同一功能中读取SR，根据SR值决定是否可以执行进一步的I/O操作。因此，让探索性执行继续超出函数边界并不能为找到最佳SR值带来额外的帮助。</p>
+<h5 id="SR最佳值"><a href="#SR最佳值" class="headerlink" title="SR最佳值"></a>SR最佳值</h5><p>在所有的探索进程结束后，P2IM会确定哪些进程或候选的SR值符合可能推进的固件执行，限定的条件是：</p>
+<ol>
+<li><p>线程没有崩溃或暂停；</p>
+</li>
+<li><p>如果所有线程都崩溃或暂停，则选择当前SR以外其他因素引起崩溃的线程；</p>
+</li>
+<li><p>当找到多个SR值时会随机选择一个作为最佳值</p>
+</li>
+</ol>
+<h5 id="SR分组减少探索式执行出现的频率"><a href="#SR分组减少探索式执行出现的频率" class="headerlink" title="SR分组减少探索式执行出现的频率"></a>SR分组减少探索式执行出现的频率</h5><p>如果探索式执行频繁出现会带来很大的开销，但另一方面每次用到SR都需要确定一个当前的可接受值。这两个需求之间的平衡是使用SR分组进行优化的，其思想是针对一个位置的一个SR导出的访问处理策略，虽然不是普遍适用于所有SR，但是可以重用在相似位置访问的相同SR。</p>
+<p>具体地说，我们根据SR访问的上下文分组，由四元组（r,cs,bbl,conf）定义；r是SR；cs是SR访问时调用堆栈的签名；bbl是发生SR读取的基本块ID；conf是在SR访问时根据CR生成的哈希值，并不包含外围设备配置的语义信息。包含CR的信息是因为不同的CR值可能会导致固件以不同的方式检查SR。通过将SR分组，同一组或四元组相似的可以使用相同的配置，这会减少探索式执行的频率。</p>
+<h4 id="中断标识"><a href="#中断标识" class="headerlink" title="中断标识"></a>中断标识</h4><p>模型实例化中除了寄存器，另一个任务就是对中断相关的信息进行收集，MCU往往不会开启所有的中断，只会开启一小部分。运行时固件有可能根据需要动态的开关中断，如果模拟执行时触发了未启用的中断，就可能由于没有中断处理例程而导致程序崩溃（这是因为一般会默认用死循环来处理中断）。这方面P2IM维护了一个中断列表，接入QEMU的中断向量控制器来获取相关的信息。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/19/Stack-Pwn/" rel="prev" title="Stack-Pwn">
+      <i class="fa fa-chevron-left"></i> Stack-Pwn
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1"><span class="nav-text">系统设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%8A%BD%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="nav-text">定义抽象模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%A0%E7%A7%8D%E5%AF%84%E5%AD%98%E5%99%A8%E7%B1%BB%E5%9E%8B%E3%80%81%E8%AE%BF%E9%97%AE%E6%A8%A1%E5%BC%8F%E5%92%8C%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5"><span class="nav-text">几种寄存器类型、访问模式和处理策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8CR"><span class="nav-text">控制寄存器CR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8SR"><span class="nav-text">状态寄存器SR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%84%E5%AD%98%E5%99%A8DR"><span class="nav-text">数据寄存器DR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6-%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8C-amp-SR"><span class="nav-text">控制-状态寄存器C&amp;SR</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E8%A7%A6%E5%8F%91"><span class="nav-text">中断触发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E8%A1%8C%E7%9A%84%E5%A4%96%E5%9B%B4%E8%AE%BE%E5%A4%87%E8%BE%93%E5%85%A5%E5%92%8C%E8%AF%AF%E6%8A%A5"><span class="nav-text">不可行的外围设备输入和误报</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%AE%9E%E4%BE%8B%E5%8C%96"><span class="nav-text">模型实例化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E8%AF%86%E5%88%AB"><span class="nav-text">寄存器识别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E8%AE%BF%E9%97%AE%E5%A4%84%E7%90%86-amp-%E6%8E%A2%E7%B4%A2%E5%BC%8F%E6%89%A7%E8%A1%8C"><span class="nav-text">寄存器访问处理&amp;探索式执行</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%90%9C%E7%B4%A2%E7%A9%BA%E9%97%B4"><span class="nav-text">构造搜索空间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%88%E6%AD%A2%E6%8E%A2%E7%B4%A2%E8%BF%9B%E7%A8%8B"><span class="nav-text">终止探索进程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SR%E6%9C%80%E4%BD%B3%E5%80%BC"><span class="nav-text">SR最佳值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SR%E5%88%86%E7%BB%84%E5%87%8F%E5%B0%91%E6%8E%A2%E7%B4%A2%E5%BC%8F%E6%89%A7%E8%A1%8C%E5%87%BA%E7%8E%B0%E7%9A%84%E9%A2%91%E7%8E%87"><span class="nav-text">SR分组减少探索式执行出现的频率</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E6%A0%87%E8%AF%86"><span class="nav-text">中断标识</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="River Li"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">River Li</p>
+  <div class="site-description" itemprop="description">WHU 网络空间安全在读</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/river-li" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;river-li" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizic0228@gmail.com" title="E-Mail → mailto:lizic0228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/river_li" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;river_li" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/ai-mao-wang-yu-ka-li-bang/" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;ai-mao-wang-yu-ka-li-bang&#x2F;" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">River Li</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
