@@ -196,6 +196,184 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/21/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E5%92%8C%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/21/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E5%92%8C%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E9%80%9A%E4%BF%A1/" class="post-title-link" itemprop="url">linux内核空间和用户空间通信</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-21 23:35:38" itemprop="dateCreated datePublished" datetime="2019-06-21T23:35:38+08:00">2019-06-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Linux 下用户空间和内核空间通信主要有这么两个方法</p>
+<p><code>netlink</code></p>
+<p>或者时<code>/proc/</code>虚拟文件</p>
+<p>正好两个都在防火墙的设计中用到了，整理下用法和内容</p>
+<!--more--->
+
+<h2 id="NetLink"><a href="#NetLink" class="headerlink" title="NetLink"></a>NetLink</h2><p>netlink的作用是在linux下用户空间和内核空间进行双向的通信</p>
+<p>可以理解成其作用是在内核空间和用户空间之间创建了一个socket</p>
+<p>两者可以使用这个socket来互相发送数据</p>
+<h3 id="用户空间设计"><a href="#用户空间设计" class="headerlink" title="用户空间设计"></a>用户空间设计</h3><p>和socket的模式类似，创建的过程主要也分以下几个步骤：</p>
+<ul>
+<li>socket()</li>
+<li>bind()</li>
+<li>sendmsg()</li>
+<li>recvmsg()</li>
+<li>close()</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> s = socket(AF_NETLINK,SOCK_RAW,NETLINK_ROUTE);</span><br></pre></td></tr></table></figure>
+
+<p>在使用bind时，需要将一个一个套接字结构和一个地址结构绑定</p>
+<p>地址结构的原型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">sa_family_t</span> nl_family;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> nl_pad;</span><br><span class="line">    __u32 nl_pid;</span><br><span class="line">    __u32 nl_groups;</span><br><span class="line">&#125; nladdr;</span><br></pre></td></tr></table></figure>
+
+<p>其中pid需要是当前进程的pid，可以用下面的获得</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nl_pid = getpid();</span><br><span class="line"></span><br><span class="line">bind(s,(struct sockaddr*) &amp;nladdr, <span class="keyword">sizeof</span>(nladdr));</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在通信时使用的sendmsg和recvmsg两个函数</p>
+<p>使用的数据结构和平常的socket通信中的消息类型比较类似</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nlmsghdr</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    __u32 nlmsg_len;</span><br><span class="line">    __u16 nlmsg_type;</span><br><span class="line">    __u16 nlmsg_flags;</span><br><span class="line">    __u32 nlmsg_seq;</span><br><span class="line">    __u32 nlmsg_pid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际发送时的结构:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">iovec</span> <span class="title">vec</span>;</span></span><br><span class="line">iov.iov_base = (<span class="keyword">void</span> *)nlmh;</span><br><span class="line">iov.iov_len = nlmh-&gt;nlmsg_len;</span><br><span class="line">msg.msg_iov = &amp;vec;</span><br><span class="line">msg.msg_iovlen =<span class="number">1</span> ;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="内核空间"><a href="#内核空间" class="headerlink" title="内核空间"></a>内核空间</h3><p>内核空间与用户空间有很大的差异</p>
+<p>不过差异主要也是在接口的部分</p>
+<p>创建socket</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct sock *<span class="title">netlink_kernel_create</span><span class="params">(<span class="keyword">int</span> unit,<span class="keyword">void</span> (*input)(struct sock *sk, <span class="keyword">int</span> len))</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>内核空间创建的套接字后一个参数是一个函数，作用是将这个输入函数绑定为套接字的回调函数</p>
+<p>创建成功后返回<code>structure sock</code>指针类型的值可以对这个值操作来操作内核的socket</p>
+<p>当用户空间通过socket发送信息后，会调用这个被绑定了的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">input</span><span class="params">(struct *sock,<span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sk_buf</span> *<span class="title">skb</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">nlmsghdr</span> *<span class="title">nlh</span> = <span class="title">NULL</span>;</span></span><br><span class="line">    u8 *payload = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>((skb = skb_dequeue(&amp;sk-&gt;receive_queue))!=<span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        nlh = (struct nlmsghdr *)skb-&gt;data;</span><br><span class="line">        payload = NLMSG_DATA(nlh);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在需要想用户空间发送数据时，要区分单播地址还是多播地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NETLINK_CB(skb).groups = local_groups;</span><br><span class="line">NETLINK_CB(skb).pid = <span class="number">0</span>;</span><br><span class="line">NETLINK(skb).dst_groups = dst_groups;</span><br><span class="line">NETLINK_CB(skb).dst_pid = dst_pid;</span><br></pre></td></tr></table></figure>
+
+<p>首先都需要设置发送地址和接受的地址</p>
+<p>之后如果发送单播</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">netlink_unicast</span><span class="params">(struct sock *ssk,struct sk_buff *skb,u32 pid, <span class="keyword">int</span> nonblock)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数ssk是创建socket时返回的那个指针</p>
+<p>skb-&gt;data应该指向要发送数据的缓冲区</p>
+<p>发送多播时</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">netlink_broadcast</span><span class="params">(struct sock *ssk,struct sk_buff *skb,u32 pid,u32 group,<span class="keyword">int</span> allocation)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>最后需要释放socket时</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sock_release</span><span class="params">(struct socket *sock)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="虚拟文件proc"><a href="#虚拟文件proc" class="headerlink" title="虚拟文件proc"></a>虚拟文件proc</h2><p>proc文件系统时一种虚拟文件系统，在proc虚拟文件系统中可以实现用户空间和内核空间通信</p>
+<h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><p>核心的文件数据结构时<code>struct proc_dir_entry</code>,用来表示一个虚拟的文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc_dir_entry</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">mode_t</span> mode;</span><br><span class="line">    <span class="keyword">uid_t</span> uid;</span><br><span class="line">    <span class="keyword">gid_t</span> gid;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">inode_opeartions</span> *<span class="title">proc_iops</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> *<span class="title">proc_fops</span>;</span></span><br><span class="line">    strutc proc_dir_entry *parent;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">read_proc_t</span> *read_proc;</span><br><span class="line">    <span class="keyword">write_proc_t</span> *write_proc;</span><br><span class="line">    <span class="keyword">void</span> *data;</span><br><span class="line">    <span class="keyword">atomic_t</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><p>创建文件目录的函数原型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct proc_dir_entry *<span class="title">proc_mkdir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *dir_name, struct proc_dir_entry *parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数在parent下创建一个名为dir_name的文件夹，创建失败时返回NULL</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct proc_dir_entry *<span class="title">create_proc_entry</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">mode_t</span> mode, struct proc_dir_entry *parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数会在文件系统中创建一个虚拟文件，文件名为name指定的字符串</p>
+<p>权限由mode指定，而parent说明此文件的位置</p>
+<p>对于parent这个参数，有这么几个预定义的值</p>
+<ul>
+<li><p>proc_root 代表路径/proc</p>
+</li>
+<li><p>proc_net 代表/proc/net</p>
+</li>
+<li><p>proc_bus 代表/proc/bus</p>
+</li>
+<li><p>proc_root_dirver 代表/proc/drivers</p>
+</li>
+<li><p>proc_root_fs 代表/proc/fs</p>
+</li>
+</ul>
+<h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><p>删除文件时需要指定文件名和父目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">remove_proc_entry</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, struct pro_dir_entry *parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件的读写"><a href="#文件的读写" class="headerlink" title="文件的读写"></a>文件的读写</h3><p>在用户态写入文件，内核态读取文件，就可以实现用户态和内核态的文件交互</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">write_proc_t</span><span class="params">(struct file *file,<span class="keyword">const</span> <span class="keyword">char</span> __user *buffer, <span class="keyword">unsigned</span> <span class="keyword">long</span> count, <span class="keyword">void</span> *data)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>buffer时传过来的数据指针，data是指向私有数据的指针</p>
+<p>在用户空间的程序读取创建的proc文件时，内核会分配给proc读取程序一页大小的内存空间</p>
+<p>读文件的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">proc_read</span><span class="params">(<span class="keyword">char</span> *page,<span class="keyword">char</span> **start,<span class="keyword">off_t</span> offset, <span class="keyword">int</span> count, <span class="keyword">int</span> *eof, <span class="keyword">void</span> *data)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="内核空间-1"><a href="#内核空间-1" class="headerlink" title="内核空间"></a>内核空间</h3><p>内核空间中对于proc文件操作的一整套接口都会发生变化</p>
+<h4 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct file *<span class="title">filp_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">int</span> flags, <span class="keyword">int</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="文件读写"><a href="#文件读写" class="headerlink" title="文件读写"></a>文件读写</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">vfs_read</span><span class="params">(struct file *filp, <span class="keyword">char</span> __user *buffer,<span class="keyword">size_t</span> len, <span class="keyword">loff_t</span> *pos)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">vfs_write</span><span class="params">(struct file *filp, <span class="keyword">const</span> <span class="keyword">char</span> __user*buffer,<span class="keyword">size_t</span> len, <span class="keyword">loff_t</span> *pos)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中filp是由前面<code>filp_open</code>返回的文件指针</p>
+<p>buffer是读出文件要读到的缓冲区，或是写入文件来自的数据</p>
+<p>pos是指针位置，指定从什么位置开始读写文件</p>
+<h4 id="关闭文件"><a href="#关闭文件" class="headerlink" title="关闭文件"></a>关闭文件</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">flip_close</span><span class="params">(struct file*filp, <span class="keyword">fl_owner_t</span> id)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/10/suid/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1343,146 +1521,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/22/netfilter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/22/netfilter/" class="post-title-link" itemprop="url">netfilter</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-22 18:59:36" itemprop="dateCreated datePublished" datetime="2019-05-22T18:59:36+08:00">2019-05-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Netfilter"><a href="#Netfilter" class="headerlink" title="Netfilter"></a>Netfilter</h1><p>netfilter的相关知识，主要为网络程序设计防火墙做知识储备</p>
-<p>netfilter一共在网络报文的流向中加了5个钩子，位置分别在:</p>
-<ul>
-<li>NF_IP_PRE_ROUTING    在报文路由前处理</li>
-<li>NF_IP_FORWARD 在IP转发向另一个NIC前处理</li>
-<li>NF_IP_POST_ROUTING 在报文路由后处理</li>
-<li>NF_IP_LOCAL_IN 在本地</li>
-<li>NF_IP_LOCAL_OUT</li>
-</ul>
-<p>用户自定义的钩子函数返回值必须是</p>
-<ul>
-<li>NF_DROP</li>
-<li>NF_ACCEPT</li>
-<li>NF_STOLEN</li>
-<li>NF_QUEUE</li>
-<li>NF_REPEAT</li>
-<li>NF_STOP</li>
-</ul>
-<p>中的一个；</p>
-<p>网络防火墙的编写主要就是在将自定义函数挂在钩子上，通过判断数据包和防火墙的路由表判断进一步的操作。</p>
-<!--more--->
-
-<h2 id="前导知识"><a href="#前导知识" class="headerlink" title="前导知识"></a>前导知识</h2><h3 id="内核模块编程"><a href="#内核模块编程" class="headerlink" title="内核模块编程"></a>内核模块编程</h3><p>防火墙的编写以及netfilter模块的利用一般需要在内核态</p>
-<p>在内核加载一个新的模块</p>
-<p>下面是一个内核中的hello world模块</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">helloworld_init</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    printk(KERN_ALERT<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> __exit <span class="title">helloworld_exit</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    printk(KERN_ALERT<span class="string">&quot;Hello world exit\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">           </span><br><span class="line">module_init(helloworld_init);</span><br><span class="line">module_exit(helloworld_exit);</span><br></pre></td></tr></table></figure>
-
-<p>之后调用时使用<code>insmode</code>和<code>rmmod</code></p>
-<p>Q：为什么需要使用内核模块编程？</p>
-<p>A：内核级的防火墙需要能够分析、检测所有 的数据包，因此需要工作在内核级别；而用户态下并没有这样的权限。</p>
-<h2 id="Hook"><a href="#Hook" class="headerlink" title="Hook"></a>Hook</h2><p>在内存中有一个nf_hook_ops结构的链表，每一个元素用于标识一个钩子</p>
-<p>这个结构定义如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span>&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">list</span>;</span></span><br><span class="line">    nf_hookfn *hook;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">module</span> *<span class="title">owner</span>;</span></span><br><span class="line">    <span class="keyword">int</span> pf;</span><br><span class="line">    <span class="keyword">int</span> hooknum;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> priority;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中list_head设置为{NULL,NULL}即可</p>
-<p>nf_hookfn指向用户自定义的hook函数</p>
-<p>pf指定协议族，例如ipv4值为PF_INET</p>
-<p>hooknum是想注册钩子的位置，取值为上面那五个中的一个</p>
-<h3 id="注册钩子"><a href="#注册钩子" class="headerlink" title="注册钩子"></a>注册钩子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nf_register_hook</span><span class="params">(struct nf_hook_ops *reg)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>向函数传入一个nf_hook_ops，则会将钩子加载在内存中的列表中，这样会在设置的时机调用钩子函数</p>
-<h3 id="注销钩子"><a href="#注销钩子" class="headerlink" title="注销钩子"></a>注销钩子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">nf_unregister_hook</span><span class="params">(struct nf_hook_ops *reg)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nf_unregister_hooks</span><span class="params">(struct nf_hook_ops *reg, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>第二种方法可以一次性注销n个钩子函数，这里的reg是个链表</p>
-<h3 id="其他注册注销函数"><a href="#其他注册注销函数" class="headerlink" title="其他注册注销函数"></a>其他注册注销函数</h3><p>netfilter中还有其他的注册函数，例如控制socket选项的钩子函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nf_register_sockopt</span><span class="params">(struct nf_sockopt_ops *reg)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">nf_unregister_sockopt</span><span class="params">(struct nf_sockopt_ops *reg)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>实际上，实际应用注册钩子时一般都需要注册socket选项的函数</p>
-<p>通过设置用户自定义的sockopt才能够实现对命令的调用。这样可以支持动态的修改配置</p>
-<p>同时需要注意，在处理网络的数据包时，需要从用户空间复制到内核空间，钩子函数处理完毕后再从内核空间复制回用户空间；</p>
-<h3 id="钩子函数处理的例子"><a href="#钩子函数处理的例子" class="headerlink" title="钩子函数处理的例子"></a>钩子函数处理的例子</h3><p>通过设置钩子函数，实现以下功能：</p>
-<ul>
-<li>禁止向某ip地址发包</li>
-<li>禁止某端口响应数据</li>
-<li>禁止ping回显</li>
-</ul>
-<p>对与上面三个功能，钩子分别需要挂在LOCAL_OUT、LOCAL_IN、以及LOCAL_IN</p>
-<p>只需要使用ip_hdr获取ip报文的头部，对比其中的ip地址、端口号、或是协议类型即可</p>
-<p>如果需要支持动态修改配置,需要加上sockopt的设置</p>
-<p>实现时的代码流程：</p>
-<p>首先可以确定的是过滤的条件以及钩子函数都在内核级别；</p>
-<p>因此需要模块编程，加载模块的函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>这个函数内部需要：注册钩子函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nf_register_hook(&amp;nfin)</span><br></pre></td></tr></table></figure>
-
-<p>这个nfin应该是一个nf_hook_ops结构体</p>
-<p>这个结构体应该是一个全局变量，并且里面的<code>.hook</code>应该指向的是处理函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span> <span class="title">nfin</span>=</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    .hook = nf_hook_in,</span><br><span class="line">    .hooknum = NF_IP_LOCAL_IN,</span><br><span class="line">    .pf = PF_INET,</span><br><span class="line">    .priority = NF_IP_LOCAL_OUT</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结构体应该是这样的一个内容</p>
-<p>里面的nf_hook_in是处理函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">hf_hook_in</span><span class="params">(...)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>这个函数内部应该实现对数据包的判断，并根据条件返回那几个返回值中的一个。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1554,7 +1592,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

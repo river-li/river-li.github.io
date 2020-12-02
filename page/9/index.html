@@ -196,6 +196,146 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/22/netfilter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/22/netfilter/" class="post-title-link" itemprop="url">netfilter</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-22 18:59:36" itemprop="dateCreated datePublished" datetime="2019-05-22T18:59:36+08:00">2019-05-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Netfilter"><a href="#Netfilter" class="headerlink" title="Netfilter"></a>Netfilter</h1><p>netfilter的相关知识，主要为网络程序设计防火墙做知识储备</p>
+<p>netfilter一共在网络报文的流向中加了5个钩子，位置分别在:</p>
+<ul>
+<li>NF_IP_PRE_ROUTING    在报文路由前处理</li>
+<li>NF_IP_FORWARD 在IP转发向另一个NIC前处理</li>
+<li>NF_IP_POST_ROUTING 在报文路由后处理</li>
+<li>NF_IP_LOCAL_IN 在本地</li>
+<li>NF_IP_LOCAL_OUT</li>
+</ul>
+<p>用户自定义的钩子函数返回值必须是</p>
+<ul>
+<li>NF_DROP</li>
+<li>NF_ACCEPT</li>
+<li>NF_STOLEN</li>
+<li>NF_QUEUE</li>
+<li>NF_REPEAT</li>
+<li>NF_STOP</li>
+</ul>
+<p>中的一个；</p>
+<p>网络防火墙的编写主要就是在将自定义函数挂在钩子上，通过判断数据包和防火墙的路由表判断进一步的操作。</p>
+<!--more--->
+
+<h2 id="前导知识"><a href="#前导知识" class="headerlink" title="前导知识"></a>前导知识</h2><h3 id="内核模块编程"><a href="#内核模块编程" class="headerlink" title="内核模块编程"></a>内核模块编程</h3><p>防火墙的编写以及netfilter模块的利用一般需要在内核态</p>
+<p>在内核加载一个新的模块</p>
+<p>下面是一个内核中的hello world模块</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">helloworld_init</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    printk(KERN_ALERT<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> __exit <span class="title">helloworld_exit</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    printk(KERN_ALERT<span class="string">&quot;Hello world exit\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">           </span><br><span class="line">module_init(helloworld_init);</span><br><span class="line">module_exit(helloworld_exit);</span><br></pre></td></tr></table></figure>
+
+<p>之后调用时使用<code>insmode</code>和<code>rmmod</code></p>
+<p>Q：为什么需要使用内核模块编程？</p>
+<p>A：内核级的防火墙需要能够分析、检测所有 的数据包，因此需要工作在内核级别；而用户态下并没有这样的权限。</p>
+<h2 id="Hook"><a href="#Hook" class="headerlink" title="Hook"></a>Hook</h2><p>在内存中有一个nf_hook_ops结构的链表，每一个元素用于标识一个钩子</p>
+<p>这个结构定义如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span>&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">list</span>;</span></span><br><span class="line">    nf_hookfn *hook;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">module</span> *<span class="title">owner</span>;</span></span><br><span class="line">    <span class="keyword">int</span> pf;</span><br><span class="line">    <span class="keyword">int</span> hooknum;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> priority;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中list_head设置为{NULL,NULL}即可</p>
+<p>nf_hookfn指向用户自定义的hook函数</p>
+<p>pf指定协议族，例如ipv4值为PF_INET</p>
+<p>hooknum是想注册钩子的位置，取值为上面那五个中的一个</p>
+<h3 id="注册钩子"><a href="#注册钩子" class="headerlink" title="注册钩子"></a>注册钩子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nf_register_hook</span><span class="params">(struct nf_hook_ops *reg)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>向函数传入一个nf_hook_ops，则会将钩子加载在内存中的列表中，这样会在设置的时机调用钩子函数</p>
+<h3 id="注销钩子"><a href="#注销钩子" class="headerlink" title="注销钩子"></a>注销钩子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">nf_unregister_hook</span><span class="params">(struct nf_hook_ops *reg)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nf_unregister_hooks</span><span class="params">(struct nf_hook_ops *reg, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>第二种方法可以一次性注销n个钩子函数，这里的reg是个链表</p>
+<h3 id="其他注册注销函数"><a href="#其他注册注销函数" class="headerlink" title="其他注册注销函数"></a>其他注册注销函数</h3><p>netfilter中还有其他的注册函数，例如控制socket选项的钩子函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nf_register_sockopt</span><span class="params">(struct nf_sockopt_ops *reg)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">nf_unregister_sockopt</span><span class="params">(struct nf_sockopt_ops *reg)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，实际应用注册钩子时一般都需要注册socket选项的函数</p>
+<p>通过设置用户自定义的sockopt才能够实现对命令的调用。这样可以支持动态的修改配置</p>
+<p>同时需要注意，在处理网络的数据包时，需要从用户空间复制到内核空间，钩子函数处理完毕后再从内核空间复制回用户空间；</p>
+<h3 id="钩子函数处理的例子"><a href="#钩子函数处理的例子" class="headerlink" title="钩子函数处理的例子"></a>钩子函数处理的例子</h3><p>通过设置钩子函数，实现以下功能：</p>
+<ul>
+<li>禁止向某ip地址发包</li>
+<li>禁止某端口响应数据</li>
+<li>禁止ping回显</li>
+</ul>
+<p>对与上面三个功能，钩子分别需要挂在LOCAL_OUT、LOCAL_IN、以及LOCAL_IN</p>
+<p>只需要使用ip_hdr获取ip报文的头部，对比其中的ip地址、端口号、或是协议类型即可</p>
+<p>如果需要支持动态修改配置,需要加上sockopt的设置</p>
+<p>实现时的代码流程：</p>
+<p>首先可以确定的是过滤的条件以及钩子函数都在内核级别；</p>
+<p>因此需要模块编程，加载模块的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个函数内部需要：注册钩子函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nf_register_hook(&amp;nfin)</span><br></pre></td></tr></table></figure>
+
+<p>这个nfin应该是一个nf_hook_ops结构体</p>
+<p>这个结构体应该是一个全局变量，并且里面的<code>.hook</code>应该指向的是处理函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span> <span class="title">nfin</span>=</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    .hook = nf_hook_in,</span><br><span class="line">    .hooknum = NF_IP_LOCAL_IN,</span><br><span class="line">    .pf = PF_INET,</span><br><span class="line">    .priority = NF_IP_LOCAL_OUT</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结构体应该是这样的一个内容</p>
+<p>里面的nf_hook_in是处理函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">hf_hook_in</span><span class="params">(...)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个函数内部应该实现对数据包的判断，并根据条件返回那几个返回值中的一个。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/22/scrapy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1517,78 +1657,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2018/04/06/linux%E4%B8%8Bzip%E8%A7%A3%E5%8E%8B%E4%B9%B1%E7%A0%81%E8%A7%A3%E5%86%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/06/linux%E4%B8%8Bzip%E8%A7%A3%E5%8E%8B%E4%B9%B1%E7%A0%81%E8%A7%A3%E5%86%B3/" class="post-title-link" itemprop="url">linux下zip解压乱码解决</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-04-06 08:47:56" itemprop="dateCreated datePublished" datetime="2018-04-06T08:47:56+08:00">2018-04-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​        在下载实验课的课件时发现，linux下zip文件解压出来的文件都是乱码，于是查询了一些相关的资料，解决方法留存以备用。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/06/linux%E4%B8%8Bzip%E8%A7%A3%E5%8E%8B%E4%B9%B1%E7%A0%81%E8%A7%A3%E5%86%B3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1660,7 +1728,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

