@@ -196,6 +196,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/23/linux%E5%86%85%E6%A0%B8list/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/23/linux%E5%86%85%E6%A0%B8list/" class="post-title-link" itemprop="url">linux内核list</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-23 15:14:07" itemprop="dateCreated datePublished" datetime="2019-06-23T15:14:07+08:00">2019-06-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Linux内核中有自己实现的链表数据结构<br>在<code>#include &lt;linux/list.h&gt;</code>头文件中</p>
+<!--more--->
+
+<h2 id="List-h"><a href="#List-h" class="headerlink" title="List.h"></a>List.h</h2><p>遍历列表的方法list_for_each_entry本质上是一个宏定义的函数和一个for循环</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_for_each_entry(pos,head,member) for(pos = list_enrty(head)-&gt;next,typeof(*pos),member);&amp;pos-&gt;member!=(head);pos=list_entry(pos-&gt;member.next,typeof(*pos),member))</span></span><br></pre></td></tr></table></figure>
+
+<p>而其中调用的list_entry又是另一个宏定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr,type,member) container_of(ptr,type,member)</span></span><br></pre></td></tr></table></figure>
+
+<p>而这个container_of函数，又双叒叕是个宏定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr,type,member)(&#123;typeof(((type *)0)-&gt;member)*__mptr=(ptr);\</span></span><br><span class="line">(type *)((<span class="keyword">char</span> *)__mptr - offsetof(type,member));&#125;)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/22/getopt-long/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1345,144 +1421,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/05/28/word2vec/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/28/word2vec/" class="post-title-link" itemprop="url">word2vec</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-28 15:29:29" itemprop="dateCreated datePublished" datetime="2019-05-28T15:29:29+08:00">2019-05-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-11 09:44:17" itemprop="dateModified" datetime="2020-11-11T09:44:17+08:00">2020-11-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息内容安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>word2vector是将词转换为词向量的方法，能够把自然语言转换为向量</p>
-<p>使用数学方法进行描述</p>
-<!--more--->
-
-<h2 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h2><p>常用的词向量表示方法有</p>
-<ul>
-<li>one-hot representation</li>
-<li>distributed representation</li>
-</ul>
-<p>前者是用一个很长的向量表示一个词，一个向量只有一个维度为1</p>
-<p>每个词语的维数就是语料库字典的长度</p>
-<p>后者的基本思想是：相同语境下出现的词语义也应该是相近的</p>
-<p>使用一个固定长度的稠密词向量标识</p>
-<p>word2vector是通过神经网络机器学习的算法来训练N-gram语言模型，并在训练过程中求出对应的词向量的方法</p>
-<h2 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h2><p>word2vector可以在tensorflow中调用</p>
-<p>也可以用gensim中的包</p>
-<p>这里用gensim</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> word2vec</span><br><span class="line">sentences = word2vec.Text8Corpus(<span class="string">&#x27;1.txt&#x27;</span>)</span><br><span class="line">model = word2vec.Word2Vec(sentences,size=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
-
-<p>可以使用<code>model.similarity(&#39;word1&#39;,&#39;word2&#39;)</code></p>
-<p>得到两个词的相关度值</p>
-<p><code>model.most_similarity(&#39;word1&#39;,topn=20)</code></p>
-<p>可以得到与word1相关度最高的20个词</p>
-<p><code>model.doesnt_match(list)</code></p>
-<p>这个方法会返回出list中最不合群的词</p>
-<p><code>model.save(filename)</code></p>
-<p><code>word2vec.Word2Vec.load(filename)</code></p>
-<p>以上两个方法可以将训练的模型保存为文件，或是直接从文件读取模型</p>
-<h3 id="实际例子"><a href="#实际例子" class="headerlink" title="实际例子"></a>实际例子</h3><p>首先需要在网上获取到中文语料库，数据来源是搜狐的新闻</p>
-<img src="/2019/05/28/word2vec/1.png" class="" width="1">
-
-<p>这里一共有1990个文件，编号从10到1999，每个文件中为一段新闻</p>
-<p>例如10.txt：</p>
-<img src="/2019/05/28/word2vec/2.png" class="" width="2">
-
-<p>对于获取到的语料库首先应该用jieba进行分词，将每个词用空格隔开</p>
-<p>关于<a target="_blank" rel="noopener" href="http://river-li.me/">jieba</a>分词的用法和分词的理论模型可以点击链接查看；</p>
-<p>整个脚本如下:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line">prefix = <span class="string">&#x27;./data/word/&#x27;</span></span><br><span class="line">affix=<span class="string">&#x27;.txt&#x27;</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&#x27;result_dict.txt&#x27;</span>,<span class="string">&#x27;a&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>,<span class="number">2000</span>):</span><br><span class="line">        s=<span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">with</span> open(prefix+str(i)+affix,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;gb18030&#x27;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">            l=fp.readlines()</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> l:</span><br><span class="line">                s=s+j.replace(<span class="string">&#x27;\u3000&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">            result=jieba.lcut(s)</span><br><span class="line">            <span class="keyword">for</span> r <span class="keyword">in</span> result:</span><br><span class="line">                f.write(r)</span><br><span class="line">                f.write(<span class="string">&#x27; &#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这里将所有的文本文件进行分词后写入到<code>result_dict.txt</code>文件中，并且要在每个词后面写入一个空格</p>
-<p>运行完毕后效果如图</p>
-<img src="/2019/05/28/word2vec/3.png" class="" width="3">
-
-<p>之后使用gensim库中的word2vec来训练生成词向量</p>
-<p>为了了解生成词向量时的进度，导入logging这个库进行</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models <span class="keyword">import</span> word2vec</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line">logging.basicConfig(format=<span class="string">&#x27;%(asctime)s:%(levelname)s:%(message)s&#x27;</span>,level=logging.INFO)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sentences = word2vec.Text8Corpus(<span class="string">&#x27;./result_dict,txt&#x27;</span>)</span><br><span class="line">model = word2vec.Word2Vec(sentences,size=<span class="number">200</span>)</span><br><span class="line"><span class="comment">#size是神经网络中隐藏层中神经元的个数</span></span><br><span class="line"><span class="comment">#model.save(&#x27;word.model&#x27;)</span></span><br></pre></td></tr></table></figure>
-
-<p>训练的过程如下</p>
-<img src="/2019/05/28/word2vec/4.png" class="" width="4">
-
-<p>完成</p>
-<p>整个训练过程可以看作是一个三层的神经网络的训练过程，有一个隐藏层，其神经元个数就是生成Word2Vec对象时的参数size大小</p>
-<p>下面测试几个自带的方法；</p>
-<p>查看与”北京”这个词意思最接近的词：</p>
-<img src="/2019/05/28/word2vec/5.png" class="" width="5">
-
-<p>可以发现有的是地名有的是职位；</p>
-<p>这是由于这个模型的基本思想就是，意思相近的词出现在相似语境下的概率更大；</p>
-<p>因此与北京出现的位置相近，或经常与它同时出现的词就被认为是他的同义词了。</p>
-<p>比较两个词的词向量距离：</p>
-<img src="/2019/05/28/word2vec/6.png" class="" width="6">
-
-<p>可以看到本报和记者的距离比本报和警察的距离近很多</p>
-<p>这是由于前者经常同时出现，被判定为含义接近的缘故</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1554,7 +1492,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1608,7 +1546,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

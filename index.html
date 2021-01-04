@@ -196,6 +196,68 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/12/25/argparse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/25/argparse/" class="post-title-link" itemprop="url">argparse</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-25 11:00:33 / 修改时间：11:12:46" itemprop="dateCreated datePublished" datetime="2020-12-25T11:00:33+08:00">2020-12-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>拿一个小例子简单记一下argparse的用法</p>
+<p>经常用，省的到处去搜了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">parser = arparse.ArgumentParser()</span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;-p&quot;</span>,<span class="string">&quot;port&quot;</span>,help =<span class="string">&quot;target port&quot;</span>,type=<span class="string">&quot;int&quot;</span>)</span><br><span class="line"><span class="comment"># 这样的参数是必须要有的</span></span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;-u&quot;</span>,<span class="string">&quot;--udp&quot;</span>,help=<span class="string">&quot;use udp other than tcp&quot;</span>,action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line"><span class="comment"># 这样的参数是可选的,并且不需要跟着值的</span></span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;--ip&quot;</span>,help=<span class="string">&quot;target&#x27;s IP address&quot;</span>)</span><br><span class="line"><span class="comment"># 这样的可选参数是需要加值的</span></span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;-v&quot;</span>,<span class="string">&quot;--version&quot;</span>,help=<span class="string">&quot;payload version&quot;</span>,type=<span class="string">&quot;int&quot;</span>,choices=[<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>])</span><br><span class="line"><span class="comment"># 这样使得输入的值是后面给定列表中的某一个</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="comment"># 得到的是一个对象，可以用.读各个属性</span></span><br><span class="line">print(<span class="string">&#x27;args.port&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> parser.udp:</span><br><span class="line">  <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/12/08/Email-spoofing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -885,78 +947,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/" class="post-title-link" itemprop="url">IDA反编译出错</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-11-06 11:05:00" itemprop="dateCreated datePublished" datetime="2020-11-06T11:05:00+08:00">2020-11-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-22 21:34:26" itemprop="dateModified" datetime="2020-11-22T21:34:26+08:00">2020-11-22</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>用IDA反编译遇到的一些问题和解决方案</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/11/06/IDA%E5%8F%8D%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1028,7 +1018,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1082,7 +1072,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

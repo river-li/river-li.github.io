@@ -196,6 +196,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/10/05/Winodws-bcdboot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/05/Winodws-bcdboot/" class="post-title-link" itemprop="url">Winodws bcdboot</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-05 19:58:04" itemprop="dateCreated datePublished" datetime="2019-10-05T19:58:04+08:00">2019-10-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="windows-的引导扇区被误删，修复方法"><a href="#windows-的引导扇区被误删，修复方法" class="headerlink" title="windows 的引导扇区被误删，修复方法"></a>windows 的引导扇区被误删，修复方法</h2><p>首先制作一个Windows的U盘启动盘，启动之后找到里面的修复计算机</p>
+<p>在修复计算机的选项里存在一个命令行参数</p>
+<p>使用diskpart找到引导扇区所在的分区，并命名</p>
+<p>同时还需要找到安装Windows的C盘所在的分区并命名</p>
+<p>之后使用bcdboot修复即可</p>
+<p>完整的cmd命令如下:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">diskpart</span><br><span class="line"></span><br><span class="line">&gt; list disk</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> disk <span class="number">0</span></span><br><span class="line"></span><br><span class="line">&gt; list part</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> part <span class="number">2</span></span><br><span class="line"></span><br><span class="line">&gt; assign letter P:</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> disk <span class="number">1</span></span><br><span class="line"></span><br><span class="line">&gt; list part</span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">select</span> part <span class="number">2</span></span><br><span class="line"></span><br><span class="line">&gt; assign letter C:</span><br><span class="line"></span><br><span class="line">&gt; <span class="keyword">exit</span></span><br><span class="line"></span><br><span class="line">bcdboot C:\Windows \s P: \f UEFI</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完成即可，上面的分区和硬盘是符合我自己情况的</p>
+<p>我的电脑硬盘有两个,disk0是固态，里面的2号分区是引导分区</p>
+<p>disk1是机械硬盘，windows 的C盘安装在里面的2号分区</p>
+<p>bcdboot的作用是将C盘下的Windows目录中与启动相关的文件复制到目标分区中，因此上面命令中P盘是给引导扇区的命名盘符</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/08/30/git-clone%E7%89%B9%E5%AE%9A%E7%9A%84branch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1118,82 +1194,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/23/linux%E5%86%85%E6%A0%B8list/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/23/linux%E5%86%85%E6%A0%B8list/" class="post-title-link" itemprop="url">linux内核list</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-23 15:14:07" itemprop="dateCreated datePublished" datetime="2019-06-23T15:14:07+08:00">2019-06-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Linux内核中有自己实现的链表数据结构<br>在<code>#include &lt;linux/list.h&gt;</code>头文件中</p>
-<!--more--->
-
-<h2 id="List-h"><a href="#List-h" class="headerlink" title="List.h"></a>List.h</h2><p>遍历列表的方法list_for_each_entry本质上是一个宏定义的函数和一个for循环</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_for_each_entry(pos,head,member) for(pos = list_enrty(head)-&gt;next,typeof(*pos),member);&amp;pos-&gt;member!=(head);pos=list_entry(pos-&gt;member.next,typeof(*pos),member))</span></span><br></pre></td></tr></table></figure>
-
-<p>而其中调用的list_entry又是另一个宏定义</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr,type,member) container_of(ptr,type,member)</span></span><br></pre></td></tr></table></figure>
-
-<p>而这个container_of函数，又双叒叕是个宏定义</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr,type,member)(&#123;typeof(((type *)0)-&gt;member)*__mptr=(ptr);\</span></span><br><span class="line">(type *)((<span class="keyword">char</span> *)__mptr - offsetof(type,member));&#125;)</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1265,7 +1265,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1319,7 +1319,7 @@
 <div class="copyright">
   
   &copy; 2017 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

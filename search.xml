@@ -7690,7 +7690,7 @@
 <p>看到危险函数就是一个简单的read</p>
 <p>直接返回到后门函数shell就可以</p>
 <p>过于简单，略</p>
-<h2 id="pawnable-orw"><a href="#pawnable-orw" class="headerlink" title="pawnable_orw"></a>pawnable_orw</h2><p>checksec发现是32位</p>
+<h2 id="pwnable-orw"><a href="#pwnable-orw" class="headerlink" title="pwnable_orw"></a>pwnable_orw</h2><p>checksec发现是32位</p>
 <p><img src="image-20201218163532756.png" alt="image-20201218163532756"></p>
 <p>直接输入shellcode，然后执行</p>
 <p><img src="image-20201218163625301.png" alt="image-20201218163625301"></p>
@@ -7701,9 +7701,9 @@
 
 
 <h2 id="bbys-tu-2016"><a href="#bbys-tu-2016" class="headerlink" title="bbys_tu_2016"></a>bbys_tu_2016</h2><p>checksec发现</p>
-<p><img src="buuctf-pwn1/image-20201218183037735.png" alt="image-20201218183037735"></p>
+<p><img src="image-20201218183037735.png" alt="image-20201218183037735"></p>
 <p>main函数</p>
-<p><img src="buuctf-pwn1/image-20201218185132186.png" alt="image-20201218185132186"></p>
+<p><img src="image-20201218185132186.png" alt="image-20201218185132186"></p>
 <p>v4这里可以导致溢出</p>
 <p>scanf需要调试着来确定偏移，发现返回地址在偏移24的位置</p>
 <p>之后直接返回到后门函数就可以</p>
@@ -7725,5 +7725,17 @@
 <h2 id="Swaks"><a href="#Swaks" class="headerlink" title="Swaks"></a>Swaks</h2><p>下载地址<a href="http://www.jetmore.org/john/code/swaks/">http://www.jetmore.org/john/code/swaks/</a></p>
 <p>最基本的伪造</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>argparse</title>
+    <url>/2020/12/25/argparse/</url>
+    <content><![CDATA[<p>拿一个小例子简单记一下argparse的用法</p>
+<p>经常用，省的到处去搜了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">parser = arparse.ArgumentParser()</span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;-p&quot;</span>,<span class="string">&quot;port&quot;</span>,help =<span class="string">&quot;target port&quot;</span>,type=<span class="string">&quot;int&quot;</span>)</span><br><span class="line"><span class="comment"># 这样的参数是必须要有的</span></span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;-u&quot;</span>,<span class="string">&quot;--udp&quot;</span>,help=<span class="string">&quot;use udp other than tcp&quot;</span>,action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line"><span class="comment"># 这样的参数是可选的,并且不需要跟着值的</span></span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;--ip&quot;</span>,help=<span class="string">&quot;target&#x27;s IP address&quot;</span>)</span><br><span class="line"><span class="comment"># 这样的可选参数是需要加值的</span></span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">&quot;-v&quot;</span>,<span class="string">&quot;--version&quot;</span>,help=<span class="string">&quot;payload version&quot;</span>,type=<span class="string">&quot;int&quot;</span>,choices=[<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>])</span><br><span class="line"><span class="comment"># 这样使得输入的值是后面给定列表中的某一个</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line"><span class="comment"># 得到的是一个对象，可以用.读各个属性</span></span><br><span class="line">print(<span class="string">&#x27;args.port&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> parser.udp:</span><br><span class="line">  <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>python</tag>
+      </tags>
   </entry>
 </search>
