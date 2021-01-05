@@ -2494,6 +2494,16 @@
 <p>写上正确的定义</p>
 <p><img src="image-20201106111142655.png" alt="image-20201106111142655"></p>
 <p>之后就可以反编译了</p>
+<h2 id="positive-sp-value-has-been-found"><a href="#positive-sp-value-has-been-found" class="headerlink" title="positive sp value has been found"></a>positive sp value has been found</h2><p>遇到的提示是这个地址的sp为正值</p>
+<p><img src="image-20210105193807432.png" alt="image-20210105193807432"></p>
+<p>解决办法：</p>
+<p>首先在option中打开stack pointer</p>
+<p><img src="image-20210105194236271.png" alt="image-20210105194236271"></p>
+<p>之后可以看到函数中显示出了一个指示当前栈帧的值</p>
+<p><img src="image-20210105194346031.png" alt="image-20210105194346031"></p>
+<p>这是原本出现问题的地方值应该是一个负数，在这个add esp的位置按option+k</p>
+<p>之后设置这里的sp值，最终使retn这个位置的绿色数字为00即可</p>
+<p><img src="image-20210105194458736.png" alt="image-20210105194458736"></p>
 ]]></content>
   </entry>
   <entry>
@@ -7707,6 +7717,19 @@
 <p>v4这里可以导致溢出</p>
 <p>scanf需要调试着来确定偏移，发现返回地址在偏移24的位置</p>
 <p>之后直接返回到后门函数就可以</p>
+<h2 id="xdctf2015-pwn200"><a href="#xdctf2015-pwn200" class="headerlink" title="xdctf2015_pwn200"></a>xdctf2015_pwn200</h2><p>非常朴素的ret2libc</p>
+<p>里面的vuln函数中read发生了溢出</p>
+<h2 id="gyctf-2020-borrowstack"><a href="#gyctf-2020-borrowstack" class="headerlink" title="gyctf_2020_borrowstack"></a>gyctf_2020_borrowstack</h2><p>程序中一共有两个read</p>
+<p><img src="buuctf-pwn1/image-20210104210109671.png" alt="image-20210104210109671"></p>
+<p>一个将内容读在了栈上，一个读在了bss段</p>
+<p>第一次溢出只能溢出两个字，所以是一个栈迁移的题目</p>
+<p>但是这个题比较烦人的地方在于bss段和got表特别接近</p>
+<p><img src="buuctf-pwn1/image-20210104215804626.png" alt="image-20210104215804626"></p>
+<p>如果直接用栈迁移的payload会导致在执行read的时候栈空间不够，导致got表被覆盖；</p>
+<p>所以在迁移的指令开始增加一些ret作为滑板指令；</p>
+<p>最后溢出的时候用system不行，要用execve</p>
+<p>网上的exp都是用了one_gadget，但是做这个的时候没有发现附加有libc的链接，如果没有libc的链接还是蛮难搞的啊</p>
+<p>另外还出现了本地打不通，远程能打通的情况</p>
 ]]></content>
       <categories>
         <category>buuctf</category>
