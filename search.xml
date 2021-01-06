@@ -7801,4 +7801,34 @@
         <tag>python</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Linux沙箱</title>
+    <url>/2021/01/06/Linux%E6%B2%99%E7%AE%B1/</url>
+    <content><![CDATA[<p>最近做pwn题学到一些linux沙箱相关的内容，这里简单记录一下；</p>
+<a id="more"></a>
+
+
+
+<h2 id="seccomp"><a href="#seccomp" class="headerlink" title="seccomp"></a>seccomp</h2><p>这是一个从linux 2.6开始有的机制，可以限制进程对系统调用的访问</p>
+<p>secure computing</p>
+<p>做到过的一些题目会对<code>execve</code>、<code>fork</code>之类的系统调用进行限制，这样的情况下是没办法直接用<code>shellcraft.sh()</code>或者<code>one_gadget</code>来拿shell的</p>
+<p>像CTF这样以读flag为目的的题目，可以用<code>open</code>、<code>read</code>、<code>write</code>/<code>puts</code>来读flag</p>
+<p>一般的流程是</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>,bss,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 首先从stdin读文件名到一个可写的位置，例如bss段、__free_hook等</span></span><br><span class="line"><span class="comment">// 这时在shellcode里加一个 send(&quot;flag&quot;) 就可以</span></span><br><span class="line">open(bss,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 打开bss段处这个字符串的文件，4是打开的权限，可读，也可设7，即全权限</span></span><br><span class="line">read(<span class="number">3</span>,bss,<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 3表示从文件来读，内容读到bss段，长度100</span></span><br><span class="line">write(<span class="number">1</span>,bss,<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 从bss段输出到stdout，长度100</span></span><br></pre></td></tr></table></figure>
+
+<p>但是如果是实际生产环境的话，可能就需要对这个进行绕过了；</p>
+<p>沙箱逃逸，最终执行execve这样想要执行的指令，这部分目前还没接触到，以后遇到了再加；</p>
+<h2 id="prctl"><a href="#prctl" class="headerlink" title="prctl"></a>prctl</h2><p>这个函数是对进程、线程设置属性的函数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/prctl.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">prctl</span><span class="params">(<span class="keyword">int</span> option, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg2, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg3, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg4, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg5)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这也可以设置禁用掉一些敏感的API、系统调用；</p>
+<p>刷buu遇到的一个题目<code>[V&amp;N2020公开赛]warmup</code>，里面有用到，但是由于去掉了符号表，看不到原本的宏，比较难懂，有时间了专门查一下相关的资料来学习；</p>
+<p>下面这个链接是手册里面写的内容，但是这些宏对应的值还是需要实际编程序测试才知道效果；</p>
+<p><a href="https://man7.org/linux/man-pages/man2/prctl.2.html">https://man7.org/linux/man-pages/man2/prctl.2.html</a></p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
 </search>

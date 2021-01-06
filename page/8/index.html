@@ -196,6 +196,100 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/29/i3-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="River Li">
+      <meta itemprop="description" content="WHU 网络空间安全在读">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="River's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/29/i3-config/" class="post-title-link" itemprop="url">i3-config</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-29 01:27:51" itemprop="dateCreated datePublished" datetime="2019-06-29T01:27:51+08:00">2019-06-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="i3-config"><a href="#i3-config" class="headerlink" title="i3 config"></a>i3 config</h1><p>最近在配置i3,对着官网的配置文件过了一遍，写一下看到的内容</p>
+<!--more--->
+
+<h2 id="i3bar"><a href="#i3bar" class="headerlink" title="i3bar"></a>i3bar</h2><h3 id="显示模式"><a href="#显示模式" class="headerlink" title="显示模式"></a>显示模式</h3><p>bar 一共有三种模式(mode)</p>
+<ul>
+<li>hide 只有按下mod键时才会显示</li>
+<li>dock 默认，常驻</li>
+<li>invisible 不显示</li>
+</ul>
+<p>显示的位置可以在底部也可以在顶部(position)</p>
+<ul>
+<li>top</li>
+<li>bottom</li>
+</ul>
+<h3 id="鼠标交互"><a href="#鼠标交互" class="headerlink" title="鼠标交互"></a>鼠标交互</h3><p>鼠标交互主要分为左键、中键、右键点击以及滚轮上下滚动</p>
+<p>分别是button[1/2/3/4/5]</p>
+<p>例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bar &#123;</span><br><span class="line">    # disable clicking on workspace buttons</span><br><span class="line">    bindsym button1 nop</span><br><span class="line">    # Take a screenshot by right clicking on the bar</span><br><span class="line">    bindsym --release button3 exec --no-startup-id import &#x2F;tmp&#x2F;latest-screenshot.png</span><br><span class="line">    # execute custom script when scrolling downwards</span><br><span class="line">    bindsym button5 exec ~&#x2F;.i3&#x2F;scripts&#x2F;custom_wheel_down</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里设置的是右键会执行后面的命令，下滑滚轮会执行最下面的脚本</p>
+<h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><p><code>separator_symbol “”</code></p>
+<p>在引号之中输入分隔符即可</p>
+<h3 id="工作区"><a href="#工作区" class="headerlink" title="工作区"></a>工作区</h3><p>工作区可以设置是否显示,workspace_button设置为no则会不显示</p>
+<p>另外两个选项用于设置对于<code>[n]:[NAME]</code>这样的工作区是显示数字还是名字</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">workspace_button yes</span><br><span class="line">strip_workspace_numbers yes</span><br><span class="line">strip_workspace_name no</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/23/linux%E5%86%85%E6%A0%B8list/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1341,86 +1435,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://river-li.xyz/2019/06/03/windows%E4%B8%8B%E6%8C%89%E9%94%AE%E6%98%A0%E5%B0%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="River Li">
-      <meta itemprop="description" content="WHU 网络空间安全在读">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="River's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/03/windows%E4%B8%8B%E6%8C%89%E9%94%AE%E6%98%A0%E5%B0%84/" class="post-title-link" itemprop="url">windows下按键映射</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-03 00:11:55" itemprop="dateCreated datePublished" datetime="2019-06-03T00:11:55+08:00">2019-06-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-26 14:47:04" itemprop="dateModified" datetime="2020-09-26T14:47:04+08:00">2020-09-26</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>首先新建一个<code>.reg</code>文件，在里面写如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version 5.00</span><br><span class="line"></span><br><span class="line">[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]</span><br><span class="line">&quot;Scancode Map&quot;&#x3D;hex:00,00,00,00,00,00,00,00,03,00,00,00,3a,00,01,00,01,00,3a,00,00,00,00,00</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>之后双击运行，添加到注册表后重启</p>
-<p>上面的文件是将<code>&lt;ESC&gt;</code>和<code>&lt;CapsLock&gt;</code>互换</p>
-<h2 id="Map变量组成"><a href="#Map变量组成" class="headerlink" title="Map变量组成"></a>Map变量组成</h2><p>上面的变量具体解析应该是这样</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;ScancodeMap&quot;&#x3D;hex:</span><br><span class="line">00,00,00,00</span><br><span class="line">00,00,00,00</span><br><span class="line"></span><br><span class="line">03,00,00,00</span><br><span class="line">3a,00,01,00</span><br><span class="line">01,00,3a,00</span><br><span class="line"></span><br><span class="line">00,00,00,00</span><br></pre></td></tr></table></figure>
-
-<p>分成这三个部分</p>
-<p>前面两行00，以及最后一行00都是固定的格式</p>
-<p>中间三行的含义是，第一行表明下面还有几行(这个数字需要算上最下面的固定00)</p>
-<p>下面的内容就是将某个键映射到某个键</p>
-<p>例如将<code>3a00</code>映射到<code>0100</code>，将<code>0100</code>映射到<code>3a00</code></p>
-<p>这些值对应键盘的输出值</p>
-<p>3a00是Esc键</p>
-<p>0100是CapsLock键</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1492,7 +1506,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
