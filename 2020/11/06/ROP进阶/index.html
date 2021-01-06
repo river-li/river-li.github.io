@@ -28,7 +28,7 @@
 <meta property="og:description" content="ROP本身原理还是比较好理解的，简单的ROP做了一些题之后就比较熟练了，更难的ROP还是要一点一点学一下原理； 记一下各种类型的ROP原理；">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-11-06T11:48:22.000Z">
-<meta property="article:modified_time" content="2020-12-03T08:52:56.360Z">
+<meta property="article:modified_time" content="2021-01-06T11:53:16.247Z">
 <meta property="article:author" content="River Li">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-03 16:52:56" itemprop="dateModified" datetime="2020-12-03T16:52:56+08:00">2020-12-03</time>
+                <time title="修改时间：2021-01-06 19:53:16" itemprop="dateModified" datetime="2021-01-06T19:53:16+08:00">2021-01-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -329,6 +329,16 @@
 
 <p>在上面的一串代码执行结束后来到下面这样一个判断，这里可以设置rbx和rbp的值为<code>rbx+1=rbp</code></p>
 <p>这样在这一块前面的call执行结束后就不会跳回去，可以继续执行后面的程序</p>
+<h2 id="ROPgadget"><a href="#ROPgadget" class="headerlink" title="ROPgadget"></a>ROPgadget</h2><p>ROPgadget是一个比较常用的工具，这里也直接写一些不太常用到，但是很有用的功能；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROPgadget --binary --ropchain</span><br></pre></td></tr></table></figure>
+
+<p>这样可以直接生成ropchain，返回的就是一个拿权限的shell</p>
+<p>一般用在静态链接的程序上，因为gadget比较多；</p>
+<h2 id="LibcSearcher"><a href="#LibcSearcher" class="headerlink" title="LibcSearcher"></a>LibcSearcher</h2><p>LibcSearcher一般用来ret2libc，判断libc的版本，这里也记一下相关的高级用法；</p>
+<p>在64位程序的ROP时，比较难搞的就是参数比较多的函数调用；</p>
+<p>因为64位程序的前几个参数是存在寄存器中的，如果不能将栈上的值pop到寄存器中就没办法正确的调用，但是一般情况下在二进制程序中比较难找到<code>pop rdx;ret</code>这样的gadget，这时可以用pwntools在libc里面找</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">libc = ELF(<span class="string">&#x27;libc.so&#x27;</span>)</span><br><span class="line">pop_rdx = libc.search(asm(<span class="string">&#x27;pop rdx\nret&#x27;</span>)).next()</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -412,7 +422,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2text"><span class="nav-text">ret2text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2syscall"><span class="nav-text">ret2syscall</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2shellcode"><span class="nav-text">ret2shellcode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2libc"><span class="nav-text">ret2libc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2csu"><span class="nav-text">ret2csu</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2text"><span class="nav-text">ret2text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2syscall"><span class="nav-text">ret2syscall</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2shellcode"><span class="nav-text">ret2shellcode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2libc"><span class="nav-text">ret2libc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2csu"><span class="nav-text">ret2csu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROPgadget"><span class="nav-text">ROPgadget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LibcSearcher"><span class="nav-text">LibcSearcher</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

