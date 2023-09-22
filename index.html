@@ -1707,13 +1707,15 @@ p.mathjax-block,
 <span>[2023-08-02] Arrived at USA! Starting a new journey!</span>
 <span>[2023-06-20] Received first class Graduate Outstanding Scholarship, awarded for 4,000¥.</span>
 <span>[2023-05-24] I am awarded as an Outstanding Graduate Student from WHU.</span>
+<span id="more" style="display: none;">
 <span>[2023-05-20] Successfully defended my master thesis! Thanks for all my professors! Cheers!</span>
 <span>[2023-01-30] One paper accepted to China Communication.</span>
 <span>[2022-12-21] Found three more vulnerabilities in UEFI, reported to vendors!</span>
 <span>[2022-12-19] We, the 10TG team, got 7th at Datacon 2022 IoT Security Track and 5,000¥ prizes. [</span><a href='http://cse.whu.edu.cn/info/1100/4083.htm'><span>press</span></a><span>]</span>
 <span>[2022-09-21] Got first class scholarship for Graduate Student, awarded for 4,000¥.</span>
 <span>[2022-02-17] I am nominated as an annual oustanding member(ranked 1st, my ID: 呆毛王与咖喱棒) in </span><a href='https://52pojie.cn'><span>52pojie</span></a><span>(the biggest security forum in China). [</span><a href='https://www.52pojie.cn/thread-1589253-1-1.html'><span>link</span></a><span>]</span>
-<span>[2021-11-09] We, the 10TG team, got 1st at Datacon 2021 Email Security Track and 50,000¥ prizes. [</span><a href='https://mp.weixin.qq.com/s/uofAzm6IbVAeD2k0vvNCGg'><span>press</span></a><span>]</span></p><p>&nbsp;</p><h4 id='publications'><span>Publications</span></h4><p><span>[4] </span><strong><u><span>Research on Firmware Vulnerability Discovery Technology Based on Reaching Definition Analysis</span></u></strong>
+<span>[2021-11-09] We, the 10TG team, got 1st at Datacon 2021 Email Security Track and 50,000¥ prizes. [</span><a href='https://mp.weixin.qq.com/s/uofAzm6IbVAeD2k0vvNCGg'><span>press</span></a><span>]</span>
+</span></p><p><a id="morehref"><span> Show More</span></a></p><p>&nbsp;</p><h4 id='publications'><span>Publications</span></h4><p><span>[4] </span><strong><u><span>Research on Firmware Vulnerability Discovery Technology Based on Reaching Definition Analysis</span></u></strong>
 <em><span>Runyuan Mei, Yanhao Wang, </span><strong><span>Zichuan Li</span></strong><span>, Guojun Peng</span></em>
 <span>Journal of Cyber Security, </span><font color="#891911"><span>(Accepted)</span></font></p><p><span>[3] </span><strong><u><span>EN-Bypass: a security assessment method on e-mail user interface notification</span></u></strong>
 <em><span>Jingyi Yuan, </span><strong><span>Zichuan Li</span></strong><span>, Guojun Peng</span></em>
@@ -1735,6 +1737,34 @@ p.mathjax-block,
 <span>Mobile Networks and Applications, 2021</span>
 <span>Journal of Cybersecurity, 2021</span></p></li><li><p><span>Organizing Committee</span>
 <span>9th XDef Network and Information Security Protection Summit</span>
-<span>8th XDef Network and Information Security Protection Summit</span></p></li></ul><p>&nbsp;</p><p><font color="#666" font-size="9px"><span> </span><center><span>Copyright © 2023 Built by </span><a href="https://zichuan.li"><span>river-li</span></a><span> | Last updated on 2023-09-20. </span></center></font></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></div></div>
+<span>8th XDef Network and Information Security Protection Summit</span></p></li></ul><p>&nbsp;</p><p>&nbsp;</p><div id="randomFact" style="font-size:12px; text-align:center; color='#666'"></div><p><font color="#666" font-size="9px"><span> </span><center><span>Copyright © 2023 Built by </span><a href="https://zichuan.li"><span>river-li</span></a><span> | Last updated on 2023-09-21. </span></center></font></p><p>&nbsp;</p><script>
+  var moreHref = document.getElementById("morehref");
+  moreHref.onclick = showMore;
+function showMore() {
+    var moreText = document.getElementById("more");
+    var moreHref = document.getElementById("morehref");
+    if (moreText.style.display === "none") {
+      moreHref.innerHTML = "Show Less"; 
+      moreText.style.display = "inline";
+    }
+    else{
+      moreHref.innerHTML = "Show More";
+      moreText.style.display = "none";
+    }
+  }
+const randomFacts = [
+    "I didn't have a graduating ceremony for B.S. due to COVID 19 :(",
+    "My favourite IP is Fate, made by Type Moon",
+  	"One of my username, 呆毛王与咖喱棒(Altria and Excalibar), is from the anime 'Steins;Gate', the heroine Kurisu Makise has a online nickname '栗悟饭与龟功波(KuriGohan and Kamehameha)'.",
+    "In my master's thesis, I discovered more than 100 UEFI vulnerabilities :P",
+];
+const randomFactElement = document.getElementById("randomFact");
+function displayRandomFact() {
+    const randomIndex = Math.floor(Math.random() * randomFacts.length);
+    const randomFact = randomFacts[randomIndex];
+    randomFactElement.textContent = randomFact;
+}
+displayRandomFact();
+</script><p>&nbsp;</p></div></div>
 </body>
 </html>
